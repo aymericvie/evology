@@ -167,33 +167,12 @@ def TotalWealth(pop):
     return Wealth
 
 
-def prepare_for_agg_ed(pop):
-    # This function is used to extract the `ind` attributes in `pop` into
-    # lists, because it is much faster for the Cythonized code to optimize
-    # retrieving array elements than Python objects.
-    types = np.empty(len(pop), int)
-    wealths = np.empty(len(pop), float)
-    assets = np.empty(len(pop), float)
-    tsvs = np.empty(len(pop), float)
-    index_zeros = np.empty(len(pop), float)
-    processes = np.empty(len(pop), float)
-
-    def to_num(t):
-        if t == "tf":
-            return 0
-        elif t == "vi":
-            return 1
-        else:
-            return 2
-
+def convert_to_array(pop):
+    array_pop = np.empty(len(pop), object)
     for idx, ind in enumerate(pop):
-        types[idx] = to_num(ind.type)
-        wealths[idx] = float(ind.wealth)
-        assets[idx] = float(ind.asset)
-        tsvs[idx] = float(ind.tsv)
-        index_zeros[idx] = ind[0]
-        processes[idx] = float(ind.process)
-    return types, wealths, assets, tsvs, index_zeros, processes
+        array_pop[idx] = ind
+    return array_pop
+
 
 def agg_ed(pop, spoils): 
     functions = []
@@ -206,10 +185,10 @@ def agg_ed(pop, spoils):
     elif spoils < 0:
         ToLiquidate = min(abs(spoils), LIQUIDATION_ORDER_SIZE)
 
-    types, wealths, assets, tsvs, index_zeros, processes = prepare_for_agg_ed(pop)
+    array_pop = convert_to_array(pop)
 
     def big_edf(price):
-        return cythonized._big_edf(ToLiquidate, SCALE_TF, LeverageTF, LeverageVI, LeverageNT, types, wealths, assets, tsvs, index_zeros, processes, price)
+        return cythonized.big_edf(array_pop, price, ToLiquidate)
 
     #def big_edf(price):
     #    result = ToLiquidate
@@ -231,10 +210,10 @@ def agg_ed_esl(pop, spoils):
     elif spoils < 0:
         ToLiquidate = min(abs(spoils), LIQUIDATION_ORDER_SIZE)
 
-    types, wealths, assets, tsvs, index_zeros, processes = prepare_for_agg_ed(pop)
+    array_pop = convert_to_array(pop)
 
     def big_edf(asset_key, price):
-        return cythonized._big_edf(ToLiquidate, SCALE_TF, LeverageTF, LeverageVI, LeverageNT, types, wealths, assets, tsvs, index_zeros, processes, price)
+        return cythonized.big_edf(array_pop, price, ToLiquidate)
 
     #def big_edf(asset_key, price):
     #    result = ToLiquidate

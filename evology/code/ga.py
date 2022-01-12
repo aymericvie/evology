@@ -9,6 +9,8 @@ import balance_sheet as bs
 import timeit
 import warnings
 
+import cythonized
+
 '''
 def adjust_mode(pop, mode):
     if mode == "between":
@@ -258,6 +260,8 @@ def strategy_evolution(mode, space, pop, PROBA_SELECTION, MUTATION_RATE, wealth_
                         
                         # warnings.warn('Ind ' + str(pop[i].type) + ' switched to ' + str(winner.type) + ' at time ' + str(generation))
                     pop[i].type = winner.type
+                    type_num = cythonized.convert_ind_type_to_num(winner.type)
+                    pop[i].type_as_int = type_num
                     pop[i][0] = winner[0]
                     pop[i].leverage = winner.leverage
             
@@ -283,6 +287,8 @@ def strategy_evolution(mode, space, pop, PROBA_SELECTION, MUTATION_RATE, wealth_
                     while cum_proba[ty] < n:
                         ty += 1
                     pop[i].type = types[ty]
+                    type_num = cythonized.convert_ind_type_to_num(types[ty])
+                    pop[i].type_as_int = type_num
                     if pop[i].type =='tf':
                         pop[i][0] = 2
                     elif pop[i].type == 'nt' or pop[i].type == 'vi':

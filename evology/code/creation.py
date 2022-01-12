@@ -8,6 +8,8 @@ import random
 toolbox = base.Toolbox()
 from parameters import *
 
+import cythonized
+
 def DrawReturnRate(strat):
     if strat == 'vi':
         rate = np.random.uniform(MIN_RR_VI, MAX_RR_VI) / 1000
@@ -19,23 +21,7 @@ def DrawReturnRate(strat):
 
 creator.create("fitness_strategy", base.Fitness, weights=(1.0,))
 
-creator.create("ind", list, typecode = 'd', fitness=creator.fitness_strategy, 
-    strategy = 0,
-    wealth = 0, 
-    type = None, 
-    cash = 0, 
-    asset = 0, 
-    loan = RefLoan, 
-    margin = 0, 
-    tsv = 0, 
-    edf = None, 
-    edv = 0, 
-    process = 1, 
-    ema = 0, 
-    profit = 0, 
-    prev_wealth = 0, 
-    DailyReturn = 0,
-    leverage = None)
+creator.ind = cythonized.Individual
 
 # TODO: individual_ga is a list, individual_gp will be a gp.primitiveTree.
 
@@ -47,12 +33,15 @@ def IndCreation(strat):
     if strat == 'nt':
         ind.type = 'nt'
         ind.leverage = LeverageNT
+        ind.type_as_int = cythonized.convert_ind_type_to_num('nt')
     if strat == 'vi':
         ind.type = 'vi'
         ind.leverage = LeverageVI
+        ind.type_as_int = cythonized.convert_ind_type_to_num('vi')
     if strat == 'tf':
         ind.type = 'tf'
         ind.leverage = LeverageTF
+        ind.type_as_int = cythonized.convert_ind_type_to_num('tf')
     return ind
 
 def CreatePop(n, space, WealthCoords):
