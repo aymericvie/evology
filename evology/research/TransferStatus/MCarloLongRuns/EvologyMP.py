@@ -6,7 +6,7 @@ import time
 import pandas
 from main import main as evology
 
-reps = 20
+reps = 100
 iterations = 25000
 agents = 100
 

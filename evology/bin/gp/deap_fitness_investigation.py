@@ -13,7 +13,7 @@ from deap import gp
 import matplotlib.pyplot as plt
 import networkx as nx
 import graphviz
-import pygraphviz as pgv 
+# import pygraphviz as pgv 
 from networkx.drawing.nx_agraph import graphviz_layout
 #in Conda prompt conda install -c alubbock pygraphviz run in admin mode
 
@@ -226,23 +226,18 @@ def main(mode):
     # print log
     return population, logbook, hof
 
-pop, log, hof = main("deap")
-bests = tools.selBest(pop, k=1)
+population = toolbox.population(n=10)
+for ind in population:
+    print(ind)
+    print(type(ind))
+    print(ind[0])
 
-nodes, edges, labels = gp.graph(bests[0])
-graph = nx.Graph()
-graph.add_nodes_from(nodes)
-graph.add_edges_from(edges)
-pos = graphviz_layout(graph, prog = 'dot') #run dot -c in conda prompt
-plt.figure(figsize=(7,7))
-nx.draw_networkx_nodes(graph, pos, node_size=900, node_color="w")
-nx.draw_networkx_edges(graph, pos)
-nx.draw_networkx_labels(graph, pos, labels)
-plt.axis("off")
-plt.show()
+run = False
+if run == True:
+    pop, log, hof = main("deap")
+    bests = tools.selBest(pop, k=1)
 
-def plot_graph(tree):
-    nodes, edges, labels = gp.graph(tree)
+    nodes, edges, labels = gp.graph(bests[0])
     graph = nx.Graph()
     graph.add_nodes_from(nodes)
     graph.add_edges_from(edges)
@@ -254,32 +249,45 @@ def plot_graph(tree):
     plt.axis("off")
     plt.show()
 
+    def plot_graph(tree):
+        nodes, edges, labels = gp.graph(tree)
+        graph = nx.Graph()
+        graph.add_nodes_from(nodes)
+        graph.add_edges_from(edges)
+        pos = graphviz_layout(graph, prog = 'dot') #run dot -c in conda prompt
+        plt.figure(figsize=(7,7))
+        nx.draw_networkx_nodes(graph, pos, node_size=900, node_color="w")
+        nx.draw_networkx_edges(graph, pos)
+        nx.draw_networkx_labels(graph, pos, labels)
+        plt.axis("off")
+        plt.show()
 
 
-print("Best ")
-print(bests[0])
+
+    print("Best ")
+    print(bests[0])
 
 
-# def bestf(x):
-#     return toolbox.compile(expr=bests[0])(x)
+    # def bestf(x):
+    #     return toolbox.compile(expr=bests[0])(x)
 
-# def func(x):
-#     return x*x*x*x - x*x*x - x*x - x
+    # def func(x):
+    #     return x*x*x*x - x*x*x - x*x - x
 
-# print(bestf(1))
-# XXX = np.linspace(-10,10,100)
-# y = []
-# for ix in XXX:
-#     y.append(bestf(ix))
-# z = []
-# for ix in XXX:
-#     z.append(func(ix))
+    # print(bestf(1))
+    # XXX = np.linspace(-10,10,100)
+    # y = []
+    # for ix in XXX:
+    #     y.append(bestf(ix))
+    # z = []
+    # for ix in XXX:
+    #     z.append(func(ix))
 
-# print("figure")
-# plt.plot(y, label="best fit")
-# plt.plot(z, label = "actual func")
-# plt.xlim(-10,10)
-# plt.legend()
-# plt.show()
+    # print("figure")
+    # plt.plot(y, label="best fit")
+    # plt.plot(z, label = "actual func")
+    # plt.xlim(-10,10)
+    # plt.legend()
+    # plt.show()
 
 
