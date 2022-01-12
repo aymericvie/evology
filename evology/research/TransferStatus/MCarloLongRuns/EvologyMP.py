@@ -1,15 +1,19 @@
 import multiprocessing as mp
+import sys
+sys.path.append('evology/code')
 from main import *
 import time
 import pandas
 from main import main as evology
 
+reps = 20
+iterations = 25000
+agents = 100
+
 def job(iteration):
-	df,pop = evology("static", 'scholl', 'newton', False, 1000, 0, 10, 0, [1/3, 1/3, 1/3], True, False)
+	df,pop = evology("static", 'scholl', 'esl.true', False, iterations, 0, agents, 0, [1/3, 1/3, 1/3], True, False)
 	return df['WShare_NT'], df['WShare_VI'], df['WShare_TF']
 
-
-reps = 2
 def main():
 	start = time.perf_counter()
 	p = mp.Pool()
