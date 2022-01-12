@@ -26,4 +26,7 @@ toolbox.register("compile", gp.compile, pset=pset)
 
 population = toolbox.population(n=10)
 print(population)
-
+for ind in population:
+    print(ind)
+    print(type(ind))
+    print(type(ind[0]))
