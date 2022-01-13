@@ -904,7 +904,7 @@ static const char *__pyx_filename;
 
 
 static const char *__pyx_f[] = {
-  "cythonized.pyx",
+  "evology/code/cythonized.pyx",
   "stringsource",
   "type.pxd",
   "bool.pxd",
@@ -2067,7 +2067,6 @@ static const char __pyx_k_pyx_checksum[] = "__pyx_checksum";
 static const char __pyx_k_stringsource[] = "stringsource";
 static const char __pyx_k_pyx_getbuffer[] = "__pyx_getbuffer";
 static const char __pyx_k_reduce_cython[] = "__reduce_cython__";
-static const char __pyx_k_cythonized_pyx[] = "cythonized.pyx";
 static const char __pyx_k_View_MemoryView[] = "View.MemoryView";
 static const char __pyx_k_allocate_buffer[] = "allocate_buffer";
 static const char __pyx_k_dtype_is_object[] = "dtype_is_object";
@@ -2087,6 +2086,7 @@ static const char __pyx_k_convert_ind_type_to_num[] = "convert_ind_type_to_num";
 static const char __pyx_k_pyx_unpickle_Individual[] = "__pyx_unpickle_Individual";
 static const char __pyx_k_Cannot_index_with_type_s[] = "Cannot index with type '%s'";
 static const char __pyx_k_Invalid_shape_in_axis_d_d[] = "Invalid shape in axis %d: %d.";
+static const char __pyx_k_evology_code_cythonized_pyx[] = "evology/code/cythonized.pyx";
 static const char __pyx_k_itemsize_0_for_cython_array[] = "itemsize <= 0 for cython.array";
 static const char __pyx_k_unable_to_allocate_array_data[] = "unable to allocate array data.";
 static const char __pyx_k_strided_and_direct_or_indirect[] = "<strided and direct or indirect>";
@@ -2147,7 +2147,6 @@ static PyObject *__pyx_kp_s_contiguous_and_direct;
 static PyObject *__pyx_kp_s_contiguous_and_indirect;
 static PyObject *__pyx_n_s_convert_ind_type_to_num;
 static PyObject *__pyx_n_s_creator;
-static PyObject *__pyx_kp_s_cythonized_pyx;
 static PyObject *__pyx_n_s_d;
 static PyObject *__pyx_n_s_deap;
 static PyObject *__pyx_n_s_dict;
@@ -2155,6 +2154,7 @@ static PyObject *__pyx_n_s_dtype_is_object;
 static PyObject *__pyx_n_s_encode;
 static PyObject *__pyx_n_s_enumerate;
 static PyObject *__pyx_n_s_error;
+static PyObject *__pyx_kp_s_evology_code_cythonized_pyx;
 static PyObject *__pyx_n_s_evology_evology_code_cythonized;
 static PyObject *__pyx_n_s_fitness_strategy;
 static PyObject *__pyx_n_s_flags;
@@ -19886,7 +19886,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_s_contiguous_and_indirect, __pyx_k_contiguous_and_indirect, sizeof(__pyx_k_contiguous_and_indirect), 0, 0, 1, 0},
   {&__pyx_n_s_convert_ind_type_to_num, __pyx_k_convert_ind_type_to_num, sizeof(__pyx_k_convert_ind_type_to_num), 0, 0, 1, 1},
   {&__pyx_n_s_creator, __pyx_k_creator, sizeof(__pyx_k_creator), 0, 0, 1, 1},
-  {&__pyx_kp_s_cythonized_pyx, __pyx_k_cythonized_pyx, sizeof(__pyx_k_cythonized_pyx), 0, 0, 1, 0},
   {&__pyx_n_s_d, __pyx_k_d, sizeof(__pyx_k_d), 0, 0, 1, 1},
   {&__pyx_n_s_deap, __pyx_k_deap, sizeof(__pyx_k_deap), 0, 0, 1, 1},
   {&__pyx_n_s_dict, __pyx_k_dict, sizeof(__pyx_k_dict), 0, 0, 1, 1},
@@ -19894,6 +19893,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_encode, __pyx_k_encode, sizeof(__pyx_k_encode), 0, 0, 1, 1},
   {&__pyx_n_s_enumerate, __pyx_k_enumerate, sizeof(__pyx_k_enumerate), 0, 0, 1, 1},
   {&__pyx_n_s_error, __pyx_k_error, sizeof(__pyx_k_error), 0, 0, 1, 1},
+  {&__pyx_kp_s_evology_code_cythonized_pyx, __pyx_k_evology_code_cythonized_pyx, sizeof(__pyx_k_evology_code_cythonized_pyx), 0, 0, 1, 0},
   {&__pyx_n_s_evology_evology_code_cythonized, __pyx_k_evology_evology_code_cythonized, sizeof(__pyx_k_evology_evology_code_cythonized), 0, 0, 1, 1},
   {&__pyx_n_s_fitness_strategy, __pyx_k_fitness_strategy, sizeof(__pyx_k_fitness_strategy), 0, 0, 1, 1},
   {&__pyx_n_s_flags, __pyx_k_flags, sizeof(__pyx_k_flags), 0, 0, 1, 1},
@@ -20179,7 +20179,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__19 = PyTuple_Pack(1, __pyx_n_s_t); if (unlikely(!__pyx_tuple__19)) __PYX_ERR(0, 39, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__19);
   __Pyx_GIVEREF(__pyx_tuple__19);
-  __pyx_codeobj__20 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__19, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_cythonized_pyx, __pyx_n_s_convert_ind_type_to_num, 39, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__20)) __PYX_ERR(0, 39, __pyx_L1_error)
+  __pyx_codeobj__20 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__19, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_evology_code_cythonized_pyx, __pyx_n_s_convert_ind_type_to_num, 39, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__20)) __PYX_ERR(0, 39, __pyx_L1_error)
 
   /* "(tree fragment)":1
  * def __pyx_unpickle_Individual(__pyx_type, long __pyx_checksum, __pyx_state):             # <<<<<<<<<<<<<<
