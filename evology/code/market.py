@@ -1,6 +1,3 @@
-import matplotlib
-import matplotlib.pyplot as plt
-import warnings
 import balance_sheet as bs
 import numpy as np
 
