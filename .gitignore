@@ -13,3 +13,6 @@ evology/research/TransferStatus/SingleRun_Replic_3ag/data/simulation3ag_15k.csv
 __pycache__/
 *.py[cod]
 *.so
+
+# Cython-generated C files
+*.c
