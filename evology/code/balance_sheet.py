@@ -175,64 +175,32 @@ def pop_report(pop):
 
 def agent_report(ind):
     if ind.type == "tf":
-        print(
-            "TF agent - "
-            + str(round(ind[0], 2))
-            + ", Cash "
-            + str(int(ind.cash))
-            + ", Asset_Long "
-            + str(int(ind.asset))
-            + ", Wealth "
-            + str(int(ind.wealth))
-            + ", TS "
-            + str(round(ind.tsv, 2))
-            + ", EV "
-            + str(int(ind.edv))
-            + ", Margin "
-            + str(int(ind.margin))
-            + ", Loan "
-            + str(int(ind.loan))
-        )  # + ", Profit " + str(int(ind.profit)) + ", Fitness " + str(ind.fitness))
-    if ind.type == "vi":
-        print(
-            "VI agent - "
-            + str(round(ind[0], 2))
-            + ", Cash "
-            + str(int(ind.cash))
-            + ", Asset_Long "
-            + str(int(ind.asset))
-            + ", Wealth "
-            + str(int(ind.wealth))
-            + ", TS "
-            + str(round(ind.tsv, 2))
-            + ", EV "
-            + str(int(ind.edv))
-            + ", Margin "
-            + str(int(ind.margin))
-            + ", Loan "
-            + str(int(ind.loan))
-        )  # )#", Profit " + str(int(ind.profit)) + ", Fitness " + str(ind.fitness))
+        name = "TF agent - "
+    elif ind.type == "vi":
+        name = "VI agent - "
     if ind.type == "nt":
-        print(
-            "NT agent - "
-            + str(round(ind[0], 2))
-            + ", Cash "
-            + str(int(ind.cash))
-            + ", Asset_Long "
-            + str(int(ind.asset))
-            + ", Wealth "
-            + str(int(ind.wealth))
-            + ", TS "
-            + str(round(ind.tsv, 2))
-            + ", EV "
-            + str(int(ind.edv))
-            + ", Margin "
-            + str(int(ind.margin))
-            + ", Loan "
-            + str(int(ind.loan))
-            + ", Process: "
-            + str(round(ind.process, 2))
-        )  # )#", Profit " + str(int(ind.profit)) + ", Fitness " + str(ind.fitness))
+        name = "NT agent - "
+    else:
+        raise Exception(f"Unexpected ind type: {ind.type}")
+
+    print(
+        name
+        + str(round(ind[0], 2))
+        + ", Cash "
+        + str(int(ind.cash))
+        + ", Asset_Long "
+        + str(int(ind.asset))
+        + ", Wealth "
+        + str(int(ind.wealth))
+        + ", TS "
+        + str(round(ind.tsv, 2))
+        + ", EV "
+        + str(int(ind.edv))
+        + ", Margin "
+        + str(int(ind.margin))
+        + ", Loan "
+        + str(int(ind.loan))
+    )  # + ", Profit " + str(int(ind.profit)) + ", Fitness " + str(ind.fitness))
 
 
 def CalcTsvVINT(pop, price):
