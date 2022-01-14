@@ -147,6 +147,7 @@ df, pop = main(
     tqdm_display,
     False,
 )
+print(df)
 
 
 """ In command: 
