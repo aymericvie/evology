@@ -1,9 +1,9 @@
 import numpy as np
-from parameters import *
-from market import *
 import math
 import warnings
 
+import parameters
+import market
 import cythonized
 
 
@@ -59,8 +59,8 @@ def DetermineTsvProc(mode, pop, price_history):
         elif ind.type == "nt":
             ind.process = abs(
                 ind.process
-                + RHO_NT * (math.log2(MU_NT) - math.log2(ind.process))
-                + GAMMA_NT * randoms[count]
+                + parameters.RHO_NT * (math.log2(parameters.MU_NT) - math.log2(ind.process))
+                + parameters.GAMMA_NT * randoms[count]
             )
             if ind.process < 0:
                 warnings.warn("Negative process value for NT")
@@ -68,17 +68,17 @@ def DetermineTsvProc(mode, pop, price_history):
 
 def UpdateFval(pop, dividend_history):
     estimated_daily_div_growth = (
-        (1 + DIVIDEND_GROWTH_RATE_G) ** (1 / TRADING_DAYS)
+        (1 + parameters.DIVIDEND_GROWTH_RATE_G) ** (1 / parameters.TRADING_DAYS)
     ) - 1
 
     if len(dividend_history) >= 1:
         numerator = (1 + estimated_daily_div_growth) * dividend_history[-1]
     elif len(dividend_history) < 1:
-        numerator = (1 + estimated_daily_div_growth) * INITIAL_DIVIDEND
+        numerator = (1 + estimated_daily_div_growth) * parameters.INITIAL_DIVIDEND
 
     for ind in pop:
         denuminator = (
-            1 + (AnnualInterestRate + ind.strategy) - DIVIDEND_GROWTH_RATE_G
+            1 + (parameters.AnnualInterestRate + ind.strategy) - parameters.DIVIDEND_GROWTH_RATE_G
         ) ** (1 / 252) - 1
         fval = numerator / denuminator
 
@@ -94,19 +94,19 @@ def DetermineEDF(pop):
     for ind in pop:
         if ind.type == "tf":
             ind.edf = (
-                lambda ind, p: (LeverageTF * ind.wealth / p)
-                * math.tanh(SCALE_TF * ind.tsv)
+                lambda ind, p: (parameters.LeverageTF * ind.wealth / p)
+                * math.tanh(parameters.SCALE_TF * ind.tsv)
                 - ind.asset
             )
         elif ind.type == "vi":
             ind.edf = (
-                lambda ind, p: (LeverageVI * ind.wealth / p)
+                lambda ind, p: (parameters.LeverageVI * ind.wealth / p)
                 * math.tanh((5 / ind[0]) * (ind[0] - p))
                 - ind.asset
             )
         elif ind.type == "nt":
             ind.edf = (
-                lambda ind, p: (LeverageNT * ind.wealth / p)
+                lambda ind, p: (parameters.LeverageNT * ind.wealth / p)
                 * math.tanh((5 / (ind[0] * ind.process)) * (ind[0] * ind.process - p))
                 - ind.asset
             )
@@ -157,11 +157,11 @@ def count_pop_short_assets(pop):
 
 
 def earnings(pop, prev_dividend):
-    dividend, random_dividend = draw_dividend(prev_dividend)
+    dividend, random_dividend = market.draw_dividend(prev_dividend)
     for ind in pop:
         div_asset = ind.asset * dividend  # Determine gain from dividends
-        interest_cash = ind.cash * INTEREST_RATE  # Determine gain from interest
-        ind.cash += REINVESTMENT_RATE * (
+        interest_cash = ind.cash * parameters.INTEREST_RATE  # Determine gain from interest
+        ind.cash += parameters.REINVESTMENT_RATE * (
             div_asset + interest_cash
         )  # Apply reinvestment
 
@@ -234,11 +234,11 @@ def agg_ed(pop, spoils):
     ToLiquidate = 0
 
     if spoils > 0:
-        ToLiquidate = -min(spoils, LIQUIDATION_ORDER_SIZE)
+        ToLiquidate = -min(spoils, parameters.LIQUIDATION_ORDER_SIZE)
     elif spoils == 0:
         ToLiquidate = 0
     elif spoils < 0:
-        ToLiquidate = min(abs(spoils), LIQUIDATION_ORDER_SIZE)
+        ToLiquidate = min(abs(spoils), parameters.LIQUIDATION_ORDER_SIZE)
 
     array_pop = convert_to_array(pop)
 
@@ -259,11 +259,11 @@ def agg_ed_esl(pop, spoils):
     ToLiquidate = 0
 
     if spoils > 0:
-        ToLiquidate = -min(spoils, LIQUIDATION_ORDER_SIZE)
+        ToLiquidate = -min(spoils, parameters.LIQUIDATION_ORDER_SIZE)
     elif spoils == 0:
         ToLiquidate = 0
     elif spoils < 0:
-        ToLiquidate = min(abs(spoils), LIQUIDATION_ORDER_SIZE)
+        ToLiquidate = min(abs(spoils), parameters.LIQUIDATION_ORDER_SIZE)
 
     array_pop = convert_to_array(pop)
 
