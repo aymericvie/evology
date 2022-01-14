@@ -5,7 +5,9 @@ import pandas as pd
 import numpy as np
 import balance_sheet as bs
 import timeit
+
 from parameters import *
+cimport cythonized
 
 columns = [
     # Global variables
@@ -91,53 +93,56 @@ variables = len(columns)
 Barr = max(SHIELD_DURATION, ShieldResults)
 
 
-def ResultsProcess(pop, spoils, price):
+def ResultsProcess(list pop, double spoils, double price):
 
-    LongAssets, ShortAssets = 0, 0
-    NTcount, VIcount, TFcount = 0, 0, 0
-    MeanNT, MeanVI, MeanTF = 0, 0, 0
-    WSNT, WSVI, WSTF = 0, 0, 0
+    LongAssets, ShortAssets = 0.0, 0.0
+    NTcount, VIcount, TFcount = 0.0, 0.0, 0.0
+    MeanNT, MeanVI, MeanTF = 0.0, 0.0, 0.0
+    WSNT, WSVI, WSTF = 0.0, 0.0, 0.0
     NTcash, NTlend, NTloan, NTnav, NTpnl, NTsignal, NTstocks, NTreturn = (
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
         float("nan"),
     )
     VIcash, VIlend, VIloan, VInav, VIpnl, VIsignal, VIstocks, VIreturn = (
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
         float("nan"),
     )
     TFcash, TFlend, TFloan, TFnav, TFpnl, TFsignal, TFstocks, TFreturn = (
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
         float("nan"),
     )
 
+    cdef cythonized.Individual ind
+    cdef double ind_zero
     for ind in pop:
 
-        if ind.asset > 0:
+        if ind.asset > 0.0:
             LongAssets += ind.asset
-        elif ind.asset < 0:
+        elif ind.asset < 0.0:
             ShortAssets += abs(ind.asset)
 
+        ind_zero = ind[0]
         if ind.type == "nt":
             NTcount += 1
-            MeanNT += ind[0]
+            MeanNT += ind_zero
             NTcash += ind.cash
             NTlend += ind.margin
             NTloan += ind.loan
@@ -145,14 +150,14 @@ def ResultsProcess(pop, spoils, price):
             if ind.wealth > 0:
                 WSNT += ind.wealth
             NTpnl += ind.profit
-            NTsignal += ind[0] * ind.process  # already included?
+            NTsignal += ind_zero * ind.process  # already included?
             NTstocks += price * ind.asset
             if ind.prev_wealth != 0:
                 NTreturn += ind.DailyReturn
 
         elif ind.type == "vi":
             VIcount += 1
-            MeanVI += ind[0]
+            MeanVI += ind_zero
             VIcash += ind.cash
             VIlend += ind.margin
             VIloan += ind.loan
@@ -167,7 +172,7 @@ def ResultsProcess(pop, spoils, price):
 
         elif ind.type == "tf":
             TFcount += 1
-            MeanTF += ind[0]
+            MeanTF += ind_zero
             TFcash += ind.cash
             TFlend += ind.margin
             TFloan += ind.loan
