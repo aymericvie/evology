@@ -34,8 +34,8 @@ jobs:
         run: python setup.py
       - name: change permission
         run: chmod +x tests/test_learning.py
-      - name: compile cythonized, data
-        run: cythonize -i evology/code/cythonized.pyx evology/code/data.pyx
+      - name: compile cythonized files
+        run: (cd evology/code && ./cythonize.sh)
       - name: run test learning
         run: python tests/test_learning.py
 
