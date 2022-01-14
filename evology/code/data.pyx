@@ -1,3 +1,5 @@
+#cython: boundscheck=False, wraparound=False, initializedcheck=False, cdivision=True
+
 #!/usr/bin/env python3
 import pandas as pd
 import numpy as np
@@ -103,7 +105,7 @@ def ResultsProcess(pop, spoils, price):
         0,
         0,
         0,
-        np.nan,
+        float("nan"),
     )
     VIcash, VIlend, VIloan, VInav, VIpnl, VIsignal, VIstocks, VIreturn = (
         0,
@@ -113,7 +115,7 @@ def ResultsProcess(pop, spoils, price):
         0,
         0,
         0,
-        np.nan,
+        float("nan"),
     )
     TFcash, TFlend, TFloan, TFnav, TFpnl, TFsignal, TFstocks, TFreturn = (
         0,
@@ -123,7 +125,7 @@ def ResultsProcess(pop, spoils, price):
         0,
         0,
         0,
-        np.nan,
+        float("nan"),
     )
 
     for ind in pop:
