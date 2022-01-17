@@ -94,7 +94,7 @@ def TrackWealth(wealth_tracker, pop, generation):
         wamp_list = []
         for i in range(len(pop)):
             if wealth_tracker[generation-252,i] != 0:
-                wamp_ind = 100 * abs((wealth_tracker[generation, i] - wealth_tracker[generation - 252, i]) / wealth_tracker[generation - 252, i])
+                wamp_ind = 100 * abs(((wealth_tracker[generation, i] - wealth_tracker[generation - 252, i]) / wealth_tracker[generation - 252, i]))
             else: wamp_ind = float("nan")
             wamp_list.append(wamp_ind)
         wamp = np.nanmean(wamp_list)
