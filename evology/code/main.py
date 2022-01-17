@@ -23,6 +23,7 @@ def main(
     )
     generation, CurrentPrice, dividend, spoils = 0, InitialPrice, INITIAL_DIVIDEND, 0
     results = np.zeros((MAX_GENERATIONS - data.Barr, data.variables))
+    wealth_tracker = np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
     price_history, dividend_history = [], []
 
     pop, asset_supply = cr.CreatePop(POPULATION_SIZE, space, wealth_coordinates)
@@ -99,8 +100,9 @@ def main(
         )
 
         # Record results
-        results, ReturnsNT, ReturnsVI, ReturnsTF = data.record_results(
+        results, wealth_tracker, ReturnsNT, ReturnsVI, ReturnsTF = data.record_results(
             results,
+            wealth_tracker,
             generation,
             CurrentPrice,
             mismatch,

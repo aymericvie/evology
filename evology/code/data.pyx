@@ -60,15 +60,6 @@ columns = [
     # Additional measures
     "MeanReturn",
     "Spoils",
-    # Run time data
-    "TimeA",
-    "TimeB",
-    "TimeC",
-    "TimeD",
-    "TimeE",
-    "TimeF",
-    "TimeG",
-    "TotalTime",
     # More measures
     "PerSpoils",
     "NT_DayReturns",
@@ -84,7 +75,8 @@ columns = [
     "TowardsTF",
     "FromNT",
     "FromVI",
-    "FromTF"
+    "FromTF",
+    "WealthAmp"
     # TODO: add monthly returns back just as exponentiation of daily (because we would not track funds for this)
 ]
 variables = len(columns)
@@ -92,6 +84,22 @@ variables = len(columns)
 """ We only record results after a year to avoid transient period biases. """
 Barr = max(SHIELD_DURATION, ShieldResults)
 
+def TrackWealth(wealth_tracker, pop, generation):
+    wamp = float("nan")
+
+    for i, ind in enumerate(pop):
+        wealth_tracker[generation,i] = ind.wealth 
+    
+    if generation - 252 >= 0: # We can start calculate the movements' annual amplitude.
+        wamp_list = []
+        for i in range(len(pop)):
+            if wealth_tracker[generation-252,i] != 0:
+                wamp_ind = 100 * abs((wealth_tracker[generation, i] - wealth_tracker[generation - 252, i]) / wealth_tracker[generation - 252, i])
+            else: wamp_ind = float("nan")
+            wamp_list.append(wamp_ind)
+        wamp = np.nanmean(wamp_list)
+        
+    return wealth_tracker, wamp
 
 def ResultsProcess(list pop, double spoils, double price):
 
@@ -280,6 +288,7 @@ def ResultsProcess(list pop, double spoils, double price):
 
 def record_results(
     results,
+    wealth_tracker,
     generation,
     current_price,
     mismatch,
@@ -316,6 +325,8 @@ def record_results(
         DailyTFReturns = FillList(GetDayReturn(pop, "tf"), len(pop))
         ReturnsTF[current, :] = DailyTFReturns
 
+        wealth_tracker, wamp = TrackWealth(wealth_tracker, pop, generation)
+
         """ Global variables """
         arr = [
             generation - Barr,
@@ -344,18 +355,6 @@ def record_results(
         """ Additional measures """
         arr += [ComputeAvgReturn(results, current, pop), spoils]
 
-        """ Run time data """
-        arr += [
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-        ]
-
         """ More measures """
         arr += [
             abs(100 * spoils / asset_supply),
@@ -368,9 +367,14 @@ def record_results(
         """ Measures of adaptation """
         arr += [CountSelected, CountMutated, CountCrossed]
         arr += StratFlow
+
+        """ Wealth measures """
+        arr += [wamp]
+
+        """ Record results """
         results[current, :] = arr
 
-    return results, ReturnsNT, ReturnsVI, ReturnsTF
+    return results, wealth_tracker, ReturnsNT, ReturnsVI, ReturnsTF
 
 
 def GetDayReturn(pop, strat):

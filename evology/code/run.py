@@ -97,3 +97,4 @@ df, pop = run(
 # df.to_csv("evology/data/run_data.csv")
 df.to_csv("evology/data/run_data.csv", compression = 'gzip')
 print(df)
+print(df['WealthAmp'])
