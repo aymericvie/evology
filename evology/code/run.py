@@ -15,7 +15,7 @@ print(wealth_coordinates)
 
 
 def run(
-    POPULATION_SIZE, learning_mode, TIME, wealth_coordinates, tqdm_display, reset_wealth
+    POPULATION_SIZE, learning_mode, TIME, wealth_coordinates, tqdm_display, reset_wealth, ReinvestmentRate
 ):
 
     if learning_mode == 0:
@@ -30,6 +30,7 @@ def run(
             wealth_coordinates,
             tqdm_display,
             reset_wealth,
+            ReinvestmentRate
         )
     if learning_mode == 10:
         df, pop = main(
@@ -43,6 +44,7 @@ def run(
             wealth_coordinates,
             tqdm_display,
             reset_wealth,
+            ReinvestmentRate
         )
     if learning_mode == 1:
         df, pop = main(
@@ -56,6 +58,7 @@ def run(
             wealth_coordinates,
             tqdm_display,
             reset_wealth,
+            ReinvestmentRate
         )
     if learning_mode == 2:
         df, pop = main(
@@ -69,6 +72,7 @@ def run(
             wealth_coordinates,
             tqdm_display,
             reset_wealth,
+            ReinvestmentRate
         )
     if learning_mode == 3:
         df, pop = main(
@@ -82,6 +86,7 @@ def run(
             wealth_coordinates,
             tqdm_display,
             reset_wealth,
+            ReinvestmentRate
         )
     if learning_mode == 4:
         df, pop = main(
@@ -95,12 +100,13 @@ def run(
             wealth_coordinates,
             tqdm_display,
             reset_wealth,
+            ReinvestmentRate
         )
     return df, pop
 
 
 df, pop = run(
-    100, 1, 10000, wealth_coordinates, tqdm_display=False, reset_wealth=False
+    100, 1, 10000, wealth_coordinates, tqdm_display=False, reset_wealth=False, ReinvestmentRate=0
 )
 # df.to_csv("evology/data/run_data.csv")
 df.to_csv("evology/data/run_data.csv")

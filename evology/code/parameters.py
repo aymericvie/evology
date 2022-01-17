@@ -32,7 +32,7 @@ RefLoan = 0
 RefCash = 3 * 50_000_000
 RefAssets = 3 * 500_000
 
-REINVESTMENT_RATE = 1
+REINVESTMENT_RATE = 0
 AnnualInterestRate = 0.01
 INTEREST_RATE = AnnualInterestRate / TRADING_DAYS
 EMA_HORIZON = 2 * TRADING_DAYS

@@ -13,6 +13,7 @@ cdef class Individual(list):
     cdef public double process
     cdef public double ema
     cdef public double profit
+    cdef public double investor_flow
     cdef public double prev_wealth
     cdef public double DailyReturn
     cdef public double leverage

@@ -13,6 +13,7 @@ def main(
     wealth_coordinates,
     tqdm_display,
     reset_wealth,
+    ReinvestmentRate
 ):
     # Initialise important variables and dataframe to store results
     ReturnsNT, ReturnsVI, ReturnsTF = (
@@ -92,10 +93,7 @@ def main(
         pop = update_wealth(
             pop,
             CurrentPrice,
-            generation,
-            wealth_coordinates,
-            POPULATION_SIZE,
-            reset_wealth,
+            ReinvestmentRate
         )
 
         # Record results

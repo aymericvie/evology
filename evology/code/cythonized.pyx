@@ -70,6 +70,7 @@ cdef class Individual(list):
         self.process = 1.0
         self.ema = 0.0
         self.profit = 0.0
+        self.investor_flow = 0.0
         self.prev_wealth = 0.0
         self.DailyReturn = 0.0
         # This needs to be overriden as it is not always 0!

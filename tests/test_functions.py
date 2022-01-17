@@ -18,7 +18,7 @@ def learning_runs(repetitions, time, agents):
         wealth_coordinates = np.random.dirichlet(np.ones(3),size=1)[0].tolist()
         print(wealth_coordinates)
         try: 
-            df,pop = main("between", 'scholl', solver, time, PROBA_SELECTION, agents, MUTATION_RATE, wealth_coordinates, tqdm_display=True, reset_wealth = False)
+            df,pop = main("between", 'scholl', solver, time, PROBA_SELECTION, agents, MUTATION_RATE, wealth_coordinates, tqdm_display=True, reset_wealth = False, ReinvestmentRate = 0)
 
         except Exception as e: 
             went_smoothly = False
@@ -40,7 +40,7 @@ def learning_runs_reset(repetitions, time, agents):
         wealth_coordinates = np.random.dirichlet(np.ones(3),size=1)[0].tolist()
         print(wealth_coordinates)
         try: 
-            df,pop = main("between", 'scholl', solver, time, PROBA_SELECTION, agents, MUTATION_RATE, wealth_coordinates, tqdm_display=True, reset_wealth = True)
+            df,pop = main("between", 'scholl', solver, time, PROBA_SELECTION, agents, MUTATION_RATE, wealth_coordinates, tqdm_display=True, reset_wealth = True, ReinvestmentRate = 0)
 
         except Exception as e: 
             went_smoothly = False
@@ -63,7 +63,7 @@ def nolearning_runs(repetitions, time, agents):
         try: 
             wealth_coordinates = np.random.dirichlet(np.ones(3),size=1)[0].tolist()
             print(wealth_coordinates)
-            df,pop = main("static", 'scholl', solver, time, 0, agents, 0, wealth_coordinates, tqdm_display=True, reset_wealth = False)
+            df,pop = main("static", 'scholl', solver, time, 0, agents, 0, wealth_coordinates, tqdm_display=True, reset_wealth = False, ReinvestmentRate = 0)
 
         except Exception as e: 
             went_smoothly = False
@@ -88,7 +88,7 @@ def nolearning_runs_reset(repetitions, time, agents):
         try: 
             wealth_coordinates = np.random.dirichlet(np.ones(3),size=1)[0].tolist()
             print(wealth_coordinates)
-            df,pop = main("static", 'scholl', solver, time, 0, agents, 0, wealth_coordinates, tqdm_display=True, reset_wealth = True)
+            df,pop = main("static", 'scholl', solver, time, 0, agents, 0, wealth_coordinates, tqdm_display=True, reset_wealth = True, ReinvestmentRate=0)
 
         except Exception as e: 
             went_smoothly = False
@@ -113,9 +113,9 @@ def det_pop_nolearning(repetitions, time, agents):
         np.random.seed(seed)
         wealth_coordinates = np.random.dirichlet(np.ones(3),size=1)[0].tolist()
         np.random.seed(seed)
-        df,pop = main("between", 'scholl', solver, time, 0, agents, 0, wealth_coordinates, tqdm_display=True, reset_wealth = False)
+        df,pop = main("between", 'scholl', solver, time, 0, agents, 0, wealth_coordinates, tqdm_display=True, reset_wealth = False,ReinvestmentRate=0)
         np.random.seed(seed)
-        df2,pop2 = main("between", 'scholl', solver, time, 0, agents, 0, wealth_coordinates, tqdm_display=True, reset_wealth = False)
+        df2,pop2 = main("between", 'scholl', solver, time, 0, agents, 0, wealth_coordinates, tqdm_display=True, reset_wealth = False,ReinvestmentRate=0)
 
         if df['Price'].iloc[-1] != df2['Price'].iloc[-1]:
             went_smoothly = False
@@ -138,9 +138,9 @@ def det_pop_learning(repetitions, time, agents):
         np.random.seed(seed)
         wealth_coordinates = np.random.dirichlet(np.ones(3),size=1)[0].tolist()
         np.random.seed(seed)
-        df,pop = main("between", 'scholl', solver, time, PROBA_SELECTION, agents, MUTATION_RATE, wealth_coordinates, tqdm_display=True, reset_wealth = False)
+        df,pop = main("between", 'scholl', solver, time, PROBA_SELECTION, agents, MUTATION_RATE, wealth_coordinates, tqdm_display=True, reset_wealth = False, ReinvestmentRate=0)
         np.random.seed(seed)
-        df2,pop2 = main("between", 'scholl', solver, time, PROBA_SELECTION, agents, MUTATION_RATE, wealth_coordinates, tqdm_display=True, reset_wealth = False)
+        df2,pop2 = main("between", 'scholl', solver, time, PROBA_SELECTION, agents, MUTATION_RATE, wealth_coordinates, tqdm_display=True, reset_wealth = False, ReinvestmentRate=0)
 
         if df['Price'].iloc[-1] != df2['Price'].iloc[-1]:
             went_smoothly = False

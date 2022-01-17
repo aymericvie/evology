@@ -161,11 +161,16 @@ def earnings(pop, prev_dividend):
     for ind in pop:
         div_asset = ind.asset * dividend  # Determine gain from dividends
         interest_cash = ind.cash * parameters.INTEREST_RATE  # Determine gain from interest
-        ind.cash += parameters.REINVESTMENT_RATE * (
-            div_asset + interest_cash
-        )  # Apply reinvestment
-
+        ind.cash += div_asset + interest_cash
     return pop, dividend, random_dividend
+
+def ApplyReinvestmentFlows(pop, ReinvestmentRate):
+    for ind in pop:
+        ind.investor_flow = ind.profit * ReinvestmentRate
+        ind.cash += ind.investor_flow
+        ind.wealth += ind.investor_flow
+    
+
 
 
 def pop_report(pop):
