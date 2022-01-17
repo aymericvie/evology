@@ -23,7 +23,6 @@ def run(
             "static",
             "scholl",
             "esl.true",
-            False,
             TIME,
             0,
             POPULATION_SIZE,
@@ -37,7 +36,6 @@ def run(
             "static",
             "scholl",
             "esl",
-            False,
             TIME,
             0,
             POPULATION_SIZE,
@@ -51,7 +49,6 @@ def run(
             "between",
             "scholl",
             "esl.true",
-            False,
             TIME,
             PROBA_SELECTION,
             POPULATION_SIZE,
@@ -65,7 +62,6 @@ def run(
             "between",
             "scholl",
             "esl.true",
-            False,
             TIME,
             PROBA_SELECTION,
             POPULATION_SIZE,
@@ -79,7 +75,6 @@ def run(
             "static",
             "extended",
             "esl",
-            False,
             TIME,
             0,
             POPULATION_SIZE,
@@ -93,7 +88,6 @@ def run(
             "between",
             "extended",
             "esl",
-            False,
             TIME,
             PROBA_SELECTION,
             POPULATION_SIZE,
@@ -106,7 +100,7 @@ def run(
 
 
 df, pop = run(
-    100, 10, 5000, wealth_coordinates, tqdm_display=False, reset_wealth=False
+    100, 0, 10000, wealth_coordinates, tqdm_display=False, reset_wealth=False
 )
 # df.to_csv("evology/data/run_data.csv")
 df.to_csv("evology/data/run_data.csv")
