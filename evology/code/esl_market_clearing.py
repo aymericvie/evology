@@ -65,18 +65,15 @@ def solve(my_excess_demand_functions: list, current_price):
     return prices
 
 
-def CircuitClearing(ed_functions, current_price, Circuit):
-
-    Circuit = True
+def CircuitClearing(ed_functions, current_price):
 
     ClearingPrice = float(solve(ed_functions, current_price)[0])
 
-    if Circuit == True:
-        LimitBelow = current_price * 0.5
-        LimitUp = current_price * 2
+    LimitBelow = current_price * 0.5
+    LimitUp = current_price * 2
 
-        if ClearingPrice > LimitUp:
-            ClearingPrice = LimitUp
-        if ClearingPrice < LimitBelow:
-            ClearingPrice = LimitBelow
+    if ClearingPrice > LimitUp:
+        ClearingPrice = LimitUp
+    if ClearingPrice < LimitBelow:
+        ClearingPrice = LimitBelow
     return ClearingPrice

@@ -320,3 +320,8 @@ def GetNumber(pop, strat):
         if ind.type == strat:
             TotalNumber += 1
     return TotalNumber
+
+def AgeUpdate(pop):
+    for ind in pop:
+        ind.age += 1
+    

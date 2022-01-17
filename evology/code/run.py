@@ -32,6 +32,20 @@ def run(
             tqdm_display,
             reset_wealth,
         )
+    if learning_mode == 10:
+        df, pop = main(
+            "static",
+            "scholl",
+            "esl",
+            False,
+            TIME,
+            0,
+            POPULATION_SIZE,
+            0,
+            wealth_coordinates,
+            tqdm_display,
+            reset_wealth,
+        )
     if learning_mode == 1:
         df, pop = main(
             "between",
@@ -92,10 +106,12 @@ def run(
 
 
 df, pop = run(
-    100, 0, 10000, wealth_coordinates, tqdm_display=False, reset_wealth=False
+    100, 10, 5000, wealth_coordinates, tqdm_display=False, reset_wealth=False
 )
 # df.to_csv("evology/data/run_data.csv")
 df.to_csv("evology/data/run_data.csv")
 print(df)
 print(df['WealthAmp'])
 print(df['WealthAmp'].mean())
+df.plot(x='Gen',y=['WealthAmp'])
+plt.show()

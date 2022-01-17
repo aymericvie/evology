@@ -18,3 +18,4 @@ cdef class Individual(list):
     cdef public double leverage
     cdef public object fitness
     cdef public object edf
+    cdef public object age

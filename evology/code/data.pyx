@@ -88,15 +88,16 @@ def TrackWealth(wealth_tracker, pop, generation):
     wamp = float("nan")
 
     for i, ind in enumerate(pop):
-        wealth_tracker[generation,i] = ind.wealth 
+            wealth_tracker[generation,i] = ind.wealth 
     
     if generation - 252 >= 0: # We can start calculate the movements' annual amplitude.
         wamp_list = []
-        for i in range(len(pop)):
-            if wealth_tracker[generation-252,i] != 0:
-                wamp_ind = 100 * abs(((wealth_tracker[generation, i] - wealth_tracker[generation - 252, i]) / wealth_tracker[generation - 252, i]))
-            else: wamp_ind = float("nan")
-            wamp_list.append(wamp_ind)
+        for ind in pop:
+            if wealth_tracker[generation-252,i] > 0 and ind.age >= 252:
+                wamp_ind = (wealth_tracker[generation, i] - wealth_tracker[generation - 252, i]) / wealth_tracker[generation - 252, i]
+            else: 
+                wamp_ind = float("nan")
+            wamp_list.append(100 * abs(wamp_ind))
         wamp = np.nanmean(wamp_list)
         
     return wealth_tracker, wamp

@@ -6,7 +6,6 @@ def main(
     mode,
     space,
     solver,
-    circuit,
     MAX_GENERATIONS,
     PROBA_SELECTION,
     POPULATION_SIZE,
@@ -68,7 +67,7 @@ def main(
 
         # Market clearing
         pop, mismatch, CurrentPrice, price_history, ToLiquidate = marketClearing(
-            pop, CurrentPrice, price_history, spoils, solver, circuit
+            pop, CurrentPrice, price_history, spoils, solver
         )
 
         # Market execution
@@ -89,7 +88,7 @@ def main(
             ToLiquidate,
         )
 
-        # Earnings, compute profits
+        # Earnings, compute profits, age
         pop = update_wealth(
             pop,
             CurrentPrice,

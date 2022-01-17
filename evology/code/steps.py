@@ -51,13 +51,13 @@ def decision_updates(pop, mode, price_history, dividend_history):
     return pop
 
 
-def marketClearing(pop, current_price, price_history, spoils, solver, circuit):
+def marketClearing(pop, current_price, price_history, spoils, solver):
     if solver == "esl":
         ed_functions, ToLiquidate = bs.agg_ed_esl(pop, spoils)
         current_price = float(esl_mc.solve(ed_functions, current_price)[0])
     elif solver == "esl.true":
         ed_functions, ToLiquidate = bs.agg_ed_esl(pop, spoils)
-        current_price = esl_mc.CircuitClearing(ed_functions, current_price, circuit)
+        current_price = esl_mc.CircuitClearing(ed_functions, current_price)
     elif solver == "newton":
         ed_functions, ToLiquidate = bs.agg_ed(pop, spoils)
         current_price = max(
@@ -106,4 +106,5 @@ def update_wealth(
     bs.calculate_wealth(pop, current_price)  # Compute agents' wealth
     bs.update_profit(pop)
     bs.ComputeReturn(pop)
+    bs.AgeUpdate(pop)
     return pop
