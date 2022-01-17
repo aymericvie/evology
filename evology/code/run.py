@@ -100,12 +100,13 @@ def run(
 
 
 df, pop = run(
-    100, 0, 10000, wealth_coordinates, tqdm_display=False, reset_wealth=False
+    100, 1, 10000, wealth_coordinates, tqdm_display=False, reset_wealth=False
 )
 # df.to_csv("evology/data/run_data.csv")
 df.to_csv("evology/data/run_data.csv")
 print(df)
 print(df['WealthAmp'])
 print(df['WealthAmp'].mean())
+print(stats.trim_mean(df['WealthAmp'], 0.1))
 df.plot(x='Gen',y=['WealthAmp'])
 plt.show()

@@ -84,6 +84,10 @@ variables = len(columns)
 """ We only record results after a year to avoid transient period biases. """
 Barr = max(SHIELD_DURATION, ShieldResults)
 
+#def moving_avg(x, n):
+#    cumsum = np.cumsum(np.insert(x, 0, 0)) 
+#    return (cumsum[n:] - cumsum[:-n]) / float(n)
+
 def TrackWealth(wealth_tracker, pop, generation):
     wamp = float("nan")
 
@@ -95,6 +99,11 @@ def TrackWealth(wealth_tracker, pop, generation):
         for ind in pop:
             if wealth_tracker[generation-252,i] > 0 and ind.age >= 252:
                 wamp_ind = (wealth_tracker[generation, i] - wealth_tracker[generation - 252, i]) / wealth_tracker[generation - 252, i]
+                #wealth_window = wealth_tracker[generation-252:generation, i]
+                #if len(wealth_window) != 252:
+                #    raise ValueError('Incorrect length for Wealth window ' + str(len(wealth_window)))
+                #avgw = sum(wealth_window) / 252
+                #wamp_ind = (wealth_tracker[generation, i] - avgw) / avgw
             else: 
                 wamp_ind = float("nan")
             wamp_list.append(100 * abs(wamp_ind))

@@ -6,6 +6,7 @@ import esl_market_clearing as esl_mc
 import market as mk
 import creation as cr
 from scipy import optimize
+from scipy import stats
 import numpy as np
 import data
 import pandas as pd
