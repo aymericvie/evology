@@ -11,11 +11,11 @@ import traceback
 
 solver = 'esl.true'
 
-np.random.seed(8)
-
 def learning_runs(repetitions, time, agents):
     went_smoothly = True
     i = 0
+    seed = random.randint(0,100)
+    np.random.seed(seed)
     while i < repetitions:
         wealth_coordinates = np.random.dirichlet(np.ones(3),size=1)[0].tolist()
         print(wealth_coordinates)
@@ -24,6 +24,7 @@ def learning_runs(repetitions, time, agents):
 
         except Exception as e: 
             went_smoothly = False
+            print('Seed ' + str(seed))
             print('Process ' + str(i) + ' encoutered an exception.')
             print(str(e))
             traceback.print_exc()
@@ -58,7 +59,8 @@ def test_learning_reset(repetitions, time, agents):
     assert went_smoothly == True
 
 def nolearning_runs(repetitions, time, agents):
-
+    seed = random.randint(0,100)
+    np.random.seed(seed)
     went_smoothly = True
     i = 0
     while i < repetitions:
@@ -69,6 +71,7 @@ def nolearning_runs(repetitions, time, agents):
 
         except Exception as e: 
             went_smoothly = False
+            print('Seed ' + str(seed))
             print('Process ' + str(i) + ' encoutered an exception.')
             print(str(e))
             traceback.print_exc()
