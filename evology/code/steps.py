@@ -94,7 +94,7 @@ def marketActivity(
     pop, volume, spoils = mk.execute_ed(
         pop, current_price, asset_supply, spoils, ToLiquidate
     )
-    pop, dividend, random_dividend = bs.earnings(pop, dividend)
+    pop, dividend, random_dividend = mk.earnings(pop, dividend)
     dividend_history.append(dividend)
     bs.update_margin(pop, current_price)
     bs.clear_debt(pop, current_price)

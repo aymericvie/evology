@@ -3,7 +3,6 @@ import math
 import warnings
 
 import parameters
-import market
 import cythonized
 from cythonized import calculate_edv
 
@@ -149,13 +148,7 @@ def count_pop_short_assets(pop):
     return count
 
 
-def earnings(pop, prev_dividend):
-    dividend, random_dividend = market.draw_dividend(prev_dividend)
-    for ind in pop:
-        div_asset = ind.asset * dividend  # Determine gain from dividends
-        interest_cash = ind.cash * parameters.INTEREST_RATE  # Determine gain from interest
-        ind.cash += div_asset + interest_cash
-    return pop, dividend, random_dividend
+
 
 def ApplyReinvestmentFlows(pop, ReinvestmentRate):
     for ind in pop:

@@ -1,6 +1,6 @@
 #cython: boundscheck=False, wraparound=False, initializedcheck=False, cdivision=True
 
-import balance_sheet as bs
+from balance_sheet import count_long_assets, count_pop_long_assets
 import numpy as np
 
 import parameters
@@ -36,6 +36,13 @@ def dividend_series(horizon):
         rdiv_history.append(rdiv)
     return history, rdiv_history
 
+def earnings(pop, prev_dividend):
+    dividend, random_dividend = draw_dividend(prev_dividend)
+    for ind in pop:
+        div_asset = ind.asset * dividend  # Determine gain from dividends
+        interest_cash = ind.cash * parameters.INTEREST_RATE  # Determine gain from interest
+        ind.cash += div_asset + interest_cash
+    return pop, dividend, random_dividend
 
 cdef determine_multiplier(list pop, double spoils, double ToLiquidate):
 
@@ -146,23 +153,23 @@ def execute_ed(list pop, double current_price, asset_supply, double spoils, doub
         spoils += ToLiquidate * multiplier_buy
         # Isn't that a minus sign here instead?
 
-    if abs(bs.count_long_assets(pop, spoils) - asset_supply) > 0.01 * asset_supply:
+    if abs(count_long_assets(pop, spoils) - asset_supply) > 0.01 * asset_supply:
         # If we violate the asset supply constraint by more than 1%, raise an error.
-        if abs(bs.count_long_assets(pop, spoils) - asset_supply) >= 0.01 * asset_supply:
+        if abs(count_long_assets(pop, spoils) - asset_supply) >= 0.01 * asset_supply:
             print("Spoils " + str(spoils))
             print("ToLiquidate " + str(ToLiquidate))
-            print("Pop ownership " + str(bs.count_pop_long_assets(pop)))
+            print("Pop ownership " + str(count_pop_long_assets(pop)))
             raise ValueError(
                 "Asset supply cst violated "
-                + str(bs.count_long_assets(pop, spoils))
+                + str(count_long_assets(pop, spoils))
                 + "/"
                 + str(asset_supply)
             )
 
     cdef double SupplyCorrectionRatio
     # If the violation of the asset supply is minor (less than 1%), correct the rounding error.
-    if abs(bs.count_long_assets(pop, spoils) - asset_supply) <= 0.01 * asset_supply:
-        SupplyCorrectionRatio = asset_supply / bs.count_long_assets(pop, spoils)
+    if abs(count_long_assets(pop, spoils) - asset_supply) <= 0.01 * asset_supply:
+        SupplyCorrectionRatio = asset_supply / count_long_assets(pop, spoils)
         spoils = spoils * SupplyCorrectionRatio
         for ind in pop:
             # previous = ind.asset
@@ -178,8 +185,8 @@ def execute_ed(list pop, double current_price, asset_supply, double spoils, doub
             #     warnings.warn('Previous asset = new ind.asset ' + str(previous) + '/' + str(ind.asset) + '/' + str(SupplyCorrectionRatio) + '/' + str(previous * SupplyCorrectionRatio))
 
         # If the resulting violation is still superior to 0.1% after rounding correction, raise an error.
-        if abs(bs.count_long_assets(pop, spoils) - asset_supply) > 0.001 * asset_supply:
-            print(abs(bs.count_long_assets(pop, spoils) - asset_supply))
+        if abs(count_long_assets(pop, spoils) - asset_supply) > 0.001 * asset_supply:
+            print(abs(count_long_assets(pop, spoils) - asset_supply))
             print("---")
             for ind in pop:
                 print(ind.asset)
@@ -187,7 +194,7 @@ def execute_ed(list pop, double current_price, asset_supply, double spoils, doub
                 "Rounding violation of asset supply was not succesfully corrected. "
                 + str(SupplyCorrectionRatio)
                 + "//"
-                + str(bs.count_long_assets(pop, spoils))
+                + str(count_long_assets(pop, spoils))
                 + "//"
                 + str(asset_supply)
                 + "//"
