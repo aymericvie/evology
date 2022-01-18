@@ -5,6 +5,7 @@ import warnings
 import parameters
 import market
 import cythonized
+from cythonized import calculate_edv
 
 
 def clear_debt(pop, price):
@@ -113,14 +114,6 @@ def DetermineEDF(pop):
         else:
             raise Exception(f"Unexpected ind type: {ind.type}")
     return pop
-
-
-def calculate_edv(pop, price):
-    total_edv = 0
-    for ind in pop:
-        ind.edv = ind.edf(ind, price)
-        total_edv += ind.edv
-    return pop, total_edv
 
 
 def count_pop_long_assets(pop):

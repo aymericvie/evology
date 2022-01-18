@@ -12,6 +12,19 @@ cdef double LeverageVI = parameters.LeverageVI
 cdef double LeverageNT = parameters.LeverageNT
 cdef double SCALE_TF = parameters.SCALE_TF
 
+cdef double edf(Individual ind, double price):
+    t = ind.type_as_int
+    if t == 0:
+        return (LeverageTF * ind.wealth / price) * tanh(SCALE_TF * ind.tsv) - ind.asset
+    elif t == 1:
+        zero = ind[0]
+        return (LeverageVI * ind.wealth / price) * tanh((5/zero) * (zero - price)) - ind.asset
+    elif t == 2:
+        zero = ind[0]
+        return (LeverageNT * ind.wealth / price) * tanh((5/(zero * ind.process)) * (zero * ind.process - price)) - ind.asset
+    else:
+        raise Exception(f"Unexpected ind type: {ind.type}")
+
 cpdef big_edf(
     Individual[:] pop,
     double price,
@@ -22,18 +35,20 @@ cpdef big_edf(
     cdef long t
     cdef double zero
     for ind in pop:
-        t = ind.type_as_int
-        if t == 0:
-            result += (LeverageTF * ind.wealth / price) * tanh(SCALE_TF * ind.tsv) - ind.asset
-        elif t == 1:
-            zero = ind[0]
-            result += (LeverageVI * ind.wealth / price) * tanh((5/zero) * (zero - price)) - ind.asset
-        elif t == 2:
-            zero = ind[0]
-            result += (LeverageNT * ind.wealth / price) * tanh((5/(zero * ind.process)) * (zero * ind.process - price)) - ind.asset
-        else:
-            raise Exception(f"Unexpected ind type: {ind.type}")
+        result += edf(ind, price)
     return result
+
+
+cpdef calculate_edv(
+    list pop,
+    double price,
+):
+    total_edv = 0.0
+    cdef Individual ind
+    for ind in pop:
+        ind.edv = edf(ind, price)
+        total_edv += ind.edv
+    return pop, total_edv
 
 
 def convert_ind_type_to_num(t):
