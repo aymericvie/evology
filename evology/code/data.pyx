@@ -8,6 +8,8 @@ import timeit
 
 from parameters import *
 cimport cythonized
+cdef float NAN
+NAN = float("nan")
 
 columns = [
     # Global variables
@@ -84,12 +86,10 @@ variables = len(columns)
 """ We only record results after a year to avoid transient period biases. """
 Barr = max(SHIELD_DURATION, ShieldResults)
 
-#def moving_avg(x, n):
-#    cumsum = np.cumsum(np.insert(x, 0, 0)) 
-#    return (cumsum[n:] - cumsum[:-n]) / float(n)
-
 def TrackWealth(wealth_tracker, pop, generation):
-    wamp = float("nan")
+    cdef double wamp = NAN
+    cdef int i = 0
+    cdef cythonized.Individual ind
 
     for i, ind in enumerate(pop):
             wealth_tracker[generation,i] = ind.wealth 
