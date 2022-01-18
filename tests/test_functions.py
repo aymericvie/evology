@@ -11,6 +11,8 @@ import traceback
 
 solver = 'esl.true'
 
+np.random.seed(8)
+
 def learning_runs(repetitions, time, agents):
     went_smoothly = True
     i = 0
