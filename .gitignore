@@ -4,6 +4,7 @@
 *.lprof
 *.py.lprof
 *.o
+*.png
 .ipynb_checkpoints
 */.ipynb_checkpoints/*
 evology/data/run_data.csv
