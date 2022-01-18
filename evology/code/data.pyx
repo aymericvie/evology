@@ -96,14 +96,10 @@ def TrackWealth(wealth_tracker, pop, generation):
     
     if generation - 252 >= 0: # We can start calculate the movements' annual amplitude.
         wamp_list = []
+        old_wealth = wealth_tracker[generation-252,i]
         for ind in pop:
-            if wealth_tracker[generation-252,i] > 0 and ind.age >= 252:
-                wamp_ind = (wealth_tracker[generation, i] - wealth_tracker[generation - 252, i]) / wealth_tracker[generation - 252, i]
-                #wealth_window = wealth_tracker[generation-252:generation, i]
-                #if len(wealth_window) != 252:
-                #    raise ValueError('Incorrect length for Wealth window ' + str(len(wealth_window)))
-                #avgw = sum(wealth_window) / 252
-                #wamp_ind = (wealth_tracker[generation, i] - avgw) / avgw
+            if old_wealth > 0 and ind.age >= 252:
+                wamp_ind = (wealth_tracker[generation, i] - old_wealth) / old_wealth
             else: 
                 wamp_ind = float("nan")
             wamp_list.append(100 * abs(wamp_ind))
