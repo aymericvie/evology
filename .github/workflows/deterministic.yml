@@ -37,6 +37,6 @@ jobs:
       - name: compile cythonized files
         run: (cd evology/code && ./cythonize.sh)
       - name: run test deterministic
-        run: python tests/test_deterministic.py
+        run: python3 tests/test_deterministic.py
 
 
