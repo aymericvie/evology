@@ -122,9 +122,13 @@ def det_pop_nolearning(repetitions, time, agents):
         df2,pop2 = main("between", 'scholl', solver, time, 0, agents, 0, wealth_coordinates, tqdm_display=True, reset_wealth = False,ReinvestmentRate=0)
 
         if df['Price'].iloc[-1] != df2['Price'].iloc[-1]:
+            print(seed)
+            print(wealth_coordinates)
             went_smoothly = False
             print('Price trajectory is not reproducible.')
         if pop[-1] != pop2[-1]:
+            print(seed)
+            print(wealth_coordinates)
             went_smoothly = False
             print('Final population is not reproducible.')
     return went_smoothly
@@ -147,9 +151,13 @@ def det_pop_learning(repetitions, time, agents):
         df2,pop2 = main("between", 'scholl', solver, time, PROBA_SELECTION, agents, MUTATION_RATE, wealth_coordinates, tqdm_display=True, reset_wealth = False, ReinvestmentRate=0)
 
         if df['Price'].iloc[-1] != df2['Price'].iloc[-1]:
+            print(seed)
+            print(wealth_coordinates)
             went_smoothly = False
             print('Price trajectory is not reproducible.')
         if pop[-1] != pop2[-1]:
+            print(seed)
+            print(wealth_coordinates)
             went_smoothly = False
             print('Final population is not reproducible.')
     return went_smoothly
