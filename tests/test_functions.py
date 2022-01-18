@@ -14,14 +14,13 @@ solver = 'esl.true'
 def learning_runs(repetitions, time, agents):
     went_smoothly = True
     i = 0
-    seed = random.randint(0,100)
-    np.random.seed(seed)
     while i < repetitions:
         wealth_coordinates = np.random.dirichlet(np.ones(3),size=1)[0].tolist()
         print(wealth_coordinates)
         try: 
+            seed = random.randint(0,100)
+            np.random.seed(seed)
             df,pop = main("between", 'scholl', solver, time, PROBA_SELECTION, agents, MUTATION_RATE, wealth_coordinates, tqdm_display=True, reset_wealth = False, ReinvestmentRate = 0)
-
         except Exception as e: 
             went_smoothly = False
             print('Seed ' + str(seed))
@@ -59,12 +58,12 @@ def test_learning_reset(repetitions, time, agents):
     assert went_smoothly == True
 
 def nolearning_runs(repetitions, time, agents):
-    seed = random.randint(0,100)
-    np.random.seed(seed)
     went_smoothly = True
     i = 0
     while i < repetitions:
         try: 
+            seed = random.randint(0,100)
+            np.random.seed(seed)
             wealth_coordinates = np.random.dirichlet(np.ones(3),size=1)[0].tolist()
             print(wealth_coordinates)
             df,pop = main("static", 'scholl', solver, time, 0, agents, 0, wealth_coordinates, tqdm_display=True, reset_wealth = False, ReinvestmentRate = 0)
