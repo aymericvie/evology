@@ -1,7 +1,11 @@
+#cython: boundscheck=False, wraparound=False, initializedcheck=False, cdivision=True
+
 import balance_sheet as bs
 import numpy as np
 
 import parameters
+
+cimport cythonized
 
 
 def draw_dividend(dividend):
@@ -33,11 +37,12 @@ def dividend_series(horizon):
     return history, rdiv_history
 
 
-def determine_multiplier(pop, spoils, ToLiquidate):
+cdef determine_multiplier(list pop, double spoils, double ToLiquidate):
 
-    total_buy = 0
-    total_sell = 0
+    total_buy = 0.0
+    total_sell = 0.0
 
+    cdef cythonized.Individual ind
     for ind in pop:
         if ind.edv > 0:
             total_buy += ind.edv
@@ -64,9 +69,11 @@ def determine_multiplier(pop, spoils, ToLiquidate):
             + str(ToLiquidate)
         )
 
+    # Default values
+    multiplier_buy = 0
+    multiplier_sell = 0
     if order_ratio == 0:  # either noone buys, or no one sells
-        multiplier_buy = 0
-        multiplier_sell = 0
+        pass
         # No orders will be executed (no supply or no demand)
     elif order_ratio < 1:
         multiplier_buy = 1
@@ -80,13 +87,11 @@ def determine_multiplier(pop, spoils, ToLiquidate):
         multiplier_buy = 1 / order_ratio
         multiplier_sell = 1
         # Buying will be restricted according to supply
+    else:
+        raise ValueError("order_ratio has a strange value: " + str(order_ratio))
 
-    if multiplier_buy == None:
-        raise ValueError("Multiplier Buy is not defined")
     if multiplier_buy < 0:
         raise ValueError("Multiplier Buy is negative")
-    if multiplier_sell == None:
-        raise ValueError("Multiplier Sell is not defined")
     if multiplier_sell < 0:
         raise ValueError("Multiplier Sell is negative")
 
@@ -103,13 +108,17 @@ def determine_multiplier(pop, spoils, ToLiquidate):
     return multiplier_buy, multiplier_sell
 
 
-def execute_ed(pop, current_price, asset_supply, spoils, ToLiquidate):
+def execute_ed(list pop, double current_price, asset_supply, double spoils, double ToLiquidate):
     # Determine adjustements to edv if we have some mismatch
+    cdef double multiplier_buy
+    cdef double multiplier_sell
     multiplier_buy, multiplier_sell = determine_multiplier(pop, spoils, ToLiquidate)
-    volume = 0
+    volume = 0.0
 
+    cdef cythonized.Individual ind
+    cdef double amount
     for ind in pop:
-        amount = 0
+        amount = 0.0
 
         if ind.edv > 0:
             amount = ind.edv * multiplier_buy
@@ -150,7 +159,8 @@ def execute_ed(pop, current_price, asset_supply, spoils, ToLiquidate):
                 + str(asset_supply)
             )
 
-        # If the violation of the asset supply is minor (less than 1%), correct the rounding error.
+    cdef double SupplyCorrectionRatio
+    # If the violation of the asset supply is minor (less than 1%), correct the rounding error.
     if abs(bs.count_long_assets(pop, spoils) - asset_supply) <= 0.01 * asset_supply:
         SupplyCorrectionRatio = asset_supply / bs.count_long_assets(pop, spoils)
         spoils = spoils * SupplyCorrectionRatio
