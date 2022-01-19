@@ -2,9 +2,9 @@
 from main import *
 from parameters import *
 
-np.random.seed(3)
+np.random.seed(8)
 wealth_coordinates = [1 / 3, 1 / 3, 1 / 3]
-wealth_coordinates = [0.026841462875044363, 0.4807191977989481, 0.4924393393260076]
+# wealth_coordinates = [0.026841462875044363, 0.4807191977989481, 0.4924393393260076]
 # np.random.seed()
 # wealth_coordinates = np.random.dirichlet(np.ones(3), size=1)[0].tolist()
 print(wealth_coordinates)
