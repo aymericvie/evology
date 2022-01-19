@@ -94,11 +94,11 @@ def TrackWealth(wealth_tracker, pop, generation):
     for i, ind in enumerate(pop):
             wealth_tracker[generation,i] = ind.wealth 
     
-    if generation - 252 >= 0: # We can start calculate the movements' annual amplitude.
+    if generation - 21 >= 0: # We can start calculate the movements' monthly amplitude.
         wamp_list = []
-        old_wealth = wealth_tracker[generation-252,i]
+        old_wealth = wealth_tracker[generation-21,i]
         for ind in pop:
-            if old_wealth > 0 and ind.age >= 252:
+            if old_wealth > 0 and ind.age >= 21:
                 wamp_ind = (wealth_tracker[generation, i] - old_wealth) / old_wealth
             else: 
                 wamp_ind = float("nan")
