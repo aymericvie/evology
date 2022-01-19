@@ -41,6 +41,21 @@ def run(
             reset_wealth,
             ReinvestmentRate
         )
+
+    if learning_mode == 100:
+        df, pop = main(
+            "static",
+            "scholl",
+            "newton",
+            TIME,
+            0,
+            POPULATION_SIZE,
+            0,
+            wealth_coordinates,
+            tqdm_display,
+            reset_wealth,
+            ReinvestmentRate
+        )
     if learning_mode == 1:
         df, pop = main(
             "between",
