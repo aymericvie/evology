@@ -17,8 +17,7 @@ Coordinates = [1/3, 1/3, 1/3]
 seed = 8
 reps = 50
 
-Config = [Coordinates, PopulationSize, TimeHorizon, SelectionRate, MutationRate, ReinvestmentRate]
-
+# Config = [Coordinates, PopulationSize, TimeHorizon, SelectionRate, MutationRate, ReinvestmentRate]
 Config1 = [Coordinates, PopulationSize, TimeHorizon, 0, 0, 0] # Static
 Config2 = [Coordinates, PopulationSize, TimeHorizon, 0, 1/252, 1/252] # Learning 1Y
 Config3 = [Coordinates, PopulationSize, TimeHorizon, 0, 1/252, 0] # Imitation-only 1Y
@@ -26,12 +25,8 @@ Config4 = [Coordinates, PopulationSize, TimeHorizon, 0, 0, 1/252] # Mutation-onl
 Config5 = [Coordinates, PopulationSize, TimeHorizon, 0, 1/(252*2), 1/(252*2)] # Learning 2Y
 Config6 = [Coordinates, PopulationSize, TimeHorizon, 0, 1/(252*3), 1/(252*3)] # Learning 3Y
 
-# TODO: rewrite main without static/between
-# TODO: reorderr arguments inside main, it's a mess
-
 def run(Config):
-    df, pop = df, pop = main(
-            "static", # to delete
+    df, pop = evology(
             "scholl", 
             "esl",
             Config[0],
@@ -47,13 +42,8 @@ def run(Config):
             Config[5],
             # ReinvestmentRate
             Config[6],
-            0, # relocate
-            PopulationSize, # relocate
-            0, # relocate
-            Coordinates, # relocate
             False,
             False,
-            ReinvestmentRate # relocate
         )
 
 def SimulateData(Config, reps, seed):

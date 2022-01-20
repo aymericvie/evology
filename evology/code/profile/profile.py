@@ -8,19 +8,17 @@ import numpy as np
 
 
 @profile
-
 def main(
-    mode,
     space,
     solver,
+    wealth_coordinates,
+    POPULATION_SIZE,
     MAX_GENERATIONS,
     PROBA_SELECTION,
-    POPULATION_SIZE,
     MUTATION_RATE,
-    wealth_coordinates,
+    ReinvestmentRate,
     tqdm_display,
-    reset_wealth,
-    ReinvestmentRate
+    reset_wealth
 ):
     # Initialise important variables and dataframe to store results
     ReturnsNT, ReturnsVI, ReturnsTF = (
@@ -47,18 +45,12 @@ def main(
         # Hypermutation
         pop, replacements, spoils = ga.hypermutate(
             pop,
-            mode,
-            asset_supply,
-            CurrentPrice,
-            generation,
             spoils,
-            wealth_coordinates,
         )  # Replace insolvent agents
 
         # Strategy evolution
         pop, CountSelected, CountMutated, CountCrossed, StratFlow = ga_evolution(
             pop,
-            mode,
             space,
             generation,
             wealth_coordinates,
@@ -71,7 +63,7 @@ def main(
         bs.UpdatePrevWealth(pop)
 
         # Market decisions (tsv, proc, edf)
-        pop = decision_updates(pop, mode, price_history, dividend_history)
+        pop = decision_updates(pop, price_history, dividend_history)
 
         # Market clearing
         pop, mismatch, CurrentPrice, price_history, ToLiquidate = marketClearing(
@@ -134,17 +126,16 @@ np.random.seed(8)
 wealth_coordinates = [1 / 3, 1 / 3, 1 / 3]
 TIME, POPSIZE = 10000, 100
 df, pop = main(
-    "between",
     "scholl",
     "esl.true",
+    wealth_coordinates,
+    POPSIZE,
     TIME,
     PROBA_SELECTION,
-    POPSIZE,
     MUTATION_RATE,
-    wealth_coordinates,
+    0,
     False,
     False,
-    0
 )
 print(df)
 
