@@ -231,16 +231,18 @@ def strategy_evolution(
         # Mutation
         if MUTATION_RATE > 0:
             types = ["nt", "vi", "tf"]
-            cum_proba = [0, 0, 0]
-            cum_proba[0] = wealth_coordinates[0]
-            i = 1
-            while i < len(wealth_coordinates):
-                cum_proba[i] = cum_proba[i - 1] + wealth_coordinates[i]
-                if cum_proba[i] > 1.0001:
-                    raise ValueError("Cum proba > 1 " + str(cum_proba))
-                i += 1
-            if sum(cum_proba) == 0:
-                raise ValueError("Sum cumproba = 0")
+
+            # cum_proba = [0, 0, 0]
+            # cum_proba[0] = wealth_coordinates[0]
+            # i = 1
+            # while i < len(wealth_coordinates):
+            #     cum_proba[i] = cum_proba[i - 1] + wealth_coordinates[i]
+            #     if cum_proba[i] > 1.0001:
+            #         raise ValueError("Cum proba > 1 " + str(cum_proba))
+            #     i += 1
+            # if sum(cum_proba) == 0:
+            #     raise ValueError("Sum cumproba = 0")
+            cum_proba = np.cumsum(wealth_coordinates)
 
             MutationRd = np.random.rand(len(pop))
             for i in range(len(pop)):
