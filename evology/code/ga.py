@@ -23,12 +23,17 @@ def hypermutate(
             spoils += pop[i].asset
             del pop[i]  # We suppress the fund.
 
-            # Determine who is the wealthiest fund
-            MaxWealth = 0
-            MaxFund = 999
-            for j in range(len(pop)):
-                if pop[j].wealth >= MaxWealth:
-                    MaxFund = j
+            wealth_list = []
+            for ind in pop:
+                wealth_list.append(ind.wealth)
+            MaxFund = wealth_list.index(max(wealth_list))
+
+            # # Determine who is the wealthiest fund
+            # MaxWealth = 0
+            # MaxFund = 999
+            # for j in range(len(pop)):
+            #     if pop[j].wealth >= MaxWealth:
+            #         MaxFund = j
             if MaxFund > len(pop):
                 raise ValueError(
                     "MaxFund is higher than len pop "
@@ -70,8 +75,9 @@ def hypermutate(
                 half.margin = pop[MaxFund].margin / 2
                 half.profit = pop[MaxFund].profit / 2
 
-                # Add the half copy to the population
+                # Add the two half copy to the population
                 pop.append(half)
+            # pop.append(half)
 
             # We have appended the two half-copies of j. We remove j.
             del pop[MaxFund]
