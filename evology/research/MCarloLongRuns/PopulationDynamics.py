@@ -9,17 +9,18 @@ import pandas as pd
 import sys
 if sys.platform == 'darwin':
     sys.path.append('/Users/aymericvie/Documents/GitHub/evology/evology/code')
+    # Need to be executed from cd to MCarloLongRuns
 if sys.platform == 'linux':
     sys.path.append('/home/vie/Documents/GitHub/evology/evology/code')
 from main import main as evology
 import multiprocessing as mp
 
 # Fixed parameters 
-TimeHorizon = 100 # 252 * 100 + 3 * 21 # 100 Years + 3 months to compensate early period without recording data.
+TimeHorizon = 252 * 100 + 3 * 21 # 100 Years + 3 months to compensate early period without recording data.
 PopulationSize = 100
 Coordinates = [1/3, 1/3, 1/3]
 seed = 8
-reps = 1
+reps = 50
 
 Config1 = [Coordinates, PopulationSize, TimeHorizon, 0, 0, 0] # Static
 Config2 = [Coordinates, PopulationSize, TimeHorizon, 0, 1/252, 1/252] # Learning 1Y
