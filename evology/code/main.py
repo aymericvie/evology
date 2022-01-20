@@ -1,19 +1,18 @@
 #!/usr/bin/env python3
 from steps import *
 
-
 def main(
     mode,
     space,
     solver,
+    wealth_coordinates,
+    POPULATION_SIZE,
     MAX_GENERATIONS,
     PROBA_SELECTION,
-    POPULATION_SIZE,
     MUTATION_RATE,
-    wealth_coordinates,
+    ReinvestmentRate,
     tqdm_display,
-    reset_wealth,
-    ReinvestmentRate
+    reset_wealth
 ):
     # Initialise important variables and dataframe to store results
     ReturnsNT, ReturnsVI, ReturnsTF = (

@@ -18,100 +18,32 @@ def run(
             "static",
             "scholl",
             "esl.true",
+            wealth_coordinates,
+            POPULATION_SIZE,
             TIME,
             0,
-            POPULATION_SIZE,
             0,
-            wealth_coordinates,
+            ReinvestmentRate,
             tqdm_display,
-            reset_wealth,
-            ReinvestmentRate
-        )
-    if learning_mode == 10:
-        df, pop = main(
-            "static",
-            "scholl",
-            "esl",
-            TIME,
-            0,
-            POPULATION_SIZE,
-            0,
-            wealth_coordinates,
-            tqdm_display,
-            reset_wealth,
-            ReinvestmentRate
+            reset_wealth
         )
 
-    if learning_mode == 100:
-        df, pop = main(
-            "static",
-            "scholl",
-            "newton",
-            TIME,
-            0,
-            POPULATION_SIZE,
-            0,
-            wealth_coordinates,
-            tqdm_display,
-            reset_wealth,
-            ReinvestmentRate
-        )
     if learning_mode == 1:
         df, pop = main(
             "between",
             "scholl",
             "esl.true",
+            wealth_coordinates,
+            POPULATION_SIZE,
             TIME,
             PROBA_SELECTION,
-            POPULATION_SIZE,
             MUTATION_RATE,
-            wealth_coordinates,
+            ReinvestmentRate,
             tqdm_display,
             reset_wealth,
-            ReinvestmentRate
         )
-    if learning_mode == 2:
-        df, pop = main(
-            "between",
-            "scholl",
-            "esl.true",
-            TIME,
-            PROBA_SELECTION,
-            POPULATION_SIZE,
-            0,
-            wealth_coordinates,
-            tqdm_display,
-            reset_wealth,
-            ReinvestmentRate
-        )
-    if learning_mode == 3:
-        df, pop = main(
-            "static",
-            "extended",
-            "esl",
-            TIME,
-            0,
-            POPULATION_SIZE,
-            0,
-            wealth_coordinates,
-            tqdm_display,
-            reset_wealth,
-            ReinvestmentRate
-        )
-    if learning_mode == 4:
-        df, pop = main(
-            "between",
-            "extended",
-            "esl",
-            TIME,
-            PROBA_SELECTION,
-            POPULATION_SIZE,
-            MUTATION_RATE,
-            wealth_coordinates,
-            tqdm_display,
-            reset_wealth,
-            ReinvestmentRate
-        )
+
+
     return df, pop
 
 
