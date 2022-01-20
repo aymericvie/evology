@@ -11,73 +11,11 @@ import warnings
 
 import cythonized
 
-"""
-def adjust_mode(pop, mode):
-    if mode == "between":
-        for ind in pop:
-            if ind.type == "tf":
-                ind[0] = 2
-            if ind.type == "vi":
-                ind[0] = 100
-            if ind.type == "nt":
-                ind[0] = 100
-    return pop"""
-
 
 def hypermutate(
-    pop, mode, asset_supply, current_price, generation, spoils, wealth_coordinates
+    pop, spoils
 ):
-
     round_replacements = 0
-    """ 
-    hyperm = False
-
-    if hyperm == True:
-        for i in range(0, len(pop)):
-            
-            if pop[i].wealth < 0:
-                warnings.warn("Replacing // Gen " + str(generation) + " // Type: " + str(pop[i].type) + ", C: " + str(int(pop[i].cash)) + ", S+: " + str(int(pop[i].asset)) + ", L: " + str(int(pop[i].loan)) + ", M: " + str(int(pop[i].margin)) + ", W: " + str(int(pop[i].wealth)))
-                spoils += pop[i].asset
-                pop[i] = toolbox.gen_rd_ind(wealth_coordinates)
-                pop[i].cash = 50_000_000
-                pop[i].wealth = pop[i].cash + pop[i].asset * current_price - pop[i].loan
-                pop[i].MonWealth = np.zeros((1, 21))[0]
-                pop[i].prev_wealth = 0
-                del pop[i].fitness.values
-                round_replacements += 1
-        
-        if mode == "between":
-            pop = adjust_mode(pop, mode)
-
-    if hyperm == False:
-        replaced = False
-        ReplacedCount = 0
-        for ind in pop:
-            if ind.wealth < 0:
-                ReplacedCount += 1
-                replaced = True
-                ind.loan -= 2 * abs(ind.wealth)
-                ind.wealth = ind.cash + ind.asset * current_price - ind.loan
-                    
-        if replaced == True:
-            print('Bailed out today (' + str(ReplacedCount) + ').')
-
-    """
-
-    """ 
-    Bailing out: helps funds who performed poorly, distrubs wealth shares, returns and the nature of interactions 
-        (losing could lead to winning the bailout money!)
-    Simple replacement: leads to inject new wealth in the system, disturb wealth shares as it weakens the 
-        relative wealth of surviving funds
-    Simple removal: no bias on wealth shares or the quantity of wealth in circulation ; but it may lead in situations
-        where the population size shreds up to 1, or situations of hyperconcentration of wealth that are neither realistic
-        not desirable for the robustness of results. 
-
-    Our suggestion: simple removal of the insolvent fund AND the wealthiest fund splits in half. IN this way, we have no 
-        bias on the wealth shares, the returns of the strategy. In addition, it adds a security against hyperconcentration of wealth.
-        Splitting a fund in half is neutral on market clearing and wealth shares in the population, and maintains its size constant.
-    WARNING: every attribute needs to be divided by half, including the previous wealth.   
-    """
     InitialPopSize = len(pop)
     i = 0
     while i < len(pop):
@@ -244,7 +182,7 @@ def selRandom(pop, k):
 
 
 def strategy_evolution(
-    mode, space, pop, PROBA_SELECTION, MUTATION_RATE, wealth_coordinates, generation
+    space, pop, PROBA_SELECTION, MUTATION_RATE, wealth_coordinates, generation
 ):
 
     CountSelected = 0
@@ -257,19 +195,14 @@ def strategy_evolution(
     FromVI = 0
     FromTF = 0
 
-    if mode == "between":
+    if space == "scholl":
+        # Individuals can select & imitate, and switch
 
-        if space == "scholl":
-            # Individuals can select & imitate, and switch
-
-            # Selection
+        # Selection
+        if PROBA_SELECTION > 0:
             for i in range(len(pop)):
                 if np.random.random() < PROBA_SELECTION:  # Social learning
                     # Create the tournament and get the winner
-                    # aspirants = selRandom(pop, TOURNAMENT_SIZE-1)
-                    # print(aspirants)
-                    # aspirant = np.append(aspirants,pop[i])
-                    # print(aspirants)
                     winner = max(pop, key=attrgetter("fitness"))
 
                     # Imitate the winner's type and strategy
@@ -296,7 +229,8 @@ def strategy_evolution(
                     pop[i][0] = winner[0]
                     pop[i].leverage = winner.leverage
 
-            # Mutation
+        # Mutation
+        if MUTATION_RATE > 0:
             types = ["nt", "vi", "tf"]
             cum_proba = [0, 0, 0]
             cum_proba[0] = wealth_coordinates[0]
@@ -325,10 +259,12 @@ def strategy_evolution(
                     elif pop[i].type == "nt" or pop[i].type == "vi":
                         pop[i][0] = 100
 
-        if space == "extended":
+    if space == "extended":
+        if MUTATION_RATE > 0 or PROBA_SELECTION > 0:
             raise ValueError(
                 "Strategy evolution for extended space is not yet implemented."
             )
+
     StratFlow = [TowardsNT, TowardsVI, TowardsTF, FromNT, FromVI, FromTF]
 
     return pop, CountSelected, CountMutated, CountCrossed, StratFlow

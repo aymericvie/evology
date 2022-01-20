@@ -15,7 +15,6 @@ def run(
 
     if learning_mode == 0:
         df, pop = main(
-            "static",
             "scholl",
             "esl.true",
             wealth_coordinates,
@@ -30,7 +29,6 @@ def run(
 
     if learning_mode == 1:
         df, pop = main(
-            "between",
             "scholl",
             "esl.true",
             wealth_coordinates,
@@ -43,12 +41,13 @@ def run(
             reset_wealth,
         )
 
+    # TODO; add extended ecology for run, or maybe alternative solvers
 
     return df, pop
 
 
 df, pop = run(
-    100, 0, 10000, wealth_coordinates, tqdm_display=False, reset_wealth=False, ReinvestmentRate= 0
+    100, 1, 10000, wealth_coordinates, tqdm_display=False, reset_wealth=False, ReinvestmentRate= 0
 )
 
 df.to_csv("evology/data/run_data.csv")

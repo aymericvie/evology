@@ -44,7 +44,7 @@ def calculate_wealth(pop, current_price):
         ind.wealth = ind.cash + ind.asset * current_price - ind.loan
 
 
-def DetermineTsvProc(mode, pop, price_history):
+def DetermineTsvProc(pop, price_history):
     # Pre-generate the random number once for all, to reduce Numpy calling
     # overhead.
     randoms = np.random.normal(0, 1, len(pop))

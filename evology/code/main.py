@@ -2,7 +2,6 @@
 from steps import *
 
 def main(
-    mode,
     space,
     solver,
     wealth_coordinates,
@@ -39,18 +38,12 @@ def main(
         # Hypermutation
         pop, replacements, spoils = ga.hypermutate(
             pop,
-            mode,
-            asset_supply,
-            CurrentPrice,
-            generation,
             spoils,
-            wealth_coordinates,
         )  # Replace insolvent agents
 
         # Strategy evolution
         pop, CountSelected, CountMutated, CountCrossed, StratFlow = ga_evolution(
             pop,
-            mode,
             space,
             generation,
             wealth_coordinates,
@@ -63,7 +56,7 @@ def main(
         bs.UpdatePrevWealth(pop)
 
         # Market decisions (tsv, proc, edf)
-        pop = decision_updates(pop, mode, price_history, dividend_history)
+        pop = decision_updates(pop, price_history, dividend_history)
 
         # Market clearing
         pop, mismatch, CurrentPrice, price_history, ToLiquidate = marketClearing(

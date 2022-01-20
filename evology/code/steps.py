@@ -20,7 +20,7 @@ import matplotlib.pyplot as plt
 
 
 def ga_evolution(
-    pop, mode, space, generation, wealth_coordinates, PROBA_SELECTION, MUTATION_RATE
+    pop, space, generation, wealth_coordinates, PROBA_SELECTION, MUTATION_RATE
 ):
     if generation > SHIELD_DURATION:
         ga.compute_fitness(pop)
@@ -31,7 +31,6 @@ def ga_evolution(
             CountCrossed,
             StratFlow,
         ) = ga.strategy_evolution(
-            mode,
             space,
             pop,
             PROBA_SELECTION,
@@ -45,8 +44,8 @@ def ga_evolution(
     return pop, CountSelected, CountMutated, CountCrossed, StratFlow
 
 
-def decision_updates(pop, mode, price_history, dividend_history):
-    bs.DetermineTsvProc(mode, pop, price_history)
+def decision_updates(pop, price_history, dividend_history):
+    bs.DetermineTsvProc(pop, price_history)
     bs.UpdateFval(pop, dividend_history)
     bs.DetermineEDF(pop)
     return pop
