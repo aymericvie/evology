@@ -36,7 +36,6 @@ def ga_evolution(
             PROBA_SELECTION,
             MUTATION_RATE,
             wealth_coordinates,
-            generation,
         )
     else:
         CountSelected, CountMutated, CountCrossed = 0, 0, 0

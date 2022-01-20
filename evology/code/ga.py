@@ -8,9 +8,7 @@ from creation import *
 import balance_sheet as bs
 import timeit
 import warnings
-
 import cythonized
-
 
 def hypermutate(
     pop, spoils
@@ -182,7 +180,7 @@ def selRandom(pop, k):
 
 
 def strategy_evolution(
-    space, pop, PROBA_SELECTION, MUTATION_RATE, wealth_coordinates, generation
+    space, pop, PROBA_SELECTION, MUTATION_RATE, wealth_coordinates
 ):
 
     CountSelected = 0
@@ -200,8 +198,9 @@ def strategy_evolution(
 
         # Selection
         if PROBA_SELECTION > 0:
+            SelectionRd = np.random.rand(len(pop))
             for i in range(len(pop)):
-                if np.random.random() < PROBA_SELECTION:  # Social learning
+                if SelectionRd[i] < PROBA_SELECTION:  # Social learning
                     # Create the tournament and get the winner
                     winner = max(pop, key=attrgetter("fitness"))
 
@@ -243,8 +242,9 @@ def strategy_evolution(
             if sum(cum_proba) == 0:
                 raise ValueError("Sum cumproba = 0")
 
+            MutationRd = np.random.rand(len(pop))
             for i in range(len(pop)):
-                if np.random.random() < MUTATION_RATE:
+                if MutationRd[i] < MUTATION_RATE:
                     CountMutated += 1
                     # Change type totally randomly
                     n = np.random.random()
