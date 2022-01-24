@@ -153,42 +153,49 @@ def execute_ed(list pop, double current_price, asset_supply, double spoils, doub
         spoils += ToLiquidate * multiplier_buy
         # Isn't that a minus sign here instead?
 
-    if abs(count_long_assets(pop, spoils) - asset_supply) > 0.01 * asset_supply:
-        # If we violate the asset supply constraint by more than 1%, raise an error.
-        if abs(count_long_assets(pop, spoils) - asset_supply) >= 0.01 * asset_supply:
-            print("Spoils " + str(spoils))
-            print("ToLiquidate " + str(ToLiquidate))
-            print("Pop ownership " + str(count_pop_long_assets(pop)))
-            raise ValueError(
-                "Asset supply cst violated "
-                + str(count_long_assets(pop, spoils))
-                + "/"
-                + str(asset_supply)
-            )
+    if count_long_assets(pop, spoils) - asset_supply >= 1:
+        print('Count Long assets different from asset supply')
+        print(count_long_assets(pop, spoils))
+        print(asset_supply)
+        print(count_long_assets(pop, spoils) - asset_supply)
+        raise ValueError('Asset supply violated.')
 
-    cdef double SupplyCorrectionRatio
+    #if abs(count_long_assets(pop, spoils) - asset_supply) > 0.01 * asset_supply:
+        # If we violate the asset supply constraint by more than 1%, raise an error.
+        #if abs(count_long_assets(pop, spoils) - asset_supply) >= 0.01 * asset_supply:
+        #    print("Spoils " + str(spoils))
+        #    print("ToLiquidate " + str(ToLiquidate))
+        #    print("Pop ownership " + str(count_pop_long_assets(pop)))
+        #    raise ValueError(
+        #        "Asset supply cst violated "
+        #        + str(count_long_assets(pop, spoils))
+        #        + "/"
+        #        + str(asset_supply)
+        #    )
+
+    #cdef double SupplyCorrectionRatio
     # If the violation of the asset supply is minor (less than 1%), correct the rounding error.
-    count = 0
-    while abs(count_long_assets(pop, spoils) - asset_supply) <= 0.01 * asset_supply and count < 10:
-        count += 1
-        SupplyCorrectionRatio = asset_supply / count_long_assets(pop, spoils)
-        spoils = spoils * SupplyCorrectionRatio
-        for ind in pop:
-            ind.asset = SupplyCorrectionRatio * ind.asset
+    #while abs(count_long_assets(pop, spoils) - asset_supply) <= 0.01 * asset_supply and count < 10:
+    #    count += 1
+    ##count = 0
+    #    SupplyCorrectionRatio = asset_supply / count_long_assets(pop, spoils)
+    #    spoils = spoils * SupplyCorrectionRatio
+    #    for ind in pop:
+    #        ind.asset = SupplyCorrectionRatio * ind.asset
         # If the resulting violation is still superior to 0.1% after rounding correction, raise an error.
-        if abs(count_long_assets(pop, spoils) - asset_supply) > 0.001 * asset_supply:
-            print(abs(count_long_assets(pop, spoils) - asset_supply))
-            print("---")
-            for ind in pop:
-                print(ind.asset)
-            raise ValueError(
-                "Rounding violation of asset supply was not succesfully corrected. "
-                + str(SupplyCorrectionRatio)
-                + "//"
-                + str(count_long_assets(pop, spoils))
-                + "//"
-                + str(asset_supply)
-                + "//"
-                + str(spoils)
-            )
+    #    if abs(count_long_assets(pop, spoils) - asset_supply) > 0.001 * asset_supply:
+    #        print(abs(count_long_assets(pop, spoils) - asset_supply))
+     #       print("---")
+      #      for ind in pop:
+      #          print(ind.asset)
+      #      raise ValueError(
+      #          "Rounding violation of asset supply was not succesfully corrected. "
+      #          + str(SupplyCorrectionRatio)
+      #          + "//"
+      #          + str(count_long_assets(pop, spoils))
+      #          + "//"
+      #          + str(asset_supply)
+      #          + "//"
+      #          + str(spoils)
+      #      )
     return pop, volume, spoils
