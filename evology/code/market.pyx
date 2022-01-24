@@ -153,12 +153,25 @@ def execute_ed(list pop, double current_price, asset_supply, double spoils, doub
         spoils += ToLiquidate * multiplier_buy
         # Isn't that a minus sign here instead?
 
+    cdef double SupplyCorrectionRatio
     if count_long_assets(pop, spoils) - asset_supply >= 1:
+        SupplyCorrectionRatio = asset_supply / count_long_assets(pop, spoils)
+
+        # Adjust the spoils quantity 
+        spoils = spoils * SupplyCorrectionRatio
+        for ind in pop:
+            # Adjust the assets quantity
+            ind.asset = SupplyCorrectionRatio * ind.asset
+            # Compensate in cash accordingly.
+            ind.cash = ind.cash / SupplyCorrectionRatio
+
+
+    if count_long_assets(pop, spoils) - asset_supply >= 0.01 * asset_supply:
         print('Count Long assets different from asset supply')
         print(count_long_assets(pop, spoils))
         print(asset_supply)
         print(count_long_assets(pop, spoils) - asset_supply)
-        raise ValueError('Asset supply violated.')
+        raise ValueError('Asset supply violated by more than 1%.')
 
     #if abs(count_long_assets(pop, spoils) - asset_supply) > 0.01 * asset_supply:
         # If we violate the asset supply constraint by more than 1%, raise an error.
