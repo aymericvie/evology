@@ -50,6 +50,7 @@ cdef determine_multiplier(list pop, double spoils, double ToLiquidate):
     total_sell = 0.0
 
     cdef cythonized.Individual ind
+    cdef double order_ratio = 0.0
     for ind in pop:
         if ind.edv > 0:
             total_buy += ind.edv
@@ -63,8 +64,6 @@ cdef determine_multiplier(list pop, double spoils, double ToLiquidate):
 
     if total_sell != 0:
         order_ratio = total_buy / total_sell
-    elif total_sell == 0:
-        order_ratio = 0
 
     if order_ratio < 0:
         raise ValueError(
@@ -104,7 +103,7 @@ cdef determine_multiplier(list pop, double spoils, double ToLiquidate):
 
     if abs(total_buy * multiplier_buy - total_sell * multiplier_sell) != 0:
         if abs(total_buy * multiplier_buy - total_sell * multiplier_sell) >= abs(
-            0.01 * ((total_buy * multiplier_buy) + (total_sell * multiplier_sell))
+            0.0001 * ((total_buy * multiplier_buy) + (total_sell * multiplier_sell))
         ):
             print(total_buy * multiplier_buy)
             print(total_sell * multiplier_sell)
@@ -154,9 +153,12 @@ def execute_ed(list pop, double current_price, asset_supply, double spoils, doub
         # Isn't that a minus sign here instead?
 
     cdef double SupplyCorrectionRatio
-    if count_long_assets(pop, spoils) - asset_supply >= 1:
-        SupplyCorrectionRatio = asset_supply / count_long_assets(pop, spoils)
+    cdef double CurrentCount 
 
+    CurrentCount = count_long_assets(pop, spoils)
+    if CurrentCount - asset_supply >= 1:
+        amount_before_corrected = CurrentCount - asset_supply
+        SupplyCorrectionRatio = asset_supply / CurrentCount
         # Adjust the spoils quantity 
         spoils = spoils * SupplyCorrectionRatio
         for ind in pop:
@@ -164,13 +166,26 @@ def execute_ed(list pop, double current_price, asset_supply, double spoils, doub
             ind.asset = SupplyCorrectionRatio * ind.asset
             # Compensate in cash accordingly.
             ind.cash = ind.cash / SupplyCorrectionRatio
+        amount_after_correction = count_long_assets(pop, spoils) - asset_supply
+
+        if abs(amount_before_corrected) < abs(amount_after_correction):
+            print(amount_before_corrected)
+            print(amount_after_correction)
+            print(CurrentCount)
+            print(CurrentCount - asset_supply)
+            print(SupplyCorrectionRatio)
+            print(spoils)
+            raise ValueError('Rounding error correction increased asset supply violation. ')
 
 
     if count_long_assets(pop, spoils) - asset_supply >= 0.01 * asset_supply:
-        print('Count Long assets different from asset supply')
+        print('Count Long assets different from asset supply: count, supply, diff, spoils, amount before / after')
         print(count_long_assets(pop, spoils))
         print(asset_supply)
         print(count_long_assets(pop, spoils) - asset_supply)
+        print(spoils)
+        print(amount_before_corrected)
+        print(amount_after_correction)
         raise ValueError('Asset supply violated by more than 1%.')
 
     #if abs(count_long_assets(pop, spoils) - asset_supply) > 0.01 * asset_supply:
