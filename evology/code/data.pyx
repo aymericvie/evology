@@ -93,51 +93,53 @@ def TrackWealth(wealth_tracker, pop, generation):
     cdef double wamp = NAN
     cdef int i = 0
     cdef cythonized.Individual ind
+    wamp_list = []
 
     for i, ind in enumerate(pop):
-            wealth_tracker[generation,i] = ind.wealth 
-    
-    if generation - 21 >= 0: # We can start calculate the movements' monthly amplitude.
-        wamp_list = []
-        old_wealth = wealth_tracker[generation-21,i]
-        for ind in pop:
+        wealth_tracker[generation,i] = ind.wealth 
+        if generation - 21 >= 0: # We can start calculate the movements' monthly amplitude.
+            old_wealth = wealth_tracker[generation-21,i]
+            #for ind in pop:
             if old_wealth > 0 and ind.age >= 21:
                 wamp_ind = (wealth_tracker[generation, i] - old_wealth) / old_wealth
             else: 
                 wamp_ind = float("nan")
             wamp_list.append(100 * abs(wamp_ind))
-        wamp = np.nanmean(wamp_list)
+    wamp = np.nanmean(wamp_list)
         
     return wealth_tracker, wamp
 
-def AnnualReturns(wealth_tracker_annual, pop, generation):
+def AnnualReturns(wealth_tracker, pop, generation):
     cdef double wamp_nt = NAN
     cdef double wamp_vi = NAN
     cdef double wamp_tf = NAN
     cdef int i = 0
     cdef cythonized.Individual ind
 
-    for i, ind in enumerate(pop):
-            wealth_tracker_annual[generation,i] = ind.wealth 
+    wamp_list_nt, wamp_list_vi, wamp_list_tf,  = [],[],[]
     
-    if generation - 252 >= 0: # We can start calculate the movements' monthly amplitude.
-        wamp_list_nt, wamp_list_vi, wamp_list_tf,  = [],[],[]
-        old_wealth = wealth_tracker_annual[generation-252,i]
-        for ind in pop:
+    for i, ind in enumerate(pop):
+        if generation - 252 >= 0: # We can start calculate the movements' annual amplitude.
+            
+            old_wealth = wealth_tracker[generation-252,i]
+            #for ind in pop:
             if old_wealth > 0 and ind.age >= 252:
-                wamp_ind = (wealth_tracker_annual[generation, i] - old_wealth) / old_wealth
+                wamp_ind = (wealth_tracker[generation, i] - old_wealth) / old_wealth
             else: 
                 wamp_ind = float("nan")
 
             if ind.type == 'nt':
                 wamp_list_nt.append(wamp_ind)
-            if ind.type == 'vi':
+            elif ind.type == 'vi':
                 wamp_list_vi.append(wamp_ind)
-            if ind.type == 'tf':
+            elif ind.type == 'tf':
                 wamp_list_tf.append(wamp_ind)
-        wamp_nt, wamp_vi, wamp_tf = np.nanmean(wamp_list_nt),np.nanmean(wamp_list_vi),np.nanmean(wamp_list_tf)
+
+    wamp_nt = np.nanmean(wamp_list_nt)
+    wamp_vi = np.nanmean(wamp_list_vi)
+    wamp_tf = np.nanmean(wamp_list_tf)
         
-    return wealth_tracker_annual, wamp_nt, wamp_vi, wamp_tf
+    return wamp_nt, wamp_vi, wamp_tf
 
 def ResultsProcess(list pop, double spoils, double price):
 
@@ -327,7 +329,6 @@ def ResultsProcess(list pop, double spoils, double price):
 def record_results(
     results,
     wealth_tracker,
-    wealth_tracker_annual,
     generation,
     current_price,
     mismatch,
@@ -378,7 +379,7 @@ def record_results(
             MeanTFReturn = np.nan
 
         wealth_tracker, wamp = TrackWealth(wealth_tracker, pop, generation)
-        wealth_tracker_annual, wamp_nt, wamp_vi, wamp_tf = AnnualReturn(wealth_tracker_annual, pop, generation)
+        wamp_nt, wamp_vi, wamp_tf = AnnualReturns(wealth_tracker, pop, generation)
 
         """ Global variables """
         arr = [
@@ -425,11 +426,12 @@ def record_results(
         """ Wealth measures """
         arr += [wamp]
 
-        """ Record results """
-        results[current, :] = arr
-
         """ Annual returns """
         arr += [wamp_nt, wamp_vi, wamp_tf]
+
+        # Warning: This must be at the end.
+        """ Record results """
+        results[current, :] = arr
 
     return results, wealth_tracker, ReturnsNT, ReturnsVI, ReturnsTF
 
