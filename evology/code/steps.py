@@ -103,8 +103,8 @@ def update_wealth(
     pop, current_price, ReinvestmentRate
 ):
     bs.calculate_wealth(pop, current_price)  # Compute agents' wealth
-    bs.update_profit(pop)
-    bs.ApplyReinvestmentFlows(pop, ReinvestmentRate)
+    bs.update_profit_reinvestment(pop)
+    bs.calculate_wealth(pop, current_price)
     bs.ComputeReturn(pop)
     bs.AgeUpdate(pop)
     return pop

@@ -140,17 +140,6 @@ def count_short_assets(pop, spoils):
     return count
 
 
-
-
-def ApplyReinvestmentFlows(pop, ReinvestmentRate):
-    for ind in pop:
-        ind.investor_flow = ind.profit * ReinvestmentRate
-        ind.cash += ind.investor_flow
-        ind.wealth += ind.investor_flow
-    
-
-
-
 def pop_report(pop):
     for ind in pop:
         agent_report(ind)
@@ -270,9 +259,12 @@ def ComputeReturn(pop):
             ind.DailyReturn = np.nan
 
 
-def update_profit(pop):
+def update_profit_reinvestment(pop, ReinvestmentRate):
     for ind in pop:
         ind.profit = ind.wealth - ind.prev_wealth
+        ind.flow = ind.profit * ReinvestmentRate
+        ind.cash += ind.flow
+
 
 
 def report_types(pop):
