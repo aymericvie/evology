@@ -26,7 +26,7 @@ def job(iteration):
             MAX_GENERATIONS = TimeHorizon,
             PROBA_SELECTION = 1/252,
             MUTATION_RATE = 1/252,
-            ReinvestmentRate = 0,
+            ReinvestmentRate = 1.0,
             tqdm_display = True, 
             reset_wealth = False
             )

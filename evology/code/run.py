@@ -45,7 +45,7 @@ def run(
 
 
 df, pop = run(
-    100, 0, 50000, wealth_coordinates, tqdm_display=False, reset_wealth=False, ReinvestmentRate= 1.2
+    3, 0, 100000, wealth_coordinates, tqdm_display=False, reset_wealth=False, ReinvestmentRate= 1.0
 )
 
 df.to_csv("evology/data/run_data.csv")
