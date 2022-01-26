@@ -1,6 +1,6 @@
 #cython: boundscheck=False, wraparound=False, initializedcheck=False, cdivision=True
 
-from balance_sheet import count_long_assets, count_pop_long_assets
+from balance_sheet import count_long_assets, count_pop_long_assets, count_short_assets
 import numpy as np
 
 import parameters
@@ -44,26 +44,57 @@ def earnings(pop, prev_dividend):
         ind.cash += div_asset + interest_cash
     return pop, dividend, random_dividend
 
-cdef determine_multiplier(list pop, double spoils, double ToLiquidate):
+cdef determine_multiplier(list pop, double spoils, double ToLiquidate, asset_supply):
 
-    total_buy = 0.0
-    total_sell = 0.0
+    cdef double total_buy = 0.0
+    cdef double total_sell = 0.0
+    cdef double total_short = 0.0
+    cdef double total_sell_short = 0.0
+    cdef double short_ratio = 0.0
 
     cdef cythonized.Individual ind
     cdef double order_ratio = 0.0
+
     for ind in pop:
         if ind.edv > 0:
             total_buy += ind.edv
         elif ind.edv < 0:
-            total_sell += abs(ind.edv)
+            # If we sell, but have assets in stocks, this is a simple sell.
+            if ind.asset >= abs(ind.edv):
+                total_sell += abs(ind.edv)
+            # If we sell more than we own:
+            elif ind.asset < abs(ind.edv):
+                temp_sell = abs(ind.edv)
+                if ind.asset > 0:
+                    # Register as simple sell what we can sell up to our current stocks 
+                    total_sell += ind.asset
+                    temp_sell -= ind.asset 
+                # Register the reminder as short selling
+                total_short += temp_sell
 
     if spoils > 0:
         total_sell += abs(ToLiquidate)
     if spoils < 0:
         total_buy += ToLiquidate
 
-    if total_sell != 0:
-        order_ratio = total_buy / total_sell
+    total_sell_short += total_sell
+    # Now we have total buy and total sell. Decide how much we include total_short.
+    # In this determination, short positions already in spoils and population have the priority.
+    CountShort = count_short_assets(pop, spoils)
+    if CountShort >= asset_supply + 1:
+        print(CountShort)
+        print(asset_supply)
+        raise ValueError('Limit on short position size was violated before computing order ratio. ')
+    
+    effective_possible_short = min(total_short, max(0, asset_supply - CountShort))
+
+    if total_short != 0:
+        short_ratio = effective_possible_short / total_short
+
+    total_sell_short += effective_possible_short
+
+    if total_sell_short != 0:
+        order_ratio = total_buy / total_sell_short
 
     if order_ratio < 0:
         raise ValueError(
@@ -101,24 +132,28 @@ cdef determine_multiplier(list pop, double spoils, double ToLiquidate):
     if multiplier_sell < 0:
         raise ValueError("Multiplier Sell is negative")
 
-    if abs(total_buy * multiplier_buy - total_sell * multiplier_sell) != 0:
-        if abs(total_buy * multiplier_buy - total_sell * multiplier_sell) >= abs(
-            0.0001 * ((total_buy * multiplier_buy) + (total_sell * multiplier_sell))
+    if abs(total_buy * multiplier_buy - total_sell_short * multiplier_sell) != 0:
+        if abs(total_buy * multiplier_buy - total_sell_short * multiplier_sell) >= abs(
+            0.0001 * ((total_buy * multiplier_buy) + (total_sell_short * multiplier_sell))
         ):
             print(total_buy * multiplier_buy)
-            print(total_sell * multiplier_sell)
+            print(total_sell_short * multiplier_sell)
             raise ValueError(
                 "Total buy * Mul is different from Total sell * Mul by more than 1 (abs difference)"
             )
+    if short_ratio > 1:
+        print(short_ratio)
+        raise ValueError('Short ratio above 1')
 
-    return multiplier_buy, multiplier_sell
+    return multiplier_buy, multiplier_sell, short_ratio
 
 
 def execute_ed(list pop, double current_price, asset_supply, double spoils, double ToLiquidate):
     # Determine adjustements to edv if we have some mismatch
     cdef double multiplier_buy
     cdef double multiplier_sell
-    multiplier_buy, multiplier_sell = determine_multiplier(pop, spoils, ToLiquidate)
+    cdef double short_ratio
+    multiplier_buy, multiplier_sell, short_ratio = determine_multiplier(pop, spoils, ToLiquidate, asset_supply)
     volume = 0.0
 
     cdef cythonized.Individual ind
@@ -130,7 +165,18 @@ def execute_ed(list pop, double current_price, asset_supply, double spoils, doub
             amount = ind.edv * multiplier_buy
 
         if ind.edv < 0:
-            amount = ind.edv * multiplier_sell
+            if abs(ind.edv) * multiplier_sell <= ind.asset:
+            # If we have enough to simple sell as much as we want to
+                amount = ind.edv * multiplier_sell
+            elif abs(ind.edv) * multiplier_sell > ind.asset:
+            # If instead we want to sell more than our inventory:
+                temp = abs(ind.edv) * multiplier_sell
+                if ind.asset > 0:
+                # If we have assets to sell, we sell those according to mulitplier_sell
+                    amount -= ind.asset
+                    temp -= ind.asset
+                # The reminder is a short sell. Hence, both multiplier_sell AND short_ratio apply.
+                amount -= temp * short_ratio
 
         ind.asset += amount
         ind.cash -= amount * current_price
@@ -155,26 +201,51 @@ def execute_ed(list pop, double current_price, asset_supply, double spoils, doub
     cdef double SupplyCorrectionRatio
     cdef double CurrentCount 
 
+    if count_short_assets(pop, spoils) >= asset_supply + 1 :
+        print(count_short_assets(pop, spoils))
+        print(count_long_assets(pop, spoils))
+        print(asset_supply)
+        print([multiplier_buy, multiplier_sell])
+        raise ValueError('Limit on short position size has been violated after execution of excess demand orders.')
+
     CurrentCount = count_long_assets(pop, spoils)
     if CurrentCount - asset_supply >= 1:
+
+        LogBefore = [CurrentCount - asset_supply, count_pop_long_assets(pop), spoils]
+
         amount_before_corrected = CurrentCount - asset_supply
         SupplyCorrectionRatio = asset_supply / CurrentCount
+
+        LogBetween = [count_pop_long_assets(pop) * SupplyCorrectionRatio, spoils * SupplyCorrectionRatio, count_pop_long_assets(pop) * SupplyCorrectionRatio + spoils * SupplyCorrectionRatio - asset_supply]
+
+        Logpop = np.zeros((len(pop), 4))
         # Adjust the spoils quantity 
         spoils = spoils * SupplyCorrectionRatio
-        for ind in pop:
+        for i, ind in enumerate(pop):
             # Adjust the assets quantity
+            Logpop[i,0] = ind.asset
+            Logpop[i,1] = ind.asset * SupplyCorrectionRatio
             ind.asset = SupplyCorrectionRatio * ind.asset
+            Logpop[i,2] = ind.asset
+            Logpop[i,3] = Logpop[i,2] - Logpop[i,1]
             # Compensate in cash accordingly.
             ind.cash = ind.cash / SupplyCorrectionRatio
         amount_after_correction = count_long_assets(pop, spoils) - asset_supply
+        
+        LogAfter = [amount_after_correction, count_pop_long_assets(pop), spoils]
 
         if abs(amount_before_corrected) < abs(amount_after_correction):
             print(amount_before_corrected)
             print(amount_after_correction)
-            print(CurrentCount)
-            print(CurrentCount - asset_supply)
             print(SupplyCorrectionRatio)
-            print(spoils)
+            print('Log Before')
+            print(LogBefore)
+            print('Log Between')
+            print(LogBetween)
+            print('Log After')
+            print(LogAfter)
+            print('Pop log')
+            print(Logpop)
             raise ValueError('Rounding error correction increased asset supply violation. ')
 
 

@@ -140,14 +140,6 @@ def count_short_assets(pop, spoils):
     return count
 
 
-def count_pop_short_assets(pop):
-    count = 0
-    for ind in pop:
-        if ind.asset < 0:
-            count += abs(ind.asset)
-    return count
-
-
 
 
 def ApplyReinvestmentFlows(pop, ReinvestmentRate):
