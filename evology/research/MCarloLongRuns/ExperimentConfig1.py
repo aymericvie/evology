@@ -18,7 +18,7 @@ reps = 50
 def job(iteration):
     np.random.seed()
     try:
-        df,pop = evology(
+        df,pop, ReturnsNT, ReturnsVI, ReturnsTF = evology(
             space = 'scholl', 
             solver = 'esl.true', 
             wealth_coordinates = Coordinates, 

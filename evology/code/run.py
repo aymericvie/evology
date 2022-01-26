@@ -2,6 +2,8 @@
 from main import *
 from parameters import *
 
+
+
 np.random.seed(8)
 wealth_coordinates = [1 / 3, 1 / 3, 1 / 3]
 # np.random.seed()
@@ -12,7 +14,7 @@ def run(
     POPULATION_SIZE, learning_mode, TIME, wealth_coordinates, tqdm_display, reset_wealth, ReinvestmentRate
 ):
     if learning_mode == 0:
-        df, pop = main(
+        df, pop, ReturnsNT, ReturnsVI, ReturnsTF = main(
             "scholl",
             "esl.true",
             wealth_coordinates,
@@ -26,7 +28,7 @@ def run(
         )
 
     if learning_mode == 1:
-        df, pop = main(
+        df, pop, ReturnsNT, ReturnsVI, ReturnsTF = main(
             "scholl",
             "esl.true",
             wealth_coordinates,
@@ -41,14 +43,19 @@ def run(
 
 # TODO; add extended ecology for run, or maybe alternative solvers
 
-    return df, pop
+    return df, pop, ReturnsNT, ReturnsVI, ReturnsTF
 
 
-df, pop = run(
+df, pop, ReturnsNT, ReturnsVI, ReturnsTF = run(
     3, 0, 100000, wealth_coordinates, tqdm_display=False, reset_wealth=False, ReinvestmentRate= 1.0
 )
 
 df.to_csv("evology/data/run_data.csv")
+np.savetxt('evology/data/ReturnsNT.csv', ReturnsNT, delimiter=',')
+np.savetxt('evology/data/ReturnsVI.csv', ReturnsVI, delimiter=',')
+np.savetxt('evology/data/ReturnsTF.csv', ReturnsTF, delimiter=',')
+
+print(ReturnsNT)
 print(df)
 print(stats.trim_mean(df['WealthAmp'], 0.1))
 
