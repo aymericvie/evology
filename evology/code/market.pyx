@@ -44,7 +44,7 @@ def earnings(pop, prev_dividend):
         ind.cash += div_asset + interest_cash
     return pop, dividend, random_dividend
 
-cdef determine_multiplier(list pop, double spoils, double ToLiquidate, asset_supply):
+cdef determine_multiplier(list pop, double spoils, double ToLiquidate, double asset_supply):
 
     cdef double total_buy = 0.0
     cdef double total_sell = 0.0
@@ -148,7 +148,7 @@ cdef determine_multiplier(list pop, double spoils, double ToLiquidate, asset_sup
     return multiplier_buy, multiplier_sell, short_ratio
 
 
-def execute_ed(list pop, double current_price, asset_supply, double spoils, double ToLiquidate):
+def execute_ed(list pop, double current_price, double asset_supply, double spoils, double ToLiquidate):
     # Determine adjustements to edv if we have some mismatch
     cdef double multiplier_buy
     cdef double multiplier_sell
