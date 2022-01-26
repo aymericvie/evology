@@ -211,41 +211,41 @@ def execute_ed(list pop, double current_price, double asset_supply, double spoil
     CurrentCount = count_long_assets(pop, spoils)
     if CurrentCount - asset_supply >= 1:
 
-        LogBefore = [CurrentCount - asset_supply, count_pop_long_assets(pop), spoils]
+        # LogBefore = [CurrentCount - asset_supply, count_pop_long_assets(pop), spoils]
 
         amount_before_corrected = CurrentCount - asset_supply
         SupplyCorrectionRatio = asset_supply / CurrentCount
 
-        LogBetween = [count_pop_long_assets(pop) * SupplyCorrectionRatio, spoils * SupplyCorrectionRatio, count_pop_long_assets(pop) * SupplyCorrectionRatio + spoils * SupplyCorrectionRatio - asset_supply]
+        # LogBetween = [count_pop_long_assets(pop) * SupplyCorrectionRatio, spoils * SupplyCorrectionRatio, count_pop_long_assets(pop) * SupplyCorrectionRatio + spoils * SupplyCorrectionRatio - asset_supply]
 
-        Logpop = np.zeros((len(pop), 4))
+        # Logpop = np.zeros((len(pop), 4))
         # Adjust the spoils quantity 
         spoils = spoils * SupplyCorrectionRatio
         for i, ind in enumerate(pop):
             # Adjust the assets quantity
-            Logpop[i,0] = ind.asset
-            Logpop[i,1] = ind.asset * SupplyCorrectionRatio
+            #Logpop[i,0] = ind.asset
+            #Logpop[i,1] = ind.asset * SupplyCorrectionRatio
             ind.asset = SupplyCorrectionRatio * ind.asset
-            Logpop[i,2] = ind.asset
-            Logpop[i,3] = Logpop[i,2] - Logpop[i,1]
+            #Logpop[i,2] = ind.asset
+            #Logpop[i,3] = Logpop[i,2] - Logpop[i,1]
             # Compensate in cash accordingly.
             ind.cash = ind.cash / SupplyCorrectionRatio
         amount_after_correction = count_long_assets(pop, spoils) - asset_supply
         
-        LogAfter = [amount_after_correction, count_pop_long_assets(pop), spoils]
+        #LogAfter = [amount_after_correction, count_pop_long_assets(pop), spoils]
 
         if abs(amount_before_corrected) < abs(amount_after_correction):
             print(amount_before_corrected)
             print(amount_after_correction)
             print(SupplyCorrectionRatio)
-            print('Log Before')
-            print(LogBefore)
-            print('Log Between')
-            print(LogBetween)
-            print('Log After')
-            print(LogAfter)
-            print('Pop log')
-            print(Logpop)
+            #print('Log Before')
+            #print(LogBefore)
+            #print('Log Between')
+            #print(LogBetween)
+            #print('Log After')
+            #print(LogAfter)
+            #print('Pop log')
+            #print(Logpop)
             raise ValueError('Rounding error correction increased asset supply violation. ')
 
 
