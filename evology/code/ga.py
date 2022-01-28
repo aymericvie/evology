@@ -10,6 +10,38 @@ import timeit
 import warnings
 import cythonized
 
+def CreateHalfFund(pop, MaxFund):
+
+    if pop[MaxFund].type == "nt":
+        half = IndCreation("nt")
+    if pop[MaxFund].type == "vi":
+        half = IndCreation("vi")
+    if pop[MaxFund].type == "tf":
+        half = IndCreation("tf")
+
+
+    # Copy fund MaxFund intangible characteristics
+    # TSV, EDF, EDV are totally reset.
+    half.tsv = 0
+    half.edf = None
+    half.edv = 0
+    half.strategy = pop[MaxFund].strategy
+    half.process = pop[MaxFund].process
+    half.ema = pop[MaxFund].ema
+    half.fitness = pop[MaxFund].fitness
+    half[0] = pop[MaxFund][0]
+    half.age = 0.0
+
+    # Copy fund j characteristics to be divided
+    half.prev_wealth = pop[MaxFund].prev_wealth / 2
+    half.wealth = 0.0
+    half.cash = pop[MaxFund].cash / 2
+    half.loan = pop[MaxFund].loan / 2
+    half.asset = pop[MaxFund].asset / 2
+    half.margin = pop[MaxFund].margin / 2
+    half.profit = 0.0
+    return half 
+
 def hypermutate(
     pop, spoils
 ):
@@ -21,66 +53,30 @@ def hypermutate(
             round_replacements += 1
             # Mandate an administrator to liquidate the insolvent fund shares
             spoils += pop[i].asset
-            del pop[i]  # We suppress the fund.
+            
 
             wealth_list = []
             for ind in pop:
                 wealth_list.append(ind.wealth)
             MaxFund = wealth_list.index(max(wealth_list))
 
-            # # Determine who is the wealthiest fund
-            # MaxWealth = 0
-            # MaxFund = 999
-            # for j in range(len(pop)):
-            #     if pop[j].wealth >= MaxWealth:
-            #         MaxFund = j
             if MaxFund > len(pop):
                 raise ValueError(
                     "MaxFund is higher than len pop "
                     + str(MaxFund)
                     + "/"
                     + str(len(pop))
-                    + "/"
-                    + str(MaxWealth)
                 )
 
-            # Wealthiest fund is fund index MaxFund. Create two halfs of fund, sharing the attributes.
-            for k in range(2):
-                # Create a fund of the correct strategy
-                if pop[MaxFund].type == "nt":
-                    half = IndCreation("nt")
-                if pop[MaxFund].type == "vi":
-                    half = IndCreation("vi")
-                if pop[MaxFund].type == "tf":
-                    half = IndCreation("tf")
+            # Wealthiest fund is fund index MaxFund. Create two halfs of fund, sharing the attributes, and replace in the population.
+            half = CreateHalfFund(pop, MaxFund)
+            half2 = CreateHalfFund(pop, MaxFund)
 
-                # Copy fund MaxFund intangible characteristics
-                # TSV, EDF, EDV are totally reset.
-                half.tsv = 0
-                half.edf = None
-                half.edv = 0
-                half.strategy = pop[MaxFund].strategy
-                half.process = pop[MaxFund].process
-                half.ema = pop[MaxFund].ema
-                half.fitness = pop[MaxFund].fitness
-                half[0] = pop[MaxFund][0]
-                half.age = 0.0
-
-                # Copy fund j characteristics to be divided
-                half.prev_wealth = pop[MaxFund].prev_wealth / 2
-                half.wealth = pop[MaxFund].wealth / 2
-                half.cash = pop[MaxFund].cash / 2
-                half.loan = pop[MaxFund].loan / 2
-                half.asset = pop[MaxFund].asset / 2
-                half.margin = pop[MaxFund].margin / 2
-                half.profit = pop[MaxFund].profit / 2
-
-                # Add the two half copy to the population
-                pop.append(half)
-            # pop.append(half)
-
-            # We have appended the two half-copies of j. We remove j.
+            del pop[i]  # We suppress the fund.
+            pop.insert(i, half)
             del pop[MaxFund]
+            pop.insert(MaxFund, half2)
+            # Reset the bankruptcy check now that the population has changed. 
             i = 0
         if pop[i].wealth >= 0:
             i += 1

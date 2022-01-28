@@ -96,7 +96,12 @@ def TrackWealth(wealth_tracker, pop, generation):
     wamp_list = []
 
     for i, ind in enumerate(pop):
-        wealth_tracker[generation,i] = ind.wealth 
+
+        # Record the wealth of the fund
+        if ind.age > 1:
+            wealth_tracker[generation,i] = ind.wealth 
+        else: 
+            wealth_tracker[generation, i] = np.nan # to mark the replacement in the data
         if generation - 21 >= 0: # We can start calculate the movements' monthly amplitude.
             old_wealth = wealth_tracker[generation-21,i]
             #for ind in pop:
@@ -118,12 +123,12 @@ def AnnualReturns(wealth_tracker, pop, generation):
 
     wamp_list_nt, wamp_list_vi, wamp_list_tf,  = [],[],[]
     
-    for i, ind in enumerate(pop):
-        if generation - 252 >= 0: # We can start calculate the movements' annual amplitude.
-            
+    
+    if generation - 252 >= 0: # We can start calculate the movements' annual amplitude.
+        for i, ind in enumerate(pop):
             old_wealth = wealth_tracker[generation-252,i]
             #for ind in pop:
-            if old_wealth > 0 and ind.age >= 252:
+            if old_wealth > 0 and ind.age >= 252 + 10:
                 wamp_ind = (wealth_tracker[generation, i] - old_wealth) / old_wealth
             else: 
                 wamp_ind = float("nan")
@@ -134,6 +139,15 @@ def AnnualReturns(wealth_tracker, pop, generation):
                 wamp_list_vi.append(wamp_ind)
             elif ind.type == 'tf':
                 wamp_list_tf.append(wamp_ind)
+
+            if wamp_ind >= 100:
+                print([generation, i])
+                print(wealth_tracker)
+                print(wealth_tracker[generation-300:generation,i])
+                print(old_wealth)
+                print(wealth_tracker[generation, i])
+                print(ind.age)
+                raise ValueError('Annual return recorded above 100.')
 
     wamp_nt = np.nanmean(wamp_list_nt)
     wamp_vi = np.nanmean(wamp_list_vi)
