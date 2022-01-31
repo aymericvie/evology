@@ -15,6 +15,7 @@ from tqdm import tqdm
 import warnings
 import matplotlib
 import matplotlib.pyplot as plt
+import investment as iv
 
 # random.seed(random.random())
 
@@ -100,8 +101,9 @@ def marketActivity(
 
 
 def update_wealth(
-    pop, current_price, ReinvestmentRate
+    pop, current_price, ReinvestmentRate, generation, wealth_tracker, returns_tracker, InvestmentHorizon
 ):
+    pop = iv.Invest(pop, generation, wealth_tracker, returns_tracker, InvestmentHorizon, ReinvestmentRate)
     bs.calculate_wealth(pop, current_price)  # Compute agents' wealth
     bs.update_profit_reinvestment(pop, ReinvestmentRate)
     bs.calculate_wealth(pop, current_price)

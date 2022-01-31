@@ -10,6 +10,7 @@ def main(
     PROBA_SELECTION,
     MUTATION_RATE,
     ReinvestmentRate,
+    InvestmentHorizon,
     tqdm_display,
     reset_wealth
 ):
@@ -22,6 +23,7 @@ def main(
     generation, CurrentPrice, dividend, spoils = 0, InitialPrice, INITIAL_DIVIDEND, 0
     results = np.zeros((MAX_GENERATIONS - data.Barr, data.variables))
     wealth_tracker= np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
+    returns_tracker= np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
     price_history, dividend_history = [], []
 
     pop, asset_supply = cr.CreatePop(POPULATION_SIZE, space, wealth_coordinates)
@@ -85,7 +87,11 @@ def main(
         pop = update_wealth(
             pop,
             CurrentPrice,
-            ReinvestmentRate
+            ReinvestmentRate,
+            generation, 
+            wealth_tracker, 
+            returns_tracker, 
+            InvestmentHorizon,
         )
 
         # Record results
