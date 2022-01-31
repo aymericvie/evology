@@ -3,25 +3,41 @@ import numpy as np
 
 def Invest(pop, generation, wealth_tracker, returns_tracker, InvestmentHorizon, ReinvestmentRate):
 
-    # Update our returns history based on latest wealth data
-    returns_tracker = ReturnsHistory(pop, generation, wealth_tracker, returns_tracker)
+    if generation > 1:
 
-    # Decide investment ratios
-    SharpeList, InvestmentRatios = ComputeInvestmentRatios(pop, generation, returns_tracker, InvestmentHorizon, ReinvestmentRate)
+        print("Generation " + str(generation))
 
-    # Apply investment
-    pop = ApplyInvestment(pop, InvestmentRatios)
+        print(wealth_tracker[generation,:])
+
+        print("Early investing")
+
+        # Update our returns history based on latest wealth data
+        returns_tracker = ReturnsHistory(pop, generation, wealth_tracker, returns_tracker)
+        
+        print(returns_tracker[generation, :])
+
+        print("ReturnsHistory done")
+
+        # Decide investment ratios
+        SharpeList, InvestmentRatios = ComputeInvestmentRatios(pop, generation, returns_tracker, InvestmentHorizon, ReinvestmentRate)
+
+        print(InvestmentRatios)
+        print("IRatios done")
+
+        # Apply investment
+        pop = ApplyInvestment(pop, InvestmentRatios)
+
+        print("Applied done")
 
     return pop
 
 def ReturnsHistory(pop, generation, wealth_tracker, returns_tracker):
-    if generation > 1:
-        for i in range(len(pop)):
-            WealthDay2 = wealth_tracker[generation-2, i]
-            if WealthDay2 != 0:
-                returns_tracker[generation, i] = (wealth_tracker[generation-1, i] - WealthDay2) / WealthDay2
-            else:
-                returns_tracker[generation, i] = np.nan
+    for i in range(len(pop)):
+        WealthDay2 = wealth_tracker[generation-2, i]
+        if WealthDay2 != 0:
+            returns_tracker[generation, i] = (wealth_tracker[generation-1, i] - WealthDay2) / WealthDay2
+        else:
+            returns_tracker[generation, i] = np.nan
     return returns_tracker
 
 def ComputeInvestmentRatios(pop, generation, returns_tracker, InvestmentHorizon, ReinvestmentRate):
