@@ -113,7 +113,6 @@ def update_wealth(
 def ApplyInvestment(
     pop, generation, wealth_tracker, returns_tracker, InvestmentHorizon, InvestmentSupply,
 ):
-
     wealth_tracker = iv.WealthTracking(wealth_tracker, pop, generation)
     returns_tracker = iv.ReturnTracking(wealth_tracker, returns_tracker, pop, generation)
     if InvestmentHorizon > 0:

@@ -50,6 +50,7 @@ def hypermutate(
     i = 0
     while i < len(pop):
         if pop[i].wealth < 0:  # The fund is insolvent and we will remove it.
+            # print("replacement " + str(i))
             round_replacements += 1
             # Mandate an administrator to liquidate the insolvent fund shares
             spoils += pop[i].asset
