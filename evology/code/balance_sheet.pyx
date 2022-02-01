@@ -299,4 +299,4 @@ def GetNumber(pop, strat):
 def AgeUpdate(pop):
     for ind in pop:
         ind.age += 1
-    
+    return pop

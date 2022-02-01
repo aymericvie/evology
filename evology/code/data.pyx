@@ -95,14 +95,9 @@ def TrackWealth(wealth_tracker, pop, generation):
     cdef cythonized.Individual ind
     wamp_list = []
 
-    for i, ind in enumerate(pop):
-
-        # Record the wealth of the fund
-        if ind.age > 1:
-            wealth_tracker[generation,i] = ind.wealth 
-        else: 
-            wealth_tracker[generation, i] = np.nan # to mark the replacement in the data
-        if generation - 21 >= 0: # We can start calculate the movements' monthly amplitude.
+    if generation - 21 >= 0:
+        for i, ind in enumerate(pop):
+         # We can start calculate the movements' monthly amplitude.
             old_wealth = wealth_tracker[generation-21,i]
             #for ind in pop:
             if old_wealth > 0 and ind.age >= 21:

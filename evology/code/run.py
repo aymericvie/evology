@@ -11,7 +11,7 @@ wealth_coordinates = [1 / 3, 1 / 3, 1 / 3]
 print(wealth_coordinates)
 
 def run(
-    POPULATION_SIZE, learning_mode, TIME, wealth_coordinates, tqdm_display, reset_wealth, ReinvestmentRate, InvestmentHorizon
+    POPULATION_SIZE, learning_mode, TIME, wealth_coordinates, tqdm_display, reset_wealth, ReinvestmentRate, InvestmentHorizon, InvestmentBool,
 ):
     if learning_mode == 0:
         df, pop, ReturnsNT, ReturnsVI, ReturnsTF = main(
@@ -24,6 +24,7 @@ def run(
             0,
             ReinvestmentRate,
             InvestmentHorizon,
+            InvestmentBool,
             tqdm_display,
             reset_wealth
         )
@@ -39,6 +40,7 @@ def run(
             MUTATION_RATE,
             ReinvestmentRate,
             InvestmentHorizon,
+            InvestmentBool,
             tqdm_display,
             reset_wealth,
         )
@@ -49,7 +51,8 @@ def run(
 
 
 df, pop, ReturnsNT, ReturnsVI, ReturnsTF = run(
-    10, 0, 100, wealth_coordinates, tqdm_display=False, reset_wealth=False, ReinvestmentRate= 1.0, InvestmentHorizon = 10
+    10, 0, 100, wealth_coordinates, tqdm_display=False, reset_wealth=False, 
+    ReinvestmentRate= 1.0, InvestmentHorizon = 10, InvestmentBool = False,
 )
 
 df.to_csv("evology/data/run_data.csv")

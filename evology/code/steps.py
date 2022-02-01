@@ -101,12 +101,33 @@ def marketActivity(
 
 
 def update_wealth(
-    pop, current_price, ReinvestmentRate, generation, wealth_tracker, returns_tracker, InvestmentHorizon
+    pop, current_price, ReinvestmentRate,
 ):
-    pop = iv.Invest(pop, generation, wealth_tracker, returns_tracker, InvestmentHorizon, ReinvestmentRate)
+
     bs.calculate_wealth(pop, current_price)  # Compute agents' wealth
     bs.update_profit_reinvestment(pop, ReinvestmentRate)
     bs.calculate_wealth(pop, current_price)
     bs.ComputeReturn(pop)
-    bs.AgeUpdate(pop)
+    pop = bs.AgeUpdate(pop)
     return pop
+
+def ApplyInvestment(
+    pop, generation, wealth_tracker, returns_tracker, InvestmentHorizon, InvestmentSupply, InvestmentBool
+):
+
+    print(generation) #
+
+    wealth_tracker = iv.WealthTracking(wealth_tracker, pop, generation)
+
+    print(wealth_tracker[generation,:]) #
+
+    returns_tracker = iv.ReturnTracking(wealth_tracker, returns_tracker, pop, generation)
+
+    print(returns_tracker[generation,:])
+
+    if InvestmentBool == True:
+        pop, propSignif = iv.Investment(returns_tracker, generation, InvestmentHorizon, pop, InvestmentSupply)
+    else:
+        propSignif = 0
+
+    return wealth_tracker, returns_tracker, pop, propSignif

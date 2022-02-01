@@ -11,6 +11,7 @@ def main(
     MUTATION_RATE,
     ReinvestmentRate,
     InvestmentHorizon,
+    InvestmentBool,
     tqdm_display,
     reset_wealth
 ):
@@ -20,7 +21,7 @@ def main(
         np.zeros((MAX_GENERATIONS - data.Barr, POPULATION_SIZE)),
         np.zeros((MAX_GENERATIONS - data.Barr, POPULATION_SIZE)),
     )
-    generation, CurrentPrice, dividend, spoils = 0, InitialPrice, INITIAL_DIVIDEND, 0
+    generation, CurrentPrice, dividend, spoils, InvestmentSupply = 0, InitialPrice, INITIAL_DIVIDEND, 0, RefInvestmentSupply * POPULATION_SIZE
     results = np.zeros((MAX_GENERATIONS - data.Barr, data.variables))
     wealth_tracker= np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
     returns_tracker= np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
@@ -88,10 +89,22 @@ def main(
             pop,
             CurrentPrice,
             ReinvestmentRate,
+        )
+
+        # Investment
+        (
+            wealth_tracker, 
+            returns_tracker, 
+            pop, 
+            propSignif
+        ) = ApplyInvestment(
+            pop, 
             generation, 
             wealth_tracker, 
             returns_tracker, 
-            InvestmentHorizon,
+            InvestmentHorizon, 
+            InvestmentSupply, 
+            InvestmentBool,
         )
 
         # Record results
