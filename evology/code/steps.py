@@ -114,16 +114,8 @@ def ApplyInvestment(
     pop, generation, wealth_tracker, returns_tracker, InvestmentHorizon, InvestmentSupply,
 ):
 
-    # print(generation) #
-
     wealth_tracker = iv.WealthTracking(wealth_tracker, pop, generation)
-
-    # print(wealth_tracker[generation,:]) #
-
     returns_tracker = iv.ReturnTracking(wealth_tracker, returns_tracker, pop, generation)
-
-    # print(returns_tracker[generation,:])
-
     if InvestmentHorizon > 0:
         pop, propSignif = iv.Investment(returns_tracker, generation, InvestmentHorizon, pop, InvestmentSupply)
     else:
