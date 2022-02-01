@@ -11,7 +11,6 @@ def main(
     MUTATION_RATE,
     ReinvestmentRate,
     InvestmentHorizon,
-    InvestmentBool,
     tqdm_display,
     reset_wealth
 ):
@@ -104,10 +103,10 @@ def main(
             returns_tracker, 
             InvestmentHorizon, 
             InvestmentSupply, 
-            InvestmentBool,
         )
 
         # Record results
+        wealth_tracker = iv.WealthTracking(wealth_tracker, pop, generation)
         results, wealth_tracker, ReturnsNT, ReturnsVI, ReturnsTF = data.record_results(
             results,
             wealth_tracker,

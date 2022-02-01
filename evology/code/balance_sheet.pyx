@@ -262,8 +262,7 @@ def ComputeReturn(pop):
 def update_profit_reinvestment(pop, ReinvestmentRate):
     for ind in pop:
         ind.profit = ind.wealth - ind.prev_wealth
-        ind.investor_flow = ind.profit * (ind.investment_ratio - 1)
-        ind.cash += ind.investor_flow
+        ind.cash += ind.profit * (ReinvestmentRate - 1)
 
 
 

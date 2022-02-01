@@ -60,7 +60,8 @@ def Investment(returns_tracker, generation, InvestmentHorizon, pop, InvestmentSu
         for i, ind in enumerate(pop):
             # What if TestValues[i] = np.nan?
             ind.investment_ratio = (TestValues[i] / SumTValues) 
-            ind.cash += ind.investment_ratio * InvestmentSupply
+            ind.investor_flow = ind.investment_ratio * InvestmentSupply
+            ind.cash += ind.investor_flow
             if TestValues[i] > TestThreshold:
                 countSignif += 1
         propSignif = 100 * (countSignif / len(pop))
