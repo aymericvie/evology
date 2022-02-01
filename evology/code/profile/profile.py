@@ -8,7 +8,6 @@ import numpy as np
 
 
 @profile
-
 def main(
     space,
     solver,
