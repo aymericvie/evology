@@ -135,14 +135,14 @@ def AnnualReturns(wealth_tracker, pop, generation):
             elif ind.type == 'tf':
                 wamp_list_tf.append(wamp_ind)
 
-            if wamp_ind >= 100:
-                print([generation, i])
-                print(wealth_tracker)
-                print(wealth_tracker[generation-300:generation,i])
-                print(old_wealth)
-                print(wealth_tracker[generation, i])
-                print(ind.age)
-                raise ValueError('Annual return recorded above 100.')
+            #if wamp_ind >= 100:
+                #print([generation, i])
+                #print(wealth_tracker)
+                #print(wealth_tracker[generation-300:generation,i])
+                #print(old_wealth)
+                #print(wealth_tracker[generation, i])
+                #print(ind.age)
+                #raise ValueError('Annual return recorded above 100.')
 
     wamp_nt = np.nanmean(wamp_list_nt)
     wamp_vi = np.nanmean(wamp_list_vi)
