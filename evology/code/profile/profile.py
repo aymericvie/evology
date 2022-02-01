@@ -8,6 +8,7 @@ import numpy as np
 
 
 @profile
+
 def main(
     space,
     solver,
@@ -17,6 +18,7 @@ def main(
     PROBA_SELECTION,
     MUTATION_RATE,
     ReinvestmentRate,
+    InvestmentHorizon,
     tqdm_display,
     reset_wealth
 ):
@@ -26,9 +28,10 @@ def main(
         np.zeros((MAX_GENERATIONS - data.Barr, POPULATION_SIZE)),
         np.zeros((MAX_GENERATIONS - data.Barr, POPULATION_SIZE)),
     )
-    generation, CurrentPrice, dividend, spoils = 0, InitialPrice, INITIAL_DIVIDEND, 0
+    generation, CurrentPrice, dividend, spoils, InvestmentSupply = 0, InitialPrice, INITIAL_DIVIDEND, 0, RefInvestmentSupply * POPULATION_SIZE
     results = np.zeros((MAX_GENERATIONS - data.Barr, data.variables))
-    wealth_tracker = np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
+    wealth_tracker= np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
+    returns_tracker= np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
     price_history, dividend_history = [], []
 
     pop, asset_supply = cr.CreatePop(POPULATION_SIZE, space, wealth_coordinates)
@@ -92,10 +95,26 @@ def main(
         pop = update_wealth(
             pop,
             CurrentPrice,
-            ReinvestmentRate
+            ReinvestmentRate,
+        )
+
+        # Investment
+        (
+            wealth_tracker, 
+            returns_tracker, 
+            pop, 
+            propSignif
+        ) = ApplyInvestment(
+            pop, 
+            generation, 
+            wealth_tracker, 
+            returns_tracker, 
+            InvestmentHorizon, 
+            InvestmentSupply, 
         )
 
         # Record results
+        # wealth_tracker = iv.WealthTracking(wealth_tracker, pop, generation)
         results, wealth_tracker, ReturnsNT, ReturnsVI, ReturnsTF = data.record_results(
             results,
             wealth_tracker,
@@ -120,7 +139,7 @@ def main(
 
     df = pd.DataFrame(results, columns=data.columns)
 
-    return df, pop
+    return df, pop, ReturnsNT, ReturnsVI, ReturnsTF
 
 np.random.seed(8)
 wealth_coordinates = [1 / 3, 1 / 3, 1 / 3]
@@ -134,6 +153,7 @@ df, pop = main(
     PROBA_SELECTION,
     MUTATION_RATE,
     0,
+    252,
     False,
     False,
 )
