@@ -80,7 +80,6 @@ def Investment(returns_tracker, generation, InvestmentHorizon, pop, InvestmentSu
             # print([MeanReturns, StdReturns, Sharpe])
             # print([Sharpe == np.nan, math.isnan(Sharpe)])
             if math.isnan(Sharpe) == False:
-                
                 SESharpe = np.sqrt(1 + 0.5 * Sharpe ** 2) / np.sqrt(InvestmentHorizon)
                 TValue = (Sharpe - INTEREST_RATE) / SESharpe
                 TestValues[i] = TValue
@@ -96,8 +95,10 @@ def Investment(returns_tracker, generation, InvestmentHorizon, pop, InvestmentSu
         # print("Inv ratio")
         for i, ind in enumerate(pop):
             # What if TestValues[i] = np.nan?
-            ind.investment_ratio = (TestValues[i] / SumTValues) 
-            
+            if SumTValues != 0:
+                ind.investment_ratio = (TestValues[i] / SumTValues) 
+            else:
+                ind.investment_ratio = 1/len(pop)
             # print(ind.investment_ratio)
             ind.investor_flow = ind.investment_ratio * InvestmentSupply
             ind.cash += ind.investor_flow

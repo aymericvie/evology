@@ -106,7 +106,7 @@ def main(
         )
 
         # Record results
-        wealth_tracker = iv.WealthTracking(wealth_tracker, pop, generation)
+        # wealth_tracker = iv.WealthTracking(wealth_tracker, pop, generation)
         results, wealth_tracker, ReturnsNT, ReturnsVI, ReturnsTF = data.record_results(
             results,
             wealth_tracker,
