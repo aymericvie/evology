@@ -78,6 +78,7 @@ cdef Investment(double[:, :] returns_tracker, int generation, int InvestmentHori
 
             if not isnan(Sharpe):
                 SESharpe = sqrt(1 + 0.5 * Sharpe ** 2) / sqrt(InvestmentHorizon)
+                # SESharpe = ((1 + 0.5 * Sharpe ** 2) / InvestmentHorizon) ** 1/2
                 TValue = (Sharpe - INTEREST_RATE) / SESharpe
                 TestValues[i] = TValue
             else:

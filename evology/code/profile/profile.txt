@@ -1,143 +1,156 @@
+         Gen   Price  ...  VI_AnnualReturns  TF_AnnualReturns
+0        0.0   87.08  ...               NaN               NaN
+1        1.0   85.43  ...               NaN               NaN
+2        2.0   85.56  ...               NaN               NaN
+3        3.0   87.21  ...               NaN               NaN
+4        4.0   88.75  ...               NaN               NaN
+...      ...     ...  ...               ...               ...
+9974  9974.0  117.51  ...         -0.007710         -0.026966
+9975  9975.0  118.58  ...         -0.007773         -0.027088
+9976  9976.0  118.56  ...         -0.007837         -0.027209
+9977  9977.0  119.84  ...         -0.007900         -0.027331
+9978  9978.0  119.49  ...         -0.007963         -0.027453
+
+[9979 rows x 62 columns]
 Wrote profile results to profile.py.lprof
 Timer unit: 1e-06 s
 
-Total time: 73.3377 s
+Total time: 78.5531 s
 File: profile/profile.py
 Function: main at line 10
 
 Line #      Hits         Time  Per Hit   % Time  Line Contents
 ==============================================================
     10                                           @profile
-    11                                           
-    12                                           def main(
-    13                                               space,
-    14                                               solver,
-    15                                               wealth_coordinates,
-    16                                               POPULATION_SIZE,
-    17                                               MAX_GENERATIONS,
-    18                                               PROBA_SELECTION,
-    19                                               MUTATION_RATE,
-    20                                               ReinvestmentRate,
-    21                                               InvestmentHorizon,
-    22                                               tqdm_display,
-    23                                               reset_wealth
-    24                                           ):
-    25                                               # Initialise important variables and dataframe to store results
-    26         1          2.0      2.0      0.0      ReturnsNT, ReturnsVI, ReturnsTF = (
-    27         1       1838.0   1838.0      0.0          np.zeros((MAX_GENERATIONS - data.Barr, POPULATION_SIZE)),
-    28         1       1822.0   1822.0      0.0          np.zeros((MAX_GENERATIONS - data.Barr, POPULATION_SIZE)),
-    29         1       2070.0   2070.0      0.0          np.zeros((MAX_GENERATIONS - data.Barr, POPULATION_SIZE)),
-    30                                               )
-    31         1          6.0      6.0      0.0      generation, CurrentPrice, dividend, spoils, InvestmentSupply = 0, InitialPrice, INITIAL_DIVIDEND, 0, RefInvestmentSupply * POPULATION_SIZE
-    32         1       1293.0   1293.0      0.0      results = np.zeros((MAX_GENERATIONS - data.Barr, data.variables))
-    33         1       2098.0   2098.0      0.0      wealth_tracker= np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
-    34         1       2095.0   2095.0      0.0      returns_tracker= np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
-    35         1          3.0      3.0      0.0      price_history, dividend_history = [], []
-    36                                           
-    37         1       4379.0   4379.0      0.0      pop, asset_supply = cr.CreatePop(POPULATION_SIZE, space, wealth_coordinates)
-    38         1        177.0    177.0      0.0      bs.calculate_wealth(pop, CurrentPrice)
-    39         1          9.0      9.0      0.0      bs.UpdatePrevWealth(pop)
-    40                                           
-    41     10002      96974.0      9.7      0.1      for generation in tqdm(
-    42         1          2.0      2.0      0.0          range(MAX_GENERATIONS), disable=tqdm_display, miniters=100, mininterval=0.5
-    43                                               ):
-    44                                           
-    45                                                   # Population reset
-    46     10000      70516.0      7.1      0.1          pop = cr.WealthReset(pop, space, wealth_coordinates, generation, reset_wealth)
-    47                                           
-    48                                                   # Hypermutation
-    49     20000    1587778.0     79.4      2.2          pop, replacements, spoils = ga.hypermutate(
-    50     10000      11233.0      1.1      0.0              pop,
-    51     10000      11174.0      1.1      0.0              spoils,
-    52                                                   )  # Replace insolvent agents
-    53                                           
-    54                                                   # Strategy evolution
-    55     20000    4307740.0    215.4      5.9          pop, CountSelected, CountMutated, CountCrossed, StratFlow = ga_evolution(
-    56     10000      11562.0      1.2      0.0              pop,
-    57     10000      11429.0      1.1      0.0              space,
-    58     10000      11335.0      1.1      0.0              generation,
-    59     10000      11391.0      1.1      0.0              wealth_coordinates,
-    60     10000      11532.0      1.2      0.0              PROBA_SELECTION,
-    61     10000      11401.0      1.1      0.0              MUTATION_RATE,
-    62                                                   )
-    63                                           
-    64                                                   # Calculate wealth and previous wealth
-    65     10000     134721.0     13.5      0.2          bs.calculate_wealth(pop, CurrentPrice)
-    66     10000      47595.0      4.8      0.1          bs.UpdatePrevWealth(pop)
-    67                                           
-    68                                                   # Market decisions (tsv, proc, edf)
-    69     10000    1069225.0    106.9      1.5          pop = decision_updates(pop, price_history, dividend_history)
-    70                                           
-    71                                                   # Market clearing
-    72     20000    4115669.0    205.8      5.6          pop, mismatch, CurrentPrice, price_history, ToLiquidate = marketClearing(
-    73     10000      12169.0      1.2      0.0              pop, CurrentPrice, price_history, spoils, solver
-    74                                                   )
-    75                                           
-    76                                                   # Market execution
-    77     10000      12872.0      1.3      0.0          (
-    78     10000      11512.0      1.2      0.0              pop,
-    79     10000      11495.0      1.1      0.0              volume,
-    80     10000      11184.0      1.1      0.0              dividend,
-    81     10000      11457.0      1.1      0.0              random_dividend,
-    82     10000      11317.0      1.1      0.0              dividend_history,
-    83     10000      11368.0      1.1      0.0              spoils,
-    84     20000     938127.0     46.9      1.3          ) = marketActivity(
-    85     10000      11353.0      1.1      0.0              pop,
-    86     10000      11166.0      1.1      0.0              CurrentPrice,
-    87     10000      11298.0      1.1      0.0              asset_supply,
-    88     10000      11067.0      1.1      0.0              dividend,
-    89     10000      11095.0      1.1      0.0              dividend_history,
-    90     10000      11094.0      1.1      0.0              spoils,
-    91     10000      11131.0      1.1      0.0              ToLiquidate,
-    92                                                   )
-    93                                           
-    94                                                   # Earnings, compute profits, age
-    95     20000     569277.0     28.5      0.8          pop = update_wealth(
-    96     10000      11402.0      1.1      0.0              pop,
-    97     10000      11351.0      1.1      0.0              CurrentPrice,
-    98     10000      11393.0      1.1      0.0              ReinvestmentRate,
-    99                                                   )
-   100                                           
-   101                                                   # Investment
-   102     10000      14748.0      1.5      0.0          (
-   103     10000      11631.0      1.2      0.0              wealth_tracker, 
-   104     10000      11505.0      1.2      0.0              returns_tracker, 
-   105     10000      11251.0      1.1      0.0              pop, 
-   106     10000      11423.0      1.1      0.0              propSignif
-   107     20000   53681346.0   2684.1     73.2          ) = ApplyInvestment(
-   108     10000      11532.0      1.2      0.0              pop, 
-   109     10000      11387.0      1.1      0.0              generation, 
-   110     10000      11311.0      1.1      0.0              wealth_tracker, 
-   111     10000      11239.0      1.1      0.0              returns_tracker, 
-   112     10000      11294.0      1.1      0.0              InvestmentHorizon, 
-   113     10000      11327.0      1.1      0.0              InvestmentSupply, 
-   114                                                   )
-   115                                           
-   116                                                   # Record results
-   117                                                   # wealth_tracker = iv.WealthTracking(wealth_tracker, pop, generation)
-   118     20000    6057430.0    302.9      8.3          results, wealth_tracker, ReturnsNT, ReturnsVI, ReturnsTF = data.record_results(
-   119     10000      11607.0      1.2      0.0              results,
-   120     10000      11399.0      1.1      0.0              wealth_tracker,
-   121     10000      11450.0      1.1      0.0              generation,
-   122     10000      11373.0      1.1      0.0              CurrentPrice,
-   123     10000      11424.0      1.1      0.0              mismatch,
-   124     10000      11546.0      1.2      0.0              dividend,
-   125     10000      11410.0      1.1      0.0              random_dividend,
-   126     10000      11465.0      1.1      0.0              volume,
-   127     10000      11346.0      1.1      0.0              replacements,
-   128     10000      11355.0      1.1      0.0              pop,
-   129     10000      11480.0      1.1      0.0              spoils,
-   130     10000      11650.0      1.2      0.0              asset_supply,
-   131     10000      11720.0      1.2      0.0              ReturnsNT,
-   132     10000      11563.0      1.2      0.0              ReturnsVI,
-   133     10000      11473.0      1.1      0.0              ReturnsTF,
-   134     10000      11518.0      1.2      0.0              CountSelected,
-   135     10000      11466.0      1.1      0.0              CountMutated,
-   136     10000      11521.0      1.2      0.0              CountCrossed,
-   137     10000      11593.0      1.2      0.0              StratFlow,
-   138                                                   )
-   139                                           
-   140         1       1676.0   1676.0      0.0      df = pd.DataFrame(results, columns=data.columns)
-   141                                           
-   142         1          2.0      2.0      0.0      return df, pop, ReturnsNT, ReturnsVI, ReturnsTF
+    11                                           def main(
+    12                                               space,
+    13                                               solver,
+    14                                               wealth_coordinates,
+    15                                               POPULATION_SIZE,
+    16                                               MAX_GENERATIONS,
+    17                                               PROBA_SELECTION,
+    18                                               MUTATION_RATE,
+    19                                               ReinvestmentRate,
+    20                                               InvestmentHorizon,
+    21                                               tqdm_display,
+    22                                               reset_wealth
+    23                                           ):
+    24                                               # Initialise important variables and dataframe to store results
+    25         1          2.0      2.0      0.0      ReturnsNT, ReturnsVI, ReturnsTF = (
+    26         1       2383.0   2383.0      0.0          np.zeros((MAX_GENERATIONS - data.Barr, POPULATION_SIZE)),
+    27         1       2476.0   2476.0      0.0          np.zeros((MAX_GENERATIONS - data.Barr, POPULATION_SIZE)),
+    28         1       2285.0   2285.0      0.0          np.zeros((MAX_GENERATIONS - data.Barr, POPULATION_SIZE)),
+    29                                               )
+    30         1          5.0      5.0      0.0      generation, CurrentPrice, dividend, spoils, InvestmentSupply = 0, InitialPrice, INITIAL_DIVIDEND, 0, RefInvestmentSupply * POPULATION_SIZE
+    31         1       1324.0   1324.0      0.0      results = np.zeros((MAX_GENERATIONS - data.Barr, data.variables))
+    32         1       2128.0   2128.0      0.0      wealth_tracker= np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
+    33         1       2178.0   2178.0      0.0      returns_tracker= np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
+    34         1          2.0      2.0      0.0      price_history, dividend_history = [], []
+    35                                           
+    36         1       3025.0   3025.0      0.0      pop, asset_supply = cr.CreatePop(POPULATION_SIZE, space, wealth_coordinates)
+    37         1         28.0     28.0      0.0      bs.calculate_wealth(pop, CurrentPrice)
+    38         1          8.0      8.0      0.0      bs.UpdatePrevWealth(pop)
+    39                                           
+    40     10002      92332.0      9.2      0.1      for generation in tqdm(
+    41         1          2.0      2.0      0.0          range(MAX_GENERATIONS), disable=tqdm_display, miniters=100, mininterval=0.5
+    42                                               ):
+    43                                           
+    44                                                   # Population reset
+    45     10000      67629.0      6.8      0.1          pop = cr.WealthReset(pop, space, wealth_coordinates, generation, reset_wealth)
+    46                                           
+    47                                                   # Hypermutation
+    48     20000    1557559.0     77.9      2.0          pop, replacements, spoils = ga.hypermutate(
+    49     10000      11175.0      1.1      0.0              pop,
+    50     10000      11007.0      1.1      0.0              spoils,
+    51                                                   )  # Replace insolvent agents
+    52                                           
+    53                                                   # Strategy evolution
+    54     20000    4229852.0    211.5      5.4          pop, CountSelected, CountMutated, CountCrossed, StratFlow = ga_evolution(
+    55     10000      11509.0      1.2      0.0              pop,
+    56     10000      11275.0      1.1      0.0              space,
+    57     10000      11189.0      1.1      0.0              generation,
+    58     10000      11166.0      1.1      0.0              wealth_coordinates,
+    59     10000      11300.0      1.1      0.0              PROBA_SELECTION,
+    60     10000      11182.0      1.1      0.0              MUTATION_RATE,
+    61                                                   )
+    62                                           
+    63                                                   # Calculate wealth and previous wealth
+    64     10000     133847.0     13.4      0.2          bs.calculate_wealth(pop, CurrentPrice)
+    65     10000      45724.0      4.6      0.1          bs.UpdatePrevWealth(pop)
+    66                                           
+    67                                                   # Market decisions (tsv, proc, edf)
+    68     10000    1068829.0    106.9      1.4          pop = decision_updates(pop, price_history, dividend_history)
+    69                                           
+    70                                                   # Market clearing
+    71     20000    4007976.0    200.4      5.1          pop, mismatch, CurrentPrice, price_history, ToLiquidate = marketClearing(
+    72     10000      11922.0      1.2      0.0              pop, CurrentPrice, price_history, spoils, solver
+    73                                                   )
+    74                                           
+    75                                                   # Market execution
+    76     10000      12727.0      1.3      0.0          (
+    77     10000      11394.0      1.1      0.0              pop,
+    78     10000      11457.0      1.1      0.0              volume,
+    79     10000      11269.0      1.1      0.0              dividend,
+    80     10000      11311.0      1.1      0.0              random_dividend,
+    81     10000      11176.0      1.1      0.0              dividend_history,
+    82     10000      11104.0      1.1      0.0              spoils,
+    83     20000     896650.0     44.8      1.1          ) = marketActivity(
+    84     10000      11191.0      1.1      0.0              pop,
+    85     10000      11013.0      1.1      0.0              CurrentPrice,
+    86     10000      11005.0      1.1      0.0              asset_supply,
+    87     10000      10998.0      1.1      0.0              dividend,
+    88     10000      10884.0      1.1      0.0              dividend_history,
+    89     10000      11048.0      1.1      0.0              spoils,
+    90     10000      11065.0      1.1      0.0              ToLiquidate,
+    91                                                   )
+    92                                           
+    93                                                   # Earnings, compute profits, age
+    94     20000     560480.0     28.0      0.7          pop = update_wealth(
+    95     10000      11310.0      1.1      0.0              pop,
+    96     10000      11247.0      1.1      0.0              CurrentPrice,
+    97     10000      11132.0      1.1      0.0              ReinvestmentRate,
+    98                                                   )
+    99                                           
+   100                                                   # Investment
+   101     10000      14734.0      1.5      0.0          (
+   102     10000      11596.0      1.2      0.0              wealth_tracker, 
+   103     10000      11270.0      1.1      0.0              returns_tracker, 
+   104     10000      11209.0      1.1      0.0              pop, 
+   105     10000      11156.0      1.1      0.0              propSignif
+   106     20000   59327687.0   2966.4     75.5          ) = ApplyInvestment(
+   107     10000      11308.0      1.1      0.0              pop, 
+   108     10000      11267.0      1.1      0.0              generation, 
+   109     10000      11285.0      1.1      0.0              wealth_tracker, 
+   110     10000      11210.0      1.1      0.0              returns_tracker, 
+   111     10000      11212.0      1.1      0.0              InvestmentHorizon, 
+   112     10000      11369.0      1.1      0.0              InvestmentSupply, 
+   113                                                   )
+   114                                           
+   115                                                   # Record results
+   116                                                   # wealth_tracker = iv.WealthTracking(wealth_tracker, pop, generation)
+   117     20000    5911177.0    295.6      7.5          results, wealth_tracker, ReturnsNT, ReturnsVI, ReturnsTF = data.record_results(
+   118     10000      11514.0      1.2      0.0              results,
+   119     10000      11290.0      1.1      0.0              wealth_tracker,
+   120     10000      11290.0      1.1      0.0              generation,
+   121     10000      11286.0      1.1      0.0              CurrentPrice,
+   122     10000      11331.0      1.1      0.0              mismatch,
+   123     10000      11256.0      1.1      0.0              dividend,
+   124     10000      11262.0      1.1      0.0              random_dividend,
+   125     10000      11248.0      1.1      0.0              volume,
+   126     10000      11261.0      1.1      0.0              replacements,
+   127     10000      11281.0      1.1      0.0              pop,
+   128     10000      11250.0      1.1      0.0              spoils,
+   129     10000      11474.0      1.1      0.0              asset_supply,
+   130     10000      11566.0      1.2      0.0              ReturnsNT,
+   131     10000      11427.0      1.1      0.0              ReturnsVI,
+   132     10000      11207.0      1.1      0.0              ReturnsTF,
+   133     10000      11261.0      1.1      0.0              CountSelected,
+   134     10000      11270.0      1.1      0.0              CountMutated,
+   135     10000      11327.0      1.1      0.0              CountCrossed,
+   136     10000      11385.0      1.1      0.0              StratFlow,
+   137                                                   )
+   138                                           
+   139         1       1607.0   1607.0      0.0      df = pd.DataFrame(results, columns=data.columns)
+   140                                           
+   141         1          2.0      2.0      0.0      return df, pop, ReturnsNT, ReturnsVI, ReturnsTF
 
