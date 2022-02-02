@@ -2,7 +2,7 @@
 from scipy.special import stdtrit
 cimport cythonized
 import numpy as np
-import math
+from libc.math cimport isnan
 from parameters import INTEREST_RATE, SHIELD_DURATION, ShieldResults, ShieldInvestment
 
 cdef double Barr = max(SHIELD_DURATION, ShieldResults) 
@@ -36,7 +36,7 @@ cdef ReturnTracking(wealth_tracker, returns_tracker, list pop, int generation):
                 returns_tracker[generation, i] = np.nan
     return returns_tracker
 
-cdef Investment(returns_tracker, int generation, int InvestmentHorizon, list pop, double InvestmentSupply):
+cdef Investment(double[:, :] returns_tracker, int generation, int InvestmentHorizon, list pop, double InvestmentSupply):
 
     cdef double TestThreshold
     cdef list TestValues
@@ -48,6 +48,8 @@ cdef Investment(returns_tracker, int generation, int InvestmentHorizon, list pop
     cdef int countSignif
     cdef double SumTValues
     cdef cythonized.Individual ind
+    cdef double[:, :] ReturnData
+    cdef double[:] DataSlice
 
     if generation > Barr + InvestmentHorizon + ShieldInvestment:
         # Control Investment Horizon.
@@ -68,13 +70,13 @@ cdef Investment(returns_tracker, int generation, int InvestmentHorizon, list pop
             DataSlice = ReturnData[:,i]
             MeanReturns = np.mean(DataSlice)
             StdReturns = np.std(DataSlice)
-            
+
             if StdReturns != 0:
                 Sharpe = MeanReturns / StdReturns
             else:
                 Sharpe = np.nan
 
-            if math.isnan(Sharpe) == False:
+            if not isnan(Sharpe):
                 SESharpe = np.sqrt(1 + 0.5 * Sharpe ** 2) / np.sqrt(InvestmentHorizon)
                 TValue = (Sharpe - INTEREST_RATE) / SESharpe
                 TestValues[i] = TValue
