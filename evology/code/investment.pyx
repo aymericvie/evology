@@ -2,7 +2,7 @@
 from scipy.special import stdtrit
 cimport cythonized
 import numpy as np
-from libc.math cimport isnan
+from libc.math cimport isnan, sqrt
 from parameters import INTEREST_RATE, SHIELD_DURATION, ShieldResults, ShieldInvestment
 
 cdef double Barr = max(SHIELD_DURATION, ShieldResults) 
@@ -77,7 +77,7 @@ cdef Investment(double[:, :] returns_tracker, int generation, int InvestmentHori
                 Sharpe = np.nan
 
             if not isnan(Sharpe):
-                SESharpe = np.sqrt(1 + 0.5 * Sharpe ** 2) / np.sqrt(InvestmentHorizon)
+                SESharpe = sqrt(1 + 0.5 * Sharpe ** 2) / sqrt(InvestmentHorizon)
                 TValue = (Sharpe - INTEREST_RATE) / SESharpe
                 TestValues[i] = TValue
             else:
