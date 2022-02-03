@@ -7,6 +7,23 @@ from parameters import INTEREST_RATE, SHIELD_DURATION, ShieldResults, ShieldInve
 
 cdef double Barr = max(SHIELD_DURATION, ShieldResults) 
 
+cdef double mean(double[:] x) nogil:
+    cdef int N = len(x)
+    cdef double out = 0.0
+    for i in range(N):
+        out += x[i]
+    return out / N
+
+
+cdef double std(double[:] x) nogil:
+    cdef int N = len(x)
+    cdef double _mean = mean(x)
+    cdef double out = 0.0
+    for i in range(N):
+        out += (x[i] - _mean) ** 2
+    return sqrt(out / N)
+
+
 def InvestmentProcedure(pop, generation, returns_tracker, InvestmentHorizon, InvestmentSupply):
     if InvestmentHorizon > 0:
         pop, propSignif = Investment(returns_tracker, generation, InvestmentHorizon, pop, InvestmentSupply)
@@ -48,8 +65,8 @@ cdef Investment(double[:, :] returns_tracker, int generation, int InvestmentHori
 
         for i in range(len(pop)):
             DataSlice = ReturnData[:,i]
-            MeanReturns = np.mean(DataSlice)
-            StdReturns = np.std(DataSlice)
+            MeanReturns = mean(DataSlice)
+            StdReturns = std(DataSlice)
 
             if StdReturns != 0:
                 Sharpe = MeanReturns / StdReturns
