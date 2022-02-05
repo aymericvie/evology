@@ -65,7 +65,7 @@ cdef Investment(double[:, :] returns_tracker, int generation, int InvestmentHori
     cdef cythonized.Individual ind
     cdef double[:, :] ReturnData
     cdef double[:] DataSlice
-    cdef double[:] AvgFundData
+    cdef double[:] AvgFundData = np.zeros(len(pop))
     cdef int i = 0
 
     if generation > Barr + InvestmentHorizon + ShieldInvestment:
@@ -87,9 +87,8 @@ cdef Investment(double[:, :] returns_tracker, int generation, int InvestmentHori
 
         # Computing the Sharpe ratio of the average fund
 
-        #AvgFundData = [0] * len(pop) 
         for i in range(len(pop)):
-            AvgFundData[i] = mean(ReturnData)
+            AvgFundData[i] = mean(ReturnData[i, :])
         print(AvgFundData)
         print(type(AvgFundData))
 
