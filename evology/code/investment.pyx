@@ -68,6 +68,7 @@ cdef compare_sharpe(list pop, double[:,:] ReturnData, double InvestmentHorizon, 
     cdef double sum_inv_ratio = 0.0
     cdef double sum_tvalue_cpr = 0.0
     cdef double countSignif = 0.0
+    cdef double sum_tvalue_cpr_abs = 0.0
 
     for i, ind in enumerate(pop):
         if isnan(ind.sharpe) == False:
@@ -93,7 +94,7 @@ cdef compare_sharpe(list pop, double[:,:] ReturnData, double InvestmentHorizon, 
                     S2 = mean(DataSlice2)
                     if isnan(S2) == False:
                         T = (S - S2) / ((sqrt( ((InvestmentHorizon - 1.0) * (std(DataSlice) ** 2) + (InvestmentHorizon - 1.0) * (std(DataSlice2) ** 2)))/(2.0 * InvestmentHorizon - 2)) * sqrt (2.0 / InvestmentHorizon))
-                        print([i, j, S, S2, T])
+                        # print([i, j, S, S2, T])
                     
 
                     #if S > S2:
@@ -104,28 +105,30 @@ cdef compare_sharpe(list pop, double[:,:] ReturnData, double InvestmentHorizon, 
                     #    total_tvalue_cpr_minus += abs(T)
                         
 
-    print("Sharpe + investment ratio")
 
     for ind in pop:
-        if ind.tvalue_cpr > 0:
-            total_tvalue_cpr += ind.tvalue_cpr
+        if isnan(ind.tvalue_cpr) == False:
+            sum_tvalue_cpr_abs += ind.tvalue_cpr
+            if ind.tvalue_cpr > 0:
+                total_tvalue_cpr += ind.tvalue_cpr
 
     for i, ind in enumerate(pop):
-        ind.investment_ratio = ind.tvalue_cpr / total_tvalue_cpr
+        if isnan(ind.tvalue_cpr) == False:
+            ind.investment_ratio = ind.tvalue_cpr / total_tvalue_cpr
 
-        sum_inv_ratio += ind.investment_ratio
-        sum_tvalue_cpr += ind.tvalue_cpr
+            sum_inv_ratio += ind.investment_ratio
+            sum_tvalue_cpr += ind.tvalue_cpr
         if ind.tvalue_cpr >= TestThreshold:
             countSignif += ind.investment_ratio
 
-        print([round(ind.sharpe,2), round(ind.investment_ratio,2), round(ind.tvalue_cpr,2), round(total_tvalue_cpr,2)])
+        #print([round(ind.sharpe,2), round(ind.investment_ratio,2), round(ind.tvalue_cpr,2), round(total_tvalue_cpr,2)])
 
     #if round(sum_inv_ratio,3) != 1.0:
     #        print(ind.investment_ratio)
     ##    for ind in pop:
     #    print(sum_inv_ratio)
     #    raise ValueError('Sum of invstment ratios is unequal to 1.0.')
-    return pop, (100 * countSignif), (sum_tvalue_cpr / len(pop))
+    return pop, (100 * countSignif), (sum_tvalue_cpr_abs / len(pop))
 
 cdef DistributionInvestment(list pop, double InvestmentSupply):
     cdef cythonized.Individual ind 
