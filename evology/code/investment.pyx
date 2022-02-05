@@ -64,6 +64,7 @@ cdef Investment(double[:, :] returns_tracker, int generation, int InvestmentHori
     cdef int countSignifAbsolute
     cdef double SumTValuesAbsolute
     cdef double AbsSumTValuesAbsolute
+    cdef double AbsSumTValuesRelative
     cdef cythonized.Individual ind
     cdef double[:, :] ReturnData
     cdef double[:] DataSlice
@@ -85,14 +86,16 @@ cdef Investment(double[:, :] returns_tracker, int generation, int InvestmentHori
         TestThreshold = stdtrit(InvestmentHorizon, 0.95)
         TestValuesAbsolute = [0] * len(pop)
         TestValuesRelative = [0] * len(pop)
-        AbsSumTValuesAbsolute = 0
+        AbsSumTValuesAbsolute = 0.0
+        AbsSumTValuesRelative = 0.0
 
         # Computing the Sharpe ratio of the average fund
 
         for i in range(len(pop)):
             AvgFundData[i] = mean(ReturnData[i, :])
-        print(AvgFundData)
-        print(type(AvgFundData))
+        #print(AvgFundData)
+        #print(type(AvgFundData))
+        #print(len(AvgFundData))
 
         AvgReturn = mean(AvgFundData)
         AvgStd = std(AvgFundData)
@@ -104,10 +107,6 @@ cdef Investment(double[:, :] returns_tracker, int generation, int InvestmentHori
 
         for i in range(len(pop)):
             DataSlice = ReturnData[:,i]
-
-            print(DataSlice)
-            print(type(DataSlice))
-
             MeanReturns = mean(DataSlice)
             StdReturns = std(DataSlice)
 
@@ -123,11 +122,11 @@ cdef Investment(double[:, :] returns_tracker, int generation, int InvestmentHori
                 TestValuesAbsolute[i] = TValueAbsolute
 
                 PearsonCorrelation = pearson(AvgFundData, DataSlice)
-                if PearsonCorrelation < 1 or PearsonCorrelation > 1:
+                if PearsonCorrelation < -1 or PearsonCorrelation > 1:
                     print(PearsonCorrelation)
                     raise ValueError('Pearson correlation out of bounds.')
                 term = 0.5 * (SharpeAbsolute ** 2 + AvgSharpe ** 2 - 2 * (SharpeAbsolute * AvgSharpe * PearsonCorrelation ** 2))
-                TValueRelative  = (SharpeAbsolute - AvgSharpe) / ((1/len(ReturnData) * (2 - 2 * PearsonCorrelation + term))  ** 0.5)
+                TValueRelative  = (SharpeAbsolute - AvgSharpe) / (((InvestmentHorizon ** (-1)) * (2 - 2 * PearsonCorrelation + term))  ** 0.5)
                 TestValuesRelative[i] = TValueRelative
 
                 AbsSumTValuesAbsolute += abs(TValueAbsolute)
