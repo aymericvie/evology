@@ -16,6 +16,7 @@ import warnings
 import matplotlib
 import matplotlib.pyplot as plt
 import investment as iv
+from scipy.special import stdtrit
 
 # random.seed(random.random())
 
@@ -111,7 +112,7 @@ def update_wealth(
     return pop
 
 def ApplyInvestment(
-    pop, generation, returns_tracker, InvestmentHorizon, InvestmentSupply,
+    pop, generation, returns_tracker, InvestmentHorizon, InvestmentSupply, TestThreshold
 ):
     # wealth_tracker = iv.WealthTracking(wealth_tracker, pop, generation)
     # returns_tracker = iv.ReturnTracking(wealth_tracker, returns_tracker, pop, generation)
@@ -119,6 +120,6 @@ def ApplyInvestment(
     #     pop, propSignif = iv.Investment(returns_tracker, generation, InvestmentHorizon, pop, InvestmentSupply)
     # else:
     #     propSignif = 0
-    returns_tracker, pop, propSignif, AvgValSignif = iv.InvestmentProcedure(pop, generation, returns_tracker, InvestmentHorizon, InvestmentSupply)
+    returns_tracker, pop, propSignif, AvgValSignif = iv.InvestmentProcedure(pop, generation, returns_tracker, InvestmentHorizon, InvestmentSupply, TestThreshold)
 
     return returns_tracker, pop, propSignif, AvgValSignif

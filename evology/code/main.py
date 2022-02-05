@@ -25,6 +25,7 @@ def main(
     wealth_tracker= np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
     returns_tracker= np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
     price_history, dividend_history = [], []
+    TestThreshold = stdtrit(InvestmentHorizon, 0.95)
 
     pop, asset_supply = cr.CreatePop(POPULATION_SIZE, space, wealth_coordinates)
     bs.calculate_wealth(pop, CurrentPrice)
@@ -112,6 +113,7 @@ def main(
             returns_tracker, 
             InvestmentHorizon, 
             InvestmentSupply, 
+            TestThreshold
         )
 
         # Record results

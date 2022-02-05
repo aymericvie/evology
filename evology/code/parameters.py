@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import numpy as np
 
+
 """ Imitation parmeters """
 MUTATION_RATE = 1 / (252 * 4)
 PROBA_SELECTION = 1 / (252 * 4)

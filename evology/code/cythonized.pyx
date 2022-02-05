@@ -94,3 +94,4 @@ cdef class Individual(list):
         self.fitness = creator.fitness_strategy()
         self.edf = None
         self.sharpe = 0.0
+        self.tvalue_cpr = 0.0
