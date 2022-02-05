@@ -115,7 +115,10 @@ cdef Investment(double[:, :] returns_tracker, int generation, int InvestmentHori
         for i in range(len(pop)):
             AvgStd += std_cumulative(ReturnData[i,:], AvgReturn)
             CumLength += len(ReturnData[i,:])
-        AvgStd = sqrt(AvgStd / CumLength)
+        # Compute the actual standard deviation
+        AvgStd = sqrt(AvgStd / CumLength) 
+        # Apply a correction to compare as if we had the same sample size
+        #AvgStd = AvgStd * (sqrt(CumLength) / sqrt(InvestmentHorizon))
 
         if AvgStd != 0 :
             AvgSharpe = (AvgReturn - INTEREST_RATE) / AvgStd 
@@ -165,11 +168,14 @@ cdef Investment(double[:, :] returns_tracker, int generation, int InvestmentHori
         for i, ind in enumerate(pop):
             if SumTValuesAbsolute != 0:
 
-                if ind.sharpe >= AvgSharpe:
-                    ind.investment_ratio = TestValuesRelative[i] / SumTValuesRelative
-                else:
-                    ind.investment_ratio = -TestValuesRelative[i] / SumTValuesRelative
+                #if ind.sharpe >= AvgSharpe:
+                #    ind.investment_ratio = TestValuesRelative[i] / SumTValuesRelative
+                #else:
+                #    ind.investment_ratio = -TestValuesRelative[i] / SumTValuesRelative
                 # TODO: Isnt' the program now rewarding the most extremely divergent funds, including not profitable ones?
+                # TODO: the above does not sum to 1
+
+                ind.investment_ratio = TestValuesRelative[i] / SumTValuesRelative
 
                 print([ind.sharpe, TestValuesAbsolute[i] / SumTValuesAbsolute, TestValuesRelative[i] / SumTValuesRelative, ind.investment_ratio])
                 ind.investment_ratio = (TestValuesAbsolute[i] / SumTValuesAbsolute) 
