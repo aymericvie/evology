@@ -105,10 +105,6 @@ cdef Investment(double[:, :] returns_tracker, int generation, int InvestmentHori
 
         for i in range(len(pop)):
             AvgFundData[i] = mean(ReturnData[i, :])
-            
-        #print(AvgFundData)
-        #print(type(AvgFundData))
-        #print(len(AvgFundData))
 
         AvgReturn = mean(AvgFundData)
 
@@ -117,8 +113,6 @@ cdef Investment(double[:, :] returns_tracker, int generation, int InvestmentHori
             CumLength += len(ReturnData[i,:])
         # Compute the actual standard deviation
         AvgStd = sqrt(AvgStd / CumLength) 
-        # Apply a correction to compare as if we had the same sample size
-        #AvgStd = AvgStd * (sqrt(CumLength) / sqrt(InvestmentHorizon))
 
         if AvgStd != 0 :
             AvgSharpe = (AvgReturn - INTEREST_RATE) / AvgStd 
@@ -140,7 +134,6 @@ cdef Investment(double[:, :] returns_tracker, int generation, int InvestmentHori
             
             if not isnan(SharpeAbsolute):
                 SESharpe = sqrt(1 + 0.5 * SharpeAbsolute ** 2) / sqrt(InvestmentHorizon)
-                # SESharpe = ((1 + 0.5 * Sharpe ** 2) / InvestmentHorizon) ** 1/2
                 TValueAbsolute = (SharpeAbsolute - INTEREST_RATE) / SESharpe
                 TestValuesAbsolute[i] = TValueAbsolute
 
