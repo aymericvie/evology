@@ -93,3 +93,4 @@ cdef class Individual(list):
         self.leverage = 0.0
         self.fitness = creator.fitness_strategy()
         self.edf = None
+        self.sharpe = 0.0

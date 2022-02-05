@@ -25,6 +25,15 @@ cdef double std(double[:] x) nogil:
         out += (x[i] - _mean) ** 2
     return sqrt(out / N)
 
+
+cdef double std_cumulative(double[:] x, double _mean) nogil:
+    cdef int N = len(x)
+    cdef double out = 0.0
+    cdef int i = 0
+    for i in range(N):
+        out += (x[i] - _mean) ** 2
+    return out
+
 cdef double pearson(double[:] x, double[:] y) nogil:
     cdef int N = len(x)
     cdef double mx = mean(x)
@@ -66,10 +75,13 @@ cdef Investment(double[:, :] returns_tracker, int generation, int InvestmentHori
     cdef double AbsSumTValuesAbsolute
     cdef double AbsSumTValuesRelative
     cdef cythonized.Individual ind
+    cdef int CumLength = 0
     cdef double[:, :] ReturnData
     cdef double[:] DataSlice
     cdef double[:] AvgFundData = np.zeros(len(pop))
     cdef int i = 0
+    cdef double AvgReturn
+    cdef double AvgStd = 0.0
 
     if generation > Barr + InvestmentHorizon + ShieldInvestment:
         # Control Investment Horizon.
@@ -93,19 +105,26 @@ cdef Investment(double[:, :] returns_tracker, int generation, int InvestmentHori
 
         for i in range(len(pop)):
             AvgFundData[i] = mean(ReturnData[i, :])
+            
         #print(AvgFundData)
         #print(type(AvgFundData))
         #print(len(AvgFundData))
 
         AvgReturn = mean(AvgFundData)
-        AvgStd = std(AvgFundData)
+
+        for i in range(len(pop)):
+            AvgStd += std_cumulative(ReturnData[i,:], AvgReturn)
+            CumLength += len(ReturnData[i,:])
+        AvgStd = sqrt(AvgStd / CumLength)
 
         if AvgStd != 0 :
             AvgSharpe = (AvgReturn - INTEREST_RATE) / AvgStd 
         else:
             AvgSharpe = np.nan
+        print('AvgSharpe, Individual Sharpes')
+        print(AvgSharpe)
 
-        for i in range(len(pop)):
+        for i, ind in enumerate(pop):
             DataSlice = ReturnData[:,i]
             MeanReturns = mean(DataSlice)
             StdReturns = std(DataSlice)
@@ -114,7 +133,8 @@ cdef Investment(double[:, :] returns_tracker, int generation, int InvestmentHori
                 SharpeAbsolute = MeanReturns / StdReturns
             else:
                 SharpeAbsolute = np.nan
-
+            ind.sharpe = SharpeAbsolute
+            
             if not isnan(SharpeAbsolute):
                 SESharpe = sqrt(1 + 0.5 * SharpeAbsolute ** 2) / sqrt(InvestmentHorizon)
                 # SESharpe = ((1 + 0.5 * Sharpe ** 2) / InvestmentHorizon) ** 1/2
@@ -136,14 +156,22 @@ cdef Investment(double[:, :] returns_tracker, int generation, int InvestmentHori
                 TestValuesRelative[i] = 0
 
         print("Test Values Absolute / Relative")
-        print(TestValuesAbsolute)
-        print(TestValuesRelative)
 
         # Decide investment ratios and apply the investment.
         SumTValuesAbsolute = sum(TestValuesAbsolute)
+        SumTValuesRelative = sum(TestValuesRelative)
+
         countSignifAbsolute = 0
         for i, ind in enumerate(pop):
             if SumTValuesAbsolute != 0:
+
+                if ind.sharpe >= AvgSharpe:
+                    ind.investment_ratio = TestValuesRelative[i] / SumTValuesRelative
+                else:
+                    ind.investment_ratio = -TestValuesRelative[i] / SumTValuesRelative
+                # TODO: Isnt' the program now rewarding the most extremely divergent funds, including not profitable ones?
+
+                print([ind.sharpe, TestValuesAbsolute[i] / SumTValuesAbsolute, TestValuesRelative[i] / SumTValuesRelative, ind.investment_ratio])
                 ind.investment_ratio = (TestValuesAbsolute[i] / SumTValuesAbsolute) 
             else:
                 ind.investment_ratio = 1/len(pop)

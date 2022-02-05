@@ -21,3 +21,4 @@ cdef class Individual(list):
     cdef public object fitness
     cdef public object edf
     cdef public object age
+    cdef public double sharpe
