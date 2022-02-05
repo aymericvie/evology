@@ -29,13 +29,15 @@ cdef double pearson(double[:] x, double[:] y) nogil:
     cdef int N = len(x)
     cdef double mx = mean(x)
     cdef double my = mean(y)
-    cdef double num 
-    cdef double denum
+    cdef double num = 0.0
+    cdef double denum1 = 0.0
+    cdef double denum2 = 0.0
 
     for i in range(N):
         num += (x[i] - mx) * (y[i] - my)
-        denum += ((x[i] - mx) ** 2) * ((y[i] - my) ** 2)
-    return num / sqrt(denum)
+        denum1 += (x[i] - mx) ** 2
+        denum2 += (y[i] - my) ** 2
+    return num / sqrt(denum1 * denum2)
 
 
 def InvestmentProcedure(pop, generation, returns_tracker, InvestmentHorizon, InvestmentSupply):
