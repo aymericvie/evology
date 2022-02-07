@@ -298,9 +298,12 @@ def ResultsProcess(list pop, double spoils, double price):
 
     # Normalise flows
     Sumflows = NTflows + VIflows + TFflows
-    NTflows = NTflows / Sumflows
-    VIflows = VIflows / Sumflows
-    TFflows = TFflows / Sumflows
+    NTflows_ = NTflows / Sumflows
+    VIflows_ = VIflows / Sumflows
+    TFflows_ = TFflows / Sumflows
+    NTflows = NTflows_
+    VIflows = VIflows_
+    TFflows = TFflows_
 
     ListOutput = [
         LongAssets,
