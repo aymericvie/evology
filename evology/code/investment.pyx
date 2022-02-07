@@ -113,7 +113,8 @@ cdef compare_sharpe(list pop, double[:,:] ReturnData, double InvestmentHorizon, 
                 total_tvalue_cpr += ind.tvalue_cpr
 
     for i, ind in enumerate(pop):
-        if isnan(ind.tvalue_cpr) == False:
+        ind.investment_ratio = 0.0
+        if isnan(ind.tvalue_cpr) == False and isnan(ind.sharpe) == False:
             ind.investment_ratio = ind.tvalue_cpr / total_tvalue_cpr
 
             sum_inv_ratio += ind.investment_ratio
@@ -122,6 +123,10 @@ cdef compare_sharpe(list pop, double[:,:] ReturnData, double InvestmentHorizon, 
             countSignif += ind.investment_ratio
 
         #print([round(ind.sharpe,2), round(ind.investment_ratio,2), round(ind.tvalue_cpr,2), round(total_tvalue_cpr,2)])
+
+    if round(sum_inv_ratio,3) != 0.0:
+        print(sum_inv_ratio)
+        raise ValueError('Sum of investment ratios is not null.')
 
     #if round(sum_inv_ratio,3) != 1.0:
     #        print(ind.investment_ratio)
