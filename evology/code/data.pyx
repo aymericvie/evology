@@ -4,7 +4,6 @@
 import pandas as pd
 import numpy as np
 import balance_sheet as bs
-import timeit
 
 from parameters import *
 cimport cythonized
@@ -87,7 +86,9 @@ columns = [
     # Significance
     "PropSignifInvestment",
     "AvgSignificance",
-    
+    "NTflows",
+    "VIflows",
+    "TFflows"
 ]
 variables = len(columns)
 
@@ -140,15 +141,6 @@ def AnnualReturns(wealth_tracker, pop, generation):
             elif ind.type == 'tf':
                 wamp_list_tf.append(wamp_ind)
 
-            #if wamp_ind >= 100:
-                #print([generation, i])
-                #print(wealth_tracker)
-                #print(wealth_tracker[generation-300:generation,i])
-                #print(old_wealth)
-                #print(wealth_tracker[generation, i])
-                #print(ind.age)
-                #raise ValueError('Annual return recorded above 100.')
-
     wamp_nt = np.nanmean(wamp_list_nt)
     wamp_vi = np.nanmean(wamp_list_vi)
     wamp_tf = np.nanmean(wamp_list_tf)
@@ -192,6 +184,8 @@ def ResultsProcess(list pop, double spoils, double price):
         float("nan"),
     )
 
+    NTflows, VIflows, TFflows = 0.0, 0.0, 0.0
+
     cdef cythonized.Individual ind
     cdef double ind_zero
     for ind in pop:
@@ -216,6 +210,7 @@ def ResultsProcess(list pop, double spoils, double price):
             NTstocks += price * ind.asset
             if ind.prev_wealth != 0:
                 NTreturn += ind.DailyReturn
+            NTflows += ind.investment_ratio
 
         elif ind.type == "vi":
             VIcount += 1
@@ -231,6 +226,7 @@ def ResultsProcess(list pop, double spoils, double price):
             VIstocks += price * ind.asset
             if ind.prev_wealth != 0:
                 VIreturn += ind.DailyReturn
+            VIflows += ind.investment_ratio
 
         elif ind.type == "tf":
             TFcount += 1
@@ -246,6 +242,7 @@ def ResultsProcess(list pop, double spoils, double price):
             TFstocks += price * ind.asset
             if ind.prev_wealth != 0:
                 TFreturn += ind.DailyReturn
+            TFflows += ind.investment_ratio
 
     if NTcount != 0:
         NTcash = NTcash / NTcount
@@ -299,6 +296,12 @@ def ResultsProcess(list pop, double spoils, double price):
     if WSNT < 0 or WSNT < 0 or WSNT < 0:
         raise ValueError("Negative wealth share. " + str([WSNT, WSVI, WSTF]))
 
+    # Normalise flows
+    Sumflows = NTflows + VIflows + TFflows
+    NTflows = NTflows / Sumflows
+    VIflows = VIflows / Sumflows
+    TFflows = TFflows / Sumflows
+
     ListOutput = [
         LongAssets,
         ShortAssets,
@@ -335,6 +338,9 @@ def ResultsProcess(list pop, double spoils, double price):
         TFsignal,
         TFstocks,
         TFreturn,
+        NTflows,
+        VIflows,
+        TFflows,
     ]
 
     return ListOutput
@@ -369,7 +375,7 @@ def record_results(
 
         ListOutput = ResultsProcess(pop, spoils, current_price)
 
-        starttime = timeit.default_timer()
+        
 
         current = generation - Barr
 
@@ -448,6 +454,7 @@ def record_results(
 
         """ Investment Statistics """
         arr += [propSignif, AvgValSignif]
+        arr += ListOutput[36:38]
 
         # Warning: This must be at the end.
         """ Record results """
