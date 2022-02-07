@@ -153,6 +153,7 @@ def execute_ed(list pop, double current_price, double asset_supply, double spoil
     cdef double multiplier_buy
     cdef double multiplier_sell
     cdef double short_ratio
+    cdef double Liquidations = 0.0
     multiplier_buy, multiplier_sell, short_ratio = determine_multiplier(pop, spoils, ToLiquidate, asset_supply)
     volume = 0.0
 
@@ -191,11 +192,13 @@ def execute_ed(list pop, double current_price, double asset_supply, double spoil
     if spoils > 0:
         # Spoils are positive. We wanted to sell some shares. TL is negative.
         # Ex: from spoils 1000, we sold 100 (TL = -100) for mul = 1. New spoils is 1000 - 100 = 900.
-        spoils += ToLiquidate * multiplier_sell
+        Liquidations = ToLiquidate * multiplier_sell
+        spoils += Liquidations #+= because for sell side, ToLiquidate is negative.
     if spoils < 0:
         # Spoils are negative. We wanted to buy back some shares. TL is positive.
         # Ex: from spoils -1000, we bought 100 (TL = 100) for mul=1. New spoils is -1000 + 100 = -900.
-        spoils += ToLiquidate * multiplier_buy
+        Liquidations = ToLiquidate * multiplier_buy
+        spoils += Liquidations
         # Isn't that a minus sign here instead?
 
     cdef double SupplyCorrectionRatio
@@ -297,4 +300,4 @@ def execute_ed(list pop, double current_price, double asset_supply, double spoil
       #          + "//"
       #          + str(spoils)
       #      )
-    return pop, volume, spoils
+    return pop, volume, spoils, Liquidations

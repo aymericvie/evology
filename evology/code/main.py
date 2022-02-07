@@ -74,6 +74,7 @@ def main(
             random_dividend,
             dividend_history,
             spoils,
+            Liquidations,
         ) = marketActivity(
             pop,
             CurrentPrice,
@@ -130,6 +131,7 @@ def main(
             replacements,
             pop,
             spoils,
+            Liquidations,
             asset_supply,
             ReturnsNT,
             ReturnsVI,

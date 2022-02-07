@@ -62,6 +62,7 @@ columns = [
     # Additional measures
     "MeanReturn",
     "Spoils",
+    "Liquidations",
     # More measures
     "PerSpoils",
     "NT_DayReturns",
@@ -86,6 +87,7 @@ columns = [
     # Significance
     "PropSignifInvestment",
     "AvgSignificance",
+    
 ]
 variables = len(columns)
 
@@ -350,6 +352,7 @@ def record_results(
     replacements,
     pop,
     spoils,
+    Liquidations,
     asset_supply,
     ReturnsNT,
     ReturnsVI,
@@ -421,7 +424,7 @@ def record_results(
         arr += ListOutput[27:35]
 
         """ Additional measures """
-        arr += [ComputeAvgReturn(results, current, pop), spoils]
+        arr += [ComputeAvgReturn(results, current, pop), spoils, Liquidations]
 
         """ More measures """
 

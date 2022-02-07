@@ -91,14 +91,14 @@ def marketClearing(pop, current_price, price_history, spoils, solver):
 def marketActivity(
     pop, current_price, asset_supply, dividend, dividend_history, spoils, ToLiquidate
 ):
-    pop, volume, spoils = mk.execute_ed(
+    pop, volume, spoils, Liquidations = mk.execute_ed(
         pop, current_price, asset_supply, spoils, ToLiquidate
     )
     pop, dividend, random_dividend = mk.earnings(pop, dividend)
     dividend_history.append(dividend)
     bs.update_margin(pop, current_price)
     bs.clear_debt(pop, current_price)
-    return pop, volume, dividend, random_dividend, dividend_history, spoils
+    return pop, volume, dividend, random_dividend, dividend_history, spoils, Liquidations
 
 
 def update_wealth(
