@@ -33,6 +33,7 @@ def main(
     wealth_tracker= np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
     returns_tracker= np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
     price_history, dividend_history = [], []
+    TestThreshold = stdtrit(InvestmentHorizon, 0.95)
 
     pop, asset_supply = cr.CreatePop(POPULATION_SIZE, space, wealth_coordinates)
     bs.calculate_wealth(pop, CurrentPrice)
@@ -108,16 +109,19 @@ def main(
             pop, 
             generation
         )
+
         (
             returns_tracker, 
             pop, 
-            propSignif
+            propSignif,
+            AvgValSignif
         ) = ApplyInvestment(
             pop, 
             generation, 
             returns_tracker, 
             InvestmentHorizon, 
             InvestmentSupply, 
+            TestThreshold
         )
 
         # Record results
@@ -142,6 +146,8 @@ def main(
             CountMutated,
             CountCrossed,
             StratFlow,
+            propSignif,
+            AvgValSignif,
         )
 
     df = pd.DataFrame(results, columns=data.columns)
@@ -159,7 +165,7 @@ df, pop, ReturnsNT, ReturnsVI, ReturnsTF = main(
     TIME,
     PROBA_SELECTION,
     MUTATION_RATE,
-    0,
+    1.0,
     252,
     False,
     False,
