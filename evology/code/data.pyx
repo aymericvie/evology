@@ -454,7 +454,13 @@ def record_results(
 
         """ Investment Statistics """
         arr += [propSignif, AvgValSignif]
-        arr += ListOutput[36:38]
+
+        arr += ListOutput[35:38]
+
+        if len(arr) != len(results[current,:]):
+            print(len(arr))
+            print(len(results[current,:]))
+            raise ValueError('Mismatch in lengths of arrays in results recording.')
 
         # Warning: This must be at the end.
         """ Record results """
