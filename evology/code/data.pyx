@@ -297,13 +297,13 @@ def ResultsProcess(list pop, double spoils, double price):
         raise ValueError("Negative wealth share. " + str([WSNT, WSVI, WSTF]))
 
     # Normalise flows
-    Sumflows = NTflows + VIflows + TFflows
-    NTflows_ = NTflows / Sumflows
-    VIflows_ = VIflows / Sumflows
-    TFflows_ = TFflows / Sumflows
-    NTflows = NTflows_
-    VIflows = VIflows_
-    TFflows = TFflows_
+    #Sumflows = NTflows + VIflows + TFflows
+    #NTflows_ = NTflows / Sumflows
+    #VIflows_ = VIflows / Sumflows
+    #TFflows_ = TFflows / Sumflows
+    #NTflows = NTflows_
+    #VIflows = VIflows_
+    #TFflows = TFflows_
 
     ListOutput = [
         LongAssets,

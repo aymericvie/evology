@@ -50,8 +50,8 @@ def run(
 
 
 df, pop, ReturnsNT, ReturnsVI, ReturnsTF = run(
-    30, 0, 25000, wealth_coordinates, tqdm_display=False, reset_wealth=False, 
-    ReinvestmentRate= 1.0, InvestmentHorizon = 5,
+    30, 0, 10000, wealth_coordinates, tqdm_display=False, reset_wealth=False, 
+    ReinvestmentRate= 1.0, InvestmentHorizon = 252,
 )
 
 df.to_csv("evology/data/run_data.csv")
@@ -61,4 +61,5 @@ np.savetxt('evology/data/ReturnsTF.csv', ReturnsTF, delimiter=',')
 
 print(df)
 # print(stats.trim_mean(df['WealthAmp'], 0.1))
+
 
