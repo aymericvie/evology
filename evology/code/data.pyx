@@ -88,9 +88,9 @@ columns = [
     "AvgSignificance",
     "NTflows",
     "VIflows",
-    "TFflows"
+    "TFflows",
 ]
-variables = len(columns)
+variables = len(columns) 
 
 """ We only record results after a year to avoid transient period biases. """
 Barr = max(SHIELD_DURATION, ShieldResults)
@@ -340,7 +340,7 @@ def ResultsProcess(list pop, double spoils, double price):
         TFreturn,
         NTflows,
         VIflows,
-        TFflows,
+        TFflows
     ]
 
     return ListOutput
