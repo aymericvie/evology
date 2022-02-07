@@ -104,7 +104,6 @@ def main(
         )
 
         (
-            returns_tracker, 
             pop, 
             propSignif,
             AvgValSignif

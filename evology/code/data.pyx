@@ -489,7 +489,7 @@ def ComputeAvgMonReturn(results, generation, pop):
 
 def UpdateWealthReturnTracking(wealth_tracker, returns_tracker, pop, generation):
     wealth_tracker = WealthTracking(wealth_tracker, pop, generation)
-    returns_tracker = ReturnTracking(wealth_tracker, returns_tracker, pop, generation)
+    returns_tracker = ReturnTracking(returns_tracker, pop, generation)
     return wealth_tracker, returns_tracker
 
 cdef WealthTracking(wealth_tracker, list pop, int generation):
@@ -502,12 +502,14 @@ cdef WealthTracking(wealth_tracker, list pop, int generation):
                 wealth_tracker[generation, i] = np.nan # to mark the replacement in the data  
     return wealth_tracker
 
-cdef ReturnTracking(wealth_tracker, returns_tracker, list pop, int generation):
+cdef ReturnTracking(returns_tracker, list pop, int generation):
     if generation >= Barr + 1: # Otherwise there won't be a previous_wealth.
-        for i in range(len(pop)):
-            previous_wealth = wealth_tracker[generation - 1, i]
+        for i, ind in enumerate(pop):
+            previous_wealth = ind.prev_wealth + ind.investor_flow
             if previous_wealth != 0 or previous_wealth != np.nan:
-                returns_tracker[generation, i] = (wealth_tracker[generation, i] - previous_wealth) / previous_wealth
+                returns_tracker[generation, i] = (ind.wealth - previous_wealth) / previous_wealth
             else:
                 returns_tracker[generation, i] = np.nan
+            # Mark investor flows as being applied, so that we don't deduct them at the next period.
+            ind.investor_flow = 0.0
     return returns_tracker

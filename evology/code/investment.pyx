@@ -153,7 +153,7 @@ def InvestmentProcedure(pop, generation, returns_tracker, InvestmentHorizon, Inv
         pop, propSignif, AvgValSignif = Investment(returns_tracker, generation, InvestmentHorizon, pop, InvestmentSupply, TestThreshold)
     else:
         propSignif, AvgValSignif = 0, 0
-    return returns_tracker, pop, propSignif, AvgValSignif
+    return pop, propSignif, AvgValSignif
 
 
 

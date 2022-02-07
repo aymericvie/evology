@@ -120,6 +120,6 @@ def ApplyInvestment(
     #     pop, propSignif = iv.Investment(returns_tracker, generation, InvestmentHorizon, pop, InvestmentSupply)
     # else:
     #     propSignif = 0
-    returns_tracker, pop, propSignif, AvgValSignif = iv.InvestmentProcedure(pop, generation, returns_tracker, InvestmentHorizon, InvestmentSupply, TestThreshold)
+    pop, propSignif, AvgValSignif = iv.InvestmentProcedure(pop, generation, returns_tracker, InvestmentHorizon, InvestmentSupply, TestThreshold)
 
-    return returns_tracker, pop, propSignif, AvgValSignif
+    return pop, propSignif, AvgValSignif
