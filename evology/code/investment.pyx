@@ -112,6 +112,9 @@ cdef compare_sharpe(list pop, double[:,:] ReturnData, double InvestmentHorizon, 
             if ind.tvalue_cpr > 0:
                 total_tvalue_cpr += ind.tvalue_cpr
 
+    if isnan(total_tvalue_cpr) == True:
+        raise ValueError('Undefined total_tvalue_cpr')
+
     for i, ind in enumerate(pop):
         ind.investment_ratio = 0.0
         if isnan(ind.tvalue_cpr) == False and isnan(ind.sharpe) == False:
