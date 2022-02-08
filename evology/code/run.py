@@ -50,7 +50,7 @@ def run(
 
 
 df, pop, ReturnsNT, ReturnsVI, ReturnsTF = run(
-    30, 0, 10000, wealth_coordinates, tqdm_display=False, reset_wealth=False, 
+    5, 0, 10000, wealth_coordinates, tqdm_display=False, reset_wealth=False, 
     ReinvestmentRate= 1.0, InvestmentHorizon = 252,
 )
 

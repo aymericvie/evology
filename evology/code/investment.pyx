@@ -69,6 +69,7 @@ cdef compare_sharpe(list pop, double[:,:] ReturnData, double InvestmentHorizon, 
     cdef double sum_tvalue_cpr = 0.0
     cdef double countSignif = 0.0
     cdef double sum_tvalue_cpr_abs = 0.0
+    cdef double total_tvalue_cpr_neg = 0.0
 
     for i, ind in enumerate(pop):
         if isnan(ind.sharpe) == False:
@@ -111,6 +112,8 @@ cdef compare_sharpe(list pop, double[:,:] ReturnData, double InvestmentHorizon, 
             sum_tvalue_cpr_abs += ind.tvalue_cpr
             if ind.tvalue_cpr > 0:
                 total_tvalue_cpr += ind.tvalue_cpr
+            if ind.tvalue_cpr < 0:
+                total_tvalue_cpr_neg += ind.tvalue_cpr
 
     if isnan(total_tvalue_cpr) == True:
         raise ValueError('Undefined total_tvalue_cpr')
@@ -118,14 +121,19 @@ cdef compare_sharpe(list pop, double[:,:] ReturnData, double InvestmentHorizon, 
     for i, ind in enumerate(pop):
         ind.investment_ratio = 0.0
         if isnan(ind.tvalue_cpr) == False and isnan(ind.sharpe) == False:
-            ind.investment_ratio = ind.tvalue_cpr / total_tvalue_cpr
+            if ind.tvalue_cpr > 0:
+                ind.investment_ratio = ind.tvalue_cpr / total_tvalue_cpr
+            if ind.tvalue_cpr < 0:
+                ind.investment_ratio = - (abs(ind.tvalue_cpr / total_tvalue_cpr_neg))
+                if ind.investment_ratio > 0:
+                    raise ValueError('Investment ratio positive despite negative T statistic value.')
 
             sum_inv_ratio += ind.investment_ratio
             sum_tvalue_cpr += ind.tvalue_cpr
         if ind.tvalue_cpr >= TestThreshold:
             countSignif += ind.investment_ratio
 
-        #print([round(ind.sharpe,2), round(ind.investment_ratio,2), round(ind.tvalue_cpr,2), round(total_tvalue_cpr,2)])
+        print([round(ind.sharpe,2), round(ind.investment_ratio,2), round(ind.tvalue_cpr,2), round(total_tvalue_cpr,2)])
 
     if round(sum_inv_ratio,3) != 0.0:
         print(sum_inv_ratio)
