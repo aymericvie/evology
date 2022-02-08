@@ -11,6 +11,7 @@ def main(
     MUTATION_RATE,
     ReinvestmentRate,
     InvestmentHorizon,
+    InvestmentIntensity,
     tqdm_display,
     reset_wealth
 ):
@@ -113,7 +114,8 @@ def main(
             returns_tracker, 
             InvestmentHorizon, 
             InvestmentSupply, 
-            TestThreshold
+            TestThreshold,
+            InvestmentIntensity
         )
 
         # Record results

@@ -156,16 +156,16 @@ cdef DistributionInvestment(list pop, double InvestmentSupply):
     return pop
 
 
-def InvestmentProcedure(pop, generation, returns_tracker, InvestmentHorizon, InvestmentSupply, TestThreshold):
+def InvestmentProcedure(pop, generation, returns_tracker, InvestmentHorizon, InvestmentSupply, TestThreshold, InvestmentIntensity):
     if InvestmentHorizon > 0 and generation > Barr + InvestmentHorizon + ShieldInvestment and InvestmentHorizon != 1:
-        pop, propSignif, AvgValSignif = Investment(returns_tracker, generation, InvestmentHorizon, pop, InvestmentSupply, TestThreshold)
+        pop, propSignif, AvgValSignif = Investment(returns_tracker, generation, InvestmentHorizon, pop, InvestmentSupply, TestThreshold, InvestmentIntensity)
     else:
         propSignif, AvgValSignif = 0, 0
     return pop, propSignif, AvgValSignif
 
 
 
-cdef Investment(double[:, :] returns_tracker, int generation, int InvestmentHorizon, list pop, double InvestmentSupply, double TestThreshold):
+cdef Investment(double[:, :] returns_tracker, int generation, int InvestmentHorizon, list pop, double InvestmentSupply, double TestThreshold, double InvestmentIntensity):
     cdef cythonized.Individual ind
     cdef double[:, :] ReturnData
     cdef int i = 0
