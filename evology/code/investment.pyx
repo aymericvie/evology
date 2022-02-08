@@ -55,7 +55,7 @@ cdef compute_sharpe(cythonized.Individual ind, double[:] DataSlice):
         ind.sharpe = NAN
     return ind
 
-cdef compare_sharpe(list pop, double[:,:] ReturnData, double InvestmentHorizon, double TestThreshold):
+cdef compare_sharpe(list pop, double[:,:] ReturnData, double InvestmentHorizon, double TestThreshold, double InvestmentIntensity):
     
     cdef cythonized.Individual ind
     cdef cythonized.Individual ind2
@@ -111,8 +111,12 @@ cdef compare_sharpe(list pop, double[:,:] ReturnData, double InvestmentHorizon, 
         if isnan(ind.tvalue_cpr) == False:
             sum_tvalue_cpr_abs += ind.tvalue_cpr
             if ind.tvalue_cpr > 0:
+                # Apply the exponent Investment Intensity
+                ind.tvalue_cpr = ind.tvalue_cpr ** InvestmentIntensity
                 total_tvalue_cpr += ind.tvalue_cpr
             if ind.tvalue_cpr < 0:
+                # Apply the exponent Investment Intensity, keeping the negative sign of T value.
+                ind.tvalue_cpr = - abs(ind.tvalue_cpr ** InvestmentIntensity)
                 total_tvalue_cpr_neg += ind.tvalue_cpr
 
     if isnan(total_tvalue_cpr) == True:
@@ -139,11 +143,6 @@ cdef compare_sharpe(list pop, double[:,:] ReturnData, double InvestmentHorizon, 
         print(sum_inv_ratio)
         raise ValueError('Sum of investment ratios is not null.')
 
-    #if round(sum_inv_ratio,3) != 1.0:
-    #        print(ind.investment_ratio)
-    ##    for ind in pop:
-    #    print(sum_inv_ratio)
-    #    raise ValueError('Sum of invstment ratios is unequal to 1.0.')
     return pop, (100 * countSignif), (sum_tvalue_cpr_abs / len(pop))
 
 cdef DistributionInvestment(list pop, double InvestmentSupply):
@@ -182,7 +181,7 @@ cdef Investment(double[:, :] returns_tracker, int generation, int InvestmentHori
         DataSlice = ReturnData[:,i]
         ind = compute_sharpe(ind, DataSlice)
         
-    pop, propSignif, AvgVal = compare_sharpe(pop, ReturnData, InvestmentHorizon, TestThreshold)
+    pop, propSignif, AvgVal = compare_sharpe(pop, ReturnData, InvestmentHorizon, TestThreshold, InvestmentIntensity)
 
     pop = DistributionInvestment(pop, InvestmentSupply)
 
