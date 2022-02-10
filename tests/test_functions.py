@@ -116,6 +116,11 @@ def det_pop_nolearning(repetitions, time, agents):
         seed = random.randint(0,10)
         np.random.seed(seed)
         wealth_coordinates = np.random.dirichlet(np.ones(3),size=1)[0].tolist()
+
+        print("Seed, Wealth Coord")
+        print(seed)
+        print(wealth_coordinates)
+        
         np.random.seed(seed)
         df,pop, ReturnsNT, ReturnsVI, ReturnsTF = main('scholl', solver, wealth_coordinates, agents, time, 0, 0, ReinvestmentRate=1.0, InvestmentHorizon = 252, InvestmentIntensity = 1.0, tqdm_display=True, reset_wealth = False)
         np.random.seed(seed)
@@ -145,6 +150,11 @@ def det_pop_learning(repetitions, time, agents):
         seed = random.randint(0,10)
         np.random.seed(seed)
         wealth_coordinates = np.random.dirichlet(np.ones(3),size=1)[0].tolist()
+
+        print("Seed, Wealth Coord")
+        print(seed)
+        print(wealth_coordinates)
+
         np.random.seed(seed)
         df,pop, ReturnsNT, ReturnsVI, ReturnsTF = main('scholl', solver, wealth_coordinates, agents, time, PROBA_SELECTION, MUTATION_RATE, ReinvestmentRate=1.0, InvestmentHorizon = 252, InvestmentIntensity = 1.0,  tqdm_display=True, reset_wealth = False)
         np.random.seed(seed)
