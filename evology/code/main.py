@@ -24,6 +24,7 @@ def main(
     generation, CurrentPrice, dividend, spoils, InvestmentSupply = 0, InitialPrice, INITIAL_DIVIDEND, 0, RefInvestmentSupply * POPULATION_SIZE
     results = np.zeros((MAX_GENERATIONS - data.Barr, data.variables))
     wealth_tracker= np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
+    wealth_tracker_noinv = np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
     returns_tracker= np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
     price_history, dividend_history = [], []
     TestThreshold = stdtrit(InvestmentHorizon, 0.95)
@@ -95,9 +96,11 @@ def main(
         # Investment
         (
             wealth_tracker, 
-            returns_tracker 
+            wealth_tracker_noinv,
+            returns_tracker
         ) = data.UpdateWealthReturnTracking(
             wealth_tracker, 
+            wealth_tracker_noinv,
             returns_tracker, 
             pop, 
             generation
@@ -121,9 +124,10 @@ def main(
 
         # Record results
         # wealth_tracker = iv.WealthTracking(wealth_tracker, pop, generation)
-        results, wealth_tracker, ReturnsNT, ReturnsVI, ReturnsTF = data.record_results(
+        results, wealth_tracker, wealth_tracker_noinv, ReturnsNT, ReturnsVI, ReturnsTF = data.record_results(
             results,
             wealth_tracker,
+            wealth_tracker_noinv,
             generation,
             CurrentPrice,
             mismatch,

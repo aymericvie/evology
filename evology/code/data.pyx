@@ -85,7 +85,7 @@ columns = [
     "TF_AnnualReturns",
     # Annual return computed over wealth, without investment
     "NT_AnnualReturns_Noinv",
-    "VI_AnnualReturns_Nonv",
+    "VI_AnnualReturns_Noinv",
     "TF_AnnualReturns_Noinv",
     # Significance
     "AvgSignificance",
@@ -120,6 +120,9 @@ def TrackWealth(wealth_tracker, pop, generation):
         
     return wealth_tracker, wamp
 
+
+
+
 def AnnualReturns(wealth_tracker, pop, generation):
     cdef double wamp_nt = NAN
     cdef double wamp_vi = NAN
@@ -151,6 +154,38 @@ def AnnualReturns(wealth_tracker, pop, generation):
     wamp_tf = np.nanmean(wamp_list_tf)
         
     return wamp_nt, wamp_vi, wamp_tf
+
+
+def AnnualReturnsNoInv(wealth_tracker_noinv, pop, generation):
+    cdef double NT_AR_noinv = NAN
+    cdef double VI_AR_noinv = NAN
+    cdef double TF_AR_noinv = NAN
+    cdef int i = 0
+    cdef cythonized.Individual ind
+
+    list_nt, list_vi, list_tf,  = [],[],[]
+    
+    if generation - 252 >= 0: # We can start calculate the movements' annual amplitude.
+        for i, ind in enumerate(pop):
+            old_wealth = wealth_tracker_noinv[generation-252,i]
+            #for ind in pop:
+            if old_wealth > 0 and ind.age >= 252 + 10:
+                w_ind = (wealth_tracker_noinv[generation, i] - old_wealth) / old_wealth
+            else: 
+                w_ind = float("nan")
+
+            if ind.type == 'nt':
+                list_nt.append(w_ind)
+            elif ind.type == 'vi':
+                list_vi.append(w_ind)
+            elif ind.type == 'tf':
+                list_tf.append(w_ind)
+
+    NT_AR_noinv = np.nanmean(list_nt)
+    VI_AR_noinv = np.nanmean(list_vi)
+    TF_AR_noinv = np.nanmean(list_tf)
+        
+    return NT_AR_noinv, VI_AR_noinv, TF_AR_noinv 
 
 def ResultsProcess(list pop, double spoils, double price):
 
@@ -357,6 +392,7 @@ def ResultsProcess(list pop, double spoils, double price):
 def record_results(
     results,
     wealth_tracker,
+    wealth_tracker_noinv,
     generation,
     current_price,
     mismatch,
@@ -413,6 +449,7 @@ def record_results(
 
         wealth_tracker, wamp = TrackWealth(wealth_tracker, pop, generation)
         wamp_nt, wamp_vi, wamp_tf = AnnualReturns(wealth_tracker, pop, generation)
+        NT_AR_noinv, VI_AR_noinv, TF_AR_noinv = AnnualReturnsNoInv(wealth_tracker_noinv, pop, generation)
 
         """ Global variables """
         arr = [
@@ -479,7 +516,7 @@ def record_results(
         """ Record results """
         results[current, :] = arr
 
-    return results, wealth_tracker, ReturnsNT, ReturnsVI, ReturnsTF
+    return results, wealth_tracker, wealth_tracker_noinv, ReturnsNT, ReturnsVI, ReturnsTF
 
 
 def GetDayReturn(pop, strat):
@@ -513,10 +550,11 @@ def ComputeAvgMonReturn(results, generation, pop):
     ) / len(pop)
     return AvgReturn
 
-def UpdateWealthReturnTracking(wealth_tracker, returns_tracker, pop, generation):
+def UpdateWealthReturnTracking(wealth_tracker, wealth_tracker_noinv, returns_tracker, pop, generation):
     wealth_tracker = WealthTracking(wealth_tracker, pop, generation)
+    wealth_tracker_noinv = WealthNoInvTracking(wealth_tracker_noinv, pop, generation)
     returns_tracker = ReturnTracking(returns_tracker, pop, generation)
-    return wealth_tracker, returns_tracker
+    return wealth_tracker, wealth_tracker_noinv, returns_tracker
 
 cdef WealthTracking(wealth_tracker, list pop, int generation):
     cdef cythonized.Individual ind
@@ -527,6 +565,16 @@ cdef WealthTracking(wealth_tracker, list pop, int generation):
             else: 
                 wealth_tracker[generation, i] = np.nan # to mark the replacement in the data  
     return wealth_tracker
+
+cdef WealthNoInvTracking(wealth_tracker_noinv, list pop, int generation):
+    cdef cythonized.Individual ind
+    if generation >= Barr:
+        for i, ind in enumerate(pop):
+            if ind.age > 0:
+                wealth_tracker_noinv[generation,i] = ind.wealth - ind.investor_flow
+            else: 
+                wealth_tracker_noinv[generation, i] = np.nan # to mark the replacement in the data  
+    return wealth_tracker_noinv
 
 cdef ReturnTracking(returns_tracker, list pop, int generation):
     if generation >= Barr + 1: # Otherwise there won't be a previous_wealth.
