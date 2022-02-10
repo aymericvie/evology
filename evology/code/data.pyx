@@ -83,6 +83,10 @@ columns = [
     "NT_AnnualReturns",
     "VI_AnnualReturns",
     "TF_AnnualReturns",
+    # Annual return computed over wealth, without investment
+    "NT_AnnualReturns_Noinv",
+    "VI_AnnualReturns_Nonv",
+    "TF_AnnualReturns_Noinv",
     # Significance
     "AvgSignificance",
     "AvgNumberDev",
@@ -457,6 +461,9 @@ def record_results(
 
         """ Annual returns """
         arr += [wamp_nt, wamp_vi, wamp_tf]
+
+        """ Annual returns without investment """
+        arr += [NT_AR_noinv, VI_AR_noinv, TF_AR_noinv]
 
         """ Investment Statistics """
         arr += [AvgValSignif, NumDev, PerSignif]
