@@ -104,7 +104,7 @@ cdef compare_sharpe(list pop, double[:,:] ReturnData, double InvestmentHorizon, 
 
                         # JKM test
                         P = pearson(DataSlice, DataSlice2)
-                        if P != 0.0:
+                        if P != 1.0:
                             # Necessary because otherwise, the fund is comparing itself to something exactly the same and SE = 0.
                             SE = sqrt((1.0 / InvestmentHorizon) * (2 - 2 * P + 0.5 * (ind.sharpe ** 2 + ind2.sharpe ** 2 - 2 * ind.sharpe * ind2.sharpe * (P ** 2))))
                             T = (ind.sharpe - ind2.sharpe) / SE
@@ -112,8 +112,6 @@ cdef compare_sharpe(list pop, double[:,:] ReturnData, double InvestmentHorizon, 
                             if SE == 0.0:
                                 print([ind.sharpe, ind2.sharpe, 1.0 * InvestmentHorizon, P])
                                 print(sqrt((1.0 / InvestmentHorizon) * (2 - 2 * P + 0.5 * (ind.sharpe ** 2 + ind2.sharpe ** 2 - 2 * ind.sharpe * ind2.sharpe * (P ** 2)))))
-                                
-                                
                                 raise ValueError('Null SE for Sharpe test.')
 
                             ind.tvalue_cpr += T
