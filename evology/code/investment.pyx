@@ -43,7 +43,7 @@ cdef double pearson(double[:] x, double[:] y) nogil:
 
     result = num / sqrt(denum1 * denum2)
 
-    if result < -1 or result > 1:
+    if result < -1.1 or result > 1.1:
         raise ValueError('Pearson correlation out of bounds.')
 
     return result
