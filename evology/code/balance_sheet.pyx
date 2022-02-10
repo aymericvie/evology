@@ -37,6 +37,7 @@ def update_margin(pop, current_price):
 def UpdatePrevWealth(pop):
     for ind in pop:
         ind.prev_wealth = ind.wealth
+        ind.prev_wealth_noinv = ind.wealth - ind.investor_flow
 
 
 def calculate_wealth(pop, current_price):
@@ -253,10 +254,17 @@ def agg_ed_esl(pop, spoils):
 
 def ComputeReturn(pop):
     for ind in pop:
-        if ind.prev_wealth > 0:
-            ind.DailyReturn = (ind.wealth / ind.prev_wealth) - 1
+        if ind.prev_wealth != 0:
+            ind.DailyReturn = (ind.wealth - ind.prev_wealth) / ind.prev_wealth
         else:
             ind.DailyReturn = np.nan
+
+def ComputeReturn_noinv(pop):
+    for ind in pop:
+        if ind.prev_wealth_noinv != 0:
+            ind.DailyReturn_noinv = ((ind.wealth - ind.investor_flow - ind.prev_wealth_noinv) / ind.prev_wealth_noinv) 
+        else:
+            ind.DailyReturn_noinv = np.nan
 
 
 def update_profit(pop):

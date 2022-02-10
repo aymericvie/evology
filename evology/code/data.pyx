@@ -40,6 +40,7 @@ columns = [
     "NT_signal",
     "NT_stocks",
     "NT_returns",
+    "NT_returns_noinv",
     # Value investors
     "VI_cash",
     "VI_lending",
@@ -49,6 +50,7 @@ columns = [
     "VI_signal",
     "VI_stocks",
     "VI_returns",
+    "VI_returns_noinv",
     # Trend followers
     "TF_cash",
     "TF_lending",
@@ -58,6 +60,7 @@ columns = [
     "TF_signal",
     "TF_stocks",
     "TF_returns",
+    "TF_returns_noinv",
     # Additional measures
     "MeanReturn",
     "Spoils",
@@ -193,7 +196,7 @@ def ResultsProcess(list pop, double spoils, double price):
     NTcount, VIcount, TFcount = 0.0, 0.0, 0.0
     MeanNT, MeanVI, MeanTF = 0.0, 0.0, 0.0
     WSNT, WSVI, WSTF = 0.0, 0.0, 0.0
-    NTcash, NTlend, NTloan, NTnav, NTpnl, NTsignal, NTstocks, NTreturn = (
+    NTcash, NTlend, NTloan, NTnav, NTpnl, NTsignal, NTstocks, NTreturn, NTreturn_noinv = (
         0.0,
         0.0,
         0.0,
@@ -201,9 +204,10 @@ def ResultsProcess(list pop, double spoils, double price):
         0.0,
         0.0,
         0.0,
-        float("nan"),
+        0.0, #float("nan"),
+        0.0, #float("nan"),
     )
-    VIcash, VIlend, VIloan, VInav, VIpnl, VIsignal, VIstocks, VIreturn = (
+    VIcash, VIlend, VIloan, VInav, VIpnl, VIsignal, VIstocks, VIreturn, VIreturn_noinv = (
         0.0,
         0.0,
         0.0,
@@ -211,9 +215,10 @@ def ResultsProcess(list pop, double spoils, double price):
         0.0,
         0.0,
         0.0,
-        float("nan"),
+        0.0, #float("nan"),
+        0.0, #float("nan"),
     )
-    TFcash, TFlend, TFloan, TFnav, TFpnl, TFsignal, TFstocks, TFreturn = (
+    TFcash, TFlend, TFloan, TFnav, TFpnl, TFsignal, TFstocks, TFreturn, TFreturn_noinv = (
         0.0,
         0.0,
         0.0,
@@ -221,7 +226,8 @@ def ResultsProcess(list pop, double spoils, double price):
         0.0,
         0.0,
         0.0,
-        float("nan"),
+        0.0, #float("nan"),
+        0.0, # float("nan"),
     )
 
     NTflows, VIflows, TFflows = 0.0, 0.0, 0.0
@@ -250,6 +256,8 @@ def ResultsProcess(list pop, double spoils, double price):
             NTstocks += price * ind.asset
             if ind.prev_wealth != 0:
                 NTreturn += ind.DailyReturn
+            if ind.prev_wealth_noinv != 0:
+                NTreturn_noinv += ind.DailyReturn_noinv
             NTflows += ind.investment_ratio
 
         elif ind.type == "vi":
@@ -266,6 +274,8 @@ def ResultsProcess(list pop, double spoils, double price):
             VIstocks += price * ind.asset
             if ind.prev_wealth != 0:
                 VIreturn += ind.DailyReturn
+            if ind.prev_wealth_noinv != 0:
+                VIreturn_noinv += ind.DailyReturn_noinv
             VIflows += ind.investment_ratio
 
         elif ind.type == "tf":
@@ -282,6 +292,8 @@ def ResultsProcess(list pop, double spoils, double price):
             TFstocks += price * ind.asset
             if ind.prev_wealth != 0:
                 TFreturn += ind.DailyReturn
+            if ind.prev_wealth_noinv != 0:
+                TFreturn_noinv += ind.DailyReturn_noinv
             TFflows += ind.investment_ratio
 
     if NTcount != 0:
@@ -292,6 +304,7 @@ def ResultsProcess(list pop, double spoils, double price):
         NTpnl = NTpnl / NTcount
         NTstocks = NTstocks / NTcount
         NTreturn = NTreturn / NTcount
+        NTreturn_noinv = NTreturn_noinv / NTcount
         NTsignal = NTsignal / NTcount
         MeanNT = MeanNT / NTcount
 
@@ -303,6 +316,7 @@ def ResultsProcess(list pop, double spoils, double price):
         VIpnl = VIpnl / VIcount
         VIstocks = VIstocks / VIcount
         VIreturn = VIreturn / VIcount
+        VIreturnno_inv = VIreturn_noinv / VIcount
         MeanVI = MeanVI / VIcount
 
     if TFcount != 0:
@@ -313,6 +327,7 @@ def ResultsProcess(list pop, double spoils, double price):
         TFpnl = TFpnl / TFcount
         TFstocks = TFstocks / TFcount
         TFreturn = TFreturn / TFcount
+        TFreturn_noinv = TFreturn_noinv / TFcount
         TFsignal = TFsignal / TFcount
         MeanTF = MeanTF / TFcount
 
@@ -336,14 +351,6 @@ def ResultsProcess(list pop, double spoils, double price):
     if WSNT < 0 or WSNT < 0 or WSNT < 0:
         raise ValueError("Negative wealth share. " + str([WSNT, WSVI, WSTF]))
 
-    # Normalise flows
-    #Sumflows = NTflows + VIflows + TFflows
-    #NTflows_ = NTflows / Sumflows
-    #VIflows_ = VIflows / Sumflows
-    #TFflows_ = TFflows / Sumflows
-    #NTflows = NTflows_
-    #VIflows = VIflows_
-    #TFflows = TFflows_
 
     ListOutput = [
         LongAssets,
@@ -365,6 +372,7 @@ def ResultsProcess(list pop, double spoils, double price):
         NTsignal,
         NTstocks,
         NTreturn,
+        NTreturn_noinv,
         VIcash,
         VIlend,
         VIloan,
@@ -373,6 +381,7 @@ def ResultsProcess(list pop, double spoils, double price):
         VIsignal,
         VIstocks,
         VIreturn,
+        VIreturn_noinv,
         TFcash,
         TFlend,
         TFloan,
@@ -381,6 +390,7 @@ def ResultsProcess(list pop, double spoils, double price):
         TFsignal,
         TFstocks,
         TFreturn,
+        TFreturn_noinv,
         NTflows,
         VIflows,
         TFflows
@@ -468,13 +478,13 @@ def record_results(
         arr += ListOutput[2:11]
 
         """ Noise traders """
-        arr += ListOutput[11:19]
+        arr += ListOutput[11:20]
 
         """ Value investors """
-        arr += ListOutput[19:27]
+        arr += ListOutput[20:29]
 
         """ Trend followers """
-        arr += ListOutput[27:35]
+        arr += ListOutput[29:38]
 
         """ Additional measures """
         arr += [ComputeAvgReturn(results, current, pop), spoils, Liquidations]
@@ -505,7 +515,7 @@ def record_results(
         """ Investment Statistics """
         arr += [AvgValSignif, NumDev, PerSignif]
 
-        arr += ListOutput[35:38]
+        arr += ListOutput[38:41]
 
         if len(arr) != len(results[current,:]):
             print(len(arr))

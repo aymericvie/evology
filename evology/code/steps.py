@@ -108,6 +108,7 @@ def update_wealth(
     bs.update_profit(pop)
     #bs.calculate_wealth(pop, current_price)
     bs.ComputeReturn(pop)
+    bs.ComputeReturn_noinv(pop)
     pop = bs.AgeUpdate(pop)
     return pop
 
