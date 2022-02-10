@@ -146,12 +146,15 @@ cdef compare_sharpe(list pop, double[:,:] ReturnData, double InvestmentHorizon, 
                 ind.investment_ratio = - (abs(ind.tvalue_cpr / total_tvalue_cpr_neg))
                 if ind.investment_ratio > 0:
                     raise ValueError('Investment ratio positive despite negative T statistic value.')
+            sum_inv_ratio += ind.investment_ratio 
 
         # print([round(ind.sharpe,2), round(ind.investment_ratio,2), round(ind.tvalue_cpr,2), round(total_tvalue_cpr,2)])
 
-    if round(sum_inv_ratio,3) != 0.0:
+    if round(sum_inv_ratio,3) < -1.0 or round(sum_inv_ratio,3) > 1.0:
         print(sum_inv_ratio)
-        raise ValueError('Sum of investment ratios is not null.')
+        for ind in pop:
+            print([ind.tvalue_cpr, ind.investment_ratio])
+        raise ValueError('Sum of investment ratios is outside bounds [-1,1].')
 
     return pop, (sum_tvalue_cpr_abs / num_test), (100 * num_signif_test / num_test), number_deviations / len(pop)
 
