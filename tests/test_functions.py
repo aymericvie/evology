@@ -20,7 +20,7 @@ def learning_runs(repetitions, time, agents):
         try: 
             seed = random.randint(0,100)
             np.random.seed(seed)
-            df,pop, ReturnsNT, ReturnsVI, ReturnsTF = main('scholl', solver, wealth_coordinates, time, agents, PROBA_SELECTION, MUTATION_RATE, ReinvestmentRate = 1.0, InvestmentHorizon = 252, InvestmentIntensity = 1.0, InvestorBehavior = 'JKM', tqdm_display=True, reset_wealth = False)
+            df,pop = main('scholl', solver, wealth_coordinates, time, agents, PROBA_SELECTION, MUTATION_RATE, ReinvestmentRate = 1.0, InvestmentHorizon = 252, InvestmentIntensity = 1.0, InvestorBehavior = 'JKM', tqdm_display=True, reset_wealth = False)
         except Exception as e: 
             went_smoothly = False
             print('Seed ' + str(seed))
@@ -42,7 +42,7 @@ def learning_runs_reset(repetitions, time, agents):
         wealth_coordinates = np.random.dirichlet(np.ones(3),size=1)[0].tolist()
         print(wealth_coordinates)
         try: 
-            df,pop, ReturnsNT, ReturnsVI, ReturnsTF = main('scholl', solver, wealth_coordinates, agents, time, PROBA_SELECTION, MUTATION_RATE, ReinvestmentRate = 1.0, InvestmentHorizon = 252, InvestmentIntensity = 1.0, InvestorBehavior = 'JKM', tqdm_display=True, reset_wealth = True)
+            df,pop = main('scholl', solver, wealth_coordinates, agents, time, PROBA_SELECTION, MUTATION_RATE, ReinvestmentRate = 1.0, InvestmentHorizon = 252, InvestmentIntensity = 1.0, InvestorBehavior = 'JKM', tqdm_display=True, reset_wealth = True)
 
         except Exception as e: 
             went_smoothly = False
@@ -66,7 +66,7 @@ def nolearning_runs(repetitions, time, agents):
             np.random.seed(seed)
             wealth_coordinates = np.random.dirichlet(np.ones(3),size=1)[0].tolist()
             print(wealth_coordinates)
-            df,pop, ReturnsNT, ReturnsVI, ReturnsTF = main('scholl', solver, wealth_coordinates, agents, time, 0, 0, ReinvestmentRate = 1.0, InvestmentHorizon = 252, InvestmentIntensity = 1.0, InvestorBehavior = 'JKM', tqdm_display=True, reset_wealth = False)
+            df,pop = main('scholl', solver, wealth_coordinates, agents, time, 0, 0, ReinvestmentRate = 1.0, InvestmentHorizon = 252, InvestmentIntensity = 1.0, InvestorBehavior = 'JKM', tqdm_display=True, reset_wealth = False)
 
         except Exception as e: 
             went_smoothly = False
@@ -92,7 +92,7 @@ def nolearning_runs_reset(repetitions, time, agents):
         try: 
             wealth_coordinates = np.random.dirichlet(np.ones(3),size=1)[0].tolist()
             print(wealth_coordinates)
-            df,pop, ReturnsNT, ReturnsVI, ReturnsTF = main('scholl', solver, wealth_coordinates, agents, time, 0, 0, ReinvestmentRate=1.0, InvestmentHorizon = 252, InvestmentIntensity = 1.0, InvestorBehavior = 'JKM', tqdm_display=True, reset_wealth = True)
+            df,pop = main('scholl', solver, wealth_coordinates, agents, time, 0, 0, ReinvestmentRate=1.0, InvestmentHorizon = 252, InvestmentIntensity = 1.0, InvestorBehavior = 'JKM', tqdm_display=True, reset_wealth = True)
 
         except Exception as e: 
             went_smoothly = False
@@ -122,9 +122,9 @@ def det_pop_nolearning(repetitions, time, agents):
         print(wealth_coordinates)
         
         np.random.seed(seed)
-        df,pop, ReturnsNT, ReturnsVI, ReturnsTF = main('scholl', solver, wealth_coordinates, agents, time, 0, 0, ReinvestmentRate=1.0, InvestmentHorizon = 252, InvestmentIntensity = 1.0, InvestorBehavior = 'JKM', tqdm_display=True, reset_wealth = False)
+        df,pop = main('scholl', solver, wealth_coordinates, agents, time, 0, 0, ReinvestmentRate=1.0, InvestmentHorizon = 252, InvestmentIntensity = 1.0, InvestorBehavior = 'JKM', tqdm_display=True, reset_wealth = False)
         np.random.seed(seed)
-        df2,pop2, ReturnsNT, ReturnsVI, ReturnsTF = main('scholl', solver, wealth_coordinates, agents, time, 0, 0, ReinvestmentRate=1.0, InvestmentHorizon = 252, InvestmentIntensity = 1.0, InvestorBehavior = 'JKM', tqdm_display=True, reset_wealth = False)
+        df2,pop2 = main('scholl', solver, wealth_coordinates, agents, time, 0, 0, ReinvestmentRate=1.0, InvestmentHorizon = 252, InvestmentIntensity = 1.0, InvestorBehavior = 'JKM', tqdm_display=True, reset_wealth = False)
 
         if df['Price'].iloc[-1] != df2['Price'].iloc[-1]:
             print(seed)
@@ -156,9 +156,9 @@ def det_pop_learning(repetitions, time, agents):
         print(wealth_coordinates)
 
         np.random.seed(seed)
-        df,pop, ReturnsNT, ReturnsVI, ReturnsTF = main('scholl', solver, wealth_coordinates, agents, time, PROBA_SELECTION, MUTATION_RATE, ReinvestmentRate=1.0, InvestmentHorizon = 252, InvestmentIntensity = 1.0, InvestorBehavior = 'JKM', tqdm_display=True, reset_wealth = False)
+        df,pop = main('scholl', solver, wealth_coordinates, agents, time, PROBA_SELECTION, MUTATION_RATE, ReinvestmentRate=1.0, InvestmentHorizon = 252, InvestmentIntensity = 1.0, InvestorBehavior = 'JKM', tqdm_display=True, reset_wealth = False)
         np.random.seed(seed)
-        df2,pop2, ReturnsNT, ReturnsVI, ReturnsTF = main('scholl', solver, wealth_coordinates, agents, time, PROBA_SELECTION, MUTATION_RATE, ReinvestmentRate=1.0, InvestmentHorizon = 252, InvestmentIntensity = 1.0, InvestorBehavior = 'JKM', tqdm_display=True, reset_wealth = False)
+        df2,pop2 = main('scholl', solver, wealth_coordinates, agents, time, PROBA_SELECTION, MUTATION_RATE, ReinvestmentRate=1.0, InvestmentHorizon = 252, InvestmentIntensity = 1.0, InvestorBehavior = 'JKM', tqdm_display=True, reset_wealth = False)
 
         if df['Price'].iloc[-1] != df2['Price'].iloc[-1]:
             print(seed)

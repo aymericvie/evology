@@ -156,4 +156,4 @@ def main(
 
     df = pd.DataFrame(results, columns=data.columns)
 
-    return df, pop, ReturnsNT, ReturnsVI, ReturnsTF
+    return df, pop
