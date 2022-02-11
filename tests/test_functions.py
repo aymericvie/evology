@@ -156,7 +156,7 @@ def det_pop_learning(repetitions, time, agents):
         print(wealth_coordinates)
 
         np.random.seed(seed)
-        df,pop, ReturnsNT, ReturnsVI, ReturnsTF = main('scholl', solver, wealth_coordinates, agents, time, PROBA_SELECTION, MUTATION_RATE, ReinvestmentRate=1.0, InvestmentHorizon = 252, InvestmentIntensity = 1.0, InvestorBehavior = 'JKM' tqdm_display=True, reset_wealth = False)
+        df,pop, ReturnsNT, ReturnsVI, ReturnsTF = main('scholl', solver, wealth_coordinates, agents, time, PROBA_SELECTION, MUTATION_RATE, ReinvestmentRate=1.0, InvestmentHorizon = 252, InvestmentIntensity = 1.0, InvestorBehavior = 'JKM', tqdm_display=True, reset_wealth = False)
         np.random.seed(seed)
         df2,pop2, ReturnsNT, ReturnsVI, ReturnsTF = main('scholl', solver, wealth_coordinates, agents, time, PROBA_SELECTION, MUTATION_RATE, ReinvestmentRate=1.0, InvestmentHorizon = 252, InvestmentIntensity = 1.0, InvestorBehavior = 'JKM', tqdm_display=True, reset_wealth = False)
 
