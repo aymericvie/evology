@@ -13,7 +13,7 @@ np.random.seed(8)
 print(wealth_coordinates)
 
 def run(
-    POPULATION_SIZE, learning_mode, TIME, wealth_coordinates, tqdm_display, reset_wealth, ReinvestmentRate, InvestmentHorizon, InvestmentIntensity,
+    POPULATION_SIZE, learning_mode, TIME, wealth_coordinates, tqdm_display, reset_wealth, ReinvestmentRate, InvestmentHorizon, InvestmentIntensity, InvestorBehavior,
 ):
     if learning_mode == 0:
         df, pop, ReturnsNT, ReturnsVI, ReturnsTF = main(
@@ -27,6 +27,7 @@ def run(
             ReinvestmentRate,
             InvestmentHorizon,
             InvestmentIntensity,
+            InvestorBehavior,
             tqdm_display,
             reset_wealth
         )
@@ -43,6 +44,7 @@ def run(
             ReinvestmentRate,
             InvestmentHorizon,
             InvestmentIntensity,
+            InvestorBehavior,
             tqdm_display,
             reset_wealth,
         )
@@ -53,8 +55,8 @@ def run(
 
 
 df, pop, ReturnsNT, ReturnsVI, ReturnsTF = run(
-    3, 0, 50000, wealth_coordinates, tqdm_display=False, reset_wealth=False, 
-    ReinvestmentRate= 1.0, InvestmentHorizon = 1, InvestmentIntensity = 10.0
+    3, 0, 10000, wealth_coordinates, tqdm_display=False, reset_wealth=False, 
+    ReinvestmentRate= 1.95, InvestmentHorizon = 1, InvestmentIntensity = 1.0, InvestorBehavior = 'JKM'
 )
 
 df.to_csv("rundata/run_data.csv")
@@ -64,6 +66,5 @@ df.to_csv("rundata/run_data.csv")
 
 print(df)
 print([df['WShare_NT'].mean(), df['WShare_VI'].mean(), df['WShare_TF'].mean()])
-# print(stats.trim_mean(df['WealthAmp'], 0.1))
 
 

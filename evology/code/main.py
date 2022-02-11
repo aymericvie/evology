@@ -12,6 +12,7 @@ def main(
     ReinvestmentRate,
     InvestmentHorizon,
     InvestmentIntensity,
+    InvestorBehavior,
     tqdm_display,
     reset_wealth
 ):
@@ -119,6 +120,7 @@ def main(
             InvestmentSupply, 
             TestThreshold,
             InvestmentIntensity,
+            InvestorBehavior
         )
         pop = ApplyReinvestment(pop, ReinvestmentRate)
 
