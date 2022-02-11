@@ -120,12 +120,12 @@ def ApplyReinvestment(
     return pop
 
 def ApplyInvestment(
-    pop, generation, returns_tracker, InvestmentHorizon, InvestmentSupply, TestThreshold, InvestmentIntensity, results,
+    pop, generation, returns_tracker, InvestmentHorizon, InvestmentSupply, TestThreshold, InvestmentIntensity
 ):
     Bayesian = True
     if Bayesian == False:
         pop, AvgValSignif, PerSignif, NumDev = iv.InvestmentProcedure(pop, generation, returns_tracker, InvestmentHorizon, InvestmentSupply, TestThreshold, InvestmentIntensity)
     if Bayesian == True:
-        pop = ky.KellyInvestment(pop, InvestmentSupply, InvestmentHorizon, results, generation)
+        pop = ky.KellyInvestment(pop, InvestmentSupply, InvestmentIntensity, generation, InvestmentHorizon)
         AvgValSignif, PerSignif, NumDev = 0,0,0
     return pop, AvgValSignif, PerSignif, NumDev
