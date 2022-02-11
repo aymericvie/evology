@@ -275,7 +275,7 @@ def ApplyReinvestment(pop, ReinvestmentRate):
     if ReinvestmentRate < 0:
         raise ValueError('Negative reinvestment rate is not allowed.')
 
-    if ReinvestmentRate > 1:
+    if ReinvestmentRate >= 1:
         EffectiveRate = 0
     if ReinvestmentRate < 1:
         EffectiveRate = ReinvestmentRate - 1
