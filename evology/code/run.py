@@ -46,9 +46,9 @@ def run(
     return df, pop
 
 df, pop = run(
-    3, 0, 50000, wealth_coordinates, tqdm_display=False, reset_wealth=False, 
-    ReinvestmentRate = 3.0, InvestmentHorizon = 252, InvestorBehavior = 'JKM'
-)
+    3, 0, 5000, wealth_coordinates, tqdm_display=False, reset_wealth=False, 
+    ReinvestmentRate = 2.0, InvestmentHorizon = 21, InvestorBehavior = 'Kelly')
+
 df.to_csv("rundata/run_data.csv")
 print(df)
 print([df['WShare_NT'].mean(), df['WShare_VI'].mean(), df['WShare_TF'].mean()])
