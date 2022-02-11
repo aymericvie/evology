@@ -11,7 +11,6 @@ def main(
     MUTATION_RATE,
     ReinvestmentRate,
     InvestmentHorizon,
-    InvestmentIntensity,
     InvestorBehavior,
     tqdm_display,
     reset_wealth
@@ -22,13 +21,15 @@ def main(
         np.zeros((MAX_GENERATIONS - data.Barr, POPULATION_SIZE)),
         np.zeros((MAX_GENERATIONS - data.Barr, POPULATION_SIZE)),
     )
-    generation, CurrentPrice, dividend, spoils, InvestmentSupply = 0, InitialPrice, INITIAL_DIVIDEND, 0, RefInvestmentSupply * POPULATION_SIZE
+    generation, CurrentPrice, dividend, spoils = 0, InitialPrice, INITIAL_DIVIDEND, 0
     results = np.zeros((MAX_GENERATIONS - data.Barr, data.variables))
     wealth_tracker= np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
     wealth_tracker_noinv = np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
     returns_tracker= np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
     price_history, dividend_history = [], []
     TestThreshold = stdtrit(InvestmentHorizon, 0.95)
+    InvestmentIntensity = 1.0
+    InvestmentSupply = RefInvestmentSupply * POPULATION_SIZE * max(0, ReinvestmentRate - 1)
 
     pop, asset_supply = cr.CreatePop(POPULATION_SIZE, space, wealth_coordinates)
     bs.calculate_wealth(pop, CurrentPrice)

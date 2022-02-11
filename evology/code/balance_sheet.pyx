@@ -272,8 +272,10 @@ def update_profit(pop):
         ind.profit = ind.wealth - ind.prev_wealth
 
 def ApplyReinvestment(pop, ReinvestmentRate):
+    if ReinvestmentRate < 0:
+        raise ValueError('Negative reinvestment rate is not allowed.')
     for ind in pop:
-        ind.cash += (ReinvestmentRate - 1) * ind.profit
+        ind.cash += max(ReinvestmentRate, 1) * ind.profit
     return pop
 
 def report_types(pop):

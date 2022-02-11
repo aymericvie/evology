@@ -10,7 +10,7 @@ np.random.seed(8)
 print(wealth_coordinates)
 
 def run(
-    POPULATION_SIZE, learning_mode, TIME, wealth_coordinates, tqdm_display, reset_wealth, ReinvestmentRate, InvestmentHorizon, InvestmentIntensity, InvestorBehavior,
+    POPULATION_SIZE, learning_mode, TIME, wealth_coordinates, tqdm_display, reset_wealth, ReinvestmentRate, InvestmentHorizon, InvestorBehavior,
 ):
     if learning_mode == 0:
         df, pop = main(
@@ -23,7 +23,6 @@ def run(
             0,
             ReinvestmentRate,
             InvestmentHorizon,
-            InvestmentIntensity,
             InvestorBehavior,
             tqdm_display,
             reset_wealth
@@ -40,18 +39,15 @@ def run(
             MUTATION_RATE,
             ReinvestmentRate,
             InvestmentHorizon,
-            InvestmentIntensity,
             InvestorBehavior,
             tqdm_display,
             reset_wealth,
         )
-# TODO; add extended ecology for run, or maybe alternative solvers
-
     return df, pop
 
 df, pop = run(
-    3, 0, 10000, wealth_coordinates, tqdm_display=False, reset_wealth=False, 
-    ReinvestmentRate= 1.0, InvestmentHorizon = 1, InvestmentIntensity = 1.0, InvestorBehavior = 'Kelly'
+    3, 0, 50000, wealth_coordinates, tqdm_display=False, reset_wealth=False, 
+    ReinvestmentRate = 2.0, InvestmentHorizon = 252, InvestorBehavior = 'JKM'
 )
 df.to_csv("rundata/run_data.csv")
 print(df)
