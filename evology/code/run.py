@@ -13,7 +13,7 @@ def run(
     POPULATION_SIZE, learning_mode, TIME, wealth_coordinates, tqdm_display, reset_wealth, ReinvestmentRate, InvestmentHorizon, InvestmentIntensity, InvestorBehavior,
 ):
     if learning_mode == 0:
-        df, pop, ReturnsNT, ReturnsVI, ReturnsTF = main(
+        df, pop = main(
             "scholl",
             "esl.true",
             wealth_coordinates,
@@ -30,7 +30,7 @@ def run(
         )
 
     if learning_mode == 1:
-        df, pop, ReturnsNT, ReturnsVI, ReturnsTF = main(
+        df, pop = main(
             "scholl",
             "esl.true",
             wealth_coordinates,
@@ -49,9 +49,9 @@ def run(
 
     return df, pop
 
-df, pop, ReturnsNT, ReturnsVI, ReturnsTF = run(
+df, pop = run(
     3, 0, 10000, wealth_coordinates, tqdm_display=False, reset_wealth=False, 
-    ReinvestmentRate= 1.95, InvestmentHorizon = 1, InvestmentIntensity = 1.0, InvestorBehavior = 'JKM'
+    ReinvestmentRate= 1.0, InvestmentHorizon = 1, InvestmentIntensity = 1.0, InvestorBehavior = 'Kelly'
 )
 df.to_csv("rundata/run_data.csv")
 print(df)
