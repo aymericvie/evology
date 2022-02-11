@@ -26,7 +26,7 @@ def KellyInvestment(pop, InvestmentSupply, InvestmentIntensity, generation, Inve
     ratio_vi = sum_wealth_vi / total_wealth
     ratio_tf = sum_wealth_tf / total_wealth
     '''
-    if generation > InvestmentHorizon:
+    if generation > InvestmentHorizon and InvestmentHorizon > 0:
         total_wealth = 0
         sum_ir = 0
         for ind in pop:
