@@ -1,3 +1,4 @@
+from multiprocessing.sharedctypes import Value
 import balance_sheet as bs
 import ga as ga
 import timeit
@@ -124,7 +125,9 @@ def ApplyInvestment(
 ):
     if InvestorBehavior == 'JKM':
         pop, AvgValSignif, PerSignif, NumDev = iv.InvestmentProcedure(pop, generation, returns_tracker, InvestmentHorizon, InvestmentSupply, TestThreshold, InvestmentIntensity)
-    if InvestorBehavior == 'Kelly':
+    elif InvestorBehavior == 'Kelly':
         pop = ky.KellyInvestment(pop, InvestmentSupply, InvestmentIntensity, generation, InvestmentHorizon)
         AvgValSignif, PerSignif, NumDev = 0,0,0
+    else:
+        raise ValueError('Investor Behavior input not recognised.')
     return pop, AvgValSignif, PerSignif, NumDev
