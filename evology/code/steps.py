@@ -127,7 +127,7 @@ def ApplyInvestment(
         pop, AvgValSignif, PerSignif, NumDev = iv.InvestmentProcedure(pop, generation, returns_tracker, InvestmentHorizon, InvestmentSupply, TestThreshold, InvestmentIntensity)
     elif InvestorBehavior == 'Kelly':
         pop = ky.KellyInvestment(pop, InvestmentSupply, InvestmentIntensity, generation, InvestmentHorizon)
-        AvgValSignif, PerSignif, NumDev = 0,0,0
+        pop, AvgValSignif, PerSignif, NumDev = ky.MeasureSignificance(returns_tracker, generation, InvestmentHorizon, pop, TestThreshold)
     else:
         raise ValueError('Investor Behavior input not recognised.')
     return pop, AvgValSignif, PerSignif, NumDev

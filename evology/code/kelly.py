@@ -1,5 +1,7 @@
 import numpy as np
 from data import Barr
+import math
+from scipy.stats import pearsonr
 # from parameters import ShieldResults
 
 def KellyInvestment(pop, InvestmentSupply, InvestmentIntensity, generation, InvestmentHorizon):
@@ -7,25 +9,6 @@ def KellyInvestment(pop, InvestmentSupply, InvestmentIntensity, generation, Inve
     # TODO implemenent effect of InvestmnetHorizon?
     # For Kelly investment, it just smoothes down the probabilities applied. Should not change drastically the results.
 
-
-    '''
-    # Single period Kelly investing
-    sum_wealth_nt, sum_wealth_vi, sum_wealth_tf = 0,0,0
-
-    for ind in pop:
-        if ind.wealth != np.nan:
-            if ind.type == 'nt':
-                sum_wealth_nt += ind.wealth
-            if ind.type == 'vi':
-                sum_wealth_vi += ind.wealth
-            if ind.type == 'tf':
-                sum_wealth_tf += ind.wealth
-    total_wealth = sum_wealth_nt + sum_wealth_vi + sum_wealth_tf
-
-    ratio_nt = sum_wealth_nt / total_wealth
-    ratio_vi = sum_wealth_vi / total_wealth
-    ratio_tf = sum_wealth_tf / total_wealth
-    '''
     if generation > InvestmentHorizon and InvestmentHorizon > 0:
         total_wealth = 0
         sum_ir = 0
@@ -54,3 +37,76 @@ def KellyInvestment(pop, InvestmentSupply, InvestmentIntensity, generation, Inve
             raise ValueError('Sum of investment ratios is not one.')
 
     return pop
+
+def compute_sharpe(ind, DataSlice):
+    std_value = np.std(DataSlice)
+    if std_value != 0.0:
+        ind.sharpe = np.mean(DataSlice) / std_value
+    else:
+        ind.sharpe = np.nan
+    return ind
+
+
+def MeasureSignificance(returns_tracker, generation, InvestmentHorizon, pop, TestThreshold):
+    ReturnData = returns_tracker[generation-InvestmentHorizon:generation,:]
+
+    # Define results variables
+    num_test = 0
+    num_signif_test = 0
+    number_deviations = 0
+    sum_tvalue_cpr_abs = 0
+
+    # Compute sharpe ratios
+    for i, ind in enumerate(pop):
+        DataSlice = ReturnData[:,i]
+        ind = compute_sharpe(ind, DataSlice)
+
+    # Compare sharpe ratios
+    for i, ind in enumerate(pop):
+        if math.isnan(ind.sharpe) == False:
+            ind.tvalue_cpr = 0
+            DataSlice = ReturnData[:,i]
+            S = ind.sharpe
+
+            for j, ind2 in enumerate(pop):
+                if j != i and math.isnan(ind2.sharpe) == False:
+                    DataSlice2 = DataSlice = ReturnData[:,j]
+                    S2 = ind2.sharpe
+                    P = pearsonr(DataSlice, DataSlice2)[0]
+                    if P != 1:
+                        SE = np.sqrt((1.0 / InvestmentHorizon) * (2 - 2 * P + 0.5 * (S ** 2 + S2 ** 2 - 2 * S * S2 * (P ** 2))))
+                        T = (S - S2) / SE
+
+                        if SE == 0.0:
+                            print([S, S2, 1.0 * InvestmentHorizon, P])
+                            print(np.sqrt((1.0 / InvestmentHorizon) * (2 - 2 * P + 0.5 * (S ** 2 + S2 ** 2 - 2 * S * S2 * (P ** 2)))))
+                            raise ValueError('Null SE for Sharpe test.')
+
+                        ind.tvalue_cpr += T
+                        num_test += 1
+                        bounds = [(S - S2) - TestThreshold * SE, (S - S2) + TestThreshold * SE]
+
+                        if T > 0:
+                            if bounds[0] > 0:
+                                num_signif_test += 1.0
+                                number_deviations += (bounds[0] / SE)
+                        if T < 0:
+                            if bounds[1] < 0:
+                                num_signif_test += 1.0
+                                number_deviations += abs(bounds[1] / SE)
+
+    # Record some results
+    for ind in pop:
+        sum_tvalue_cpr_abs += abs(ind.tvalue_cpr)
+
+    if num_test != 0:
+        AvgValSignif = sum_tvalue_cpr_abs / num_test
+        PerSignif = 100 * num_signif_test / num_test
+    else:
+        AvgValSignif = 0
+        PerSignif = 0
+    NumDev = number_deviations / len(pop)
+
+    return pop, AvgValSignif, PerSignif, NumDev
+    
+

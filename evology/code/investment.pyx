@@ -90,8 +90,7 @@ cdef compare_sharpe(list pop, double[:,:] ReturnData, double InvestmentHorizon, 
                 if j != i and isnan(ind2.sharpe) == False:
                     ''' We have selected another fund with defined Sharpe'''
                     DataSlice2 = ReturnData[:,j]
-                    S = mean(DataSlice)
-                    S2 = mean(DataSlice2)
+                    S2 = ind2.sharpe
                     if isnan(S2) == False:
                         # T test for similar variances (difference in std betw 0.5 and 2)
                         # T = (S - S2) / ((sqrt( ((InvestmentHorizon - 1.0) * (std(DataSlice) ** 2) + (InvestmentHorizon - 1.0) * (std(DataSlice2) ** 2)))/(2.0 * InvestmentHorizon - 2)) * sqrt (2.0 / InvestmentHorizon))                    
@@ -107,18 +106,18 @@ cdef compare_sharpe(list pop, double[:,:] ReturnData, double InvestmentHorizon, 
                         P = pearson(DataSlice, DataSlice2)
                         if P != 1.0:
                             # Necessary because otherwise, the fund is comparing itself to something exactly the same and SE = 0.
-                            SE = sqrt((1.0 / InvestmentHorizon) * (2 - 2 * P + 0.5 * (ind.sharpe ** 2 + ind2.sharpe ** 2 - 2 * ind.sharpe * ind2.sharpe * (P ** 2))))
-                            T = (ind.sharpe - ind2.sharpe) / SE
+                            SE = sqrt((1.0 / InvestmentHorizon) * (2 - 2 * P + 0.5 * (S ** 2 + S2 ** 2 - 2 * S * S2 * (P ** 2))))
+                            T = (S - S2) / SE
 
                             if SE == 0.0:
-                                print([ind.sharpe, ind2.sharpe, 1.0 * InvestmentHorizon, P])
-                                print(sqrt((1.0 / InvestmentHorizon) * (2 - 2 * P + 0.5 * (ind.sharpe ** 2 + ind2.sharpe ** 2 - 2 * ind.sharpe * ind2.sharpe * (P ** 2)))))
+                                print([S, S2, 1.0 * InvestmentHorizon, P])
+                                print(sqrt((1.0 / InvestmentHorizon) * (2 - 2 * P + 0.5 * (S ** 2 + S2 ** 2 - 2 * S * S2 * (P ** 2)))))
                                 raise ValueError('Null SE for Sharpe test.')
 
                             ind.tvalue_cpr += T
                             num_test += 1.0
                             #print(T)
-                            bounds = [(ind.sharpe - ind2.sharpe) - TestThreshold * SE, (ind.sharpe - ind2.sharpe) + TestThreshold * SE]
+                            bounds = [(S - S2) - TestThreshold * SE, (S - S2) + TestThreshold * SE]
 
                             if T > 0:
                                 if bounds[0] > 0:
