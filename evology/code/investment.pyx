@@ -2,7 +2,7 @@
 
 cimport cythonized
 import numpy as np
-from libc.math cimport isnan, sqrt
+from libc.math cimport isnan, sqrt, exp
 from parameters import INTEREST_RATE, SHIELD_DURATION, ShieldResults, ShieldInvestment
 cdef float NAN
 NAN = float("nan")
@@ -75,6 +75,7 @@ cdef compare_sharpe(list pop, double[:,:] ReturnData, double InvestmentHorizon, 
     cdef double SE 
     cdef list bounds
     cdef double number_deviations = 0.0
+    cdef double sum_exp_tval = 0.0
 
     #print("---")
     #print(TestThreshold)
@@ -132,36 +133,43 @@ cdef compare_sharpe(list pop, double[:,:] ReturnData, double InvestmentHorizon, 
     for ind in pop:
         if isnan(ind.tvalue_cpr) == False:
             sum_tvalue_cpr_abs += abs(ind.tvalue_cpr)
-            if ind.tvalue_cpr > 0:
-                # Apply the exponent Investment Intensity
-                ind.tvalue_cpr = ind.tvalue_cpr ** InvestmentIntensity
-                total_tvalue_cpr += ind.tvalue_cpr
-            if ind.tvalue_cpr < 0:
-                # Apply the exponent Investment Intensity, keeping the negative sign of T value.
-                ind.tvalue_cpr = - abs(abs(ind.tvalue_cpr) ** InvestmentIntensity)
-                total_tvalue_cpr_neg += ind.tvalue_cpr
+            sum_exp_tval += exp(ind.tvalue_cpr * InvestmentIntensity)
 
-    if isnan(total_tvalue_cpr) == True:
-        raise ValueError('Undefined total_tvalue_cpr')
+
+            #if ind.tvalue_cpr > 0:
+                # Apply the exponent Investment Intensity
+            #    ind.tvalue_cpr = ind.tvalue_cpr ** InvestmentIntensity
+            #    total_tvalue_cpr += ind.tvalue_cpr
+            #if ind.tvalue_cpr < 0:
+            #    # Apply the exponent Investment Intensity, keeping the negative sign of T value.
+           #     total_tvalue_cpr_neg += ind.tvalue_cpr
+            ##    ind.tvalue_cpr = - abs(abs(ind.tvalue_cpr) ** InvestmentIntensity)
+
+
+    #if isnan(total_tvalue_cpr) == True:
+    #    raise ValueError('Undefined total_tvalue_cpr')
 
     for i, ind in enumerate(pop):
         ind.investment_ratio = 0.0
         if isnan(ind.tvalue_cpr) == False and isnan(ind.sharpe) == False:
-            if ind.tvalue_cpr > 0:
-                ind.investment_ratio = ind.tvalue_cpr / total_tvalue_cpr
-            if ind.tvalue_cpr < 0:
-                ind.investment_ratio = - (abs(ind.tvalue_cpr / total_tvalue_cpr_neg))
-                if ind.investment_ratio > 0:
-                    raise ValueError('Investment ratio positive despite negative T statistic value.')
+            ind.investment_ratio = exp(ind.tvalue_cpr * InvestmentIntensity) / sum_exp_tval
+            #if ind.tvalue_cpr > 0:
+            #    ind.investment_ratio = ind.tvalue_cpr / total_tvalue_cpr
+            #if ind.tvalue_cpr < 0:
+            #    ind.investment_ratio = - (abs(ind.tvalue_cpr / total_tvalue_cpr_neg))
+            #    if ind.investment_ratio > 0:
+            #        raise ValueError('Investment ratio positive despite negative T statistic value.')
             sum_inv_ratio += ind.investment_ratio 
 
         # print([round(ind.sharpe,2), round(ind.investment_ratio,2), round(ind.tvalue_cpr,2), round(total_tvalue_cpr,2)])
 
-    if round(sum_inv_ratio,3) < -1.0 or round(sum_inv_ratio,3) > 1.0:
+    #if round(sum_inv_ratio,3) < -1.0 or round(sum_inv_ratio,3) > 1.0:
+    if round(sum_inv_ratio, 4) != 1.0:
         print(sum_inv_ratio)
         for ind in pop:
             print([ind.tvalue_cpr, ind.investment_ratio])
-        raise ValueError('Sum of investment ratios is outside bounds [-1,1].')
+        #raise ValueError('Sum of investment ratios is outside bounds [-1,1].')
+        raise ValueError('Sum of investment ratios is not 1.0')
 
     return pop, (sum_tvalue_cpr_abs / num_test), (100 * num_signif_test / num_test), number_deviations / len(pop)
 
