@@ -18,7 +18,6 @@ import matplotlib
 import matplotlib.pyplot as plt
 import investment as iv
 from scipy.special import stdtrit
-import kelly as ky
 
 # random.seed(random.random())
 
@@ -126,8 +125,7 @@ def ApplyInvestment(
     if InvestorBehavior == 'JKM':
         pop, AvgValSignif, PerSignif, NumDev = iv.InvestmentProcedure(pop, generation, returns_tracker, InvestmentHorizon, InvestmentSupply, TestThreshold, InvestmentIntensity)
     elif InvestorBehavior == 'Kelly':
-        pop = ky.KellyInvestment(pop, InvestmentSupply, InvestmentIntensity, generation, InvestmentHorizon)
-        pop, AvgValSignif, PerSignif, NumDev = ky.MeasureSignificance(returns_tracker, generation, InvestmentHorizon, pop, TestThreshold)
+        pop, AvgValSignif, PerSignif, NumDev = iv.KellyInvestment(pop, InvestmentSupply, InvestmentIntensity, generation, InvestmentHorizon, returns_tracker, TestThreshold)
     else:
         raise ValueError('Investor Behavior input not recognised.')
     return pop, AvgValSignif, PerSignif, NumDev
