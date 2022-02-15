@@ -4,6 +4,7 @@
 import pandas as pd
 import numpy as np
 import balance_sheet as bs
+from libc import log
 
 from parameters import *
 cimport cythonized
@@ -82,6 +83,11 @@ columns = [
     "FromVI",
     "FromTF",
     "WealthAmp",
+    # Annual Sharpes and Delta
+    "SharpeNT",
+    "SharpeVI",
+    "SharpeTF",
+    "Delta",
     # Annual return computed over wealth
     "NT_AnnualReturns",
     "VI_AnnualReturns",
@@ -431,7 +437,10 @@ def record_results(
 
         ListOutput = ResultsProcess(pop, spoils, current_price)
 
-        
+        if generation >= Barr + 2:
+            SharpeNT, SharpeVI, SharpeTF, Delta = computeSharpe(results)
+        else:
+            SharpeNT, SharpeVI, SharpeTF, Delta = NAN, NAN, NAN, NAN
 
         current = generation - Barr
 
@@ -506,8 +515,12 @@ def record_results(
         """ Wealth measures """
         arr += [wamp]
 
+        """ Sharpe and Delta """
+        arr += [SharpeNT, SharpeVI, SharpeTF, Delta]
+
         """ Annual returns """
         arr += [wamp_nt, wamp_vi, wamp_tf]
+        # -12, -11, -10
 
         """ Annual returns without investment """
         arr += [NT_AR_noinv, VI_AR_noinv, TF_AR_noinv]
@@ -598,3 +611,10 @@ cdef ReturnTracking(returns_tracker, list pop, int generation):
                 # Mark investor flows as being applied, so that we don't deduct them at the next period.
                 ind.investor_flow = 0.0
     return returns_tracker
+
+cdef computeSharpe(results):
+    cdef double SharpeNT = 0.0
+    cdef double SharpeVI = 0.0
+    cdef double SharpeTF = 0.0
+    cdef double Delta = 0.0
+    return SharpeNT, SharpeVI, SharpeTF, Delta
