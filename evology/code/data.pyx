@@ -110,7 +110,9 @@ columns = [
     "SharpeNT",
     "SharpeVI",
     "SharpeTF",
-    "Delta",
+    "DeltaNTVI",
+    "DeltaNTTF",
+    "DeltaVITF",
     # Annual return computed over wealth
     "NT_AnnualReturns",
     "VI_AnnualReturns",
@@ -461,13 +463,13 @@ def record_results(
         ListOutput = ResultsProcess(pop, spoils, current_price)
         current = generation - Barr
 
-        if generation >= Barr + 21 * 3:
-            resultsNT = results[0:current, -12]
-            resultsVI = results[0:current, -11]
-            resultsTF = results[0:current, -10]
-            SharpeNT, SharpeVI, SharpeTF, Delta = computeSharpe(resultsNT, resultsVI, resultsTF)
+        if current > Barr + 21:
+            resultsNT = results[Barr:current, -12]
+            resultsVI = results[Barr:current, -11]
+            resultsTF = results[Barr:current, -10]
+            SharpeNT, SharpeVI, SharpeTF, DeltaNTVI, DeltaNTTF, DeltaVITF = computeSharpe(resultsNT, resultsVI, resultsTF)
         else:
-            SharpeNT, SharpeVI, SharpeTF, Delta = NAN, NAN, NAN, NAN
+            SharpeNT, SharpeVI, SharpeTF, DeltaNTVI, DeltaNTTF, DeltaVITF  = NAN, NAN, NAN, NAN, NAN, NAN
 
         DailyNTReturns = FillList(GetDayReturn(pop, "nt"), len(pop))
         ReturnsNT[current, :] = DailyNTReturns
@@ -541,7 +543,7 @@ def record_results(
         arr += [wamp]
 
         """ Sharpe and Delta """
-        arr += [SharpeNT, SharpeVI, SharpeTF, Delta]
+        arr += [SharpeNT, SharpeVI, SharpeTF,  DeltaNTVI, DeltaNTTF, DeltaVITF]
 
         """ Annual returns """
         arr += [wamp_nt, wamp_vi, wamp_tf]
@@ -641,7 +643,12 @@ cdef computeSharpe(resultsNT, resultsVI, resultsTF):
     cdef double SharpeNT = 0.0
     cdef double SharpeVI = 0.0
     cdef double SharpeTF = 0.0
-    cdef double Delta = 0.0
+    cdef double DeltaNT = 0.0
+    cdef double DeltaVI = 0.0
+    cdef double DeltaTF = 0.0
+    cdef list BoundsNT
+    cdef list BoundsVI
+    cdef list BoundsTF
 
     N = len(resultsNT)
     SharpeNT = nanmean(resultsNT) / nanstd(resultsNT)
@@ -651,6 +658,37 @@ cdef computeSharpe(resultsNT, resultsVI, resultsTF):
     SENT = sqrt((1 + 0.5 * SharpeNT ** 2)/N)
     SEVI = sqrt((1 + 0.5 * SharpeVI ** 2)/N)
     SETF = sqrt((1 + 0.5 * SharpeTF ** 2)/N)
-    
 
-    return SharpeNT, SharpeVI, SharpeTF, Delta
+    BoundsNT = [SharpeNT - 1.96 * SENT, SharpeNT + 1.96 * SENT]
+    BoundsVI = [SharpeVI - 1.96 * SEVI, SharpeVI + 1.96 * SEVI]
+    BoundsTF = [SharpeTF - 1.96 * SETF, SharpeTF + 1.96 * SETF]
+
+    DeltaNTVI = ComputeDelta(SharpeNT, SharpeVI, SENT, SEVI, BoundsNT, BoundsVI, N)
+    DeltaNTTF = ComputeDelta(SharpeNT, SharpeTF, SENT, SETF, BoundsNT, BoundsTF, N)
+    DeltaVITF = ComputeDelta(SharpeVI, SharpeTF, SEVI, SETF, BoundsVI, BoundsTF, N)
+
+    return SharpeNT, SharpeVI, SharpeTF, DeltaNTVI, DeltaNTTF, DeltaVITF
+
+cdef ComputeDelta(double Sharpe1, double Sharpe2, double SE1, double SE2, list B1, list B2, double N):
+    cdef double DS = 0.0
+    cdef double Pooled = 0.0
+    cdef double BP = 0.0
+    cdef double BM = 0.0
+
+    Pooled = (SE1 + SE2) / sqrt(2) 
+
+    if Sharpe1 > Sharpe2:
+        DS = Sharpe1 - Sharpe2
+        BP = B1[0]
+        BM = B2[1]
+
+    if Sharpe1 < Sharpe2:
+        DS = Sharpe2 - Sharpe1
+        BM = B1[1]
+        BP = B2[0]
+
+    S = (BP - BM) / Pooled
+    D = log(N) / log(S/DS)
+
+    return D
+    
