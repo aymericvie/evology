@@ -4,12 +4,35 @@
 import pandas as pd
 import numpy as np
 import balance_sheet as bs
-from libc import log
+from libc.math cimport log, sqrt, isnan
 
 from parameters import *
 cimport cythonized
 cdef float NAN
 NAN = float("nan")
+
+cdef double nanmean(double[:] x) nogil:
+    cdef int N = len(x)
+    cdef double out = 0.0
+    cdef int i = 0
+    cdef int N2 = 0
+    for i in range(N):
+        if isnan(x[i]) == False:
+            out += x[i]
+            N2 += 1
+    return out / N2
+
+cdef double nanstd(double[:] x) nogil:
+    cdef int N = len(x)
+    cdef double _mean = nanmean(x)
+    cdef double out = 0.0
+    cdef int i = 0
+    cdef int N2 = 0
+    for i in range(N):
+        if isnan(x[i]) == False:
+            out += (x[i] - _mean) ** 2
+            N2 += 1
+    return sqrt(out / N2)
 
 columns = [
     # Global variables
@@ -436,13 +459,15 @@ def record_results(
     if generation >= Barr:
 
         ListOutput = ResultsProcess(pop, spoils, current_price)
+        current = generation - Barr
 
-        if generation >= Barr + 2:
-            SharpeNT, SharpeVI, SharpeTF, Delta = computeSharpe(results)
+        if generation >= Barr + 21 * 3:
+            resultsNT = results[0:current, -12]
+            resultsVI = results[0:current, -11]
+            resultsTF = results[0:current, -10]
+            SharpeNT, SharpeVI, SharpeTF, Delta = computeSharpe(resultsNT, resultsVI, resultsTF)
         else:
             SharpeNT, SharpeVI, SharpeTF, Delta = NAN, NAN, NAN, NAN
-
-        current = generation - Barr
 
         DailyNTReturns = FillList(GetDayReturn(pop, "nt"), len(pop))
         ReturnsNT[current, :] = DailyNTReturns
@@ -612,9 +637,20 @@ cdef ReturnTracking(returns_tracker, list pop, int generation):
                 ind.investor_flow = 0.0
     return returns_tracker
 
-cdef computeSharpe(results):
+cdef computeSharpe(resultsNT, resultsVI, resultsTF):
     cdef double SharpeNT = 0.0
     cdef double SharpeVI = 0.0
     cdef double SharpeTF = 0.0
     cdef double Delta = 0.0
+
+    N = len(resultsNT)
+    SharpeNT = nanmean(resultsNT) / nanstd(resultsNT)
+    SharpeVI = nanmean(resultsVI) / nanstd(resultsVI)
+    SharpeTF = nanmean(resultsTF) / nanstd(resultsTF)
+
+    SENT = sqrt((1 + 0.5 * SharpeNT ** 2)/N)
+    SEVI = sqrt((1 + 0.5 * SharpeVI ** 2)/N)
+    SETF = sqrt((1 + 0.5 * SharpeTF ** 2)/N)
+    
+
     return SharpeNT, SharpeVI, SharpeTF, Delta
