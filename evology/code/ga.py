@@ -47,19 +47,19 @@ def hypermutate(
 ):
     round_replacements = 0
     InitialPopSize = len(pop)
-    # i = 0
-    for i, ind in enumerate(pop):
-    # while i < len(pop):
-        if ind.wealth < 0:  # The fund is insolvent and we will remove it.
+    i = 0
+    
+    while i < len(pop):
+        if pop[i].wealth < 0:  # The fund is insolvent and we will remove it.
             # print("replacement " + str(i))
             round_replacements += 1
             # Mandate an administrator to liquidate the insolvent fund shares
-            spoils += ind.asset
+            spoils += pop[i].asset
             
 
             wealth_list = []
             for ind in pop:
-                wealth_list.append(ind.wealth)
+                wealth_list.append(pop[i].wealth)
             MaxFund = wealth_list.index(max(wealth_list))
 
             if MaxFund > len(pop):
@@ -74,12 +74,14 @@ def hypermutate(
             half = CreateHalfFund(pop, MaxFund)
             half2 = CreateHalfFund(pop, MaxFund)
 
-            del ind  # We suppress the fund.
+            del pop[i]  # We suppress the fund.
             pop.insert(i, half)
             del pop[MaxFund]
             pop.insert(MaxFund, half2)
             # Reset the bankruptcy check now that the population has changed. 
-            #i = 0``
+            i = 0
+        else:
+            i += 1
 
     # Check that the new population size is unchanged.
     if len(pop) != InitialPopSize:
