@@ -188,9 +188,20 @@ def AnnualReturns(wealth_tracker, pop, generation):
             elif ind.type == 'tf':
                 wamp_list_tf.append(wamp_ind)
 
-    wamp_nt = np.mean(wamp_list_nt)
-    wamp_vi = np.mean(wamp_list_vi)
-    wamp_tf = np.mean(wamp_list_tf)
+    if len(wamp_list_nt) > 1:
+        wamp_nt = np.nanmean(wamp_list_nt)
+    else:
+        wamp_nt = np.mean(wamp_list_nt)
+
+    if len(wamp_list_vi) > 1:
+        wamp_vi = np.nanmean(wamp_list_vi)
+    else:
+        wamp_vi = np.mean(wamp_list_vi)
+
+    if len(wamp_list_tf) > 1:
+        wamp_tf = np.nanmean(wamp_list_tf)
+    else:
+        wamp_tf = np.mean(wamp_list_tf)
         
     return wamp_nt, wamp_vi, wamp_tf
 
