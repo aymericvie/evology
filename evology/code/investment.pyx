@@ -344,7 +344,7 @@ cdef MeasureSignificance(double[:,:] returns_tracker, int generation, int Invest
     return pop, AvgValSignif, PerSignif, NumDev
 
 
-def Profit_Investment(pop, ReinvestmentRate, returns_tracker, InvestmentHorizon, TestThreshold):
+def Profit_Investment(pop, ReinvestmentRate, returns_tracker, InvestmentHorizon, TestThreshold, generation):
     pop = Returns_Investment(pop, ReinvestmentRate)
     pop, AvgT, PropSignif, HighestT = ProfitSignificance(returns_tracker, generation, InvestmentHorizon, pop, TestThreshold)
     return pop, AvgT, PropSignif, HighestT

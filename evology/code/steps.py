@@ -125,13 +125,12 @@ def update_wealth(
 def ApplyInvestment(
     pop, generation, returns_tracker, InvestmentHorizon, InvestmentSupply, TestThreshold, InvestmentIntensity, InvestorBehavior, ReinvestmentRate
 ):
-    if InvestorBehavior == 'JKM':
-        pop, AvgValSignif, PerSignif, NumDev, SharpeDiff = iv.InvestmentProcedure(pop, generation, returns_tracker, InvestmentHorizon, InvestmentSupply, TestThreshold, InvestmentIntensity)
-    elif InvestorBehavior == 'Kelly':
-        pop, AvgValSignif, PerSignif, NumDev = iv.KellyInvestment(pop, InvestmentSupply, InvestmentIntensity, generation, InvestmentHorizon, returns_tracker, TestThreshold)
+    #if InvestorBehavior == 'JKM':
+    #    pop, AvgValSignif, PerSignif, NumDev, SharpeDiff = iv.InvestmentProcedure(pop, generation, returns_tracker, InvestmentHorizon, InvestmentSupply, TestThreshold, InvestmentIntensity)
+    #elif InvestorBehavior == 'Kelly':
+    #    pop, AvgValSignif, PerSignif, NumDev = iv.KellyInvestment(pop, InvestmentSupply, InvestmentIntensity, generation, InvestmentHorizon, returns_tracker, TestThreshold)
     if InvestorBehavior == 'profit':
-        # TODO: decide output
-        pop, AvgT, PropSignif, HighestT = iv.Profit_Investment(pop, ReinvestmentRate, returns_tracker, InvestmentHorizon, TestThreshold)
+        pop, AvgT, PropSignif, HighestT = iv.Profit_Investment(pop, ReinvestmentRate, returns_tracker, InvestmentHorizon, TestThreshold, generation))
     else:
         raise ValueError('Investor Behavior input not recognised.')
     #return pop, AvgValSignif, PerSignif, NumDev, SharpeDiff
