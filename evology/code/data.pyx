@@ -123,6 +123,7 @@ columns = [
     "TF_AnnualReturns_Noinv",
     # Significance
     "AvgT",
+    "AvgAbsT",
     "HighestT",
     "PropSignif",
     "NTflows",
@@ -183,9 +184,9 @@ def AnnualReturns(wealth_tracker, pop, generation):
             elif ind.type == 'tf':
                 wamp_list_tf.append(wamp_ind)
 
-    wamp_nt = np.nanmean(wamp_list_nt)
-    wamp_vi = np.nanmean(wamp_list_vi)
-    wamp_tf = np.nanmean(wamp_list_tf)
+    wamp_nt = np.mean(wamp_list_nt)
+    wamp_vi = np.mean(wamp_list_vi)
+    wamp_tf = np.mean(wamp_list_tf)
         
     return wamp_nt, wamp_vi, wamp_tf
 
@@ -456,6 +457,7 @@ def record_results(
     TestThreshold,
     PropSignif,
     HighestT,
+    AvgAbsT
 ):
 
     if generation >= Barr:
@@ -553,7 +555,7 @@ def record_results(
         arr += [NT_AR_noinv, VI_AR_noinv, TF_AR_noinv]
 
         """ Investment Statistics """
-        arr += [AvgT, HighestT, PropSignif]
+        arr += [AvgT, AvgAbsT, HighestT, PropSignif]
 
         arr += ListOutput[38:41]
 

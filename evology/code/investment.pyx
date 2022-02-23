@@ -346,8 +346,8 @@ cdef MeasureSignificance(double[:,:] returns_tracker, int generation, int Invest
 
 def Profit_Investment(pop, ReinvestmentRate, returns_tracker, InvestmentHorizon, TestThreshold, generation):
     pop = Returns_Investment(pop, ReinvestmentRate)
-    pop, AvgT, PropSignif, HighestT = ProfitSignificance(returns_tracker, generation, InvestmentHorizon, pop, TestThreshold)
-    return pop, AvgT, PropSignif, HighestT
+    pop, AvgT, PropSignif, HighestT, AvgAbsT = ProfitSignificance(returns_tracker, generation, InvestmentHorizon, pop, TestThreshold)
+    return pop, AvgT, PropSignif, HighestT, AvgAbsT
 
 
 cdef ProfitSignificance(double[:,:] returns_tracker, int generation, int InvestmentHorizon, list pop, double TestThreshold):
@@ -367,6 +367,7 @@ cdef ProfitSignificance(double[:,:] returns_tracker, int generation, int Investm
     cdef int CountTest
     cdef double T
     cdef double fit
+    cdef double SumT = 0.0
 
     ReturnData = returns_tracker[generation-InvestmentHorizon:generation,:]
 
@@ -386,7 +387,8 @@ cdef ProfitSignificance(double[:,:] returns_tracker, int generation, int Investm
                 T = (mean(DataSlice) - mean(DataSlice2)) / (std(DataSlice) + std(DataSlice2) / sqrt(H))
                 T_values[i] += T
                 CountTest += 1
-                if T > TestThreshold:
+                SumT += abs(T)
+                if abs(T) >= TestThreshold:
                     NumSignif += 1
         ind.tvalue = T_values[i]
         # TODO: is there an issue with replacements and nan?
@@ -395,9 +397,10 @@ cdef ProfitSignificance(double[:,:] returns_tracker, int generation, int Investm
     HighestT = max(T_values)
     AvgT = sum(T_values) / len(pop)
     PropSignif = NumSignif / CountTest
+    AvgAbsT = SumT / len(pop)
     # Absolute sum of T?
 
-    return pop, AvgT, PropSignif, HighestT
+    return pop, AvgT, PropSignif, HighestT, AvgAbsT
 
 cdef Returns_Investment(list pop, double ReinvestmentRate):
     # apply investment

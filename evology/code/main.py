@@ -114,7 +114,8 @@ def main(
             pop, 
             AvgT, 
             PropSignif, 
-            HighestT 
+            HighestT, 
+            AvgAbsT 
         ) = ApplyInvestment(
             pop, 
             generation, 
@@ -156,6 +157,7 @@ def main(
             TestThreshold,
             PropSignif,
             HighestT,
+            AvgAbsT 
         )
 
     df = pd.DataFrame(results, columns=data.columns)
