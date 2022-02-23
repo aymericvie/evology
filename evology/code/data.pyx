@@ -122,10 +122,9 @@ columns = [
     "VI_AnnualReturns_Noinv",
     "TF_AnnualReturns_Noinv",
     # Significance
-    "AvgSignificance",
-    "AvgNumberDev",
-    "PerSignif",
-    "SharpeDiff",
+    "AvgT",
+    "HighestT",
+    "PropSignif",
     "NTflows",
     "VIflows",
     "TFflows",
@@ -453,11 +452,10 @@ def record_results(
     CountMutated,
     CountCrossed,
     StratFlow,
-    AvgValSignif,
+    AvgT,
     TestThreshold,
-    PerSignif,
-    NumDev,
-    SharpeDiff
+    PropSignif,
+    HighestT,
 ):
 
     if generation >= Barr:
@@ -555,7 +553,7 @@ def record_results(
         arr += [NT_AR_noinv, VI_AR_noinv, TF_AR_noinv]
 
         """ Investment Statistics """
-        arr += [AvgValSignif, NumDev, PerSignif, SharpeDiff]
+        arr += [AvgT, HighestT, PropSignif]
 
         arr += ListOutput[38:41]
 

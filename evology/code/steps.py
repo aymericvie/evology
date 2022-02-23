@@ -23,10 +23,10 @@ from scipy.special import stdtrit
 
 
 def ga_evolution(
-    pop, space, generation, wealth_coordinates, PROBA_SELECTION, MUTATION_RATE
+    pop, space, generation, wealth_coordinates, PROBA_SELECTION, MUTATION_RATE, Horizon
 ):
+    ga.compute_fitness(pop, Horizon)
     if generation > SHIELD_DURATION:
-        ga.compute_fitness(pop)
         (
             pop,
             CountSelected,
@@ -116,19 +116,23 @@ def update_wealth(
     pop = bs.AgeUpdate(pop)
     return pop
 
-def ApplyReinvestment(
-    pop, ReinvestmentRate,
-):
-    pop = bs.ApplyReinvestment(pop, ReinvestmentRate)
-    return pop
+#def ApplyReinvestment(
+#    pop, ReinvestmentRate,
+#):
+#    pop = bs.ApplyReinvestment(pop, ReinvestmentRate)
+#    return pop
 
 def ApplyInvestment(
-    pop, generation, returns_tracker, InvestmentHorizon, InvestmentSupply, TestThreshold, InvestmentIntensity, InvestorBehavior
+    pop, generation, returns_tracker, InvestmentHorizon, InvestmentSupply, TestThreshold, InvestmentIntensity, InvestorBehavior, ReinvestmentRate
 ):
     if InvestorBehavior == 'JKM':
         pop, AvgValSignif, PerSignif, NumDev, SharpeDiff = iv.InvestmentProcedure(pop, generation, returns_tracker, InvestmentHorizon, InvestmentSupply, TestThreshold, InvestmentIntensity)
     elif InvestorBehavior == 'Kelly':
         pop, AvgValSignif, PerSignif, NumDev = iv.KellyInvestment(pop, InvestmentSupply, InvestmentIntensity, generation, InvestmentHorizon, returns_tracker, TestThreshold)
+    if InvestorBehavior == 'profit':
+        # TODO: decide output
+        pop, AvgT, PropSignif, HighestT = iv.Profit_Investment(pop, ReinvestmentRate, returns_tracker, InvestmentHorizon, TestThreshold)
     else:
         raise ValueError('Investor Behavior input not recognised.')
-    return pop, AvgValSignif, PerSignif, NumDev, SharpeDiff
+    #return pop, AvgValSignif, PerSignif, NumDev, SharpeDiff
+    return pop, AvgT, PropSignif, HighestT 

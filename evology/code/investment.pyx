@@ -342,3 +342,87 @@ cdef MeasureSignificance(double[:,:] returns_tracker, int generation, int Invest
 
 
     return pop, AvgValSignif, PerSignif, NumDev
+
+
+def Profit_Investment(pop, ReinvestmentRate, returns_tracker, InvestmentHorizon, TestThreshold):
+    pop = Returns_Investment(pop, ReinvestmentRate)
+    pop, AvgT, PropSignif, HighestT = ProfitSignificance(returns_tracker, generation, InvestmentHorizon, pop, TestThreshold)
+    return pop, AvgT, PropSignif, HighestT
+
+
+cdef ProfitSignificance(double[:,:] returns_tracker, int generation, int InvestmentHorizon, list pop, double TestThreshold):
+    
+    # Define results variables
+
+    #cdef int num_test = 0
+    #cdef int num_signif_test = 0
+    #cdef double number_deviations = 0.0
+    #cdef double sum_tvalue_cpr_abs = 0.0
+    cdef cythonized.Individual ind
+    cdef cythonized.Individual ind2
+    #cdef double T
+    #cdef double P 
+    #cdef double S 
+    #cdef double S2
+    #cdef double SE
+    #cdef int i = 0
+    cdef double[:,:] ReturnData
+    #cdef list bounds
+    #cdef double NumDev = 0.0
+    #cdef double AvgValSignif = 0.0
+    #cdef double PerSignif = 0.0
+
+    ReturnData = returns_tracker[generation-InvestmentHorizon:generation,:]
+
+    cdef list T_values = [0] * len(pop)
+    cdef list MeanReturns = [0] * len(pop)
+    cdef list StdReturns = [0] * len(pop)
+    cdef double H = InvestmentHorizon
+    cdef int i = 0
+    cdef int j = 0
+    cdef int NumSignif = 0
+    cdef double PropSignif 
+    cdef int CountTest
+    cdef double T
+    #cdef list DataSlice
+    #cdef list DataSlice2
+
+    # Compute mean and std of returns 
+    for i, ind in enumerate(pop):
+        DataSlice = ReturnData[:,i]
+        #ind = compute_sharpe(ind, DataSlice)
+        MeanReturns[i] = mean(DataSlice)
+        StdReturns[i] = std(DataSlice)
+
+    # Compute and record T statistic values
+    for i, ind in enumerate(pop):
+        DataSlice = ReturnData[:,i]
+        for j, ind2 in enumerate(pop):
+            if j != i:
+                DataSlice2 = ReturnData[:,j]
+                T = (mean(DataSlice) - mean(DataSlice2)) / (std(DataSlice) + std(DataSlice2) / sqrt(H))
+                T_values[i] += T
+                CountTest += 1
+                if T > TestThreshold:
+                    NumSignif += 1
+        ind.tvalue = T_values[i]
+        # TODO: is there an issue with replacements and nan?
+    
+    # Record key results 
+    HighestT = max(T_values)
+    AvgT = mean(T_values) / len(pop)
+    PropSignif = NumSignif / CountTest
+
+    return pop, AvgT, PropSignif, HighestT
+
+cdef Returns_Investment(list pop, double ReinvestmentRate):
+    # apply investment
+    for ind in pop:
+        # fitness depends on profits, and profits are W(t)-W(t-1). We might have a steanrioll issue.
+        ind.investor_flow = ind.fitness * ReinvestmentRate
+        if isnan(ind.investor_flow) == True:
+            print(ind.fitness)
+            raise ValueError('NAN investor flow.') 
+        ind.cash += ind.investor_flow
+    return pop
+

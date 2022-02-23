@@ -25,3 +25,4 @@ cdef class Individual(list):
     cdef public object age
     cdef public double sharpe
     cdef public double tvalue_cpr
+    cdef public double tvalue

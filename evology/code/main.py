@@ -57,6 +57,7 @@ def main(
             wealth_coordinates,
             PROBA_SELECTION,
             MUTATION_RATE,
+            InvestmentHorizon
         )
 
         # Calculate wealth and previous wealth
@@ -111,10 +112,9 @@ def main(
 
         (
             pop, 
-            AvgValSignif,
-            PerSignif,
-            NumDev,
-            SharpeDiff
+            AvgT, 
+            PropSignif, 
+            HighestT 
         ) = ApplyInvestment(
             pop, 
             generation, 
@@ -125,7 +125,7 @@ def main(
             InvestmentIntensity,
             InvestorBehavior
         )
-        pop = ApplyReinvestment(pop, ReinvestmentRate)
+        #pop = ApplyReinvestment(pop, ReinvestmentRate)
 
         # Record results
         # wealth_tracker = iv.WealthTracking(wealth_tracker, pop, generation)
@@ -151,11 +151,10 @@ def main(
             CountMutated,
             CountCrossed,
             StratFlow,
-            AvgValSignif,
+            AvgT,
             TestThreshold,
-            PerSignif,
-            NumDev,
-            SharpeDiff
+            PropSignif,
+            HighestT,
         )
 
     df = pd.DataFrame(results, columns=data.columns)
