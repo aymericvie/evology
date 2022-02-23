@@ -132,7 +132,7 @@ cdef determine_multiplier(list pop, double spoils, double ToLiquidate, double as
     if multiplier_sell < 0:
         raise ValueError("Multiplier Sell is negative")
 
-    if abs(total_buy * multiplier_buy - total_sell_short * multiplier_sell) != 0:
+    if round(abs(total_buy * multiplier_buy - total_sell_short * multiplier_sell),3) != 0:
         if abs(total_buy * multiplier_buy - total_sell_short * multiplier_sell) >= abs(
             0.0001 * ((total_buy * multiplier_buy) + (total_sell_short * multiplier_sell))
         ):
