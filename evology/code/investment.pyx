@@ -2,6 +2,7 @@
 
 cimport cythonized
 import numpy as np
+import time 
 from libc.math cimport isnan, sqrt, exp
 from parameters import INTEREST_RATE, SHIELD_DURATION, ShieldResults, ShieldInvestment
 cdef float NAN
@@ -351,7 +352,7 @@ def Profit_Investment(pop, ReinvestmentRate, returns_tracker, InvestmentHorizon,
 
 
 cdef ProfitSignificance(double[:,:] returns_tracker, int generation, int InvestmentHorizon, list pop, double TestThreshold):
-    
+    # print('Counting')
     # Define results variables
     cdef cythonized.Individual ind
     cdef cythonized.Individual ind2
@@ -369,6 +370,7 @@ cdef ProfitSignificance(double[:,:] returns_tracker, int generation, int Investm
     cdef double fit
     cdef double SumT = 0.0
 
+    #startTime = time.time()
     ReturnData = returns_tracker[generation-InvestmentHorizon:generation,:]
 
     # Compute mean and std of returns 
@@ -377,27 +379,32 @@ cdef ProfitSignificance(double[:,:] returns_tracker, int generation, int Investm
         #ind = compute_sharpe(ind, DataSlice)
         MeanReturns[i] = mean(DataSlice)
         StdReturns[i] = std(DataSlice)
+    #print(time.time() - startTime)
 
     # Compute and record T statistic values
-    for i, ind in enumerate(pop):
-        DataSlice = ReturnData[:,i]
-        for j, ind2 in enumerate(pop):
-            if j != i:
-                DataSlice2 = ReturnData[:,j]
-                T = (mean(DataSlice) - mean(DataSlice2)) / (std(DataSlice) + std(DataSlice2) / sqrt(H))
-                T_values[i] += T
-                CountTest += 1
-                SumT += abs(T)
-                if abs(T) >= TestThreshold:
-                    NumSignif += 1
-        ind.tvalue = T_values[i]
-        # TODO: is there an issue with replacements and nan?
+    #startTime = time.time()
+    #for i, ind in enumerate(pop):
+    #    DataSlice = ReturnData[:,i]
+    #    for j, ind2 in enumerate(pop):
+    #        if j != i:
+    #            DataSlice2 = ReturnData[:,j]
+    #            T = (mean(DataSlice) - mean(DataSlice2)) / (std(DataSlice) + std(DataSlice2) / sqrt(H))
+    #            T_values[i] += T
+    #            CountTest += 1
+    #            SumT += abs(T)
+    #            if abs(T) >= TestThreshold:
+    #                NumSignif += 1
+    #    ind.tvalue = T_values[i]
+    #    # TODO: is there an issue with replacements and nan?
+    #print(time.time() - startTime)
     
     # Record key results 
+    #startTime = time.time()
     HighestT = max(T_values)
     AvgT = sum(T_values) / len(pop)
     PropSignif = NumSignif / CountTest
     AvgAbsT = SumT / len(pop)
+    #print(time.time() - startTime)
     # Absolute sum of T?
 
     return pop, AvgT, PropSignif, HighestT, AvgAbsT

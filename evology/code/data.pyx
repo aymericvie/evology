@@ -91,10 +91,10 @@ columns = [
     "Liquidations",
     # More measures
     "PerSpoils",
-    "NT_DayReturns",
-    "VI_DayReturns",
-    "TF_DayReturns",
-    "AvgDayReturn",
+    #"NT_DayReturns",
+    #"VI_DayReturns",
+    #"TF_DayReturns",
+    #"AvgDayReturn",
     # Measures of adaptation
     "CountSelected",
     "CountMutated",
@@ -105,7 +105,7 @@ columns = [
     "FromNT",
     "FromVI",
     "FromTF",
-    "WealthAmp",
+    #"WealthAmp",
     # Annual Sharpes and Delta
     "SharpeNT",
     "SharpeVI",
@@ -118,9 +118,9 @@ columns = [
     "VI_AnnualReturns",
     "TF_AnnualReturns",
     # Annual return computed over wealth, without investment
-    "NT_AnnualReturns_Noinv",
-    "VI_AnnualReturns_Noinv",
-    "TF_AnnualReturns_Noinv",
+    #"NT_AnnualReturns_Noinv",
+    #"VI_AnnualReturns_Noinv",
+    #"TF_AnnualReturns_Noinv",
     # Significance
     "AvgT",
     "AvgAbsT",
@@ -137,27 +137,25 @@ variables = len(columns)
 """ We only record results after a year to avoid transient period biases. """
 Barr = max(SHIELD_DURATION, ShieldResults)
 
-def TrackWealth(wealth_tracker, pop, generation):
-    cdef double wamp = NAN
-    cdef int i = 0
-    cdef cythonized.Individual ind
-    wamp_list = []
+#def TrackWealth(wealth_tracker, pop, generation):
+#    cdef double wamp = NAN
+#    cdef int i = 0
+#    cdef cythonized.Individual ind
+#    wamp_list = []
 
-    if generation - 21 >= 0:
-        for i, ind in enumerate(pop):
-         # We can start calculate the movements' monthly amplitude.
-            old_wealth = wealth_tracker[generation-21,i]
-            #for ind in pop:
-            if old_wealth > 0 and ind.age >= 21:
-                wamp_ind = (wealth_tracker[generation, i] - old_wealth) / old_wealth
-            else: 
-                wamp_ind = float("nan")
-            wamp_list.append(100 * abs(wamp_ind))
-    wamp = np.nanmean(wamp_list)
-        
-    return wealth_tracker, wamp
-
-
+#    if generation - 21 >= 0:
+#        for i, ind in enumerate(pop):
+#         # We can start calculate the movements' monthly amplitude.
+#            old_wealth = wealth_tracker[generation-21,i]
+#            #for ind in pop:
+#            if old_wealth > 0 and ind.age >= 21:
+#                wamp_ind = (wealth_tracker[generation, i] - old_wealth) / old_wealth
+#            else: 
+#                wamp_ind = float("nan")
+#            wamp_list.append(100 * abs(wamp_ind))
+#    wamp = np.nanmean(wamp_list)
+#        
+#    return wealth_tracker, wamp
 
 
 def AnnualReturns(wealth_tracker, pop, generation):
@@ -173,7 +171,6 @@ def AnnualReturns(wealth_tracker, pop, generation):
     if generation - 252 >= 0: # We can start calculate the movements' annual amplitude.
         for i, ind in enumerate(pop):
             DataSlice = wealth_tracker[generation-252:generation,i]
-
             old_wealth = wealth_tracker[generation-252,i]
             wamp_ind = float("nan")
             #for ind in pop:
@@ -206,36 +203,36 @@ def AnnualReturns(wealth_tracker, pop, generation):
     return wamp_nt, wamp_vi, wamp_tf
 
 
-def AnnualReturnsNoInv(wealth_tracker_noinv, pop, generation):
-    cdef double NT_AR_noinv = NAN
-    cdef double VI_AR_noinv = NAN
-    cdef double TF_AR_noinv = NAN
-    cdef int i = 0
-    cdef cythonized.Individual ind
+#def AnnualReturnsNoInv(wealth_tracker_noinv, pop, generation):
+#    cdef double NT_AR_noinv = NAN
+#    cdef double VI_AR_noinv = NAN
+#    cdef double TF_AR_noinv = NAN
+#    cdef int i = 0
+#    cdef cythonized.Individual ind
 
-    list_nt, list_vi, list_tf,  = [],[],[]
+#    list_nt, list_vi, list_tf,  = [],[],[]
     
-    if generation - 252 >= 0: # We can start calculate the movements' annual amplitude.
-        for i, ind in enumerate(pop):
-            old_wealth = wealth_tracker_noinv[generation-252,i]
+#    if generation - 252 >= 0: # We can start calculate the movements' annual amplitude.
+#        for i, ind in enumerate(pop):
+#            old_wealth = wealth_tracker_noinv[generation-252,i]
             #for ind in pop:
-            if old_wealth > 0 and ind.age >= 252 + 10:
-                w_ind = (wealth_tracker_noinv[generation, i] - old_wealth) / old_wealth
-            else: 
-                w_ind = float("nan")
+#            if old_wealth > 0 and ind.age >= 252 + 10:
+#                w_ind = (wealth_tracker_noinv[generation, i] - old_wealth) / old_wealth
+#            else: 
+#                w_ind = float("nan")#
 
-            if ind.type == 'nt':
-                list_nt.append(w_ind)
-            elif ind.type == 'vi':
-                list_vi.append(w_ind)
-            elif ind.type == 'tf':
-                list_tf.append(w_ind)
+#            if ind.type == 'nt':
+#                list_nt.append(w_ind)
+#            elif ind.type == 'vi':
+#                list_vi.append(w_ind)
+#            elif ind.type == 'tf':
+#                list_tf.append(w_ind)
 
-    NT_AR_noinv = np.nanmean(list_nt)
-    VI_AR_noinv = np.nanmean(list_vi)
-    TF_AR_noinv = np.nanmean(list_tf)
+#    NT_AR_noinv = np.nanmean(list_nt)
+#    VI_AR_noinv = np.nanmean(list_vi)
+#    TF_AR_noinv = np.nanmean(list_tf)
         
-    return NT_AR_noinv, VI_AR_noinv, TF_AR_noinv 
+#    return NT_AR_noinv, VI_AR_noinv, TF_AR_noinv 
 
 def ResultsProcess(list pop, double spoils, double price):
 
@@ -515,9 +512,9 @@ def record_results(
         except RuntimeWarning:
             MeanTFReturn = np.nan
 
-        wealth_tracker, wamp = TrackWealth(wealth_tracker, pop, generation)
-        wamp_nt, wamp_vi, wamp_tf = AnnualReturns(wealth_tracker, pop, generation)
-        NT_AR_noinv, VI_AR_noinv, TF_AR_noinv = AnnualReturnsNoInv(wealth_tracker_noinv, pop, generation)
+        #wealth_tracker, wamp = TrackWealth(wealth_tracker, pop, generation)
+        wamp_nt, wamp_vi, wamp_tf = 0,0,0 #AnnualReturns(wealth_tracker, pop, generation)
+        #NT_AR_noinv, VI_AR_noinv, TF_AR_noinv = AnnualReturnsNoInv(wealth_tracker_noinv, pop, generation)
 
         """ Global variables """
         arr = [
@@ -551,18 +548,18 @@ def record_results(
 
         arr += [
             abs(100 * spoils / asset_supply),
-            MeanNTReturn,
-            MeanVIReturn,
-            MeanTFReturn,
-            (results[current, 54] + results[current, 55] + results[current, 56]) / 3,
+            #MeanNTReturn,
+            #MeanVIReturn,
+            #MeanTFReturn,
+            #(results[current, 54] + results[current, 55] + results[current, 56]) / 3,
         ]
 
         """ Measures of adaptation """
         arr += [CountSelected, CountMutated, CountCrossed]
         arr += StratFlow
 
-        """ Wealth measures """
-        arr += [wamp]
+        #""" Wealth measures """
+        #arr += [wamp]
 
         """ Sharpe and Delta """
         arr += [SharpeNT, SharpeVI, SharpeTF,  DeltaNTVI, DeltaNTTF, DeltaVITF]
@@ -572,7 +569,7 @@ def record_results(
         # -12, -11, -10
 
         """ Annual returns without investment """
-        arr += [NT_AR_noinv, VI_AR_noinv, TF_AR_noinv]
+        #arr += [NT_AR_noinv, VI_AR_noinv, TF_AR_noinv]
 
         """ Investment Statistics """
         arr += [AvgT, AvgAbsT, HighestT, PropSignif]
