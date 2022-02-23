@@ -482,35 +482,35 @@ def record_results(
         ListOutput = ResultsProcess(pop, spoils, current_price)
         current = generation - Barr
 
-        if current > Barr + 252:
-            resultsNT = results[Barr:current, -12]
-            resultsVI = results[Barr:current, -11]
-            resultsTF = results[Barr:current, -10]
-            SharpeNT, SharpeVI, SharpeTF, DeltaNTVI, DeltaNTTF, DeltaVITF = computeSharpe(resultsNT, resultsVI, resultsTF)
-        else:
-            SharpeNT, SharpeVI, SharpeTF, DeltaNTVI, DeltaNTTF, DeltaVITF  = NAN, NAN, NAN, NAN, NAN, NAN
+        #if current > Barr + 252:
+            #resultsNT = results[Barr:current, -12]
+            #resultsVI = results[Barr:current, -11]
+            #resultsTF = results[Barr:current, -10]
+            #SharpeNT, SharpeVI, SharpeTF, DeltaNTVI, DeltaNTTF, DeltaVITF = computeSharpe(resultsNT, resultsVI, resultsTF)
+        #else:
+        SharpeNT, SharpeVI, SharpeTF, DeltaNTVI, DeltaNTTF, DeltaVITF  = NAN, NAN, NAN, NAN, NAN, NAN
 
-        DailyNTReturns = FillList(GetDayReturn(pop, "nt"), len(pop))
-        ReturnsNT[current, :] = DailyNTReturns
+        #DailyNTReturns = FillList(GetDayReturn(pop, "nt"), len(pop))
+        #ReturnsNT[current, :] = DailyNTReturns
 
-        DailyVIReturns = FillList(GetDayReturn(pop, "vi"), len(pop))
-        ReturnsVI[current, :] = DailyVIReturns
+        #DailyVIReturns = FillList(GetDayReturn(pop, "vi"), len(pop))
+        #ReturnsVI[current, :] = DailyVIReturns
 
-        DailyTFReturns = FillList(GetDayReturn(pop, "tf"), len(pop))
-        ReturnsTF[current, :] = DailyTFReturns
+        #DailyTFReturns = FillList(GetDayReturn(pop, "tf"), len(pop))
+        #ReturnsTF[current, :] = DailyTFReturns
 
-        try:
-            MeanNTReturn = np.nanmean(DailyNTReturns)
-        except RuntimeWarning:
-            MeanNTReturn = np.nan
-        try:
-            MeanVIReturn = np.nanmean(DailyVIReturns)
-        except RuntimeWarning:
-            MeanVIReturn = np.nan
-        try:
-            MeanTFReturn = np.nanmean(DailyTFReturns)
-        except RuntimeWarning:
-            MeanTFReturn = np.nan
+        #try:
+        #    MeanNTReturn = np.nanmean(DailyNTReturns)
+        #except RuntimeWarning:
+        #    MeanNTReturn = np.nan
+        #try:
+        #    MeanVIReturn = np.nanmean(DailyVIReturns)
+        #except RuntimeWarning:
+        #    MeanVIReturn = np.nan
+        #try:
+        #    MeanTFReturn = np.nanmean(DailyTFReturns)
+        #except RuntimeWarning:
+        #    MeanTFReturn = np.nan
 
         #wealth_tracker, wamp = TrackWealth(wealth_tracker, pop, generation)
         wamp_nt, wamp_vi, wamp_tf = 0,0,0 #AnnualReturns(wealth_tracker, pop, generation)

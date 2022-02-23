@@ -383,18 +383,18 @@ cdef ProfitSignificance(double[:,:] returns_tracker, int generation, int Investm
 
     # Compute and record T statistic values
     #startTime = time.time()
-    #for i, ind in enumerate(pop):
-    #    DataSlice = ReturnData[:,i]
-    #    for j, ind2 in enumerate(pop):
-    #        if j != i:
-    #            DataSlice2 = ReturnData[:,j]
-    #            T = (mean(DataSlice) - mean(DataSlice2)) / (std(DataSlice) + std(DataSlice2) / sqrt(H))
-    #            T_values[i] += T
-    #            CountTest += 1
-    #            SumT += abs(T)
-    #            if abs(T) >= TestThreshold:
-    #                NumSignif += 1
-    #    ind.tvalue = T_values[i]
+    for i, ind in enumerate(pop):
+        DataSlice = ReturnData[:,i]
+        for j, ind2 in enumerate(pop):
+            if j != i:
+                DataSlice2 = ReturnData[:,j]
+                T = (mean(DataSlice) - mean(DataSlice2)) / (std(DataSlice) + std(DataSlice2) / sqrt(H))
+                T_values[i] += T
+                CountTest += 1
+                SumT += abs(T)
+                if abs(T) >= TestThreshold:
+                    NumSignif += 1
+        ind.tvalue = T_values[i]
     #    # TODO: is there an issue with replacements and nan?
     #print(time.time() - startTime)
     
