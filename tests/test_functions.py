@@ -20,7 +20,7 @@ def learning_runs(repetitions, time, agents):
         try: 
             seed = random.randint(0,100)
             np.random.seed(seed)
-            df,pop = main('scholl', solver, wealth_coordinates, time, agents, PROBA_SELECTION, MUTATION_RATE, ReinvestmentRate = 1.1, InvestmentHorizon = 252, InvestorBehavior = 'profit', tqdm_display=True, reset_wealth = False)
+            df,pop = main('scholl', solver, wealth_coordinates, agents, time, PROBA_SELECTION, MUTATION_RATE, ReinvestmentRate = 1.1, InvestmentHorizon = 252, InvestorBehavior = 'profit', tqdm_display=True, reset_wealth = False)
         except Exception as e: 
             went_smoothly = False
             print('Seed ' + str(seed))
