@@ -137,8 +137,8 @@ def ApplyInvestment(
     return pop, AvgT, PropSignif, HighestT, AvgAbsT 
 
 def ProfitDrivenInvestment(
-        pop, generation, returns_tracker, InvestmentHorizon, TestThreshold, InvestorBehavior, ReinvestmentRate):
-
-    
+        pop, generation, returns_tracker, InvestmentHorizon, TestThreshold, ReinvestmentRate):
+    if ReinvestmentRate < 1:
+        raise ValueError('F<1 does not make financial sense.')
     pop, AvgT, PropSignif, HighestT, AvgAbsT = iv.Profit_Investment(pop, ReinvestmentRate, returns_tracker, InvestmentHorizon, TestThreshold, generation)
     return pop, AvgT, PropSignif, HighestT, AvgAbsT 

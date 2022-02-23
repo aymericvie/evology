@@ -122,7 +122,6 @@ def main(
             returns_tracker, 
             InvestmentHorizon, 
             TestThreshold,
-            InvestorBehavior,
             ReinvestmentRate
         )
         #pop = ApplyReinvestment(pop, ReinvestmentRate)
