@@ -9,7 +9,7 @@ from test_functions import *
 
 
 print('Testing for 10 agents, 25,000 periods with 5 repetitions...')
-test_learning(5, 25000, 10)
+test_learning(5, 25_000, 10)
 print('...Succesful!')
 
 
