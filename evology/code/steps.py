@@ -135,3 +135,10 @@ def ApplyInvestment(
         raise ValueError('Investor Behavior input not recognised.')
     #return pop, AvgValSignif, PerSignif, NumDev, SharpeDiff
     return pop, AvgT, PropSignif, HighestT, AvgAbsT 
+
+def ProfitDrivenInvestment(
+        pop, generation, returns_tracker, InvestmentHorizon, TestThreshold, InvestorBehavior, ReinvestmentRate):
+
+    
+    pop, AvgT, PropSignif, HighestT, AvgAbsT = iv.Profit_Investment(pop, ReinvestmentRate, returns_tracker, InvestmentHorizon, TestThreshold, generation)
+    return pop, AvgT, PropSignif, HighestT, AvgAbsT 

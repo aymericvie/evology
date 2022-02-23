@@ -124,14 +124,12 @@ def main(
             PropSignif, 
             HighestT, 
             AvgAbsT 
-        ) = ApplyInvestment(
+        ) = ProfitDrivenInvestment(
             pop, 
             generation, 
             returns_tracker, 
             InvestmentHorizon, 
-            InvestmentSupply, 
             TestThreshold,
-            InvestmentIntensity,
             InvestorBehavior,
             ReinvestmentRate
         )
@@ -179,7 +177,7 @@ def main(
 
 np.random.seed(8)
 wealth_coordinates = [1 / 3, 1 / 3, 1 / 3]
-TIME, POPSIZE = 10000, 100
+TIME, POPSIZE = 1000, 100
 df, pop = main(
     "scholl",
     "esl.true",

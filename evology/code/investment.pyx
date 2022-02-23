@@ -359,12 +359,12 @@ cdef ProfitSignificance(double[:,:] returns_tracker, int generation, int Investm
     cdef list T_values = [0] * len(pop)
     cdef list MeanReturns = [0] * len(pop)
     cdef list StdReturns = [0] * len(pop)
-    cdef double H = InvestmentHorizon
+    cdef int H = InvestmentHorizon
     cdef int i = 0
     cdef int j = 0
     cdef int NumSignif = 0
     cdef double PropSignif 
-    cdef int CountTest
+    cdef int CountTest = 0
     cdef double T
     cdef double fit
     cdef double SumT = 0.0

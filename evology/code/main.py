@@ -116,14 +116,12 @@ def main(
             PropSignif, 
             HighestT, 
             AvgAbsT 
-        ) = ApplyInvestment(
+        ) = ProfitDrivenInvestment(
             pop, 
             generation, 
             returns_tracker, 
             InvestmentHorizon, 
-            InvestmentSupply, 
             TestThreshold,
-            InvestmentIntensity,
             InvestorBehavior,
             ReinvestmentRate
         )
