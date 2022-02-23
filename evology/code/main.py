@@ -123,7 +123,8 @@ def main(
             InvestmentSupply, 
             TestThreshold,
             InvestmentIntensity,
-            InvestorBehavior
+            InvestorBehavior,
+            ReinvestmentRate
         )
         #pop = ApplyReinvestment(pop, ReinvestmentRate)
 

@@ -130,7 +130,7 @@ def ApplyInvestment(
     #elif InvestorBehavior == 'Kelly':
     #    pop, AvgValSignif, PerSignif, NumDev = iv.KellyInvestment(pop, InvestmentSupply, InvestmentIntensity, generation, InvestmentHorizon, returns_tracker, TestThreshold)
     if InvestorBehavior == 'profit':
-        pop, AvgT, PropSignif, HighestT = iv.Profit_Investment(pop, ReinvestmentRate, returns_tracker, InvestmentHorizon, TestThreshold, generation))
+        pop, AvgT, PropSignif, HighestT = iv.Profit_Investment(pop, ReinvestmentRate, returns_tracker, InvestmentHorizon, TestThreshold, generation)
     else:
         raise ValueError('Investor Behavior input not recognised.')
     #return pop, AvgValSignif, PerSignif, NumDev, SharpeDiff

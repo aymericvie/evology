@@ -353,27 +353,9 @@ def Profit_Investment(pop, ReinvestmentRate, returns_tracker, InvestmentHorizon,
 cdef ProfitSignificance(double[:,:] returns_tracker, int generation, int InvestmentHorizon, list pop, double TestThreshold):
     
     # Define results variables
-
-    #cdef int num_test = 0
-    #cdef int num_signif_test = 0
-    #cdef double number_deviations = 0.0
-    #cdef double sum_tvalue_cpr_abs = 0.0
     cdef cythonized.Individual ind
     cdef cythonized.Individual ind2
-    #cdef double T
-    #cdef double P 
-    #cdef double S 
-    #cdef double S2
-    #cdef double SE
-    #cdef int i = 0
     cdef double[:,:] ReturnData
-    #cdef list bounds
-    #cdef double NumDev = 0.0
-    #cdef double AvgValSignif = 0.0
-    #cdef double PerSignif = 0.0
-
-    ReturnData = returns_tracker[generation-InvestmentHorizon:generation,:]
-
     cdef list T_values = [0] * len(pop)
     cdef list MeanReturns = [0] * len(pop)
     cdef list StdReturns = [0] * len(pop)
@@ -384,8 +366,9 @@ cdef ProfitSignificance(double[:,:] returns_tracker, int generation, int Investm
     cdef double PropSignif 
     cdef int CountTest
     cdef double T
-    #cdef list DataSlice
-    #cdef list DataSlice2
+    cdef double fit
+
+    ReturnData = returns_tracker[generation-InvestmentHorizon:generation,:]
 
     # Compute mean and std of returns 
     for i, ind in enumerate(pop):
@@ -418,10 +401,11 @@ cdef ProfitSignificance(double[:,:] returns_tracker, int generation, int Investm
 cdef Returns_Investment(list pop, double ReinvestmentRate):
     # apply investment
     for ind in pop:
+        fit = float('.'.join(str(ele) for ele in ind.fitness))
         # fitness depends on profits, and profits are W(t)-W(t-1). We might have a steanrioll issue.
-        ind.investor_flow = ind.fitness * ReinvestmentRate
-        if isnan(ind.investor_flow) == True:
-            print(ind.fitness)
+        ind.investor_flow = fit * ReinvestmentRate
+        if isnan(fit) == True:
+            print(fit)
             raise ValueError('NAN investor flow.') 
         ind.cash += ind.investor_flow
     return pop
