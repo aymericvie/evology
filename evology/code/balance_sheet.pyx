@@ -270,6 +270,7 @@ def ComputeReturn_noinv(pop):
 def update_profit(pop):
     for ind in pop:
         ind.profit = ind.wealth - ind.prev_wealth
+        ind.profit_internal = ind.wealth - ind.investor_flow - ind.prev_wealth
 
 def ApplyReinvestment(pop, ReinvestmentRate):
     if ReinvestmentRate < 0:

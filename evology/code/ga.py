@@ -99,7 +99,9 @@ def hypermutate(
 def compute_fitness(pop, Horizon):
     for ind in pop:
 
-        ema = (2 / (Horizon + 1)) * (ind.profit + ind.investor_flow - ind.ema) + ind.ema
+        #ema = (2 / (Horizon + 1)) * (ind.profit + ind.investor_flow - ind.ema) + ind.ema
+        ema = (2 / (Horizon + 1)) * (ind.profit_internal + ind.investor_flow - ind.ema) + ind.ema
+
         ind.ema = ema
         ind.fitness.values = (ema,)
     return ind
