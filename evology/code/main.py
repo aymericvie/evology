@@ -16,11 +16,11 @@ def main(
     reset_wealth
 ):
     # Initialise important variables and dataframe to store results
-    ReturnsNT, ReturnsVI, ReturnsTF = (
-        np.zeros((MAX_GENERATIONS - data.Barr, POPULATION_SIZE)),
-        np.zeros((MAX_GENERATIONS - data.Barr, POPULATION_SIZE)),
-        np.zeros((MAX_GENERATIONS - data.Barr, POPULATION_SIZE)),
-    )
+    #ReturnsNT, ReturnsVI, ReturnsTF = (
+    #    np.zeros((MAX_GENERATIONS - data.Barr, POPULATION_SIZE)),
+    #    np.zeros((MAX_GENERATIONS - data.Barr, POPULATION_SIZE)),
+    #    np.zeros((MAX_GENERATIONS - data.Barr, POPULATION_SIZE)),
+    #)
     generation, CurrentPrice, dividend, spoils = 0, InitialPrice, INITIAL_DIVIDEND, 0
     results = np.zeros((MAX_GENERATIONS - data.Barr, data.variables))
     wealth_tracker= np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
@@ -129,7 +129,7 @@ def main(
 
         # Record results
         # wealth_tracker = iv.WealthTracking(wealth_tracker, pop, generation)
-        results, wealth_tracker, wealth_tracker_noinv, ReturnsNT, ReturnsVI, ReturnsTF = data.record_results(
+        results, wealth_tracker, wealth_tracker_noinv = data.record_results(
             results,
             wealth_tracker,
             wealth_tracker_noinv,
@@ -144,9 +144,9 @@ def main(
             spoils,
             Liquidations,
             asset_supply,
-            ReturnsNT,
-            ReturnsVI,
-            ReturnsTF,
+            #ReturnsNT,
+            #ReturnsVI,
+            #ReturnsTF,
             CountSelected,
             CountMutated,
             CountCrossed,

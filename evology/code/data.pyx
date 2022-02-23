@@ -463,9 +463,9 @@ def record_results(
     spoils,
     Liquidations,
     asset_supply,
-    ReturnsNT,
-    ReturnsVI,
-    ReturnsTF,
+    #ReturnsNT,
+    #ReturnsVI,
+    #ReturnsTF,
     CountSelected,
     CountMutated,
     CountCrossed,
@@ -588,7 +588,7 @@ def record_results(
         """ Record results """
         results[current, :] = arr
 
-    return results, wealth_tracker, wealth_tracker_noinv, ReturnsNT, ReturnsVI, ReturnsTF
+    return results, wealth_tracker, wealth_tracker_noinv
 
 
 def GetDayReturn(pop, strat):
