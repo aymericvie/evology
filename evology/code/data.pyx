@@ -450,8 +450,8 @@ def ResultsProcess(list pop, double spoils, double price):
 
 def record_results(
     results,
-    wealth_tracker,
-    wealth_tracker_noinv,
+    #wealth_tracker,
+    #wealth_tracker_noinv,
     generation,
     current_price,
     mismatch,
@@ -588,7 +588,7 @@ def record_results(
         """ Record results """
         results[current, :] = arr
 
-    return results, wealth_tracker, wealth_tracker_noinv
+    return results #, wealth_tracker, wealth_tracker_noinv
 
 
 def GetDayReturn(pop, strat):

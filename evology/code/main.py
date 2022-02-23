@@ -128,10 +128,8 @@ def main(
 
         # Record results
         # wealth_tracker = iv.WealthTracking(wealth_tracker, pop, generation)
-        results, wealth_tracker, wealth_tracker_noinv = data.record_results(
+        results = data.record_results(
             results,
-            wealth_tracker,
-            wealth_tracker_noinv,
             generation,
             CurrentPrice,
             mismatch,
