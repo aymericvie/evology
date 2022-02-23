@@ -395,6 +395,7 @@ cdef ProfitSignificance(double[:,:] returns_tracker, int generation, int Investm
     HighestT = max(T_values)
     AvgT = sum(T_values) / len(pop)
     PropSignif = NumSignif / CountTest
+    # Absolute sum of T?
 
     return pop, AvgT, PropSignif, HighestT
 
