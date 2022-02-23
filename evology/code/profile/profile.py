@@ -19,6 +19,7 @@ def main(
     MUTATION_RATE,
     ReinvestmentRate,
     InvestmentHorizon,
+    InvestorBehavior,
     tqdm_display,
     reset_wealth
 ):
@@ -28,12 +29,15 @@ def main(
         np.zeros((MAX_GENERATIONS - data.Barr, POPULATION_SIZE)),
         np.zeros((MAX_GENERATIONS - data.Barr, POPULATION_SIZE)),
     )
-    generation, CurrentPrice, dividend, spoils, InvestmentSupply = 0, InitialPrice, INITIAL_DIVIDEND, 0, RefInvestmentSupply * POPULATION_SIZE
+    generation, CurrentPrice, dividend, spoils = 0, InitialPrice, INITIAL_DIVIDEND, 0
     results = np.zeros((MAX_GENERATIONS - data.Barr, data.variables))
     wealth_tracker= np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
+    wealth_tracker_noinv = np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
     returns_tracker= np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
     price_history, dividend_history = [], []
     TestThreshold = stdtrit(InvestmentHorizon, 0.95)
+    InvestmentIntensity = 1.0
+    InvestmentSupply = RefInvestmentSupply * POPULATION_SIZE * max(0, ReinvestmentRate - 1)
 
     pop, asset_supply = cr.CreatePop(POPULATION_SIZE, space, wealth_coordinates)
     bs.calculate_wealth(pop, CurrentPrice)
@@ -42,6 +46,7 @@ def main(
     for generation in tqdm(
         range(MAX_GENERATIONS), disable=tqdm_display, miniters=100, mininterval=0.5
     ):
+        InvestmentSupply = InvestmentSupply * (1+INTEREST_RATE)
 
         # Population reset
         pop = cr.WealthReset(pop, space, wealth_coordinates, generation, reset_wealth)
@@ -60,6 +65,7 @@ def main(
             wealth_coordinates,
             PROBA_SELECTION,
             MUTATION_RATE,
+            InvestmentHorizon
         )
 
         # Calculate wealth and previous wealth
@@ -82,6 +88,7 @@ def main(
             random_dividend,
             dividend_history,
             spoils,
+            Liquidations,
         ) = marketActivity(
             pop,
             CurrentPrice,
@@ -96,39 +103,46 @@ def main(
         pop = update_wealth(
             pop,
             CurrentPrice,
-            ReinvestmentRate,
         )
 
         # Investment
         (
             wealth_tracker, 
-            returns_tracker 
+            wealth_tracker_noinv,
+            returns_tracker
         ) = data.UpdateWealthReturnTracking(
             wealth_tracker, 
+            wealth_tracker_noinv,
             returns_tracker, 
             pop, 
             generation
         )
 
         (
-            returns_tracker, 
             pop, 
-            propSignif,
-            AvgValSignif
+            AvgT, 
+            PropSignif, 
+            HighestT, 
+            AvgAbsT 
         ) = ApplyInvestment(
             pop, 
             generation, 
             returns_tracker, 
             InvestmentHorizon, 
             InvestmentSupply, 
-            TestThreshold
+            TestThreshold,
+            InvestmentIntensity,
+            InvestorBehavior,
+            ReinvestmentRate
         )
+        #pop = ApplyReinvestment(pop, ReinvestmentRate)
 
         # Record results
         # wealth_tracker = iv.WealthTracking(wealth_tracker, pop, generation)
-        results, wealth_tracker, ReturnsNT, ReturnsVI, ReturnsTF = data.record_results(
+        results, wealth_tracker, wealth_tracker_noinv, ReturnsNT, ReturnsVI, ReturnsTF = data.record_results(
             results,
             wealth_tracker,
+            wealth_tracker_noinv,
             generation,
             CurrentPrice,
             mismatch,
@@ -138,6 +152,7 @@ def main(
             replacements,
             pop,
             spoils,
+            Liquidations,
             asset_supply,
             ReturnsNT,
             ReturnsVI,
@@ -146,29 +161,38 @@ def main(
             CountMutated,
             CountCrossed,
             StratFlow,
-            propSignif,
-            AvgValSignif,
+            AvgT,
+            TestThreshold,
+            PropSignif,
+            HighestT,
+            AvgAbsT 
         )
 
     df = pd.DataFrame(results, columns=data.columns)
 
-    return df, pop, ReturnsNT, ReturnsVI, ReturnsTF
+    return df, pop
+
+
+
+# Known issues
+# - Age after replacement does not behave normally. It just goes back to normal instead of increeasing 1 by 1. 
 
 np.random.seed(8)
 wealth_coordinates = [1 / 3, 1 / 3, 1 / 3]
 TIME, POPSIZE = 10000, 100
-df, pop, ReturnsNT, ReturnsVI, ReturnsTF = main(
+df, pop = main(
     "scholl",
     "esl.true",
     wealth_coordinates,
     POPSIZE,
     TIME,
-    PROBA_SELECTION,
-    MUTATION_RATE,
-    1.0,
+    1/252,
+    1/252,
+    1.05,
     252,
+    'profit',
     False,
-    False,
+    False
 )
 print(df)
 

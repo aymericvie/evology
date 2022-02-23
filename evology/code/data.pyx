@@ -129,6 +129,8 @@ columns = [
     "NTflows",
     "VIflows",
     "TFflows",
+    # Age
+    "AvgAge",
 ]
 variables = len(columns) 
 
@@ -170,12 +172,14 @@ def AnnualReturns(wealth_tracker, pop, generation):
     
     if generation - 252 >= 0: # We can start calculate the movements' annual amplitude.
         for i, ind in enumerate(pop):
+            DataSlice = wealth_tracker[generation-252:generation,i]
+
             old_wealth = wealth_tracker[generation-252,i]
+            wamp_ind = float("nan")
             #for ind in pop:
-            if old_wealth > 0 and ind.age >= 252 + 10:
-                wamp_ind = (wealth_tracker[generation, i] - old_wealth) / old_wealth
-            else: 
-                wamp_ind = float("nan")
+            if old_wealth > 0:
+                if isnan(sum(DataSlice)) == False:
+                    wamp_ind = (wealth_tracker[generation, i] - old_wealth) / old_wealth
 
             if ind.type == 'nt':
                 wamp_list_nt.append(wamp_ind)
@@ -266,7 +270,10 @@ def ResultsProcess(list pop, double spoils, double price):
 
     cdef cythonized.Individual ind
     cdef double ind_zero
+    cdef double AvgAge = 0.0
+
     for ind in pop:
+        AvgAge += ind.age
 
         if ind.asset > 0.0:
             LongAssets += ind.asset
@@ -383,6 +390,7 @@ def ResultsProcess(list pop, double spoils, double price):
     if WSNT < 0 or WSNT < 0 or WSNT < 0:
         raise ValueError("Negative wealth share. " + str([WSNT, WSVI, WSTF]))
 
+    AvgAge = AvgAge / len(pop)
 
     ListOutput = [
         LongAssets,
@@ -425,7 +433,8 @@ def ResultsProcess(list pop, double spoils, double price):
         TFreturn_noinv,
         NTflows,
         VIflows,
-        TFflows
+        TFflows,
+        AvgAge
     ]
 
     return ListOutput
@@ -558,6 +567,9 @@ def record_results(
         arr += [AvgT, AvgAbsT, HighestT, PropSignif]
 
         arr += ListOutput[38:41]
+
+        ''' average age '''
+        arr += [ListOutput[41]]
 
         if len(arr) != len(results[current,:]):
             print(len(arr))

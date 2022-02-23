@@ -163,3 +163,8 @@ def main(
     df = pd.DataFrame(results, columns=data.columns)
 
     return df, pop
+
+
+
+# Known issues
+# - Age after replacement does not behave normally. It just goes back to normal instead of increeasing 1 by 1. 
