@@ -393,7 +393,7 @@ cdef ProfitSignificance(double[:,:] returns_tracker, int generation, int Investm
     
     # Record key results 
     HighestT = max(T_values)
-    AvgT = mean(T_values) / len(pop)
+    AvgT = sum(T_values) / len(pop)
     PropSignif = NumSignif / CountTest
 
     return pop, AvgT, PropSignif, HighestT
@@ -401,7 +401,7 @@ cdef ProfitSignificance(double[:,:] returns_tracker, int generation, int Investm
 cdef Returns_Investment(list pop, double ReinvestmentRate):
     # apply investment
     for ind in pop:
-        fit = float('.'.join(str(ele) for ele in ind.fitness))
+        fit = float('.'.join(str(ele) for ele in ind.fitness.values))
         # fitness depends on profits, and profits are W(t)-W(t-1). We might have a steanrioll issue.
         ind.investor_flow = fit * ReinvestmentRate
         if isnan(fit) == True:
