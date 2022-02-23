@@ -8,8 +8,8 @@ from test_functions import *
 # print('...Succesful!')
 
 
-print('Testing for 30 agents, 25,000 periods with 5 repetitions...')
-test_nolearning(5, 25000, 30)
+print('Testing for 10 agents, 25,000 periods with 5 repetitions...')
+test_nolearning(5, 25000, 10)
 print('...Succesful!')
 
 
