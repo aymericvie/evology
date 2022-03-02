@@ -38,6 +38,9 @@ def main(
     for generation in tqdm(
         range(MAX_GENERATIONS), disable=tqdm_display, miniters=100, mininterval=0.5
     ):
+        if CurrentPrice >= 1_000_000:
+            break
+
         InvestmentSupply = InvestmentSupply * (1+INTEREST_RATE)
 
         # Population reset

@@ -42,13 +42,67 @@ def CreateHalfFund(pop, MaxFund):
     half.profit = 0.0
     return half 
 
+def CreateFractionalFund(pop, MaxFund, divisions):
+
+    if pop[MaxFund].type == "nt":
+        half = IndCreation("nt")
+    if pop[MaxFund].type == "vi":
+        half = IndCreation("vi")
+    if pop[MaxFund].type == "tf":
+        half = IndCreation("tf")
+
+    # Copy fund MaxFund intangible characteristics
+    # TSV, EDF, EDV are totally reset.
+    half.tsv = 0
+    half.edf = None
+    half.edv = 0
+    half.strategy = pop[MaxFund].strategy
+    half.process = pop[MaxFund].process
+    half.ema = pop[MaxFund].ema
+    half.fitness = pop[MaxFund].fitness
+    half[0] = pop[MaxFund][0]
+    half.age = 0.0
+    half.profit = 0.0
+
+    # Copy fund j characteristics to be divided
+    half.prev_wealth = pop[MaxFund].prev_wealth / divisions
+    half.wealth = pop[MaxFund].wealth / divisions
+    half.cash = pop[MaxFund].cash / divisions
+    half.loan = pop[MaxFund].loan / divisions
+    half.asset = pop[MaxFund].asset / divisions
+    half.margin = pop[MaxFund].margin / divisions
+    return half 
+
+
 def hypermutate(
     pop, spoils
 ):
     round_replacements = 0
     InitialPopSize = len(pop)
     i = 0
+
+    index_to_replace = []
+    wealth_list = []
+    for i, ind in enumerate(pop):
+        wealth_list.append(pop[i].wealth)
+        if ind.wealth < 0:
+            index_to_replace.append(i)
+
+    MaxFund = wealth_list.index(max(wealth_list))
+    NumberReplace = len(index_to_replace)
+
+    if NumberReplace != 0:
+        for index in index_to_replace:
+            half = CreateFractionalFund(pop, MaxFund, NumberReplace + 1)
+            del pop[index]
+            pop.insert(index, half)
+            round_replacements += 1
+        # FInally, add the last subdivision in place of the maximum fund.
+        half = CreateFractionalFund(pop, MaxFund, NumberReplace + 1)
+        del pop[MaxFund]
+        pop.insert(MaxFund, half)
     
+    '''
     while i < len(pop):
         if pop[i].wealth < 0:  # The fund is insolvent and we will remove it.
             # print("replacement " + str(i))
@@ -82,12 +136,18 @@ def hypermutate(
             i = 0
         else:
             i += 1
+        '''
 
     # Check that the new population size is unchanged.
     if len(pop) != InitialPopSize:
+        print([NumberReplace, round_replacements])
         raise ValueError(
             "After replace and split, population size changed. " + str(len(pop))
         )
+    
+    if NumberReplace != round_replacements:
+        print([NumberReplace, round_replacements])
+        raise ValueError('Mismatch number replace and round replacements')
 
     # Check that we did not leave anyone with a negative wealth
     for ind in pop:
