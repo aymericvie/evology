@@ -119,7 +119,8 @@ cdef Returns_Investment(list pop, double ReinvestmentRate):
     # apply investment
     for ind in pop:
         ind.investor_flow = 0.0
-        fit = float('.'.join(str(ele) for ele in ind.fitness.values))
+        #fit = float('.'.join(str(ele) for ele in ind.fitness.values))
+        fit = ind.ema
         # fitness depends on profits, and profits are W(t)-W(t-1). We might have a steanrioll issue.
         if isnan(fit) == False:
             ind.investor_flow = fit * (ReinvestmentRate - 1)

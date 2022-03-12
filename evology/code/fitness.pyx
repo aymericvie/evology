@@ -13,5 +13,5 @@ cdef Cython_ComputeFitness(list pop, int Horizon):
         #ema = (2 / (Horizon + 1)) * (ind.profit + ind.investor_flow - ind.ema) + ind.ema
         ema = (2 / (Horizon + 1)) * (ind.profit_internal + ind.investor_flow - ind.ema) + ind.ema
         ind.ema = ema
-        ind.fitness.values = (ema,)
+        #ind.fitness.values = (ema,)
     return pop
