@@ -10,6 +10,7 @@ from scipy import optimize
 from scipy import stats
 import numpy as np
 import data
+import fitness as fit
 import pandas as pd
 import random
 from tqdm import tqdm

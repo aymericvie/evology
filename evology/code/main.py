@@ -55,7 +55,7 @@ def main(
             break
 
         # Strategy evolution
-        ga.compute_fitness(pop, InvestmentHorizon)
+        pop = fit.ComputeFitness(pop, InvestmentHorizon)
         pop, CountSelected, CountMutated, CountCrossed, StratFlow = ga_evolution(
             pop,
             space,

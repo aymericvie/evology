@@ -163,15 +163,6 @@ def hypermutate(
     return pop, round_replacements, spoils
 
 
-def compute_fitness(pop, Horizon):
-    for ind in pop:
-
-        #ema = (2 / (Horizon + 1)) * (ind.profit + ind.investor_flow - ind.ema) + ind.ema
-        ema = (2 / (Horizon + 1)) * (ind.profit_internal + ind.investor_flow - ind.ema) + ind.ema
-
-        ind.ema = ema
-        ind.fitness.values = (ema,)
-    return ind
 
 
 # Creating our own crossover operator:
