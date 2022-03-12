@@ -1,5 +1,6 @@
 from multiprocessing.sharedctypes import Value
 import balance_sheet as bs
+import balance_sheet_cython as bsc
 import ga as ga
 import timeit
 from parameters import *
@@ -109,12 +110,14 @@ def marketActivity(
 def update_wealth(
     pop, current_price,
 ):
-    pop, replace = bs.calculate_wealth(pop, current_price)  # Compute agents' wealth
-    bs.update_profit(pop)
+    # pop, replace = bs.calculate_wealth(pop, current_price)  # Compute agents' wealth
+    # bs.update_profit(pop)
     #bs.calculate_wealth(pop, current_price)
-    bs.ComputeReturn(pop)
+    # bs.ComputeReturn(pop)
     # bs.ComputeReturn_noinv(pop)
     pop = bs.AgeUpdate(pop)
+
+    pop, replace = bsc.UpdateWealthProfitAge(pop, current_price)
     return pop, replace
 
 #def ApplyReinvestment(

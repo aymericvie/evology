@@ -79,7 +79,7 @@ def hypermutate(
 ):
     round_replacements = 0
 
-    if replace == True:
+    if replace == 1:
 
         InitialPopSize = len(pop)
         i = 0

@@ -30,7 +30,7 @@ def main(
     TestThreshold = stdtrit(InvestmentHorizon, 0.95)
     InvestmentIntensity = 1.0
     InvestmentSupply = RefInvestmentSupply * POPULATION_SIZE * max(0, ReinvestmentRate - 1)
-    replace = False
+    replace = 0
 
     pop, asset_supply = cr.CreatePop(POPULATION_SIZE, space, wealth_coordinates)
     bs.calculate_wealth(pop, CurrentPrice)
