@@ -140,11 +140,9 @@ def CreatePop(n, space, WealthCoords):
 
 
 def WealthReset(pop, space, WealthCoords, generation, ResetWealth):
-    if generation > 1 and generation <= SHIELD_DURATION:
+    # generation > 1 and generation <= SHIELD_DURATION or 
+    if ResetWealth == True:
         pop, asset_supply = CreatePop(len(pop), space, WealthCoords)
-    else:
-        if ResetWealth == True:
-            pop, asset_supply = CreatePop(len(pop), space, WealthCoords)
         for ind in pop:
             ind.age = generation
     return pop

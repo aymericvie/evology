@@ -176,7 +176,7 @@ def main(
 
 np.random.seed(8)
 wealth_coordinates = [1 / 3, 1 / 3, 1 / 3]
-TIME, POPSIZE = 3000, 3
+TIME, POPSIZE = 10000, 1000
 df, pop = main(
     "scholl",
     "esl.true",

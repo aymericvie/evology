@@ -254,7 +254,7 @@ def selRandom(pop, k):
 def strategy_evolution(
     space, pop, PROBA_SELECTION, MUTATION_RATE, wealth_coordinates
 ):
-
+    
     CountSelected = 0
     CountMutated = 0
     CountCrossed = 0
@@ -265,79 +265,81 @@ def strategy_evolution(
     FromVI = 0
     FromTF = 0
 
-    if space == "scholl":
-        # Individuals can select & imitate, and switch
+    if PROBA_SELECTION > 0 or MUTATION_RATE > 0:
 
-        # Selection
-        if PROBA_SELECTION > 0:
-            SelectionRd = np.random.rand(len(pop))
-            for i in range(len(pop)):
-                if SelectionRd[i] < PROBA_SELECTION:  # Social learning
-                    # Create the tournament and get the winner
-                    winner = max(pop, key=attrgetter("fitness"))
+        if space == "scholl":
+            # Individuals can select & imitate, and switch
 
-                    # Imitate the winner's type and strategy
-                    if pop[i].type != winner.type:
-                        CountSelected += 1
-                        # TODO: Collect data on the types being adopted / discarded?
-                        if pop[i].type == "nt":
-                            FromNT += 1
-                        if pop[i].type == "vi":
-                            FromVI += 1
+            # Selection
+            if PROBA_SELECTION > 0:
+                SelectionRd = np.random.rand(len(pop))
+                for i in range(len(pop)):
+                    if SelectionRd[i] < PROBA_SELECTION:  # Social learning
+                        # Create the tournament and get the winner
+                        winner = max(pop, key=attrgetter("fitness"))
+
+                        # Imitate the winner's type and strategy
+                        if pop[i].type != winner.type:
+                            CountSelected += 1
+                            # TODO: Collect data on the types being adopted / discarded?
+                            if pop[i].type == "nt":
+                                FromNT += 1
+                            if pop[i].type == "vi":
+                                FromVI += 1
+                            if pop[i].type == "tf":
+                                FromTF += 1
+                            if winner.type == "nt":
+                                TowardsNT += 1
+                            if winner.type == "vi":
+                                TowardsVI += 1
+                            if winner.type == "tf":
+                                TowardsTF += 1
+
+                            # warnings.warn('Ind ' + str(pop[i].type) + ' switched to ' + str(winner.type) + ' at time ' + str(generation))
+                        pop[i].type = winner.type
+                        type_num = cythonized.convert_ind_type_to_num(winner.type)
+                        pop[i].type_as_int = type_num
+                        pop[i][0] = winner[0]
+                        pop[i].leverage = winner.leverage
+
+            # Mutation
+            if MUTATION_RATE > 0:
+                types = ["nt", "vi", "tf"]
+
+                # cum_proba = [0, 0, 0]
+                # cum_proba[0] = wealth_coordinates[0]
+                # i = 1
+                # while i < len(wealth_coordinates):
+                #     cum_proba[i] = cum_proba[i - 1] + wealth_coordinates[i]
+                #     if cum_proba[i] > 1.0001:
+                #         raise ValueError("Cum proba > 1 " + str(cum_proba))
+                #     i += 1
+                # if sum(cum_proba) == 0:
+                #     raise ValueError("Sum cumproba = 0")
+                cum_proba = np.cumsum(wealth_coordinates)
+
+                MutationRd = np.random.rand(len(pop))
+                for i in range(len(pop)):
+                    if MutationRd[i] < MUTATION_RATE:
+                        CountMutated += 1
+                        # Change type totally randomly
+                        n = np.random.random()
+                        ty = 0
+                        while cum_proba[ty] < n:
+                            ty += 1
+                        pop[i].type = types[ty]
+                        type_num = cythonized.convert_ind_type_to_num(types[ty])
+                        pop[i].type_as_int = type_num
                         if pop[i].type == "tf":
-                            FromTF += 1
-                        if winner.type == "nt":
-                            TowardsNT += 1
-                        if winner.type == "vi":
-                            TowardsVI += 1
-                        if winner.type == "tf":
-                            TowardsTF += 1
+                            pop[i][0] = 2
+                        elif pop[i].type == "nt" or pop[i].type == "vi":
+                            pop[i][0] = 100
 
-                        # warnings.warn('Ind ' + str(pop[i].type) + ' switched to ' + str(winner.type) + ' at time ' + str(generation))
-                    pop[i].type = winner.type
-                    type_num = cythonized.convert_ind_type_to_num(winner.type)
-                    pop[i].type_as_int = type_num
-                    pop[i][0] = winner[0]
-                    pop[i].leverage = winner.leverage
-
-        # Mutation
-        if MUTATION_RATE > 0:
-            types = ["nt", "vi", "tf"]
-
-            # cum_proba = [0, 0, 0]
-            # cum_proba[0] = wealth_coordinates[0]
-            # i = 1
-            # while i < len(wealth_coordinates):
-            #     cum_proba[i] = cum_proba[i - 1] + wealth_coordinates[i]
-            #     if cum_proba[i] > 1.0001:
-            #         raise ValueError("Cum proba > 1 " + str(cum_proba))
-            #     i += 1
-            # if sum(cum_proba) == 0:
-            #     raise ValueError("Sum cumproba = 0")
-            cum_proba = np.cumsum(wealth_coordinates)
-
-            MutationRd = np.random.rand(len(pop))
-            for i in range(len(pop)):
-                if MutationRd[i] < MUTATION_RATE:
-                    CountMutated += 1
-                    # Change type totally randomly
-                    n = np.random.random()
-                    ty = 0
-                    while cum_proba[ty] < n:
-                        ty += 1
-                    pop[i].type = types[ty]
-                    type_num = cythonized.convert_ind_type_to_num(types[ty])
-                    pop[i].type_as_int = type_num
-                    if pop[i].type == "tf":
-                        pop[i][0] = 2
-                    elif pop[i].type == "nt" or pop[i].type == "vi":
-                        pop[i][0] = 100
-
-    if space == "extended":
-        if MUTATION_RATE > 0 or PROBA_SELECTION > 0:
-            raise ValueError(
-                "Strategy evolution for extended space is not yet implemented."
-            )
+        if space == "extended":
+            if MUTATION_RATE > 0 or PROBA_SELECTION > 0:
+                raise ValueError(
+                    "Strategy evolution for extended space is not yet implemented."
+                )
 
     StratFlow = [TowardsNT, TowardsVI, TowardsTF, FromNT, FromVI, FromTF]
 
