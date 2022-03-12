@@ -11,17 +11,19 @@ cdef double LeverageTF = parameters.LeverageTF
 cdef double LeverageVI = parameters.LeverageVI
 cdef double LeverageNT = parameters.LeverageNT
 cdef double SCALE_TF = parameters.SCALE_TF
+cdef double SCALE_VI = parameters.SCALE_VI
+cdef double SCALE_NT = parameters.SCALE_NT
 
 cdef double edf(Individual ind, double price):
     t = ind.type_as_int
     if t == 0:
-        return (LeverageTF * ind.wealth / price) * tanh(SCALE_TF * ind.tsv) - ind.asset
+        return (LeverageNT * ind.wealth / price) * tanh(SCALE_NT * ind.tsv) - ind.asset 
     elif t == 1:
-        zero = ind[0]
-        return (LeverageVI * ind.wealth / price) * tanh((5/zero) * (zero - price)) - ind.asset
+        #zero = ind[0]
+        return (LeverageVI * ind.wealth / price) * tanh(SCALE_VI * ind.tsv) - ind.asset
     elif t == 2:
-        zero = ind[0]
-        return (LeverageNT * ind.wealth / price) * tanh((5/(zero * ind.process)) * (zero * ind.process - price)) - ind.asset
+        #
+        return (LeverageTF * ind.wealth / price) * tanh(SCALE_TF * ind.tsv) - ind.asset
     else:
         raise Exception(f"Unexpected ind type: {ind.type}")
 
@@ -54,7 +56,7 @@ cpdef calculate_edv(
 def convert_ind_type_to_num(t):
     # We enumerate the individual type string into integer, for faster access
     # while inside Cython.
-    if t == "tf":
+    if t == "nt":
         return 0
     elif t == "vi":
         return 1

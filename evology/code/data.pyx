@@ -479,7 +479,7 @@ def record_results(
     AvgAbsT
 ):
 
-    if generation >= Barr:
+    if generation >= Barr :
 
         ListOutput = ResultsProcess(pop, spoils, current_price)
         current = generation - Barr
