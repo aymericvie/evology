@@ -48,8 +48,8 @@ def ga_evolution(
     return pop, CountSelected, CountMutated, CountCrossed, StratFlow
 
 
-def decision_updates(pop, price_history, dividend_history):
-    bs.DetermineTsvProc(pop, price_history)
+def decision_updates(pop, price_history, dividend_history, CurrentPrice):
+    bs.DetermineTsvProc(pop, price_history, CurrentPrice)
     bs.UpdateFval(pop, dividend_history)
     bs.DetermineEDF(pop)
     return pop
@@ -111,7 +111,7 @@ def marketClearing(pop, current_price, price_history, spoils, solver):
                         
     else:
         raise ValueError( "No maintained solver was selected.")
-    bs.CalcTsvVINT(pop, current_price)
+    #bs.CalcTsvVINT(pop, current_price)
     price_history.append(current_price)
     pop, mismatch = bs.calculate_edv(pop, current_price)
     return pop, mismatch, current_price, price_history, ToLiquidate
@@ -138,7 +138,7 @@ def update_wealth(
     #bs.calculate_wealth(pop, current_price)
     # bs.ComputeReturn(pop)
     # bs.ComputeReturn_noinv(pop)
-    pop = bs.AgeUpdate(pop)
+    #pop = bs.AgeUpdate(pop)
 
     pop, replace = bsc.UpdateWealthProfitAge(pop, current_price)
     return pop, replace

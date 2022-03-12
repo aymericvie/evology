@@ -49,7 +49,7 @@ def calculate_wealth(pop, current_price):
     return pop, replace
 
 
-def DetermineTsvProc(pop, price_history):
+def DetermineTsvProc(pop, price_history, CurrentPrice):
     # Pre-generate the random number once for all, to reduce Numpy calling
     # overhead.
     randoms = np.random.normal(0, 1, len(pop))
@@ -65,8 +65,8 @@ def DetermineTsvProc(pop, price_history):
                 #ind.tsv = 10 * price_history[-1] / max(0.0001, price_history[-ind[0]])
             elif len(price_history) < ind[0]:
                 ind.tsv = 0
-            if ind.tsv == 0:
-                ind.tsv = np.random.normal(0, 0.01)
+            #if ind.tsv == 0:
+            #    ind.tsv = np.random.normal(0, 0.01)
         elif ind.type == "nt":
             ind.process = abs(
                 ind.process
@@ -78,6 +78,10 @@ def DetermineTsvProc(pop, price_history):
             )
             if ind.process < 0:
                 warnings.warn("Negative process value for NT")
+
+            ind.tsv = ind.process * ind[0] - CurrentPrice
+        elif ind.type == "vi":
+            ind.tsv = ind[0] - CurrentPrice
 
 
 def UpdateFval(pop, dividend_history):
@@ -112,16 +116,28 @@ def DetermineEDF(pop):
                 * math.tanh(parameters.SCALE_TF * ind.tsv)
                 - ind.asset
             )
+        #elif ind.type == "vi":
+        #    ind.edf = (
+        #        lambda ind, p: (parameters.LeverageVI * ind.wealth / p)
+        #        * math.tanh((5 / ind[0]) * (ind[0] - p))
+        #        - ind.asset
+        #    )
         elif ind.type == "vi":
             ind.edf = (
                 lambda ind, p: (parameters.LeverageVI * ind.wealth / p)
-                * math.tanh((5 / ind[0]) * (ind[0] - p))
+                * math.tanh(parameters.SCALE_VI * ind.tsv)
                 - ind.asset
             )
+        #elif ind.type == "nt":
+        #    ind.edf = (
+        #        lambda ind, p: (parameters.LeverageNT * ind.wealth / p)
+        #        * math.tanh((5 / (ind[0] * ind.process)) * (ind[0] * ind.process - p))
+        #        - ind.asset
+        #    )
         elif ind.type == "nt":
             ind.edf = (
                 lambda ind, p: (parameters.LeverageNT * ind.wealth / p)
-                * math.tanh((5 / (ind[0] * ind.process)) * (ind[0] * ind.process - p))
+                * math.tanh(parameters.SCALE_NT * ind.tsv)
                 - ind.asset
             )
         else:

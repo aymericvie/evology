@@ -16,7 +16,7 @@ CROSSOVER_RATE = 1 / 21
 # General parameters
 
 LeverageNT, LeverageVI, LeverageTF = 1, 1, 1 
-SCALE_NT, SCALE_VI, SCALE_TF = np.pi, np.pi, np.pi
+SCALE_NT, SCALE_VI, SCALE_TF = 1, 1, 1 #np.pi, np.pi, np.pi
 ATC_TF = 1  
 
 GAMMA_NT = 0.2 * np.sqrt(1 / 252)
@@ -50,7 +50,7 @@ LIQUIDATION_ORDER_SIZE = 500_000
 """ RESET WEALTH """
 
 SHIELD_DURATION = 21
-ShieldResults = 21
+ShieldResults = 1 #21
 SHIELD_TOLERANCE = 0.01
 MAX_ATTEMPTS = 100
 ShieldInvestment =  252
