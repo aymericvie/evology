@@ -43,7 +43,7 @@ np.random.seed(8)
 wealth_coordinates = [1/3,1/3,1/3]
 print(wealth_coordinates)
 df, pop = run(
-    1000, 0, 20000, 'newton', wealth_coordinates, tqdm_display=False, reset_wealth=False, 
+    100, 0, 2, 'newton', wealth_coordinates, tqdm_display=False, reset_wealth=False, 
     ReinvestmentRate = 1.05, InvestmentHorizon = 252, InvestorBehavior = 'profit')
 
 df.to_csv("rundata/run_data.csv")

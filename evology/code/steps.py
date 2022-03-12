@@ -66,7 +66,7 @@ def marketClearing(pop, current_price, price_history, spoils, solver):
         elif solver == "newton":
             ed_functions, ToLiquidate = bs.agg_ed(pop, spoils)
             current_price = max(
-                optimize.newton(func=ed_functions[0], x0=current_price, x1 = 0.1, rtol=10000), 0.01
+                optimize.newton(func=ed_functions[0], x0=current_price, x1 = 1, maxiter=10000, rtol=10, tol=0.01), 0.01
             )
         elif solver == "newton.true":
             ed_functions, ToLiquidate = bs.agg_ed(pop, spoils)
@@ -174,7 +174,7 @@ def marketClearing(pop, current_price, price_history, spoils, solver):
         # for ind in pop:
         #     print([ind.type, ind.tsv, ind.edf(ind, current_price), ind.edf(ind, 1)])
 
-        func2 = np.vectorize(func)
+        func2 = np.vectorize(ed_functions[0])
 
         x = np.linspace(0,100,100)
         y = func2(x)
@@ -185,9 +185,23 @@ def marketClearing(pop, current_price, price_history, spoils, solver):
 
         raise ValueError('Solver exception.')
 
+
+
     #bs.CalcTsvVINT(pop, current_price)
     price_history.append(current_price)
     pop, mismatch = bs.calculate_edv(pop, current_price)
+
+
+    print(current_price)
+    func2 = np.vectorize(ed_functions[0])
+    x = np.linspace(0,5*current_price,1000)
+    y = func2(x)
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)
+    plt.plot(x,y, 'r')
+    plt.ylim(0,2*mismatch**2)
+    plt.show()
+
     return pop, mismatch, current_price, price_history, ToLiquidate
 
 
