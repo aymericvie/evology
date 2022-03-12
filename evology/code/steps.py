@@ -25,7 +25,7 @@ from scipy.special import stdtrit
 def ga_evolution(
     pop, space, generation, wealth_coordinates, PROBA_SELECTION, MUTATION_RATE, Horizon
 ):
-    ga.compute_fitness(pop, Horizon)
+    
     if generation > SHIELD_DURATION:
         (
             pop,

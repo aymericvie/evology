@@ -45,6 +45,9 @@ def main(
     for generation in tqdm(
         range(MAX_GENERATIONS), disable=tqdm_display, miniters=100, mininterval=0.5
     ):
+        if CurrentPrice >= 1_000_000:
+            break
+
         InvestmentSupply = InvestmentSupply * (1+INTEREST_RATE)
 
         # Population reset
@@ -55,8 +58,11 @@ def main(
             pop,
             spoils,
         )  # Replace insolvent agents
+        if replacements < 0:
+            break
 
         # Strategy evolution
+        ga.compute_fitness(pop, InvestmentHorizon)
         pop, CountSelected, CountMutated, CountCrossed, StratFlow = ga_evolution(
             pop,
             space,
@@ -162,17 +168,15 @@ def main(
             AvgAbsT 
         )
 
+    if generation < MAX_GENERATIONS - data.Barr:
+        # It means the simulation has breaked.
+        results[generation:MAX_GENERATIONS-data.Barr,:] = np.empty((MAX_GENERATIONS - data.Barr - generation,data.variables)) * np.nan
+
     df = pd.DataFrame(results, columns=data.columns)
 
     return df, pop
 
 
-
-
-
-
-# Known issues
-# - Age after replacement does not behave normally. It just goes back to normal instead of increeasing 1 by 1. 
 
 np.random.seed(8)
 wealth_coordinates = [1 / 3, 1 / 3, 1 / 3]

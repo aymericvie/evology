@@ -55,6 +55,7 @@ def main(
             break
 
         # Strategy evolution
+        ga.compute_fitness(pop, InvestmentHorizon)
         pop, CountSelected, CountMutated, CountCrossed, StratFlow = ga_evolution(
             pop,
             space,
@@ -170,5 +171,3 @@ def main(
 
 
 
-# Known issues
-# - Age after replacement does not behave normally. It just goes back to normal instead of increeasing 1 by 1. 

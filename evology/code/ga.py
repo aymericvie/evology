@@ -255,15 +255,16 @@ def strategy_evolution(
     space, pop, PROBA_SELECTION, MUTATION_RATE, wealth_coordinates
 ):
     
-    CountSelected = 0
-    CountMutated = 0
-    CountCrossed = 0
+
     TowardsNT = 0
     TowardsVI = 0
     TowardsTF = 0
     FromNT = 0
     FromVI = 0
     FromTF = 0
+    CountSelected = 0
+    CountMutated = 0
+    CountCrossed = 0
 
     if PROBA_SELECTION > 0 or MUTATION_RATE > 0:
 
