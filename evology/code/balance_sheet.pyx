@@ -41,8 +41,12 @@ def UpdatePrevWealth(pop):
 
 
 def calculate_wealth(pop, current_price):
+    replace = False
     for ind in pop:
         ind.wealth = ind.cash + ind.asset * current_price - ind.loan
+        if ind.wealth < 0:
+            replace = True
+    return pop, replace
 
 
 def DetermineTsvProc(pop, price_history):

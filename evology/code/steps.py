@@ -109,13 +109,13 @@ def marketActivity(
 def update_wealth(
     pop, current_price,
 ):
-    bs.calculate_wealth(pop, current_price)  # Compute agents' wealth
+    pop, replace = bs.calculate_wealth(pop, current_price)  # Compute agents' wealth
     bs.update_profit(pop)
     #bs.calculate_wealth(pop, current_price)
     bs.ComputeReturn(pop)
     # bs.ComputeReturn_noinv(pop)
     pop = bs.AgeUpdate(pop)
-    return pop
+    return pop, replace
 
 #def ApplyReinvestment(
 #    pop, ReinvestmentRate,

@@ -30,6 +30,7 @@ def main(
     TestThreshold = stdtrit(InvestmentHorizon, 0.95)
     InvestmentIntensity = 1.0
     InvestmentSupply = RefInvestmentSupply * POPULATION_SIZE * max(0, ReinvestmentRate - 1)
+    replace = False
 
     pop, asset_supply = cr.CreatePop(POPULATION_SIZE, space, wealth_coordinates)
     bs.calculate_wealth(pop, CurrentPrice)
@@ -41,7 +42,7 @@ def main(
         if CurrentPrice >= 1_000_000:
             break
 
-        InvestmentSupply = InvestmentSupply * (1+INTEREST_RATE)
+        #InvestmentSupply = InvestmentSupply * (1+INTEREST_RATE)
 
         # Population reset
         pop = cr.WealthReset(pop, space, wealth_coordinates, generation, reset_wealth)
@@ -50,6 +51,7 @@ def main(
         pop, replacements, spoils = ga.hypermutate(
             pop,
             spoils,
+            replace
         )  # Replace insolvent agents
         if replacements < 0:
             break
@@ -98,7 +100,7 @@ def main(
         )
 
         # Earnings, compute profits, age
-        pop = update_wealth(
+        pop, replace = update_wealth(
             pop,
             CurrentPrice,
         )

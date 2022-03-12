@@ -75,90 +75,57 @@ def CreateFractionalFund(pop, MaxFund, divisions):
 
 
 def hypermutate(
-    pop, spoils
+    pop, spoils, replace
 ):
     round_replacements = 0
-    InitialPopSize = len(pop)
-    i = 0
 
-    index_to_replace = []
-    wealth_list = []
-    for i, ind in enumerate(pop):
-        wealth_list.append(pop[i].wealth)
-        if ind.wealth < 0:
-            index_to_replace.append(i)
+    if replace == True:
 
-    MaxFund = wealth_list.index(max(wealth_list))
-    NumberReplace = len(index_to_replace)
+        InitialPopSize = len(pop)
+        i = 0
 
-    if NumberReplace == len(pop):
-        warnings.warn('Evology wiped out')
-        round_replacements = -1
-        return pop, round_replacements, spoils
+        index_to_replace = []
+        wealth_list = []
+        for i, ind in enumerate(pop):
+            wealth_list.append(pop[i].wealth)
+            if ind.wealth < 0:
+                index_to_replace.append(i)
+
+        MaxFund = wealth_list.index(max(wealth_list))
+        NumberReplace = len(index_to_replace)
+
+        if NumberReplace == len(pop):
+            warnings.warn('Evology wiped out')
+            round_replacements = -1
+            return pop, round_replacements, spoils
 
 
-    elif NumberReplace != 0:
-        for index in index_to_replace:
+        elif NumberReplace != 0:
+            for index in index_to_replace:
+                half = CreateFractionalFund(pop, MaxFund, NumberReplace + 1)
+                del pop[index]
+                pop.insert(index, half)
+                round_replacements += 1
+            # FInally, add the last subdivision in place of the maximum fund.
             half = CreateFractionalFund(pop, MaxFund, NumberReplace + 1)
-            del pop[index]
-            pop.insert(index, half)
-            round_replacements += 1
-        # FInally, add the last subdivision in place of the maximum fund.
-        half = CreateFractionalFund(pop, MaxFund, NumberReplace + 1)
-        del pop[MaxFund]
-        pop.insert(MaxFund, half)
-    
-    '''
-    while i < len(pop):
-        if pop[i].wealth < 0:  # The fund is insolvent and we will remove it.
-            # print("replacement " + str(i))
-            round_replacements += 1
-            # Mandate an administrator to liquidate the insolvent fund shares
-            spoils += pop[i].asset
-            
-
-            wealth_list = []
-            for ind in pop:
-                wealth_list.append(pop[i].wealth)
-            MaxFund = wealth_list.index(max(wealth_list))
-
-            if MaxFund > len(pop):
-                raise ValueError(
-                    "MaxFund is higher than len pop "
-                    + str(MaxFund)
-                    + "/"
-                    + str(len(pop))
-                )
-
-            # Wealthiest fund is fund index MaxFund. Create two halfs of fund, sharing the attributes, and replace in the population.
-            half = CreateHalfFund(pop, MaxFund)
-            half2 = CreateHalfFund(pop, MaxFund)
-
-            del pop[i]  # We suppress the fund.
-            pop.insert(i, half)
             del pop[MaxFund]
-            pop.insert(MaxFund, half2)
-            # Reset the bankruptcy check now that the population has changed. 
-            i = 0
-        else:
-            i += 1
-        '''
+            pop.insert(MaxFund, half)
 
-    # Check that the new population size is unchanged.
-    if len(pop) != InitialPopSize:
-        print([NumberReplace, round_replacements])
-        raise ValueError(
-            "After replace and split, population size changed. " + str(len(pop))
-        )
-    
-    if NumberReplace != round_replacements:
-        print([NumberReplace, round_replacements])
-        raise ValueError('Mismatch number replace and round replacements')
+        # Check that the new population size is unchanged.
+        if len(pop) != InitialPopSize:
+            print([NumberReplace, round_replacements])
+            raise ValueError(
+                "After replace and split, population size changed. " + str(len(pop))
+            )
+        
+        if NumberReplace != round_replacements:
+            print([NumberReplace, round_replacements])
+            raise ValueError('Mismatch number replace and round replacements')
 
-    # Check that we did not leave anyone with a negative wealth
-    for ind in pop:
-        if ind.wealth < 0:
-            raise ValueError("Insolvent funds after hypermutation.")
+        # Check that we did not leave anyone with a negative wealth
+        for ind in pop:
+            if ind.wealth < 0:
+                raise ValueError("Insolvent funds after hypermutation.")
 
     return pop, round_replacements, spoils
 
