@@ -84,10 +84,33 @@ def marketClearing(pop, current_price, price_history, spoils, solver):
     elif solver == 'scipy.min':
         ed_functions, ToLiquidate = bs.agg_ed(pop, spoils)
         current_price = optimize.minimize(ed_functions[0], current_price).x[0]
+    elif solver == 'root':
+        ed_functions, ToLiquidate = bs.agg_ed(pop, spoils)
+        current_price = optimize.root(ed_functions[0], current_price).x[0]
+    elif solver == 'univ_brent':
+        ed_functions, ToLiquidate = bs.agg_ed(pop, spoils)
+        current_price = optimize.minimize_scalar(ed_functions[0], method='brent').x
+    elif solver == 'univ_bounds':
+        ed_functions, ToLiquidate = bs.agg_ed(pop, spoils)
+        current_price = optimize.minimize_scalar(ed_functions[0], method='bounded', bounds=(0.9*current_price, 1.1*current_price)).x
+    elif solver == 'nelder-mead':
+        ed_functions, ToLiquidate = bs.agg_ed(pop, spoils)
+        current_price = optimize.minimize(ed_functions[0], current_price, method='nelder-mead').x
+    elif solver == 'bfgs':
+        ed_functions, ToLiquidate = bs.agg_ed(pop, spoils)
+        current_price = optimize.minimize(ed_functions[0], current_price, method='bfgs').x
+    elif solver == 'newton-CG':
+        ed_functions, ToLiquidate = bs.agg_ed(pop, spoils)
+        current_price = optimize.minimize(ed_functions[0], current_price, method='Newton-CG').x
+    elif solver == 'trust-ncg':
+        ed_functions, ToLiquidate = bs.agg_ed(pop, spoils)
+        current_price = optimize.minimize(ed_functions[0], current_price, method='trust-ncg').x
+    elif solver == 'trust-exact':
+        ed_functions, ToLiquidate = bs.agg_ed(pop, spoils)
+        current_price = optimize.minimize(ed_functions[0], current_price, method='trust-exact').x
+                        
     else:
-        raise ValueError(
-            "No solver was selected. Available options: esl, newton, brentq"
-        )
+        raise ValueError( "No maintained solver was selected.")
     bs.CalcTsvVINT(pop, current_price)
     price_history.append(current_price)
     pop, mismatch = bs.calculate_edv(pop, current_price)

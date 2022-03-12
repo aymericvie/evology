@@ -3,12 +3,12 @@ from main import *
 from parameters import *
 
 def run(
-    POPULATION_SIZE, learning_mode, TIME, wealth_coordinates, tqdm_display, reset_wealth, ReinvestmentRate, InvestmentHorizon, InvestorBehavior,
+    POPULATION_SIZE, learning_mode, TIME, solver, wealth_coordinates, tqdm_display, reset_wealth, ReinvestmentRate, InvestmentHorizon, InvestorBehavior,
 ):
     if learning_mode == 0:
         df, pop = main(
             "scholl",
-            "esl.true",
+            solver,
             wealth_coordinates,
             POPULATION_SIZE,
             TIME,
@@ -24,7 +24,7 @@ def run(
     if learning_mode == 1:
         df, pop = main(
             "scholl",
-            "esl.true",
+            solver,
             wealth_coordinates,
             POPULATION_SIZE,
             TIME,
@@ -43,7 +43,7 @@ np.random.seed(8)
 wealth_coordinates = [1/3,1/3,1/3]
 print(wealth_coordinates)
 df, pop = run(
-    3, 0, 10000, wealth_coordinates, tqdm_display=False, reset_wealth=False, 
+    1000, 0, 10000, 'esl.true', wealth_coordinates, tqdm_display=False, reset_wealth=False, 
     ReinvestmentRate = 1.05, InvestmentHorizon = 252, InvestorBehavior = 'profit')
 
 df.to_csv("rundata/run_data.csv")
