@@ -68,7 +68,7 @@ cdef class Individual(list):
     def __init__(self, x):
         super().__init__(x)
         self.typecode = 'd'
-        self.age = 0.0
+        self.age = 0
         self.strategy = 0.0
         self.wealth = 0.0
         # This needs to be overriden as it is not always 'tf'!
