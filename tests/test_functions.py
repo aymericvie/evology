@@ -133,11 +133,13 @@ def det_pop_nolearning(repetitions, time, agents):
             print(seed)
             print(wealth_coordinates)
             went_smoothly = False
+            print([df['Price'].iloc[-1], df2['Price'].iloc[-1]])
             print('Price trajectory is not reproducible.')
         if pop[-1] != pop2[-1]:
             print(seed)
             print(wealth_coordinates)
             went_smoothly = False
+            print([pop[-1], pop2[-1]])
             print('Final population is not reproducible.')
     return went_smoothly
 
