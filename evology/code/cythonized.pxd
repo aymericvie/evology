@@ -10,7 +10,7 @@ cdef class Individual(list):
     cdef public double margin
     cdef public double tsv
     cdef public double edv
-    cdef public double process
+    cdef public double process 
     cdef public double ema
     cdef public double profit
     cdef public double investor_flow

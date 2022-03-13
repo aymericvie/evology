@@ -20,7 +20,7 @@ SCALE_NT, SCALE_VI, SCALE_TF = 1, 1, 1 #np.pi, np.pi, np.pi
 ATC_TF = 1  
 
 GAMMA_NT = 0.2 * np.sqrt(1 / 252)
-MU_NT = 1
+MU_NT = 1.0
 RHO_NT = 0.00045832561
 
 

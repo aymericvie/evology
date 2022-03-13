@@ -310,7 +310,7 @@ def ResultsProcess(list pop, double spoils, double price):
             if ind.prev_wealth_noinv != 0:
                 NTreturn_noinv += ind.DailyReturn_noinv
             NTflows += ind.investment_ratio
-            NT_process = ind.process
+            NT_process += ind.process
 
         elif ind.type == "vi":
             VIcount += 1

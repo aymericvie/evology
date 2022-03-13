@@ -68,14 +68,11 @@ def DetermineTsvProc(pop, price_history, CurrentPrice):
             #if ind.tsv == 0:
             #    ind.tsv = np.random.normal(0, 0.01)
         elif ind.type == "nt":
-            ind.process = abs(
-                ind.process
-                + parameters.RHO_NT * (math.log2(parameters.MU_NT) - math.log2(ind.process))
-                # + parameters.GAMMA_NT * randoms[count] * ind.process
-                ### THIS IS WHERE WE ARE DIFFERENT
-                + parameters.GAMMA_NT * randoms[count] 
+            #print(ind.process)
+            ind.process = abs(ind.process + parameters.RHO_NT * (parameters.MU_NT - ind.process) + parameters.GAMMA_NT * randoms[count])
                 
-            )
+            #)
+            #print(ind.process)
             if ind.process < 0:
                 warnings.warn("Negative process value for NT")
 
@@ -206,15 +203,15 @@ def agent_report(ind):
     )  # + ", Profit " + str(int(ind.profit)) + ", Fitness " + str(ind.fitness))
 
 
-def CalcTsvVINT(pop, price):
-    if price < 0:
-        warnings.warn("Negative price " + str(price))
-    for ind in pop:
-        if ind.type == "vi":
-            ind.tsv = (5 / ind[0]) * (ind[0] - price)
-        if ind.type == "nt":
-            ind.tsv = (5 / (ind[0] * ind.process)) * (ind[0] * ind.process - price)
-    return ind
+#def CalcTsvVINT(pop, price):
+ #   if price < 0:
+ #       warnings.warn("Negative price " + str(price))
+###            ind.tsv = (5 / ind[0]) * (ind[0] - price)
+#    for ind in pop:
+#        if ind.type == "vi":
+#        if ind.type == "nt":
+#            ind.tsv = (5 / (ind[0] * ind.process)) * (ind[0] * ind.process - price)
+#    return ind
 
 
 def TotalWealth(pop):

@@ -46,6 +46,7 @@ def IndCreation(strat):
         ind.type = "tf"
         ind.leverage = LeverageTF
         ind.type_as_int = cythonized.convert_ind_type_to_num("tf")
+    ind.process = 1.0
     return ind
 
 
