@@ -4,12 +4,12 @@ cdef float NAN
 NAN = float("nan")
 
 
-def UpdateWealthProfitAge(pop, current_price):
-    pop, replace = UpdateWealth(pop, current_price)
-    return pop, replace 
+#def UpdateWealthProfitAge(pop, current_price):
+#    pop, replace = UpdateWealth(pop, current_price)
+#    return pop, replace 
 
 
-cdef UpdateWealth(list pop, double current_price):
+cpdef UpdateWealthProfitAge(list pop, double current_price):
     cdef cythonized.Individual ind
     cdef int replace = 0
     for ind in pop:
