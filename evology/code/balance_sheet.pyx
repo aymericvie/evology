@@ -56,7 +56,7 @@ def DetermineTsvProc(pop, price_history, CurrentPrice):
     for count, ind in enumerate(pop):
         if ind.type == "tf":
             if len(price_history) >= ind[0]:
-                ind.tsv = math.log2(price_history[-1]) - math.log2(
+                ind.tsv =  math.log2(price_history[-1]) - math.log2(
                     price_history[-ind[0]]
                 )
                 # ind.tsv = price_history[-1] / price_history[-ind[0]]
@@ -69,14 +69,15 @@ def DetermineTsvProc(pop, price_history, CurrentPrice):
             #    ind.tsv = np.random.normal(0, 0.01)
         elif ind.type == "nt":
             #print(ind.process)
-            ind.process = abs(ind.process + parameters.RHO_NT * (parameters.MU_NT - ind.process) + parameters.GAMMA_NT * randoms[count])
+            ind.process = abs(ind.process + parameters.RHO_NT * (parameters.MU_NT - ind.process) + parameters.GAMMA_NT * randoms[count] * ind.process)
                 
             #)
             #print(ind.process)
             if ind.process < 0:
                 warnings.warn("Negative process value for NT")
 
-            ind.tsv = math.log2(ind.process * ind[0]) - math.log2(CurrentPrice)
+            #ind.tsv = math.log2(ind.process * ind[0]) - math.log2(CurrentPrice)
+            ind.tsv = (ind.process - 1) 
         elif ind.type == "vi":
             ind.tsv = math.log2(ind[0] / CurrentPrice)
             #print([ind[0], CurrentPrice, ind.tsv])
