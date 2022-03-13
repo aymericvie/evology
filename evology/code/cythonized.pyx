@@ -17,13 +17,13 @@ cdef double SCALE_NT = parameters.SCALE_NT
 cdef double edf(Individual ind, double price):
     t = ind.type_as_int
     if t == 0:
-        return (LeverageNT * ind.wealth / price) * tanh(SCALE_NT * ind.tsv) - ind.asset 
+        return (LeverageNT * ind.wealth / price) * tanh(SCALE_NT * ind.tsv + 0.5) - ind.asset 
     elif t == 1:
         #zero = ind[0]
-        return (LeverageVI * ind.wealth / price) * tanh(SCALE_VI * ind.tsv) - ind.asset
+        return (LeverageVI * ind.wealth / price) * tanh(SCALE_VI * ind.tsv + 0.5) - ind.asset
     elif t == 2:
         #
-        return (LeverageTF * ind.wealth / price) * tanh(SCALE_TF * ind.tsv) - ind.asset
+        return (LeverageTF * ind.wealth / price) * tanh(SCALE_TF * ind.tsv + 0.5) - ind.asset
     else:
         raise Exception(f"Unexpected ind type: {ind.type}")
 

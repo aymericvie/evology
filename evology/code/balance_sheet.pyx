@@ -82,7 +82,7 @@ def DetermineTsvProc(pop, price_history, CurrentPrice):
             ind.tsv = math.log2(ind.process * ind[0]) - math.log2(CurrentPrice)
         elif ind.type == "vi":
             ind.tsv = math.log2(ind[0] / CurrentPrice)
-            print([ind[0], CurrentPrice, ind.tsv])
+            #print([ind[0], CurrentPrice, ind.tsv])
 
 
 def UpdateFval(pop, dividend_history):
