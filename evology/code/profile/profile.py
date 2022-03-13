@@ -8,7 +8,6 @@ import numpy as np
 
 
 @profile
-
 def main(
     space,
     solver,
@@ -81,7 +80,7 @@ def main(
         bs.UpdatePrevWealth(pop)
 
         # Market decisions (tsv, proc, edf)
-        pop = decision_updates(pop, price_history, dividend_history)
+        pop = decision_updates(pop, price_history, dividend_history, CurrentPrice)
 
         # Market clearing
         pop, mismatch, CurrentPrice, price_history, ToLiquidate = marketClearing(
@@ -178,6 +177,8 @@ def main(
     df = pd.DataFrame(results, columns=data.columns)
 
     return df, pop
+
+
 
 
 
