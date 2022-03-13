@@ -133,6 +133,7 @@ columns = [
     "AvgAge",
     # DiffReturns
     "DiffReturns",
+    "NT_process"
 ]
 variables = len(columns) 
 
@@ -275,6 +276,7 @@ def ResultsProcess(list pop, double spoils, double price):
         0.0, #float("nan"),
         0.0, # float("nan"),
     )
+    NT_process = 0.0
 
     NTflows, VIflows, TFflows = 0.0, 0.0, 0.0
 
@@ -308,6 +310,7 @@ def ResultsProcess(list pop, double spoils, double price):
             if ind.prev_wealth_noinv != 0:
                 NTreturn_noinv += ind.DailyReturn_noinv
             NTflows += ind.investment_ratio
+            NT_process = ind.process
 
         elif ind.type == "vi":
             VIcount += 1
@@ -357,6 +360,7 @@ def ResultsProcess(list pop, double spoils, double price):
         NTreturn_noinv = NTreturn_noinv / NTcount
         NTsignal = NTsignal / NTcount
         MeanNT = MeanNT / NTcount
+        NT_process = NT_process / NTcount
 
     if VIcount != 0:
         VIcash = VIcash / VIcount
@@ -444,7 +448,8 @@ def ResultsProcess(list pop, double spoils, double price):
         NTflows,
         VIflows,
         TFflows,
-        AvgAge
+        AvgAge,
+        NT_process,
     ]
 
     return ListOutput
@@ -584,10 +589,15 @@ def record_results(
         ''' diff return '''
         arr += [(ListOutput[18] - ListOutput[27]) ** 2 + (ListOutput[18] - ListOutput[36]) ** 2 + (ListOutput[27] - ListOutput[36]) ** 2]
 
+        ''' NT noise process'''
+        arr += [ListOutput[42]]
+
+
         if len(arr) != len(results[current,:]):
             print(len(arr))
             print(len(results[current,:]))
             raise ValueError('Mismatch in lengths of arrays in results recording.')
+
 
         # Warning: This must be at the end.
         """ Record results """
