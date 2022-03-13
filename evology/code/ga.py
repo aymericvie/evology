@@ -61,7 +61,7 @@ def CreateFractionalFund(pop, MaxFund, divisions):
     half.ema = pop[MaxFund].ema
     half.fitness = pop[MaxFund].fitness
     half[0] = pop[MaxFund][0]
-    half.age = 0.0
+    half.age = 0
     half.profit = 0.0
 
     # Copy fund j characteristics to be divided
