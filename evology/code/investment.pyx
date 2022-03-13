@@ -50,15 +50,14 @@ cdef double pearson(double[:] x, double[:] y) nogil:
     return result
 
 
-def Profit_Investment(pop, ReinvestmentRate, returns_tracker, InvestmentHorizon, TestThreshold, generation):
+cpdef Profit_Investment(list pop, double ReinvestmentRate, double[:,:] returns_tracker, int InvestmentHorizon, double TestThreshold, int generation):
     pop = Returns_Investment(pop, ReinvestmentRate)
     #pop, AvgT, PropSignif, HighestT, AvgAbsT = ProfitSignificance(returns_tracker, generation, InvestmentHorizon, pop, TestThreshold)
     AvgT, PropSignif, HighestT, AvgAbsT = 0,0,0,0
     return pop, AvgT, PropSignif, HighestT, AvgAbsT
 
 
-cdef ProfitSignificance(double[:,:] returns_tracker, int generation, int InvestmentHorizon, list pop, double TestThreshold):
-    # print('Counting')
+cpdef ProfitSignificance(double[:,:] returns_tracker, int generation, int InvestmentHorizon, list pop, double TestThreshold):
     # Define results variables
     cdef cythonized.Individual ind
     cdef cythonized.Individual ind2
@@ -115,7 +114,7 @@ cdef ProfitSignificance(double[:,:] returns_tracker, int generation, int Investm
 
     return pop, AvgT, PropSignif, HighestT, AvgAbsT
 
-cdef Returns_Investment(list pop, double ReinvestmentRate):
+cpdef Returns_Investment(list pop, double ReinvestmentRate):
     # apply investment
     for ind in pop:
         ind.investor_flow = 0.0

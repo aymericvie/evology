@@ -11,16 +11,10 @@ def main(
     MUTATION_RATE,
     ReinvestmentRate,
     InvestmentHorizon,
-    InvestorBehavior,
     tqdm_display,
     reset_wealth
 ):
     # Initialise important variables and dataframe to store results
-    #ReturnsNT, ReturnsVI, ReturnsTF = (
-    #    np.zeros((MAX_GENERATIONS - data.Barr, POPULATION_SIZE)),
-    #    np.zeros((MAX_GENERATIONS - data.Barr, POPULATION_SIZE)),
-    #    np.zeros((MAX_GENERATIONS - data.Barr, POPULATION_SIZE)),
-    #)
     generation, CurrentPrice, dividend, spoils = 0, InitialPrice, INITIAL_DIVIDEND, 0
     results = np.zeros((MAX_GENERATIONS - data.Barr, data.variables))
     wealth_tracker= np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
@@ -28,8 +22,6 @@ def main(
     returns_tracker= np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
     price_history, dividend_history = [], []
     TestThreshold = stdtrit(InvestmentHorizon, 0.95)
-    InvestmentIntensity = 1.0
-    InvestmentSupply = RefInvestmentSupply * POPULATION_SIZE * max(0, ReinvestmentRate - 1)
     replace = 0
 
     pop, asset_supply = cr.CreatePop(POPULATION_SIZE, space, wealth_coordinates)
@@ -42,7 +34,6 @@ def main(
         if CurrentPrice >= 1_000_000:
             break
 
-        #InvestmentSupply = InvestmentSupply * (1+INTEREST_RATE)
 
         # Population reset
         pop = cr.WealthReset(pop, space, wealth_coordinates, generation, reset_wealth)
@@ -132,10 +123,7 @@ def main(
             TestThreshold,
             ReinvestmentRate
         )
-        #pop = ApplyReinvestment(pop, ReinvestmentRate)
 
-        # Record results
-        # wealth_tracker = iv.WealthTracking(wealth_tracker, pop, generation)
         results = data.record_results(
             results,
             generation,
@@ -149,9 +137,6 @@ def main(
             spoils,
             Liquidations,
             asset_supply,
-            #ReturnsNT,
-            #ReturnsVI,
-            #ReturnsTF,
             CountSelected,
             CountMutated,
             CountCrossed,

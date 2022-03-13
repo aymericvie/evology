@@ -3,7 +3,7 @@ from main import *
 from parameters import *
 
 def run(
-    POPULATION_SIZE, learning_mode, TIME, solver, wealth_coordinates, tqdm_display, reset_wealth, ReinvestmentRate, InvestmentHorizon, InvestorBehavior,
+    POPULATION_SIZE, learning_mode, TIME, solver, wealth_coordinates, tqdm_display, reset_wealth, ReinvestmentRate, InvestmentHorizon,
 ):
     if learning_mode == 0:
         df, pop = main(
@@ -16,7 +16,6 @@ def run(
             0,
             ReinvestmentRate,
             InvestmentHorizon,
-            InvestorBehavior,
             tqdm_display,
             reset_wealth
         )
@@ -32,7 +31,6 @@ def run(
             MUTATION_RATE,
             ReinvestmentRate,
             InvestmentHorizon,
-            InvestorBehavior,
             tqdm_display,
             reset_wealth,
         )
@@ -45,7 +43,7 @@ np.random.seed(8)
 print(wealth_coordinates)
 df, pop = run(
     1000, 0, 100, 'esl.true', wealth_coordinates, tqdm_display=False, reset_wealth=False, 
-    ReinvestmentRate = 1.05, InvestmentHorizon = 252, InvestorBehavior = 'profit')
+    ReinvestmentRate = 1.05, InvestmentHorizon = 252)
 
 df.to_csv("rundata/run_data.csv")
 

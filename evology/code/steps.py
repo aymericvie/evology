@@ -241,17 +241,9 @@ def update_wealth(
 #    return pop
 
 def ApplyInvestment(
-    pop, generation, returns_tracker, InvestmentHorizon, InvestmentSupply, TestThreshold, InvestmentIntensity, InvestorBehavior, ReinvestmentRate
+    pop, generation, returns_tracker, InvestmentHorizon, TestThreshold, ReinvestmentRate
 ):
-    #if InvestorBehavior == 'JKM':
-    #    pop, AvgValSignif, PerSignif, NumDev, SharpeDiff = iv.InvestmentProcedure(pop, generation, returns_tracker, InvestmentHorizon, InvestmentSupply, TestThreshold, InvestmentIntensity)
-    #elif InvestorBehavior == 'Kelly':
-    #    pop, AvgValSignif, PerSignif, NumDev = iv.KellyInvestment(pop, InvestmentSupply, InvestmentIntensity, generation, InvestmentHorizon, returns_tracker, TestThreshold)
-    if InvestorBehavior == 'profit':
-        pop, AvgT, PropSignif, HighestT, AvgAbsT = iv.Profit_Investment(pop, ReinvestmentRate, returns_tracker, InvestmentHorizon, TestThreshold, generation)
-    else:
-        raise ValueError('Investor Behavior input not recognised.')
-    #return pop, AvgValSignif, PerSignif, NumDev, SharpeDiff
+    pop, AvgT, PropSignif, HighestT, AvgAbsT = iv.Profit_Investment(pop, ReinvestmentRate, returns_tracker, InvestmentHorizon, TestThreshold, generation)
     return pop, AvgT, PropSignif, HighestT, AvgAbsT 
 
 def ProfitDrivenInvestment(
