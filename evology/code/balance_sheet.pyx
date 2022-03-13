@@ -79,9 +79,10 @@ def DetermineTsvProc(pop, price_history, CurrentPrice):
             if ind.process < 0:
                 warnings.warn("Negative process value for NT")
 
-            ind.tsv = ind.process * ind[0] - CurrentPrice
+            ind.tsv = math.log2(ind.process * ind[0]) - math.log2(CurrentPrice)
         elif ind.type == "vi":
-            ind.tsv = ind[0] - CurrentPrice
+            ind.tsv = math.log2(ind[0] / CurrentPrice)
+            print([ind[0], CurrentPrice, ind.tsv])
 
 
 def UpdateFval(pop, dividend_history):

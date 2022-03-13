@@ -191,7 +191,7 @@ def marketClearing(pop, current_price, price_history, spoils, solver):
     price_history.append(current_price)
     pop, mismatch = bs.calculate_edv(pop, current_price)
 
-
+    '''
     print(current_price)
     func2 = np.vectorize(ed_functions[0])
     x = np.linspace(0,5*current_price,1000)
@@ -200,7 +200,7 @@ def marketClearing(pop, current_price, price_history, spoils, solver):
     ax = fig.add_subplot(1, 1, 1)
     plt.plot(x,y, 'r')
     plt.ylim(0,2*mismatch**2)
-    plt.show()
+    plt.show() '''
 
     return pop, mismatch, current_price, price_history, ToLiquidate
 

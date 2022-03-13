@@ -38,7 +38,7 @@ cpdef big_edf(
     cdef double zero
     for ind in pop:
         result += edf(ind, price)
-    return result ** 2
+    return result
 
 
 cpdef calculate_edv(

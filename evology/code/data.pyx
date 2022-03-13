@@ -301,7 +301,7 @@ def ResultsProcess(list pop, double spoils, double price):
             if ind.wealth > 0:
                 WSNT += ind.wealth
             NTpnl += ind.profit
-            NTsignal += ind_zero * ind.process  # already included?
+            NTsignal += ind.tsv
             NTstocks += price * ind.asset
             if ind.prev_wealth != 0:
                 NTreturn += ind.DailyReturn
@@ -320,6 +320,7 @@ def ResultsProcess(list pop, double spoils, double price):
                 WSVI += ind.wealth
             VIpnl += ind.profit
             # VIsignal += ind[0] #double with MeanVI
+            VIsignal = ind.tsv
             VIstocks += price * ind.asset
             if ind.prev_wealth != 0:
                 VIreturn += ind.DailyReturn
@@ -385,7 +386,6 @@ def ResultsProcess(list pop, double spoils, double price):
     elif spoils < 0:
         ShortAssets += abs(spoils)
 
-    VIsignal = MeanVI
 
     WSNT_ = (100 * WSNT) / (WSNT + WSVI + WSTF)
     WSVI_ = (100 * WSVI) / (WSNT + WSVI + WSTF)
