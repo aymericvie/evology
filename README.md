@@ -48,6 +48,9 @@ If a fund's wealth is negative, this fund is insolvent and must be removed. Its 
 3. Strategy evolution 
 First, funds' fitness is computed as an exponential moving average of profits. Next, depending on this fitness, funds' strategies may evolve. The learning algorithm used depends on the strategy space selected.
 
+4. Market decisions
+The funds observe market variables (price, fundamental value, random process) to decide their trading signal values for the period. 
+
 
 * Compute trading signal values
 * Determine excess demand functions

@@ -1,13 +1,9 @@
 #cython: boundscheck=False, wraparound=False, initializedcheck=False, cdivision=True
 cimport cythonized
+from libc.math cimport log2
+import numpy as np
 cdef float NAN
 NAN = float("nan")
-
-
-#def UpdateWealthProfitAge(pop, current_price):
-#    pop, replace = UpdateWealth(pop, current_price)
-#    return pop, replace 
-
 
 cpdef UpdateWealthProfitAge(list pop, double current_price):
     cdef cythonized.Individual ind
@@ -30,3 +26,24 @@ cpdef UpdateWealthProfitAge(list pop, double current_price):
         
     return pop, replace
 
+
+
+cpdef CalculateTSV(list pop, list price_history, list dividend_history, double CurrentPrice):
+    cdef cythonized.Individual ind
+
+    for ind in pop:
+        if ind.type == "nt":
+            # Calculate TSV
+            ind.tsv = (ind.process - 1) 
+        elif ind.type == "vi":
+            # Calculate TSV
+            ind.tsv = log2(ind[0] / CurrentPrice)
+        else: # ind.type == "tf
+            # Calculate TSV
+            if len(price_history) >= ind[0]:
+                ind.tsv =  log2(price_history[-1]) - log2(
+                    price_history[-ind[0]]
+                )
+            else:
+                ind.tsv = 0
+    return pop

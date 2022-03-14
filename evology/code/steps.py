@@ -18,10 +18,6 @@ import warnings
 import matplotlib
 import matplotlib.pyplot as plt
 import investment as iv
-from scipy.special import stdtrit
-
-# random.seed(random.random())
-
 
 def ga_evolution(
     pop, space, generation, wealth_coordinates, PROBA_SELECTION, MUTATION_RATE, Horizon
