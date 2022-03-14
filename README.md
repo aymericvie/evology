@@ -35,7 +35,7 @@ A. Initialisation
 * ```replace``` is a dummy variable specifying whether we need to apply hypermutation
 
 B. Population creation
-We create a population of size ```POPULATION_SIZE``` and initial wealth distribution ```wealth_coordinates```. The population of strategies is defined in the strategy ```space```. \\
+We create a population of size ```POPULATION_SIZE``` and initial wealth distribution ```wealth_coordinates```. The population of strategies is defined in the strategy ```space```. 
 
 At every period, the following actions are executed:
 
@@ -54,6 +54,13 @@ First, we recompute fund wealth to use its latest values. Second, we update the 
 
 5. Market clearing
 We identify the clearing price, i.e. the price that is the root of the aggregate excess demand function; or alternatively the price that minimises the absolute value of the aggregate excess demand function. Various solver options are available and tested to find the faster one. The ESL solver currently appears faster.
+
+6. Market activity
+Here, the funds operate in the market. First, the excess demands are executed at the clearing price. Second, the earnings of the funds are applied: dividends and interest rate on cash. The margin and debt of the funds are updated.
+
+TODO: fully cythonize what's possible
+
+
 
 
 * Compute trading signal values

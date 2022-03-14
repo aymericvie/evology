@@ -122,3 +122,14 @@ def DetermineEDF(pop):
         else:
             raise Exception(f"Unexpected ind type: {ind.type}")
     return pop
+
+cpdef UpdateFullWealth(list pop, double current_price):
+    cdef cythonized.Individual ind
+    cdef int replace = 0
+    for ind in pop:
+        ind.wealth = ind.cash + ind.asset * current_price - ind.loan
+        ind.prev_wealth = ind.wealth
+        if ind.wealth < 0:
+            replace = 1  
+    return pop, replace
+      

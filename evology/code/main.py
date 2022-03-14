@@ -51,8 +51,7 @@ def main(
         )
 
         # Market decisions 
-        bs.calculate_wealth(pop, CurrentPrice)
-        bs.UpdatePrevWealth(pop)
+        pop, replace = bsc.UpdateFullWealth(pop, CurrentPrice)
         pop = bsc.NoiseProcess(pop)
         pop = bsc.UpdateFval(pop, dividend)
         pop = bsc.CalculateTSV(pop, price_history, dividend_history, CurrentPrice)
@@ -63,7 +62,7 @@ def main(
             pop, CurrentPrice, price_history, spoils, solver
         )
 
-        # Market execution
+        # Market activity
         (
             pop,
             volume,
