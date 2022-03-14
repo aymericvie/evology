@@ -8,8 +8,6 @@ import numpy as np
 
 
 @profile
-
-
 def main(
     space,
     solver,
@@ -60,8 +58,7 @@ def main(
         )
 
         # Market decisions 
-        bs.calculate_wealth(pop, CurrentPrice)
-        bs.UpdatePrevWealth(pop)
+        pop, replace = bsc.UpdateFullWealth(pop, CurrentPrice)
         pop = bsc.NoiseProcess(pop)
         pop = bsc.UpdateFval(pop, dividend)
         pop = bsc.CalculateTSV(pop, price_history, dividend_history, CurrentPrice)
@@ -72,7 +69,7 @@ def main(
             pop, CurrentPrice, price_history, spoils, solver
         )
 
-        # Market execution
+        # Market activity
         (
             pop,
             volume,
@@ -81,7 +78,7 @@ def main(
             dividend_history,
             spoils,
             Liquidations,
-        ) = marketActivity(
+        ) = mk.MarketActivity(
             pop,
             CurrentPrice,
             asset_supply,
@@ -89,34 +86,16 @@ def main(
             dividend_history,
             spoils,
             ToLiquidate,
+            np.random.normal(0.0, 1.0)
+        )
+        pop, replace = bsc.UpdateWealthProfitAge(pop, CurrentPrice)
+
+        # Investment
+        (pop, AvgT, PropSignif, HighestT, AvgAbsT) = iv.Profit_Investment(
+        pop, ReinvestmentRate, InvestmentHorizon, generation
         )
 
-        # Earnings, compute profits, age
-        pop, replace = update_wealth(
-            pop,
-            CurrentPrice,
-        )
-
-        # (
-        #     wealth_tracker,
-        #     wealth_tracker_noinv,
-        #     returns_tracker
-        # ) = data.UpdateWealthReturnTracking(
-        #     wealth_tracker,
-        #     wealth_tracker_noinv,
-        #     returns_tracker,
-        #     pop,
-        #     generation
-        # )
-
-        (pop, AvgT, PropSignif, HighestT, AvgAbsT) = ProfitDrivenInvestment(
-            pop,
-            generation,
-            # returns_tracker,
-            InvestmentHorizon,
-            ReinvestmentRate,
-        )
-
+        # Record results 
         results = data.record_results(
             results,
             generation,
