@@ -25,7 +25,7 @@ First, to install the libraries we need, run ```setup.py```.
 
 ```main.py``` is the principal piece of the simulation. It initialises the simulation and describes the actions executed at each period.
 
-1. Initialisation
+A. Initialisation
 * ```generation``` is the current time period of the model.
 * ```CurrentPrice``` is the current price
 * ```dividend``` is the current dividend
@@ -34,7 +34,19 @@ First, to install the libraries we need, run ```setup.py```.
 * ```price_history``` and ```dividend_history``` contain histories of price and dividends
 * ```replace``` is a dummy variable specifying whether we need to apply hypermutation
 
-2. Population creation
+B. Population creation
+We create a population of size ```POPULATION_SIZE``` and initial wealth distribution ```wealth_coordinates```. The population of strategies is defined in the strategy ```space```. \\
+
+At every period, the following actions are executed:
+
+1. Population reset 
+In some circumstances, we want to reset the population, i.e. setting the population back to its creation state. 
+
+2. Hypermutation 
+If a fund's wealth is negative, this fund is insolvent and must be removed. Its assets go to liquidation with ```spoils``` and the wealthiest fund splits to fill the vacant spot(s). If all the funds are simultaneously insolvent, the simulation stops.
+
+3. Strategy evolution 
+First, funds' fitness is computed as an exponential moving average of profits. Next, depending on this fitness, funds' strategies may evolve. The learning algorithm used depends on the strategy space selected.
 
 
 * Compute trading signal values

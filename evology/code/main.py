@@ -34,7 +34,7 @@ def main(
         # Hypermutation
         pop, replacements, spoils = ga.hypermutate(
             pop, spoils, replace
-        )  # Replace insolvent agents
+        ) 
         if replacements < 0:
             break
 
@@ -51,8 +51,8 @@ def main(
         )
 
         # Calculate wealth and previous wealth
-        bs.calculate_wealth(pop, CurrentPrice)
-        bs.UpdatePrevWealth(pop)
+        #bs.calculate_wealth(pop, CurrentPrice)
+        #bs.UpdatePrevWealth(pop)
 
         # Market decisions (tsv, proc, edf)
         pop = decision_updates(pop, price_history, dividend_history, CurrentPrice)
