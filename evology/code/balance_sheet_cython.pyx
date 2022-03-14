@@ -6,6 +6,17 @@ import numpy as np
 cdef float NAN
 NAN = float("nan")
 
+cpdef convert_ind_type_to_num(t):
+    # We enumerate the individual type string into integer, for faster access
+    # while inside Cython.
+    if t == "nt":
+        return 0
+    elif t == "vi":
+        return 1
+    else:
+        return 2
+
+
 cpdef UpdateWealthProfitAge(list pop, double current_price):
     cdef cythonized.Individual ind
     cdef int replace = 0
@@ -30,7 +41,8 @@ cpdef UpdateWealthProfitAge(list pop, double current_price):
 def NoiseProcess(pop):
     randoms = np.random.normal(0, 1, len(pop))
     for i, ind in enumerate(pop):
-        if ind.type == "nt":
+        t = ind.type_as_int
+        if t == 0:
             # Calculate process value
             X = ind.process
             ind.process = abs(X + RHO_NT * (MU_NT - X) + GAMMA_NT * randoms[i])
@@ -41,13 +53,14 @@ cpdef CalculateTSV(list pop, list price_history, list dividend_history, double C
     cdef cythonized.Individual ind
 
     for ind in pop:
-        if ind.type == "nt":
+        t = ind.type_as_int
+        if t == 0:
             # Calculate TSV
             ind.tsv = (ind.process - 1) 
-        elif ind.type == "vi":
+        elif t == 1:
             # Calculate TSV
             ind.tsv = log2(ind[0] / CurrentPrice)
-        else: # ind.type == "tf
+        else: # t==2
             # Calculate TSV
             if len(price_history) >= ind[0]:
                 #print(price_history)
@@ -55,7 +68,6 @@ cpdef CalculateTSV(list pop, list price_history, list dividend_history, double C
                 #print(price_history[-1])
                 #print(type(price_history[-1]))
                 ind.tsv =  log2(CurrentPrice / price_history[-ind[0]])
-                
             else:
                 ind.tsv = 0
     return pop
@@ -73,7 +85,8 @@ cpdef UpdateFval(list pop, double dividend):
     ) - 1
     numerator = (1 + estimated_daily_div_growth) * dividend
     for ind in pop:
-        if ind.type == "vi":
+        t = ind.type_as_int
+        if t==1:
             denuminator = (
                 1.0 + (AnnualInterestRate + ind.strategy) - DIVIDEND_GROWTH_RATE_G
             ) ** (1.0 / 252.0) - 1.0
@@ -87,7 +100,8 @@ cpdef UpdateFval(list pop, double dividend):
 
 def DetermineEDF(pop):
     for ind in pop:
-        if ind.type == "tf":
+        t = ind.type_as_int
+        if t==2:
             ind.edf = (
                 lambda ind, p: (LeverageTF * ind.wealth / p)
                 * math.tanh(SCALE_TF * ind.tsv)
@@ -99,7 +113,7 @@ def DetermineEDF(pop):
         #        * math.tanh((5 / ind[0]) * (ind[0] - p))
         #        - ind.asset
         #    )
-        elif ind.type == "vi":
+        elif t==1:
             ind.edf = (
                 lambda ind, p: (LeverageVI * ind.wealth / p)
                 * math.tanh(SCALE_VI * ind.tsv)
@@ -111,7 +125,7 @@ def DetermineEDF(pop):
         #        * math.tanh((5 / (ind[0] * ind.process)) * (ind[0] * ind.process - p))
         #        - ind.asset
         #    )
-        elif ind.type == "nt":
+        elif t==0:
             ind.edf = (
                 lambda ind, p: (LeverageNT * ind.wealth / p)
                 * math.tanh(SCALE_NT * ind.tsv)
