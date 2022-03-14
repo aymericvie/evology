@@ -62,33 +62,8 @@ After all market activity is finished, we compute funds' wealth, profits and upd
 7. Profit driven investment
 An external investor evaluates the profits of each fund and makes investment decisions accordingly.
 
-
-
-
-
-* Compute trading signal values
-* Determine excess demand functions
-* Execute market clearing
-* Execute excess demand orders
-* Apply earnings (dividends, interest, reinvestment)
-* Compute fitness and apply strategy evolution
-
-In more detail:
-1. Initialise important variables (generation, price, dividend)
-2. Create the population
-3. Iteration loop
-    1. Compute wealth as a function of last period price
-    2. Determine excess demand functions
-    3. Clear markets and compute mismatch
-    4. Compute excess demand values
-    5. Compute wealth
-    6. Apply excess demand orders
-    7. Apply earnings
-    8. Update margin, clear debt, recompute wealth
-    9. Replace insolvent traders
-    10. Compute fitness
-    11. Execute stratgy evolution
-    12. Update the results data with the period's numbers
+8. Record results
+Simulation results are recorded.
 
 
 #### Code formatting
