@@ -49,3 +49,7 @@ In more detail:
     11. Execute stratgy evolution
     12. Update the results data with the period's numbers
 
+
+#### Code formatting
+We use ```black``` to auto-format the code. After installing with ```pip install black```, go the the ```evology``` folder and run ```black evology``` to auto-format the full folder.
+
