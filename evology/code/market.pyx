@@ -1,6 +1,6 @@
 #cython: boundscheck=False, wraparound=False, initializedcheck=False, cdivision=True
 
-from balance_sheet import count_long_assets, count_pop_long_assets, count_short_assets
+from balance_sheet import count_long_assets, count_short_assets, update_margin, clear_debt
 import numpy as np
 from parameters import *
 cimport cythonized
@@ -239,3 +239,21 @@ cpdef execute_ed(list pop, double current_price, double asset_supply, double spo
         print(amount_after_correction)
         raise ValueError('Asset supply violated by more than 1%.')
     return pop, volume, spoils, Liquidations
+
+cpdef MarketActivity(list pop, double current_price, double asset_supply,
+    double dividend, list dividend_history, double spoils, double ToLiquidate, double random_dividend):
+    pop, volume, spoils, Liquidations = execute_ed(pop, current_price, asset_supply, spoils, ToLiquidate)
+    
+    pop, dividend, random_dividend = earnings(pop, dividend, random_dividend)
+    dividend_history.append(dividend)
+    pop = update_margin(pop, current_price)
+    pop = clear_debt(pop, current_price)
+    return (
+        pop,
+        volume,
+        dividend,
+        random_dividend,
+        dividend_history,
+        spoils,
+        Liquidations,
+    )

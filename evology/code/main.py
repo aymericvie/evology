@@ -71,7 +71,7 @@ def main(
             dividend_history,
             spoils,
             Liquidations,
-        ) = marketActivity(
+        ) = mk.MarketActivity(
             pop,
             CurrentPrice,
             asset_supply,
@@ -79,7 +79,9 @@ def main(
             dividend_history,
             spoils,
             ToLiquidate,
+            np.random.normal(0.0, 1.0)
         )
+
 
         # compute wealth profit reutnrs, age
         pop, replace = bsc.UpdateWealthProfitAge(pop, CurrentPrice)
