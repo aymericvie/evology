@@ -35,8 +35,8 @@ def create_real_vector(bounds):
     ...                                           problem=SpheroidProblem())
     """
 
-    low = [ l for l, _ in bounds ]
-    high = [ h for _, h in bounds ]
+    low = [l for l, _ in bounds]
+    high = [h for _, h in bounds]
 
     def create():
         return np.random.uniform(low, high, size=len(bounds))

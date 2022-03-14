@@ -21,8 +21,17 @@ from leap_ec.problem import FunctionProblem
 from leap_ec.decoder import IdentityDecoder
 from leap_ec.real_rep.initializers import create_real_vector
 
-def ea_solve(function, bounds, generations=100, pop_size=2,
-             mutation_std=1.0, maximize=False, viz=False, viz_ylim=(0, 1)):
+
+def ea_solve(
+    function,
+    bounds,
+    generations=100,
+    pop_size=2,
+    mutation_std=1.0,
+    maximize=False,
+    viz=False,
+    viz_ylim=(0, 1),
+):
     """Provides a simple, top-level interfact that optimizes a real-valued
     function using a simple generational EA.
     :param function: the function to optimize; should take lists of real
@@ -52,7 +61,7 @@ def ea_solve(function, bounds, generations=100, pop_size=2,
         mutate_gaussian(std=mutation_std),
         ops.uniform_crossover(p_swap=0.4),
         ops.evaluate,
-        ops.pool(size=pop_size)
+        ops.pool(size=pop_size),
     ]
 
     # if viz:
@@ -60,16 +69,17 @@ def ea_solve(function, bounds, generations=100, pop_size=2,
     #         context, ylim=viz_ylim, ax=plt.gca())
     #     pipeline.append(plot_probe)
 
-    ea = generational_ea(generations=generations, pop_size=pop_size,
-                         problem=FunctionProblem(function, maximize),
-
-                         representation=Representation(
-                             individual_cls=Individual,
-                             decoder=IdentityDecoder(),
-                             initialize=create_real_vector(bounds=bounds)
-                         ),
-
-                         pipeline=pipeline)
+    ea = generational_ea(
+        generations=generations,
+        pop_size=pop_size,
+        problem=FunctionProblem(function, maximize),
+        representation=Representation(
+            individual_cls=Individual,
+            decoder=IdentityDecoder(),
+            initialize=create_real_vector(bounds=bounds),
+        ),
+        pipeline=pipeline,
+    )
 
     best_genome = None
     # print('generation, bsf')
@@ -79,9 +89,10 @@ def ea_solve(function, bounds, generations=100, pop_size=2,
 
     return best_genome
 
+
 def function(values):
-    return sum([x ** 2 for x in values])
-best_genome = ea_solve(function,
-         bounds=[(4, 5.12) for _ in range(1)],
-         mutation_std=0.1)
+    return sum([x**2 for x in values])
+
+
+best_genome = ea_solve(function, bounds=[(4, 5.12) for _ in range(1)], mutation_std=0.1)
 print(best_genome)

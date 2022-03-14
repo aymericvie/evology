@@ -15,9 +15,9 @@ CROSSOVER_RATE = 1 / 21
 """ STRATEGY PARAMETERS """
 # General parameters
 
-LeverageNT, LeverageVI, LeverageTF = 1, 1, 1 
-SCALE_NT, SCALE_VI, SCALE_TF = 1, 1, 1 #np.pi, np.pi, np.pi
-ATC_TF = 1  
+LeverageNT, LeverageVI, LeverageTF = 1, 1, 1
+SCALE_NT, SCALE_VI, SCALE_TF = 1, 1, 1  # np.pi, np.pi, np.pi
+ATC_TF = 1
 
 GAMMA_NT = 0.2 * np.sqrt(1 / 252)
 MU_NT = 1.0
@@ -27,7 +27,7 @@ RHO_NT = 0.00045832561
 """ MARKET PARAMETERS """
 TRADING_DAYS = 252
 InitialPrice = 100
-CONSUMPTION_RATE = 0 # Inactive now
+CONSUMPTION_RATE = 0  # Inactive now
 
 RefLoan = 0
 RefCash = 3 * 50_000_000
@@ -49,11 +49,11 @@ LIQUIDATION_ORDER_SIZE = 20_000
 
 """ RESET WEALTH """
 
-SHIELD_DURATION = 0 #21
-ShieldResults = 0 #1 #21
+SHIELD_DURATION = 0  # 21
+ShieldResults = 0  # 1 #21
 SHIELD_TOLERANCE = 0.01
 MAX_ATTEMPTS = 100
-ShieldInvestment =  252
+ShieldInvestment = 252
 
 
 """ RESULTS STORAGE """

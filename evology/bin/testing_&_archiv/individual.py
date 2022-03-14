@@ -22,11 +22,11 @@ from leap_ec.decoder import IdentityDecoder
 @total_ordering
 class Individual:
     """
-        Represents a single solution to a `Problem`.
-        We represent an `Individual` by a `genome` and a `fitness`.
-        `Individual` also maintains a reference to the `Problem` it will be
-        evaluated on, and an `decoder`, which defines how genomes are
-        converted into phenomes for fitness evaluation.
+    Represents a single solution to a `Problem`.
+    We represent an `Individual` by a `genome` and a `fitness`.
+    `Individual` also maintains a reference to the `Problem` it will be
+    evaluated on, and an `decoder`, which defines how genomes are
+    converted into phenomes for fitness evaluation.
     """
 
     def __init__(self, genome, decoder=IdentityDecoder(), problem=None):
@@ -51,10 +51,12 @@ class Individual:
         # Type checking to avoid difficult-to-debug errors
         if isinstance(decoder, type):
             raise ValueError(
-                f"Got the type '{decoder}' as a decoder, but expected an instance.")
+                f"Got the type '{decoder}' as a decoder, but expected an instance."
+            )
         if isinstance(problem, type):
             raise ValueError(
-                f"Got the type '{problem}' as a problem, but expected an instance.")
+                f"Got the type '{problem}' as a problem, but expected an instance."
+            )
         # Core data
         self.genome = genome
         self.problem = problem
@@ -72,12 +74,13 @@ class Individual:
         :param problem: The problem to attach individuals to
         :return: A list of n individuals of this class's (or subclass's) type
         """
-        return [cls(genome=initialize(), decoder=decoder, problem=problem) for _
-                in range(n)]
+        return [
+            cls(genome=initialize(), decoder=decoder, problem=problem) for _ in range(n)
+        ]
 
     @classmethod
     def evaluate_population(cls, population):
-        """ Convenience function for bulk serial evaluation of a given
+        """Convenience function for bulk serial evaluation of a given
         population
         :param population: to be evaluated
         :return: evaluated population
@@ -116,16 +119,16 @@ class Individual:
         return self.decoder.decode(self.genome, args, kwargs)
 
     def evaluate_imp(self):
-        """ This is the evaluate 'implementation' called by
-            self.evaluate().   It's intended to be optionally over-ridden by
-            sub-classes to give an opportunity to pass in ancillary data to
-            the evaluate process either by tailoring the problem interface or
-            that of the given decoder.
+        """This is the evaluate 'implementation' called by
+        self.evaluate().   It's intended to be optionally over-ridden by
+        sub-classes to give an opportunity to pass in ancillary data to
+        the evaluate process either by tailoring the problem interface or
+        that of the given decoder.
         """
         return self.problem.evaluate(self.decode())
 
     def evaluate(self):
-        """ determine this individual's fitness
+        """determine this individual's fitness
         This is done by outsourcing the fitness evaluation to the associated
         Problem object since it "knows" what is good or bad for a given
         phenome.
@@ -189,11 +192,13 @@ class Individual:
         return self.problem.worse_than(self.fitness, other.fitness)
 
     def __str__(self):
-        return f'{self.genome!s} {self.fitness!s}'
+        return f"{self.genome!s} {self.fitness!s}"
 
     def __repr__(self):
-        return f"{type(self).__name__}({self.genome.__repr__()}, " \
-               f"{self.decoder.__repr__()}, {self.problem.__repr__()})"
+        return (
+            f"{type(self).__name__}({self.genome.__repr__()}, "
+            f"{self.decoder.__repr__()}, {self.problem.__repr__()})"
+        )
 
 
 ##############################
@@ -201,19 +206,20 @@ class Individual:
 ##############################
 class RobustIndividual(Individual):
     """
-        This adds exception handling for evaluations
-        After evaluation `self.is_viable` is set to True if all went well.
-        However, if an exception is thrown during evaluation, the following
-        happens:
-        * self.is_viable is set to False
-        * self.fitness is set to math.nan
-        * self.exception is assigned the exception
+    This adds exception handling for evaluations
+    After evaluation `self.is_viable` is set to True if all went well.
+    However, if an exception is thrown during evaluation, the following
+    happens:
+    * self.is_viable is set to False
+    * self.fitness is set to math.nan
+    * self.exception is assigned the exception
     """
+
     def __init__(self, genome, decoder=None, problem=None):
         super().__init__(genome, decoder=decoder, problem=problem)
 
     def evaluate(self):
-        """ determine this individual's fitness
+        """determine this individual's fitness
         Note that if an exception is thrown during evaluation, the fitness is
         set to NaN and `self.is_viable` to False; also, the returned exception is
         assigned to `self.exception` for possible later inspection.  If the

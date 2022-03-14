@@ -1,91 +1,135 @@
-
-print('Looking at different choices to represent the trading functions and how they impact the price, when we initialise at p=100')
-
-initial_price = 100
-wealth = 50_000_000 + 500_000 * initial_price
-assets = 500_000
-
-print('For ValNT = 100, reference')
-def func1(asset_key, price): #VI
-  return (wealth / price) * np.tanh(np.log2(100) - np.log2(price)) - assets
-def func2(asset_key, price): #NT
-  return (wealth / price) * np.tanh(np.log2(100) - np.log2(price)) - assets 
-def func3(asset_key, price): #TF
-  return (wealth / price) * np.tanh(0.5) - assets  
-
-functions = [func1, func2, func3]
-new_price = solve(functions, initial_price)
-print(new_price)
+print(
+    "Looking at different choices to represent the trading functions and how they impact the price, when we initialise at p=100"
+)
 
 initial_price = 100
 wealth = 50_000_000 + 500_000 * initial_price
 assets = 500_000
 
-print('For ValNT = 100, reference WITH LEVERAGE ')
-def func1(asset_key, price): #VI
-  return (8 * wealth / price) * np.tanh(np.log2(100) - np.log2(price)) - assets
-def func2(asset_key, price): #NT
-  return (wealth / price) * np.tanh(np.log2(100) - np.log2(price)) - assets 
-def func3(asset_key, price): #TF
-  return (wealth / price) * np.tanh(0.5) - assets  
+print("For ValNT = 100, reference")
+
+
+def func1(asset_key, price):  # VI
+    return (wealth / price) * np.tanh(np.log2(100) - np.log2(price)) - assets
+
+
+def func2(asset_key, price):  # NT
+    return (wealth / price) * np.tanh(np.log2(100) - np.log2(price)) - assets
+
+
+def func3(asset_key, price):  # TF
+    return (wealth / price) * np.tanh(0.5) - assets
+
 
 functions = [func1, func2, func3]
 new_price = solve(functions, initial_price)
 print(new_price)
 
-print('For ValNT = 110, higher price as expected')
-def func1(asset_key, price): #VI
-  return (wealth / price) * np.tanh(np.log2(100) - np.log2(price)) - assets
-def func2(asset_key, price): #NT
-  return (wealth / price) * np.tanh(np.log2(110) - np.log2(price)) - assets 
-def func3(asset_key, price): #TF
-  return (wealth / price) * np.tanh(0.5) - assets  
+initial_price = 100
+wealth = 50_000_000 + 500_000 * initial_price
+assets = 500_000
+
+print("For ValNT = 100, reference WITH LEVERAGE ")
+
+
+def func1(asset_key, price):  # VI
+    return (8 * wealth / price) * np.tanh(np.log2(100) - np.log2(price)) - assets
+
+
+def func2(asset_key, price):  # NT
+    return (wealth / price) * np.tanh(np.log2(100) - np.log2(price)) - assets
+
+
+def func3(asset_key, price):  # TF
+    return (wealth / price) * np.tanh(0.5) - assets
+
 
 functions = [func1, func2, func3]
 new_price = solve(functions, initial_price)
 print(new_price)
 
-print('For ValNT = 90, lower price as expected')
-def func1(asset_key, price): #VI
-  return (wealth / price) * np.tanh(np.log2(100) - np.log2(price)) - assets
-def func2(asset_key, price): #NT
-  return (wealth / price) * np.tanh(np.log2(90) - np.log2(price)) - assets 
-def func3(asset_key, price): #TF
-  return (wealth / price) * np.tanh(0.5) - assets  
+print("For ValNT = 110, higher price as expected")
+
+
+def func1(asset_key, price):  # VI
+    return (wealth / price) * np.tanh(np.log2(100) - np.log2(price)) - assets
+
+
+def func2(asset_key, price):  # NT
+    return (wealth / price) * np.tanh(np.log2(110) - np.log2(price)) - assets
+
+
+def func3(asset_key, price):  # TF
+    return (wealth / price) * np.tanh(0.5) - assets
+
 
 functions = [func1, func2, func3]
 new_price = solve(functions, initial_price)
 print(new_price)
 
-print('With 0,5 inside tanh, price is higher')
-def func1(asset_key, price): #VI
-  return (wealth / price) * np.tanh(np.log2(100) - np.log2(price) +0.5) - assets
-def func2(asset_key, price): #NT
-  return (wealth / price) * np.tanh(np.log2(90) - np.log2(price) +0.5) - assets 
-def func3(asset_key, price): #TF
-  return (wealth / price) * np.tanh(0.5 + 0.5) - assets  
+print("For ValNT = 90, lower price as expected")
+
+
+def func1(asset_key, price):  # VI
+    return (wealth / price) * np.tanh(np.log2(100) - np.log2(price)) - assets
+
+
+def func2(asset_key, price):  # NT
+    return (wealth / price) * np.tanh(np.log2(90) - np.log2(price)) - assets
+
+
+def func3(asset_key, price):  # TF
+    return (wealth / price) * np.tanh(0.5) - assets
+
 
 functions = [func1, func2, func3]
 new_price = solve(functions, initial_price)
 print(new_price)
 
-print('With 0,5 outside tanh, price is even higher')
-def func1(asset_key, price): #VI
-  return (wealth / price) * (np.tanh(np.log2(100) - np.log2(price)) +0.5) - assets
-def func2(asset_key, price): #NT
-  return (wealth / price) * (np.tanh(np.log2(90) - np.log2(price)) +0.5) - assets 
-def func3(asset_key, price): #TF
-  return (wealth / price) * (np.tanh(0.5) + 0.5) - assets  
+print("With 0,5 inside tanh, price is higher")
+
+
+def func1(asset_key, price):  # VI
+    return (wealth / price) * np.tanh(np.log2(100) - np.log2(price) + 0.5) - assets
+
+
+def func2(asset_key, price):  # NT
+    return (wealth / price) * np.tanh(np.log2(90) - np.log2(price) + 0.5) - assets
+
+
+def func3(asset_key, price):  # TF
+    return (wealth / price) * np.tanh(0.5 + 0.5) - assets
+
 
 functions = [func1, func2, func3]
 new_price = solve(functions, initial_price)
 print(new_price)
 
-print('Question: MC is deterministic, which is good. Because now, does the 0,.5 choice gives unintended power to some strategies?')
+print("With 0,5 outside tanh, price is even higher")
 
 
+def func1(asset_key, price):  # VI
+    return (wealth / price) * (np.tanh(np.log2(100) - np.log2(price)) + 0.5) - assets
 
-''' 
+
+def func2(asset_key, price):  # NT
+    return (wealth / price) * (np.tanh(np.log2(90) - np.log2(price)) + 0.5) - assets
+
+
+def func3(asset_key, price):  # TF
+    return (wealth / price) * (np.tanh(0.5) + 0.5) - assets
+
+
+functions = [func1, func2, func3]
+new_price = solve(functions, initial_price)
+print(new_price)
+
+print(
+    "Question: MC is deterministic, which is good. Because now, does the 0,.5 choice gives unintended power to some strategies?"
+)
+
+
+""" 
 print('----')
 print('Lets study the resulting 10 day series')
 
@@ -148,8 +192,8 @@ for i in range(10):
   functions = [func1, func2, func3]
   new_price = float(solve(functions, initial_price)[0])
   print(new_price)
-'''
-'''
+"""
+"""
 print('With 0,5 outside tanh, and VI/NT depending on previous price')
 print('Then we get oscillations around two attractors')
 print('Unless we adapt TF and then nothing happens')
@@ -199,8 +243,8 @@ for i in range(10):
   new_price = float(solve(functions, initial_price)[0])
   print(new_price)
 
-'''
-'''
+"""
+"""
 print('Y Y N with noise')
 
 def func1(asset_key, price): #value investor
@@ -348,8 +392,7 @@ def func6(asset_key, price): #trend follower
 functions = [func4, func5, func6]
 new_price = solve(functions, initial_price)
 print(new_price)
-'''
-
+"""
 
 
 initial_price = 100
@@ -358,26 +401,48 @@ assets = 500_000
 assets = 400_000
 
 
-print('For ValNT = 100, reference')
-def func1(asset_key, price): #VI
-  return ((60_000_000 + assets * initial_price) / price) * np.tanh(np.log2(100) - np.log2(price)) - assets
-def func2(asset_key, price): #NT
-  return ((60_000_000 + assets * initial_price) / price) * np.tanh(np.log2(100) - np.log2(price)) - assets 
-def func3(asset_key, price): #TF
-  return ((60_000_000 + assets * initial_price) / price) * np.tanh(0.5) - assets  
+print("For ValNT = 100, reference")
+
+
+def func1(asset_key, price):  # VI
+    return ((60_000_000 + assets * initial_price) / price) * np.tanh(
+        np.log2(100) - np.log2(price)
+    ) - assets
+
+
+def func2(asset_key, price):  # NT
+    return ((60_000_000 + assets * initial_price) / price) * np.tanh(
+        np.log2(100) - np.log2(price)
+    ) - assets
+
+
+def func3(asset_key, price):  # TF
+    return ((60_000_000 + assets * initial_price) / price) * np.tanh(0.5) - assets
+
 
 functions = [func1, func2, func3]
 new_price = solve(functions, initial_price)
 print(new_price)
 
 assets = 500_000
-print('For ValNT = 100, reference')
-def func1(asset_key, price): #VI
-  return ((50_000_000 + assets * initial_price) / price) * np.tanh(np.log2(100) - np.log2(price)) - assets
-def func2(asset_key, price): #NT
-  return ((50_000_000 + assets * initial_price) / price) * np.tanh(np.log2(100) - np.log2(price)) - assets 
-def func3(asset_key, price): #TF
-  return ((50_000_000 + assets * initial_price) / price) * np.tanh(0.5) - assets  
+print("For ValNT = 100, reference")
+
+
+def func1(asset_key, price):  # VI
+    return ((50_000_000 + assets * initial_price) / price) * np.tanh(
+        np.log2(100) - np.log2(price)
+    ) - assets
+
+
+def func2(asset_key, price):  # NT
+    return ((50_000_000 + assets * initial_price) / price) * np.tanh(
+        np.log2(100) - np.log2(price)
+    ) - assets
+
+
+def func3(asset_key, price):  # TF
+    return ((50_000_000 + assets * initial_price) / price) * np.tanh(0.5) - assets
+
 
 functions = [func1, func2, func3]
 new_price = solve(functions, initial_price)

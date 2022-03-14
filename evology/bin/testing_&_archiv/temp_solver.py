@@ -1,6 +1,6 @@
 import numpy as np
 
-'''
+"""
 Here is a simple optimisation solver for the market clearing algorithm. 
 We minimise the squared of aggregate excess demand, under the constraint of
 a Limit-Up-Limit-Down (LU-LD) circuit breaker, which limits prices to 
@@ -10,7 +10,7 @@ a Limit-Up-Limit-Down (LU-LD) circuit breaker, which limits prices to
 The solver uses the LEAP package: https://github.com/AureumChaos/LEAP
 It is a package focusing on evolutionary algorithms, that has an amazing 
 ea_solve function that ... solves a real valued function.
-'''
+"""
 
 from leap_ec import Individual, Representation
 from leap_ec import ops, probe
@@ -33,32 +33,44 @@ function using a simple generational EA.
 :param bool hard_bounds: if True, bounds are enforced at all times during
 evolution; otherwise they are only used to initialize the population. """
 
-def ea_solve_noverbose(function, bounds, generations=100, pop_size=2,
-             mutation_std=1.0, maximize=False, viz=False, viz_ylim=(0, 1),
-             hard_bounds=True):
+
+def ea_solve_noverbose(
+    function,
+    bounds,
+    generations=100,
+    pop_size=2,
+    mutation_std=1.0,
+    maximize=False,
+    viz=False,
+    viz_ylim=(0, 1),
+    hard_bounds=True,
+):
 
     if hard_bounds:
-        mutation_op = mutate_gaussian(std=mutation_std, hard_bounds=bounds,
-                        expected_num_mutations='isotropic')
+        mutation_op = mutate_gaussian(
+            std=mutation_std, hard_bounds=bounds, expected_num_mutations="isotropic"
+        )
     else:
-        mutation_op = mutate_gaussian(std=mutation_std,
-                        expected_num_mutations='isotropic')
+        mutation_op = mutate_gaussian(
+            std=mutation_std, expected_num_mutations="isotropic"
+        )
     pipeline = [
         ops.tournament_selection,
         ops.clone,
         mutation_op,
         ops.uniform_crossover(p_swap=0.4),
         ops.evaluate,
-        ops.pool(size=pop_size)
+        ops.pool(size=pop_size),
     ]
-    ea = generational_ea(max_generations=generations,
-                         pop_size=pop_size,
-                         problem=FunctionProblem(function, maximize),
-                         representation=Representation(
-                             individual_cls=Individual,
-                             initialize=create_real_vector(bounds=bounds)
-                         ),
-                         pipeline=pipeline)
+    ea = generational_ea(
+        max_generations=generations,
+        pop_size=pop_size,
+        problem=FunctionProblem(function, maximize),
+        representation=Representation(
+            individual_cls=Individual, initialize=create_real_vector(bounds=bounds)
+        ),
+        pipeline=pipeline,
+    )
     best_genome = None
     # print('generation, bsf')
     for g, ind in ea:
@@ -68,9 +80,19 @@ def ea_solve_noverbose(function, bounds, generations=100, pop_size=2,
 
 
 """ Example """
+
+
 def f(x):
-    return sum(x)**2
-best_genome = ea_solve_noverbose(f,
-          bounds=[(1, 10)], generations = 50, pop_size = 500,
-          mutation_std=0.1, hard_bounds = True, maximize = False) 
+    return sum(x) ** 2
+
+
+best_genome = ea_solve_noverbose(
+    f,
+    bounds=[(1, 10)],
+    generations=50,
+    pop_size=500,
+    mutation_std=0.1,
+    hard_bounds=True,
+    maximize=False,
+)
 print(best_genome)

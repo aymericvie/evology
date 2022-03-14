@@ -35,15 +35,18 @@ from esl.economics import price, USD
 from esl.economics.markets import quote
 
 # import the excess demand model
-from esl.economics.markets.walras import excess_demand_model, differentiable_order_message
+from esl.economics.markets.walras import (
+    excess_demand_model,
+    differentiable_order_message,
+)
 
 
 # create an identifier for the economic property being traded in the market,
 # so that we can tell two or more properties apart
-i  = property_identity([1])
+i = property_identity([1])
 i2 = property_identity([2])
 # create an abstract property with this identifier. Its details do not matter
-p  = property(i)
+p = property(i)
 p2 = property(i2)
 
 # note that by default, we use fixed precisions for prices! This is $1.23:
@@ -61,7 +64,7 @@ print(initial_price)
 # the lot size is 1 by default, so this quote means "buy 1 property in exchange for $1.23"
 initial_quote = quote(initial_price, 1)
 
-print(f"The initial quote is {initial_quote}") # prints 1@USD(1.23)
+print(f"The initial quote is {initial_quote}")  # prints 1@USD(1.23)
 
 # we now create the Walrasian market model, and give it a dictionary:
 # the property identifiers are keys,  and and initial quotes are the values
@@ -97,7 +100,10 @@ class my_order(differentiable_order_message):
         :return:
         """
         print(f"The Walrasian price setter suggests the following prices: {quotes}")
-        ed = {k: ((i+3.) - (float(v[0]) * v[1])) for i,  (k, v) in enumerate(quotes.items())}
+        ed = {
+            k: ((i + 3.0) - (float(v[0]) * v[1]))
+            for i, (k, v) in enumerate(quotes.items())
+        }
         print(f"Agent {self.sender}'s excess demand at these prices is: {ed}")
         return ed
 

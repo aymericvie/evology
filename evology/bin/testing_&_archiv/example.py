@@ -24,9 +24,17 @@ from leap_ec.real_rep.initializers import create_real_vector
 ##############################
 # Function ea_solve()
 ##############################
-def ea_solve(function, bounds, generations=100, pop_size=2,
-             mutation_std=1.0, maximize=False, viz=False, viz_ylim=(0, 1),
-             hard_bounds=True):
+def ea_solve(
+    function,
+    bounds,
+    generations=100,
+    pop_size=2,
+    mutation_std=1.0,
+    maximize=False,
+    viz=False,
+    viz_ylim=(0, 1),
+    hard_bounds=True,
+):
     """Provides a simple, top-level interfact that optimizes a real-valued
     function using a simple generational EA.
     :param function: the function to optimize; should take lists of real
@@ -66,10 +74,13 @@ def ea_solve(function, bounds, generations=100, pop_size=2,
     """
 
     if hard_bounds:
-        mutation_op = mutate_gaussian(std=mutation_std, expected_num_mutations='isotropic', hard_bounds=bounds)
+        mutation_op = mutate_gaussian(
+            std=mutation_std, expected_num_mutations="isotropic", hard_bounds=bounds
+        )
     else:
-        mutation_op = mutate_gaussian(std=mutation_std,
-                        expected_num_mutations='isotropic')
+        mutation_op = mutate_gaussian(
+            std=mutation_std, expected_num_mutations="isotropic"
+        )
 
     pipeline = [
         ops.tournament_selection,
@@ -77,26 +88,27 @@ def ea_solve(function, bounds, generations=100, pop_size=2,
         mutation_op,
         ops.uniform_crossover(p_swap=0.4),
         ops.evaluate,
-        ops.pool(size=pop_size)
+        ops.pool(size=pop_size),
     ]
 
     if viz:
         plot_probe = probe.FitnessPlotProbe(ylim=viz_ylim, ax=plt.gca())
         pipeline.append(plot_probe)
 
-    ea = generational_ea(generations=generations, pop_size=pop_size,
-                         problem=FunctionProblem(function, maximize),
-
-                         representation=Representation(
-                             individual_cls=Individual,
-                             decoder=IdentityDecoder(),
-                             initialize=create_real_vector(bounds=bounds)
-                         ),
-
-                         pipeline=pipeline)
+    ea = generational_ea(
+        generations=generations,
+        pop_size=pop_size,
+        problem=FunctionProblem(function, maximize),
+        representation=Representation(
+            individual_cls=Individual,
+            decoder=IdentityDecoder(),
+            initialize=create_real_vector(bounds=bounds),
+        ),
+        pipeline=pipeline,
+    )
 
     best_genome = None
-    print('generation, bsf')
+    print("generation, bsf")
     for g, ind in ea:
         print(f"{g}, {ind.fitness}")
         best_genome = ind.genome
@@ -104,11 +116,18 @@ def ea_solve(function, bounds, generations=100, pop_size=2,
     return best_genome
 
 
-    
 def function(values):
-    return sum([x ** 2 for x in values])
-best_genome = ea_solve(function,
-         bounds=[(4, 5.12) for _ in range(1)], generations = 100, pop_size = 1000, 
-         mutation_std=0.1, maximize = False, viz = False, hard_bounds = True)
-print(best_genome)
+    return sum([x**2 for x in values])
 
+
+best_genome = ea_solve(
+    function,
+    bounds=[(4, 5.12) for _ in range(1)],
+    generations=100,
+    pop_size=1000,
+    mutation_std=0.1,
+    maximize=False,
+    viz=False,
+    hard_bounds=True,
+)
+print(best_genome)

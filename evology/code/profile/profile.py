@@ -8,7 +8,6 @@ import numpy as np
 
 
 @profile
-
 def main(
     space,
     solver,
@@ -20,14 +19,14 @@ def main(
     ReinvestmentRate,
     InvestmentHorizon,
     tqdm_display,
-    reset_wealth
+    reset_wealth,
 ):
     # Initialise important variables and dataframe to store results
     generation, CurrentPrice, dividend, spoils = 0, InitialPrice, INITIAL_DIVIDEND, 0
     results = np.zeros((MAX_GENERATIONS - data.Barr, data.variables))
-    #wealth_tracker= np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
-    #wealth_tracker_noinv = np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
-    #returns_tracker= np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
+    # wealth_tracker= np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
+    # wealth_tracker_noinv = np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
+    # returns_tracker= np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
     price_history, dividend_history = [], []
     TestThreshold = stdtrit(InvestmentHorizon, 0.95)
     replace = 0
@@ -42,15 +41,12 @@ def main(
         if CurrentPrice >= 1_000_000:
             break
 
-
         # Population reset
         pop = cr.WealthReset(pop, space, wealth_coordinates, generation, reset_wealth)
 
         # Hypermutation
         pop, replacements, spoils = ga.hypermutate(
-            pop,
-            spoils,
-            replace
+            pop, spoils, replace
         )  # Replace insolvent agents
         if replacements < 0:
             break
@@ -64,7 +60,7 @@ def main(
             wealth_coordinates,
             PROBA_SELECTION,
             MUTATION_RATE,
-            InvestmentHorizon
+            InvestmentHorizon,
         )
 
         # Calculate wealth and previous wealth
@@ -104,34 +100,25 @@ def main(
             CurrentPrice,
         )
 
-        
         # (
-        #     wealth_tracker, 
+        #     wealth_tracker,
         #     wealth_tracker_noinv,
         #     returns_tracker
         # ) = data.UpdateWealthReturnTracking(
-        #     wealth_tracker, 
+        #     wealth_tracker,
         #     wealth_tracker_noinv,
-        #     returns_tracker, 
-        #     pop, 
+        #     returns_tracker,
+        #     pop,
         #     generation
         # )
 
-        
-    
-        (
-            pop, 
-            AvgT, 
-            PropSignif, 
-            HighestT, 
-            AvgAbsT 
-        ) = ProfitDrivenInvestment(
-            pop, 
-            generation, 
-            #returns_tracker, 
-            InvestmentHorizon, 
+        (pop, AvgT, PropSignif, HighestT, AvgAbsT) = ProfitDrivenInvestment(
+            pop,
+            generation,
+            # returns_tracker,
+            InvestmentHorizon,
             TestThreshold,
-            ReinvestmentRate
+            ReinvestmentRate,
         )
 
         results = data.record_results(
@@ -155,19 +142,19 @@ def main(
             TestThreshold,
             PropSignif,
             HighestT,
-            AvgAbsT 
+            AvgAbsT,
         )
 
     if generation < MAX_GENERATIONS - data.Barr:
         # It means the simulation has breaked.
-        results[generation+1:MAX_GENERATIONS-data.Barr,:] = np.empty((MAX_GENERATIONS - data.Barr - generation-1,data.variables)) * np.nan
+        results[generation + 1 : MAX_GENERATIONS - data.Barr, :] = (
+            np.empty((MAX_GENERATIONS - data.Barr - generation - 1, data.variables))
+            * np.nan
+        )
 
     df = pd.DataFrame(results, columns=data.columns)
 
     return df, pop
-
-
-
 
 
 np.random.seed(8)
@@ -184,7 +171,7 @@ df, pop = main(
     1.05,
     252,
     False,
-    False
+    False,
 )
 print(df)
 

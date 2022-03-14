@@ -1,4 +1,5 @@
 import time
+
 start_time = time.time()
 
 import array
@@ -12,7 +13,7 @@ from deap import creator
 from deap import tools
 
 creator.create("FitnessMax", base.Fitness, weights=(1.0,))
-creator.create("Individual", array.array, typecode='b', fitness=creator.FitnessMax)
+creator.create("Individual", array.array, typecode="b", fitness=creator.FitnessMax)
 
 toolbox = base.Toolbox()
 
@@ -20,20 +21,25 @@ toolbox = base.Toolbox()
 toolbox.register("attr_bool", random.randint, 0, 1)
 
 # Structure initializers
-toolbox.register("individual", tools.initRepeat, creator.Individual, toolbox.attr_bool, 1000)
+toolbox.register(
+    "individual", tools.initRepeat, creator.Individual, toolbox.attr_bool, 1000
+)
 toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 
+
 def evalOneMax(individual):
-    return sum(individual),
+    return (sum(individual),)
+
 
 toolbox.register("evaluate", evalOneMax)
 toolbox.register("mate", tools.cxTwoPoint)
 toolbox.register("mutate", tools.mutFlipBit, indpb=0.05)
 toolbox.register("select", tools.selTournament, tournsize=3)
 
+
 def main():
     random.seed(64)
-    
+
     pop = toolbox.population(n=1000)
     hof = tools.HallOfFame(1)
     stats = tools.Statistics(lambda ind: ind.fitness.values)
@@ -41,14 +47,21 @@ def main():
     stats.register("std", numpy.std)
     stats.register("min", numpy.min)
     stats.register("max", numpy.max)
-    
-    pop, log = algorithms.eaSimple(pop, toolbox, cxpb=0.5, mutpb=0.2, ngen=1000, 
-                                   stats=stats, halloffame=hof, verbose=True)
-    
+
+    pop, log = algorithms.eaSimple(
+        pop,
+        toolbox,
+        cxpb=0.5,
+        mutpb=0.2,
+        ngen=1000,
+        stats=stats,
+        halloffame=hof,
+        verbose=True,
+    )
+
     return pop, log, hof
+
 
 if __name__ == "__main__":
     main()
 print("--- %s seconds ---" % (time.time() - start_time))
-
-

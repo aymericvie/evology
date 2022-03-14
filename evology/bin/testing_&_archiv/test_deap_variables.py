@@ -15,7 +15,7 @@
 
 # toolbox.register("generate_wealth", random.randint, 0, 1)
 
-# toolbox.register("generate_individual", tools.initCycle, creator.individual, 
+# toolbox.register("generate_individual", tools.initCycle, creator.individual,
 #                  (toolbox.generate_strategy, toolbox.generate_wealth), n=1)
 # toolbox.register("population_creation", tools.initRepeat, list, toolbox.generate_individual)
 
@@ -34,9 +34,8 @@
 # for individual, fitnessValue in zip(pop, fitnessValues):
 #     individual.fitness.values = fitnessValue
 # fitnessValues = [individual.fitness.values[0] for individual in pop]
-    
-# print(fitnessValues)
 
+# print(fitnessValues)
 
 
 import random
@@ -50,7 +49,7 @@ creator.create("Individual", list, fitness=creator.FitnessMax)
 
 toolbox = base.Toolbox()
 
-# Attribute generator 
+# Attribute generator
 #                      define 'attr_bool' to be an attribute ('gene')
 #                      which corresponds to integers sampled uniformly
 #                      from the range [0,1] (i.e. 0 or 1 with equal
@@ -60,20 +59,23 @@ toolbox.register("attr_bool", random.randint, 0, 3)
 # Structure initializers
 #                         define 'individual' to be an individual
 #                         consisting of 100 'attr_bool' elements ('genes')
-toolbox.register("individual", tools.initRepeat, creator.Individual, 
-    toolbox.attr_bool, 3)
+toolbox.register(
+    "individual", tools.initRepeat, creator.Individual, toolbox.attr_bool, 3
+)
 
 # define the population to be a list of individuals
 toolbox.register("population", tools.initRepeat, list, toolbox.individual)
+
+
 def evalOneMax(individual):
     print(type(sum(individual)))
     # return sum(individual),
-    return individual[1],
+    return (individual[1],)
 
 
-#----------
+# ----------
 # Operator registration
-#----------
+# ----------
 # register the goal / fitness function
 toolbox.register("evaluate", evalOneMax)
 pop = toolbox.population(n=3)
@@ -83,4 +85,3 @@ print(fitnesses)
 for ind, fit in zip(pop, fitnesses):
     ind.fitness.values = fit
 print(fit)
-

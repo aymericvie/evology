@@ -8,7 +8,15 @@ from Cython.Build import cythonize
 include_dirs = [os.getcwd()]
 extensions = [
     Extension(e, [f"{e}.pyx"], include_dirs=include_dirs)
-    for e in ["cythonized", "data", "market", "balance_sheet", "balance_sheet_cython", "investment", "fitness"]
+    for e in [
+        "cythonized",
+        "data",
+        "market",
+        "balance_sheet",
+        "balance_sheet_cython",
+        "investment",
+        "fitness",
+    ]
 ]
 
 setup(

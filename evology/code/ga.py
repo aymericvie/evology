@@ -10,6 +10,7 @@ import timeit
 import warnings
 import cythonized
 
+
 def CreateHalfFund(pop, MaxFund):
 
     if pop[MaxFund].type == "nt":
@@ -18,7 +19,6 @@ def CreateHalfFund(pop, MaxFund):
         half = IndCreation("vi")
     if pop[MaxFund].type == "tf":
         half = IndCreation("tf")
-
 
     # Copy fund MaxFund intangible characteristics
     # TSV, EDF, EDV are totally reset.
@@ -40,7 +40,8 @@ def CreateHalfFund(pop, MaxFund):
     half.asset = pop[MaxFund].asset / 2
     half.margin = pop[MaxFund].margin / 2
     half.profit = 0.0
-    return half 
+    return half
+
 
 def CreateFractionalFund(pop, MaxFund, divisions):
 
@@ -71,12 +72,10 @@ def CreateFractionalFund(pop, MaxFund, divisions):
     half.loan = pop[MaxFund].loan / divisions
     half.asset = pop[MaxFund].asset / divisions
     half.margin = pop[MaxFund].margin / divisions
-    return half 
+    return half
 
 
-def hypermutate(
-    pop, spoils, replace
-):
+def hypermutate(pop, spoils, replace):
     round_replacements = 0
 
     if replace == 1:
@@ -95,10 +94,9 @@ def hypermutate(
         NumberReplace = len(index_to_replace)
 
         if NumberReplace == len(pop):
-            warnings.warn('Evology wiped out')
+            warnings.warn("Evology wiped out")
             round_replacements = -1
             return pop, round_replacements, spoils
-
 
         elif NumberReplace != 0:
             for index in index_to_replace:
@@ -117,10 +115,10 @@ def hypermutate(
             raise ValueError(
                 "After replace and split, population size changed. " + str(len(pop))
             )
-        
+
         if NumberReplace != round_replacements:
             print([NumberReplace, round_replacements])
-            raise ValueError('Mismatch number replace and round replacements')
+            raise ValueError("Mismatch number replace and round replacements")
 
         # Check that we did not leave anyone with a negative wealth
         for ind in pop:
@@ -128,8 +126,6 @@ def hypermutate(
                 raise ValueError("Insolvent funds after hypermutation.")
 
     return pop, round_replacements, spoils
-
-
 
 
 # Creating our own crossover operator:
@@ -209,10 +205,7 @@ def selRandom(pop, k):
     return aspirants
 
 
-def strategy_evolution(
-    space, pop, PROBA_SELECTION, MUTATION_RATE, wealth_coordinates
-):
-    
+def strategy_evolution(space, pop, PROBA_SELECTION, MUTATION_RATE, wealth_coordinates):
 
     TowardsNT = 0
     TowardsVI = 0

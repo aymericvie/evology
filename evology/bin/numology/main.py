@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-''' 
+""" 
 from parameters import *
 from sampling import *
 import sampling
@@ -46,34 +46,35 @@ def main(mode, MAX_GENERATIONS, PROBA_SELECTION, POPULATION_SIZE, MUTATION_RATE,
     df = pd.DataFrame(results, columns = data.columns)
     
     return df
-    '''
+    """
 
 
-Dividend = 0.003983    
+Dividend = 0.003983
 
 # Params
 n = 10
 p = 100
-tmax = 20# 20_000
-coords = [1/2, 1/4, 1/4]
+tmax = 20  # 20_000
+coords = [1 / 2, 1 / 4, 1 / 4]
 print(coords)
 
 # Imports
 import numpy as np
-np.set_printoptions(suppress=True, precision = 1)
+
+np.set_printoptions(suppress=True, precision=1)
 from functions import *
 import timeit
 
 # Create population
-pop = create_pop(n, nb.typed.List(coords)) 
-''' column 0 : W // column 1: C // column 2: S // column 3: L / /column 4: prevW'''
+pop = create_pop(n, nb.typed.List(coords))
+""" column 0 : W // column 1: C // column 2: S // column 3: L / /column 4: prevW"""
 starttime = timeit.default_timer()
 
 print(pop)
 
 for t in range(tmax):
 
-    # Compute wealth and profits    
+    # Compute wealth and profits
     CalcWealth(pop, p)
 
     # Wealth shield
@@ -92,7 +93,7 @@ for t in range(tmax):
 
     # Determine edf
     # Market clearing
-    # Compute tsv 
+    # Compute tsv
     # Compute mismatch
     # Execute excess demand orders
     # Apply earnings
@@ -104,10 +105,16 @@ for t in range(tmax):
         print(t)
 
 
-print('End.')
+print("End.")
 print(pop)
 print(timeit.default_timer() - starttime)
 
-print([GetWealth(pop, 0) / GetTotalWealth(pop), GetWealth(pop, 1) / GetTotalWealth(pop), GetWealth(pop, 2) / GetTotalWealth(pop)])
+print(
+    [
+        GetWealth(pop, 0) / GetTotalWealth(pop),
+        GetWealth(pop, 1) / GetTotalWealth(pop),
+        GetWealth(pop, 2) / GetTotalWealth(pop),
+    ]
+)
 
 # TODO: The wealth shield generates profits, this will bias returns computations.

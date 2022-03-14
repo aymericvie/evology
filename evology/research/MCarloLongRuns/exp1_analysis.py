@@ -1,5 +1,8 @@
 import pandas as pd
-data = pd.read_csv("/Users/aymericvie/Documents/GitHub/evology/evology/research/MCarloLongRuns/data/data1.csv")
+
+data = pd.read_csv(
+    "/Users/aymericvie/Documents/GitHub/evology/evology/research/MCarloLongRuns/data/data1.csv"
+)
 # print(data)
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -7,37 +10,39 @@ from scipy.ndimage.filters import gaussian_filter
 import ternary
 import numpy as np
 
-sns.set(font_scale=1) 
+sns.set(font_scale=1)
 fontsize = 18
 sigma = 1
+
 
 def heat_data(original_data, columnX, columnY, columnZ):
     data2 = original_data.copy()
     data_temp = pd.DataFrame()
-    data_temp['Gen'] = data2['Unnamed: 0']
-    data_temp['F'] = data2[columnX]
-    data_temp['H'] = data2[columnY]
-    data_temp['T'] = data2[columnZ]
+    data_temp["Gen"] = data2["Unnamed: 0"]
+    data_temp["F"] = data2[columnX]
+    data_temp["H"] = data2[columnY]
+    data_temp["T"] = data2[columnZ]
 
-    data_temp2 = data_temp.groupby(['F', 'H'], as_index=False).mean()
-    #data_temp2 = data_temp.copy()
-    data_ready = data_temp2.pivot(index='H', columns='F', values = 'T')
+    data_temp2 = data_temp.groupby(["F", "H"], as_index=False).mean()
+    # data_temp2 = data_temp.copy()
+    data_ready = data_temp2.pivot(index="H", columns="F", values="T")
     return data_ready
+
 
 # print(dataNT)
 def GenPlot(dataNT, dataVI, dataTF, title1, title2, title3, figname, bounds):
-    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize = (15,6), sharey=True, sharex=True)
-    cmap = 'seismic'
+    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(15, 6), sharey=True, sharex=True)
+    cmap = "seismic"
     if bounds == True:
         vmin = -0.2
         vmax = 0.2
-        sns.heatmap(dataNT, ax=ax1, cmap = cmap, vmin=vmin, vmax=vmax)
-        sns.heatmap(dataVI, ax=ax2, cmap = cmap, vmin=vmin, vmax=vmax)
-        sns.heatmap(dataTF, ax=ax3, cmap = cmap, vmin=vmin, vmax=vmax)
+        sns.heatmap(dataNT, ax=ax1, cmap=cmap, vmin=vmin, vmax=vmax)
+        sns.heatmap(dataVI, ax=ax2, cmap=cmap, vmin=vmin, vmax=vmax)
+        sns.heatmap(dataTF, ax=ax3, cmap=cmap, vmin=vmin, vmax=vmax)
     else:
-        sns.heatmap(dataNT, ax=ax1, cmap = cmap)
-        sns.heatmap(dataVI, ax=ax2, cmap = cmap)
-        sns.heatmap(dataTF, ax=ax3, cmap = cmap)
+        sns.heatmap(dataNT, ax=ax1, cmap=cmap)
+        sns.heatmap(dataVI, ax=ax2, cmap=cmap)
+        sns.heatmap(dataTF, ax=ax3, cmap=cmap)
     ax1.set_xlabel("Initial Wealth Share NT", fontsize=fontsize)
     ax1.set_ylabel("Initial Wealth Share VI", fontsize=fontsize)
     ax2.set_xlabel("Initial Wealth Share VI", fontsize=fontsize)
@@ -55,29 +60,59 @@ def GenPlot(dataNT, dataVI, dataTF, title1, title2, title3, figname, bounds):
     plt.savefig(figname, dpi=300)
     plt.show()
 
-dataNT = heat_data(data, 'WS_NT', 'WS_VI', 'NT_returns_mean')
-dataVI = heat_data(data, 'WS_VI', 'WS_NT', 'VI_returns_mean')
-dataTF = heat_data(data, 'WS_TF', 'WS_NT', 'TF_returns_mean')
-fig = GenPlot(dataNT, dataVI, dataTF, "NT returns", "VI returns", "TF returns", 'Experiment1.png', False)
 
-data['AvgReturn'] = (data['NT_returns_mean'] + data['VI_returns_mean'] + data['TF_returns_mean']) / 3
-data['Net_NT_returns'] = data['NT_returns_mean'] - data['AvgReturn']
-data['Net_VI_returns'] = data['VI_returns_mean'] - data['AvgReturn']
-data['Net_TF_returns'] = data['TF_returns_mean'] - data['AvgReturn']
+dataNT = heat_data(data, "WS_NT", "WS_VI", "NT_returns_mean")
+dataVI = heat_data(data, "WS_VI", "WS_NT", "VI_returns_mean")
+dataTF = heat_data(data, "WS_TF", "WS_NT", "TF_returns_mean")
+fig = GenPlot(
+    dataNT,
+    dataVI,
+    dataTF,
+    "NT returns",
+    "VI returns",
+    "TF returns",
+    "Experiment1.png",
+    False,
+)
 
-dataNT = heat_data(data, 'WS_NT', 'WS_VI', 'Net_NT_returns')
-dataVI = heat_data(data, 'WS_VI', 'WS_NT', 'Net_VI_returns')
-dataTF = heat_data(data, 'WS_TF', 'WS_NT', 'Net_TF_returns')
-fig = GenPlot(dataNT, dataVI, dataTF, "NT net returns", "VI net returns", "TF net returns", 'Experiment1b.png', True)
+data["AvgReturn"] = (
+    data["NT_returns_mean"] + data["VI_returns_mean"] + data["TF_returns_mean"]
+) / 3
+data["Net_NT_returns"] = data["NT_returns_mean"] - data["AvgReturn"]
+data["Net_VI_returns"] = data["VI_returns_mean"] - data["AvgReturn"]
+data["Net_TF_returns"] = data["TF_returns_mean"] - data["AvgReturn"]
 
-data['NT_weighted_returns'] = data['NT_returns_mean'] / np.sqrt(data['WS_NT'])
-data['VI_weighted_returns'] = data['VI_returns_mean'] / np.sqrt(data['WS_VI'])
-data['TF_weighted_returns'] = data['TF_returns_mean'] / np.sqrt(data['WS_TF'])
+dataNT = heat_data(data, "WS_NT", "WS_VI", "Net_NT_returns")
+dataVI = heat_data(data, "WS_VI", "WS_NT", "Net_VI_returns")
+dataTF = heat_data(data, "WS_TF", "WS_NT", "Net_TF_returns")
+fig = GenPlot(
+    dataNT,
+    dataVI,
+    dataTF,
+    "NT net returns",
+    "VI net returns",
+    "TF net returns",
+    "Experiment1b.png",
+    True,
+)
 
-dataNT = heat_data(data, 'WS_NT', 'WS_VI', 'NT_weighted_returns')
-dataVI = heat_data(data, 'WS_VI', 'WS_NT', 'VI_weighted_returns')
-dataTF = heat_data(data, 'WS_TF', 'WS_NT', 'TF_weighted_returns')
-fig = GenPlot(dataNT, dataVI, dataTF, "NT weighted returns", "VI weighted returns", "TF weighted returns", 'Experiment1bb.png', False)
+data["NT_weighted_returns"] = data["NT_returns_mean"] / np.sqrt(data["WS_NT"])
+data["VI_weighted_returns"] = data["VI_returns_mean"] / np.sqrt(data["WS_VI"])
+data["TF_weighted_returns"] = data["TF_returns_mean"] / np.sqrt(data["WS_TF"])
+
+dataNT = heat_data(data, "WS_NT", "WS_VI", "NT_weighted_returns")
+dataVI = heat_data(data, "WS_VI", "WS_NT", "VI_weighted_returns")
+dataTF = heat_data(data, "WS_TF", "WS_NT", "TF_weighted_returns")
+fig = GenPlot(
+    dataNT,
+    dataVI,
+    dataTF,
+    "NT weighted returns",
+    "VI weighted returns",
+    "TF weighted returns",
+    "Experiment1bb.png",
+    False,
+)
 
 # dataNT = heat_data(data, 'WS_NT', 'WS_VI', 'AvgReturn')
 # dataVI = heat_data(data, 'WS_VI', 'WS_NT', 'AvgReturn')
@@ -91,38 +126,42 @@ fig = GenPlot(dataNT, dataVI, dataTF, "NT weighted returns", "VI weighted return
 # plt.show()
 
 
-
 # order = 1
-data1 = data.loc[data['WS_NT'] == 0.1]
-data2 = data.loc[data['WS_VI'] == 0.1]
+data1 = data.loc[data["WS_NT"] == 0.1]
+data2 = data.loc[data["WS_VI"] == 0.1]
 
-data1['VI_returns_mean'] = np.log(data1['VI_returns_mean'])
-data1['TF_returns_mean'] = np.log(data1['TF_returns_mean'])
-data2['NT_returns_mean'] = np.log(data2['NT_returns_mean'])
+data1["VI_returns_mean"] = np.log(data1["VI_returns_mean"])
+data1["TF_returns_mean"] = np.log(data1["TF_returns_mean"])
+data2["NT_returns_mean"] = np.log(data2["NT_returns_mean"])
 
-fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize = (15,6), sharex=True)
+fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(15, 6), sharex=True)
 # sns.regplot(x="WS_NT", y="NT_returns_mean", data=data2, ax=ax1, lowess = True)
 # sns.regplot(x="WS_VI", y="VI_returns_mean", data=data1, ax=ax2, lowess = True)
 # sns.regplot(x="WS_TF", y="TF_returns_mean", data=data1, ax=ax3, lowess = True)
-sns.regplot(x="WS_NT", y="NT_returns_mean", data=data2, ax=ax1, lowess = True) #order = order)
-sns.regplot(x="WS_VI", y="VI_returns_mean", data=data1, ax=ax2, lowess = True) #, order = order)
-sns.regplot(x="WS_TF", y="TF_returns_mean", data=data1, ax=ax3, lowess = True) #, order = order)
+sns.regplot(
+    x="WS_NT", y="NT_returns_mean", data=data2, ax=ax1, lowess=True
+)  # order = order)
+sns.regplot(
+    x="WS_VI", y="VI_returns_mean", data=data1, ax=ax2, lowess=True
+)  # , order = order)
+sns.regplot(
+    x="WS_TF", y="TF_returns_mean", data=data1, ax=ax3, lowess=True
+)  # , order = order)
 ax1.set_xlabel("Initial Wealth Share NT (VI = 0.1)", fontsize=fontsize)
 ax1.set_ylabel("Log NT returns", fontsize=fontsize)
 ax2.set_xlabel("Initial Wealth Share VI (NT = 0.1)", fontsize=fontsize)
 ax2.set_ylabel("Log VI returns", fontsize=fontsize)
 ax3.set_xlabel("Initial Wealth Share TF (NT = 0.1)", fontsize=fontsize)
 ax3.set_ylabel("Log TF returns", fontsize=fontsize)
-ax1.set_title('Log NT returns vs size', fontsize=fontsize)
-ax2.set_title('Log VI returns vs size', fontsize=fontsize)
-ax3.set_title('Log TF returns vs size', fontsize=fontsize)
+ax1.set_title("Log NT returns vs size", fontsize=fontsize)
+ax2.set_title("Log VI returns vs size", fontsize=fontsize)
+ax3.set_title("Log TF returns vs size", fontsize=fontsize)
 plt.tight_layout()
-plt.savefig('Experiment1d', dpi=300)
+plt.savefig("Experiment1d", dpi=300)
 plt.show()
 
 
-
-''' ternary that does not work 
+""" ternary that does not work 
 data = pd.read_csv("/Users/aymericvie/Documents/GitHub/evology/evology/research/MCarloLongRuns/data/data1.csv")
 data_group = data.copy()
 print(data_group)
@@ -175,4 +214,4 @@ fig, tax = GenerateTernary(tf_r, 'TF returns')
 # print(data.columns)
 # data2 = data_group.loc[(data_group['WS_TF'] > 0.55) & (data_group['WS_TF'] < 0.65)]
 # print(data2)
-'''
+"""
