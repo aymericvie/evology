@@ -1,15 +1,14 @@
 import numpy as np
 import math
 import warnings
-
 from parameters import *
 import cythonized
+cimport cythonized
 from cythonized import calculate_edv
 
 
-
-
-def clear_debt(pop, price):
+cpdef clear_debt(list pop, double price):
+    cdef cythonized.Individual ind
     for ind in pop:
         if ind.loan > 0:  # If the agent has outstanding debt:
             if ind.cash >= ind.loan + 100 * price:  # If the agent has enough cash:
@@ -20,10 +19,11 @@ def clear_debt(pop, price):
             ):  # If the agent does not have enough cash:
                 ind.loan -= ind.cash - 100 * price
                 ind.cash = 100 * price
-    return ind
+    return pop
 
 
-def update_margin(pop, current_price):
+cpdef update_margin(list pop, double current_price):
+    cdef cythonized.Individual ind
     for ind in pop:
         ind.cash += ind.margin
         ind.margin = 0
@@ -33,7 +33,7 @@ def update_margin(pop, current_price):
         if ind.cash < 0:
             ind.loan += abs(ind.cash)
             ind.cash = 0
-    return ind
+    return pop
 
 
 def UpdatePrevWealth(pop):
@@ -153,16 +153,18 @@ def count_pop_long_assets(pop):
     return count
 
 
-def count_long_assets(pop, spoils):
-    count = 0
+cpdef count_long_assets(list pop, double spoils):    
+    cdef cythonized.Individual ind
+    cdef double count = 0.0
     for ind in pop:
         count += ind.asset
     count += spoils
     return count
 
 
-def count_short_assets(pop, spoils):
-    count = 0
+cpdef count_short_assets(list pop, double spoils):
+    cdef cythonized.Individual ind
+    cdef double count = 0.0
     for ind in pop:
         if ind.asset < 0:
             count += abs(ind.asset)

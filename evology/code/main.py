@@ -81,11 +81,8 @@ def main(
             ToLiquidate,
         )
 
-        # Earnings, compute profits, age
-        pop, replace = update_wealth(
-            pop,
-            CurrentPrice,
-        )
+        # compute wealth profit reutnrs, age
+        pop, replace = bsc.UpdateWealthProfitAge(pop, CurrentPrice)
 
         # (
         #     wealth_tracker,

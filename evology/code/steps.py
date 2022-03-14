@@ -231,10 +231,11 @@ def marketActivity(
     pop, volume, spoils, Liquidations = mk.execute_ed(
         pop, current_price, asset_supply, spoils, ToLiquidate
     )
-    pop, dividend, random_dividend = mk.earnings(pop, dividend)
+    random_dividend =  np.random.normal(0.0, 1.0)
+    pop, dividend, random_dividend = mk.earnings(pop, dividend, random_dividend)
     dividend_history.append(dividend)
-    bs.update_margin(pop, current_price)
-    bs.clear_debt(pop, current_price)
+    pop = bs.update_margin(pop, current_price)
+    pop = bs.clear_debt(pop, current_price)
     return (
         pop,
         volume,
@@ -245,20 +246,6 @@ def marketActivity(
         Liquidations,
     )
 
-
-def update_wealth(
-    pop,
-    current_price,
-):
-    # pop, replace = bs.calculate_wealth(pop, current_price)  # Compute agents' wealth
-    # bs.update_profit(pop)
-    # bs.calculate_wealth(pop, current_price)
-    # bs.ComputeReturn(pop)
-    # bs.ComputeReturn_noinv(pop)
-    # pop = bs.AgeUpdate(pop)
-
-    pop, replace = bsc.UpdateWealthProfitAge(pop, current_price)
-    return pop, replace
 
 
 # def ApplyReinvestment(

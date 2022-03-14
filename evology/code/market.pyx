@@ -2,49 +2,40 @@
 
 from balance_sheet import count_long_assets, count_pop_long_assets, count_short_assets
 import numpy as np
-
-import parameters
-
+from parameters import *
 cimport cythonized
 
 
-def draw_dividend(dividend):
-    DIVIDEND_GROWTH_RATE = ((1 + parameters.DIVIDEND_GROWTH_RATE_G) ** (1 / parameters.TRADING_DAYS)) - 1
-    random_dividend = np.random.normal(0, 1)
-    if len(parameters.random_dividend_history) > parameters.DIVIDEND_ATC_TAU:
+cpdef draw_dividend(double dividend, double random_dividend):
+    DIVIDEND_GROWTH_RATE = ((1.0 + DIVIDEND_GROWTH_RATE_G) ** (1.0 / TRADING_DAYS)) - 1.0
+    if len(random_dividend_history) > DIVIDEND_ATC_TAU:
         random_dividend = (
-            1 - parameters.DIVIDEND_AUTOCORRELATION ** 2
-        ) * random_dividend + parameters.DIVIDEND_AUTOCORRELATION * parameters.random_dividend_history[
-            -1 - parameters.DIVIDEND_ATC_TAU
+            1.0 - DIVIDEND_AUTOCORRELATION ** 2.0
+        ) * random_dividend + DIVIDEND_AUTOCORRELATION * random_dividend_history[
+            - 1.0 - DIVIDEND_ATC_TAU
         ]
     dividend = abs(
         dividend
         + DIVIDEND_GROWTH_RATE * dividend
-        + parameters.DIVIDEND_GROWTH_VOLATILITY * dividend * random_dividend
+        + DIVIDEND_GROWTH_VOLATILITY * dividend * random_dividend
     )
     return dividend, random_dividend
 
+cpdef earnings(list pop, double prev_dividend, double random_dividend):
+    cdef cythonized.Individual ind
+    cdef double dividend
+    cdef double div_asset
+    cdef double interest_cash
+    
+    dividend, random_dividend = draw_dividend(prev_dividend, random_dividend)
 
-def dividend_series(horizon):
-    history, rdiv_history = [], []
-    dividend = parameters.INITIAL_DIVIDEND
-    history.append(dividend)
-    rdiv_history.append(0)
-    for i in range(horizon - 1):
-        dividend, rdiv = draw_dividend(dividend)
-        history.append(dividend)
-        rdiv_history.append(rdiv)
-    return history, rdiv_history
-
-def earnings(pop, prev_dividend):
-    dividend, random_dividend = draw_dividend(prev_dividend)
     for ind in pop:
         div_asset = ind.asset * dividend  # Determine gain from dividends
-        interest_cash = ind.cash * parameters.INTEREST_RATE  # Determine gain from interest
+        interest_cash = ind.cash * INTEREST_RATE  # Determine gain from interest
         ind.cash += div_asset + interest_cash
     return pop, dividend, random_dividend
 
-cdef determine_multiplier(list pop, double spoils, double ToLiquidate, double asset_supply):
+cpdef determine_multiplier(list pop, double spoils, double ToLiquidate, double asset_supply):
 
     cdef double total_buy = 0.0
     cdef double total_sell = 0.0
@@ -54,6 +45,11 @@ cdef determine_multiplier(list pop, double spoils, double ToLiquidate, double as
 
     cdef cythonized.Individual ind
     cdef double order_ratio = 0.0
+    cdef double temp_sell = 0.0
+    cdef double effective_possible_short
+    cdef double multiplier_sell
+    cdef double multiplier_buy
+    cdef double CountShort
 
     for ind in pop:
         if ind.edv > 0:
@@ -148,17 +144,22 @@ cdef determine_multiplier(list pop, double spoils, double ToLiquidate, double as
     return multiplier_buy, multiplier_sell, short_ratio
 
 
-def execute_ed(list pop, double current_price, double asset_supply, double spoils, double ToLiquidate):
-    # Determine adjustements to edv if we have some mismatch
+cpdef execute_ed(list pop, double current_price, double asset_supply, double spoils, double ToLiquidate):
+
     cdef double multiplier_buy
     cdef double multiplier_sell
     cdef double short_ratio
     cdef double Liquidations = 0.0
-    multiplier_buy, multiplier_sell, short_ratio = determine_multiplier(pop, spoils, ToLiquidate, asset_supply)
-    volume = 0.0
-
     cdef cythonized.Individual ind
     cdef double amount
+    cdef double volume = 0.0
+    cdef double SupplyCorrectionRatio
+    cdef double CurrentCount 
+    cdef double amount_before_corrected
+    cdef double amount_after_correction
+
+    multiplier_buy, multiplier_sell, short_ratio = determine_multiplier(pop, spoils, ToLiquidate, asset_supply)
+
     for ind in pop:
         amount = 0.0
 
@@ -201,8 +202,6 @@ def execute_ed(list pop, double current_price, double asset_supply, double spoil
         spoils += Liquidations
         # Isn't that a minus sign here instead?
 
-    cdef double SupplyCorrectionRatio
-    cdef double CurrentCount 
 
     if count_short_assets(pop, spoils) >= asset_supply + 1 :
         print(count_short_assets(pop, spoils))
@@ -213,44 +212,22 @@ def execute_ed(list pop, double current_price, double asset_supply, double spoil
 
     CurrentCount = count_long_assets(pop, spoils)
     if CurrentCount - asset_supply >= 1:
-
-        # LogBefore = [CurrentCount - asset_supply, count_pop_long_assets(pop), spoils]
-
         amount_before_corrected = CurrentCount - asset_supply
         SupplyCorrectionRatio = asset_supply / CurrentCount
-
-        # LogBetween = [count_pop_long_assets(pop) * SupplyCorrectionRatio, spoils * SupplyCorrectionRatio, count_pop_long_assets(pop) * SupplyCorrectionRatio + spoils * SupplyCorrectionRatio - asset_supply]
-
-        # Logpop = np.zeros((len(pop), 4))
         # Adjust the spoils quantity 
         spoils = spoils * SupplyCorrectionRatio
         for i, ind in enumerate(pop):
             # Adjust the assets quantity
-            #Logpop[i,0] = ind.asset
-            #Logpop[i,1] = ind.asset * SupplyCorrectionRatio
             ind.asset = SupplyCorrectionRatio * ind.asset
-            #Logpop[i,2] = ind.asset
-            #Logpop[i,3] = Logpop[i,2] - Logpop[i,1]
             # Compensate in cash accordingly.
             ind.cash = ind.cash / SupplyCorrectionRatio
         amount_after_correction = count_long_assets(pop, spoils) - asset_supply
-        
-        #LogAfter = [amount_after_correction, count_pop_long_assets(pop), spoils]
 
         if abs(amount_before_corrected) < abs(amount_after_correction):
             print(amount_before_corrected)
             print(amount_after_correction)
             print(SupplyCorrectionRatio)
-            #print('Log Before')
-            #print(LogBefore)
-            #print('Log Between')
-            #print(LogBetween)
-            #print('Log After')
-            #print(LogAfter)
-            #print('Pop log')
-            #print(Logpop)
             raise ValueError('Rounding error correction increased asset supply violation. ')
-
 
     if count_long_assets(pop, spoils) - asset_supply >= 0.01 * asset_supply:
         print('Count Long assets different from asset supply: count, supply, diff, spoils, amount before / after')
@@ -261,43 +238,4 @@ def execute_ed(list pop, double current_price, double asset_supply, double spoil
         print(amount_before_corrected)
         print(amount_after_correction)
         raise ValueError('Asset supply violated by more than 1%.')
-
-    #if abs(count_long_assets(pop, spoils) - asset_supply) > 0.01 * asset_supply:
-        # If we violate the asset supply constraint by more than 1%, raise an error.
-        #if abs(count_long_assets(pop, spoils) - asset_supply) >= 0.01 * asset_supply:
-        #    print("Spoils " + str(spoils))
-        #    print("ToLiquidate " + str(ToLiquidate))
-        #    print("Pop ownership " + str(count_pop_long_assets(pop)))
-        #    raise ValueError(
-        #        "Asset supply cst violated "
-        #        + str(count_long_assets(pop, spoils))
-        #        + "/"
-        #        + str(asset_supply)
-        #    )
-
-    #cdef double SupplyCorrectionRatio
-    # If the violation of the asset supply is minor (less than 1%), correct the rounding error.
-    #while abs(count_long_assets(pop, spoils) - asset_supply) <= 0.01 * asset_supply and count < 10:
-    #    count += 1
-    ##count = 0
-    #    SupplyCorrectionRatio = asset_supply / count_long_assets(pop, spoils)
-    #    spoils = spoils * SupplyCorrectionRatio
-    #    for ind in pop:
-    #        ind.asset = SupplyCorrectionRatio * ind.asset
-        # If the resulting violation is still superior to 0.1% after rounding correction, raise an error.
-    #    if abs(count_long_assets(pop, spoils) - asset_supply) > 0.001 * asset_supply:
-    #        print(abs(count_long_assets(pop, spoils) - asset_supply))
-     #       print("---")
-      #      for ind in pop:
-      #          print(ind.asset)
-      #      raise ValueError(
-      #          "Rounding violation of asset supply was not succesfully corrected. "
-      #          + str(SupplyCorrectionRatio)
-      #          + "//"
-      #          + str(count_long_assets(pop, spoils))
-      #          + "//"
-      #          + str(asset_supply)
-      #          + "//"
-      #          + str(spoils)
-      #      )
     return pop, volume, spoils, Liquidations
