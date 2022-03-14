@@ -8,6 +8,8 @@ import numpy as np
 
 
 @profile
+
+
 def main(
     space,
     solver,
@@ -21,19 +23,13 @@ def main(
     tqdm_display,
     reset_wealth,
 ):
-    # Initialise important variables and dataframe to store results
+    # Initialisation
     generation, CurrentPrice, dividend, spoils = 0, InitialPrice, INITIAL_DIVIDEND, 0
     results = np.zeros((MAX_GENERATIONS - data.Barr, data.variables))
-    # wealth_tracker= np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
-    # wealth_tracker_noinv = np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
-    # returns_tracker= np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
-    price_history, dividend_history = [], []
-    TestThreshold = stdtrit(InvestmentHorizon, 0.95)
-    replace = 0
+    price_history, dividend_history, replace = [], [], 0
 
-    pop, asset_supply = cr.CreatePop(POPULATION_SIZE, space, wealth_coordinates)
-    bs.calculate_wealth(pop, CurrentPrice)
-    bs.UpdatePrevWealth(pop)
+    # Population creation
+    pop, asset_supply = cr.CreatePop(POPULATION_SIZE, space, wealth_coordinates, CurrentPrice)
 
     for generation in tqdm(
         range(MAX_GENERATIONS), disable=tqdm_display, miniters=100, mininterval=0.5
@@ -47,7 +43,7 @@ def main(
         # Hypermutation
         pop, replacements, spoils = ga.hypermutate(
             pop, spoils, replace
-        )  # Replace insolvent agents
+        ) 
         if replacements < 0:
             break
 
@@ -63,12 +59,13 @@ def main(
             InvestmentHorizon,
         )
 
-        # Calculate wealth and previous wealth
+        # Market decisions 
         bs.calculate_wealth(pop, CurrentPrice)
         bs.UpdatePrevWealth(pop)
-
-        # Market decisions (tsv, proc, edf)
-        pop = decision_updates(pop, price_history, dividend_history, CurrentPrice)
+        pop = bsc.NoiseProcess(pop)
+        pop = bsc.UpdateFval(pop, dividend)
+        pop = bsc.CalculateTSV(pop, price_history, dividend_history, CurrentPrice)
+        pop = bsc.DetermineEDF(pop)
 
         # Market clearing
         pop, mismatch, CurrentPrice, price_history, ToLiquidate = marketClearing(
@@ -117,7 +114,6 @@ def main(
             generation,
             # returns_tracker,
             InvestmentHorizon,
-            TestThreshold,
             ReinvestmentRate,
         )
 
@@ -139,7 +135,6 @@ def main(
             CountCrossed,
             StratFlow,
             AvgT,
-            TestThreshold,
             PropSignif,
             HighestT,
             AvgAbsT,
@@ -155,6 +150,7 @@ def main(
     df = pd.DataFrame(results, columns=data.columns)
 
     return df, pop
+
 
 
 np.random.seed(8)
