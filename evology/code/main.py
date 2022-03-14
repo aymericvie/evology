@@ -130,7 +130,6 @@ def main(
             CountCrossed,
             StratFlow,
             AvgT,
-            TestThreshold,
             PropSignif,
             HighestT,
             AvgAbsT,

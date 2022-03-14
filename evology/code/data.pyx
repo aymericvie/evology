@@ -478,7 +478,6 @@ def record_results(
     CountCrossed,
     StratFlow,
     AvgT,
-    TestThreshold,
     PropSignif,
     HighestT,
     AvgAbsT
