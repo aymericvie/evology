@@ -50,7 +50,7 @@ cdef double pearson(double[:] x, double[:] y) nogil:
     return result
 
 #cpdef Profit_Investment(list pop, double ReinvestmentRate, double[:,:] returns_tracker, int InvestmentHorizon, double TestThreshold, int generation):
-cpdef Profit_Investment(list pop, double ReinvestmentRate, int InvestmentHorizon, double TestThreshold, int generation):
+cpdef Profit_Investment(list pop, double ReinvestmentRate, int InvestmentHorizon, int generation):
     pop = Returns_Investment(pop, ReinvestmentRate)
     #pop, AvgT, PropSignif, HighestT, AvgAbsT = ProfitSignificance(returns_tracker, generation, InvestmentHorizon, pop, TestThreshold)
     AvgT, PropSignif, HighestT, AvgAbsT = 0,0,0,0

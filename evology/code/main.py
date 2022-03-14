@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 from steps import *
 
 
@@ -21,9 +20,8 @@ def main(
     # wealth_tracker= np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
     # wealth_tracker_noinv = np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
     # returns_tracker= np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
-    price_history, dividend_history = [], []
-    TestThreshold = stdtrit(InvestmentHorizon, 0.95)
-    replace = 0
+    price_history, dividend_history, replace = [], [], 0
+    # TestThreshold = stdtrit(InvestmentHorizon, 0.95)
 
     pop, asset_supply = cr.CreatePop(POPULATION_SIZE, space, wealth_coordinates)
     bs.calculate_wealth(pop, CurrentPrice)
@@ -111,7 +109,6 @@ def main(
             generation,
             # returns_tracker,
             InvestmentHorizon,
-            TestThreshold,
             ReinvestmentRate,
         )
 
