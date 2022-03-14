@@ -14,18 +14,13 @@ def main(
     tqdm_display,
     reset_wealth,
 ):
-    # Initialise important variables and dataframe to store results
+    # Initialisation
     generation, CurrentPrice, dividend, spoils = 0, InitialPrice, INITIAL_DIVIDEND, 0
     results = np.zeros((MAX_GENERATIONS - data.Barr, data.variables))
-    # wealth_tracker= np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
-    # wealth_tracker_noinv = np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
-    # returns_tracker= np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
     price_history, dividend_history, replace = [], [], 0
-    # TestThreshold = stdtrit(InvestmentHorizon, 0.95)
 
-    pop, asset_supply = cr.CreatePop(POPULATION_SIZE, space, wealth_coordinates)
-    bs.calculate_wealth(pop, CurrentPrice)
-    bs.UpdatePrevWealth(pop)
+    # Population creation
+    pop, asset_supply = cr.CreatePop(POPULATION_SIZE, space, wealth_coordinates, CurrentPrice)
 
     for generation in tqdm(
         range(MAX_GENERATIONS), disable=tqdm_display, miniters=100, mininterval=0.5

@@ -50,7 +50,7 @@ def IndCreation(strat):
     return ind
 
 
-def CreatePop(n, space, WealthCoords):
+def CreatePop(n, space, WealthCoords, CurrentPrice):
 
     if n < 3:
         raise ValueError("Cannot create diverse population with less than 3 agents. ")
@@ -136,6 +136,12 @@ def CreatePop(n, space, WealthCoords):
         if ind.type == "tf":
             ind.cash = PcTFCash
             ind.asset = PcTFAsset
+
+    for ind in pop:
+        ind.wealth = ind.cash + ind.asset * CurrentPrice - ind.loan
+        ind.prev_wealth = ind.wealth
+        if ind.wealth < 0:
+            raise ValueError("Negative wealth at population creation.")
 
     return pop, TotalAsset
 

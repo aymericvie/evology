@@ -9,21 +9,33 @@
 
 ## Description
 
-We implement an artificial stock market with adaptive trading strategies: an evolutionary market ecology. On a simplified market with assets and cash, we apply various learning algorithms (imitation, Genetic Algorithm, Genetic Programming, ...) to model various means of financial learning. We estimate interactions between trading strategies and market convergence dynamics in these adaptive cases.
+We implement an artificial stock market with adaptive trading strategies: an evolutionary market ecology. On a simplified market with assets and cash, we apply various learning algorithms (imitation, Genetic Algorithm, Genetic Programming, ...) to model various means of financial learning. 
 
-## How to use
+## Credits and funding
 
-First, to obtain the libraries we need, run ```setup.py```.
-
-## Credits
-
-Code developed by Aymeric Vié wth support from Maarten Scholl and Louis Vié. This research has been supported by the EPSRC Centre for Doctoral Training in Mathematics of Random Systems: Analysis, Modelling and Simulation (EP/S023925/1)
+Code developed by Aymeric Vié with support from Doyne Farmer, Maarten Scholl and Louis Vié. This research has been supported by the EPSRC Centre for Doctoral Training in Mathematics of Random Systems: Analysis, Modelling and Simulation (EP/S023925/1)
 
 ## Documentation
 
-### Code
+### How to use
 
-#### main.py
+First, to install the libraries we need, run ```setup.py```.
+
+### Code achitecture 
+
+```main.py``` is the principal piece of the simulation. It initialises the simulation and describes the actions executed at each period.
+
+1. Initialisation
+* ```generation``` is the current time period of the model.
+* ```CurrentPrice``` is the current price
+* ```dividend``` is the current dividend
+* ```spoils``` represents the asset shares under liquidation
+* ```results``` is a numpy array that will contain our results
+* ```price_history``` and ```dividend_history``` contain histories of price and dividends
+* ```replace``` is a dummy variable specifying whether we need to apply hypermutation
+
+2. Population creation
+
 
 * Compute trading signal values
 * Determine excess demand functions
