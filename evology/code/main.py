@@ -81,30 +81,13 @@ def main(
             ToLiquidate,
             np.random.normal(0.0, 1.0)
         )
-
-
-        # compute wealth profit reutnrs, age
         pop, replace = bsc.UpdateWealthProfitAge(pop, CurrentPrice)
 
-        # (
-        #     wealth_tracker,
-        #     wealth_tracker_noinv,
-        #     returns_tracker
-        # ) = data.UpdateWealthReturnTracking(
-        #     wealth_tracker,
-        #     wealth_tracker_noinv,
-        #     returns_tracker,
-        #     pop,
-        #     generation
-        # )
-
-        (pop, AvgT, PropSignif, HighestT, AvgAbsT) = ProfitDrivenInvestment(
-            pop,
-            generation,
-            # returns_tracker,
-            InvestmentHorizon,
-            ReinvestmentRate,
+        # Investment
+        (pop, AvgT, PropSignif, HighestT, AvgAbsT) = iv.Profit_Investment(
+        pop, ReinvestmentRate, InvestmentHorizon, generation
         )
+
 
         results = data.record_results(
             results,

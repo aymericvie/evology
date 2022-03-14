@@ -45,7 +45,7 @@ cpdef calculate_edv(
     list pop,
     double price,
 ):
-    total_edv = 0.0
+    cdef double total_edv = 0.0
     cdef Individual ind
     for ind in pop:
         ind.edv = edf(ind, price)

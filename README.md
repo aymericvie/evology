@@ -57,8 +57,11 @@ We identify the clearing price, i.e. the price that is the root of the aggregate
 
 6. Market activity
 Here, the funds operate in the market. First, the excess demands are executed at the clearing price. Second, the earnings of the funds are applied: dividends and interest rate on cash. The margin and debt of the funds are updated.
+After all market activity is finished, we compute funds' wealth, profits and update their age.
 
-TODO: fully cythonize what's possible
+7. Profit driven investment
+An external investor evaluates the profits of each fund and makes investment decisions accordingly.
+
 
 
 

@@ -209,50 +209,9 @@ def marketClearing(pop, current_price, price_history, spoils, solver):
     price_history.append(current_price)
     pop, mismatch = bs.calculate_edv(pop, current_price)
 
-    # print([current_price, mismatch])
-    # for ind in pop:
-    #    print([ind.type, ind.tsv, ind.edf(ind, current_price), ind.edf(ind, 1)])
-
-    # func2 = np.vectorize(ed_functions)
-    # x = np.linspace(0,5*current_price,1000)
-    # y = func2(0, x)
-    # fig = plt.figure()
-    # ax = fig.add_subplot(1, 1, 1)
-    # plt.plot(x,y, 'r')
-    # plt.ylim(0,2*mismatch**2)
-    # plt.show()
-
     return pop, mismatch, current_price, price_history, ToLiquidate
 
 
 
-# def ApplyReinvestment(
-#    pop, ReinvestmentRate,
-# ):
-#    pop = bs.ApplyReinvestment(pop, ReinvestmentRate)
-#    return pop
 
 
-def ApplyInvestment(
-    pop, generation, returns_tracker, InvestmentHorizon, TestThreshold, ReinvestmentRate
-):
-    pop, AvgT, PropSignif, HighestT, AvgAbsT = iv.Profit_Investment(
-        pop,
-        ReinvestmentRate,
-        returns_tracker,
-        InvestmentHorizon,
-        TestThreshold,
-        generation,
-    )
-    return pop, AvgT, PropSignif, HighestT, AvgAbsT
-
-
-def ProfitDrivenInvestment(
-    pop, generation, InvestmentHorizon, ReinvestmentRate
-):
-    if ReinvestmentRate < 1:
-        raise ValueError("F<1 does not make financial sense.")
-    pop, AvgT, PropSignif, HighestT, AvgAbsT = iv.Profit_Investment(
-        pop, ReinvestmentRate, InvestmentHorizon, generation
-    )
-    return pop, AvgT, PropSignif, HighestT, AvgAbsT
