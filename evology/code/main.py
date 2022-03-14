@@ -17,9 +17,9 @@ def main(
     # Initialise important variables and dataframe to store results
     generation, CurrentPrice, dividend, spoils = 0, InitialPrice, INITIAL_DIVIDEND, 0
     results = np.zeros((MAX_GENERATIONS - data.Barr, data.variables))
-    wealth_tracker= np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
-    wealth_tracker_noinv = np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
-    returns_tracker= np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
+    #wealth_tracker= np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
+    #wealth_tracker_noinv = np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
+    #returns_tracker= np.zeros((MAX_GENERATIONS, POPULATION_SIZE))
     price_history, dividend_history = [], []
     TestThreshold = stdtrit(InvestmentHorizon, 0.95)
     replace = 0
@@ -96,19 +96,21 @@ def main(
             CurrentPrice,
         )
 
-        # Investment
-        (
-            wealth_tracker, 
-            wealth_tracker_noinv,
-            returns_tracker
-        ) = data.UpdateWealthReturnTracking(
-            wealth_tracker, 
-            wealth_tracker_noinv,
-            returns_tracker, 
-            pop, 
-            generation
-        )
+        
+        # (
+        #     wealth_tracker, 
+        #     wealth_tracker_noinv,
+        #     returns_tracker
+        # ) = data.UpdateWealthReturnTracking(
+        #     wealth_tracker, 
+        #     wealth_tracker_noinv,
+        #     returns_tracker, 
+        #     pop, 
+        #     generation
+        # )
 
+        
+    
         (
             pop, 
             AvgT, 
@@ -118,7 +120,7 @@ def main(
         ) = ProfitDrivenInvestment(
             pop, 
             generation, 
-            returns_tracker, 
+            #returns_tracker, 
             InvestmentHorizon, 
             TestThreshold,
             ReinvestmentRate
