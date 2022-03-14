@@ -6,15 +6,7 @@ from parameters import *
 import cythonized
 from cythonized import calculate_edv
 
-def NoiseProcess(pop):
-    randoms = np.random.normal(0, 1, len(pop))
-    for i, ind in enumerate(pop):
-        if ind.type == "nt":
-            # Calculate process value
-            X = ind.process
-            ind.process = abs(X + RHO_NT * (MU_NT - X) + GAMMA_NT * randoms[i])
-            #ind.tsv = math.log2(ind.process * ind[0]) - math.log2(CurrentPrice)
-    return pop
+
 
 
 def clear_debt(pop, price):

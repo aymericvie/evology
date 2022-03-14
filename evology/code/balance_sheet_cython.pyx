@@ -1,6 +1,7 @@
 #cython: boundscheck=False, wraparound=False, initializedcheck=False, cdivision=True
 cimport cythonized
 from libc.math cimport log2
+from parameters import *
 import numpy as np
 cdef float NAN
 NAN = float("nan")
@@ -26,7 +27,15 @@ cpdef UpdateWealthProfitAge(list pop, double current_price):
         
     return pop, replace
 
-
+def NoiseProcess(pop):
+    randoms = np.random.normal(0, 1, len(pop))
+    for i, ind in enumerate(pop):
+        if ind.type == "nt":
+            # Calculate process value
+            X = ind.process
+            ind.process = abs(X + RHO_NT * (MU_NT - X) + GAMMA_NT * randoms[i])
+            #ind.tsv = math.log2(ind.process * ind[0]) - math.log2(CurrentPrice)
+    return pop
 
 cpdef CalculateTSV(list pop, list price_history, list dividend_history, double CurrentPrice):
     cdef cythonized.Individual ind
@@ -49,4 +58,65 @@ cpdef CalculateTSV(list pop, list price_history, list dividend_history, double C
                 
             else:
                 ind.tsv = 0
+    return pop
+
+cpdef UpdateFval(list pop, double dividend):
+
+    cdef double estimated_daily_div_growth
+    cdef double numerator
+    cdef double denuminator
+    cdef double fval
+    cdef cythonized.Individual ind
+
+    estimated_daily_div_growth = (
+        (1 + DIVIDEND_GROWTH_RATE_G) ** (1 / TRADING_DAYS)
+    ) - 1
+    numerator = (1 + estimated_daily_div_growth) * dividend
+    for ind in pop:
+        if ind.type == "vi":
+            denuminator = (
+                1.0 + (AnnualInterestRate + ind.strategy) - DIVIDEND_GROWTH_RATE_G
+            ) ** (1.0 / 252.0) - 1.0
+            fval = numerator / denuminator
+            ind[0] = fval # TODO This might be something to change later on
+            if fval < 0:
+                warnings.warn("Negative fval found in update_fval.")
+            if fval == np.inf:
+                raise ValueError('Infinite FVal.')
+    return pop
+
+def DetermineEDF(pop):
+    for ind in pop:
+        if ind.type == "tf":
+            ind.edf = (
+                lambda ind, p: (LeverageTF * ind.wealth / p)
+                * math.tanh(SCALE_TF * ind.tsv)
+                - ind.asset
+            )
+        #elif ind.type == "vi":
+        #    ind.edf = (
+        #        lambda ind, p: (parameters.LeverageVI * ind.wealth / p)
+        #        * math.tanh((5 / ind[0]) * (ind[0] - p))
+        #        - ind.asset
+        #    )
+        elif ind.type == "vi":
+            ind.edf = (
+                lambda ind, p: (LeverageVI * ind.wealth / p)
+                * math.tanh(SCALE_VI * ind.tsv)
+                - ind.asset
+            )
+        #elif ind.type == "nt":
+        #    ind.edf = (
+        #        lambda ind, p: (parameters.LeverageNT * ind.wealth / p)
+        #        * math.tanh((5 / (ind[0] * ind.process)) * (ind[0] * ind.process - p))
+        #        - ind.asset
+        #    )
+        elif ind.type == "nt":
+            ind.edf = (
+                lambda ind, p: (LeverageNT * ind.wealth / p)
+                * math.tanh(SCALE_NT * ind.tsv)
+                - ind.asset
+            )
+        else:
+            raise Exception(f"Unexpected ind type: {ind.type}")
     return pop

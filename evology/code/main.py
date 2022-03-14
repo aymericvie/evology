@@ -49,21 +49,16 @@ def main(
             MUTATION_RATE,
             InvestmentHorizon,
         )
-
-        # Calculate wealth and previous wealth
-        # waiting on succesful test to confirm deletion
+        
+        # Market decisions 
         bs.calculate_wealth(pop, CurrentPrice)
         bs.UpdatePrevWealth(pop)
-
-        # Market decisions (tsv, proc, edf)
-        #pop = decision_updates(pop, price_history, dividend_history, CurrentPrice)
-        #randoms = list(np.random.normal(0, 1, len(pop)))
-        # print(type(randoms))
-        pop = bs.NoiseProcess(pop)
+        pop = bsc.NoiseProcess(pop)
+        pop = bsc.UpdateFval(pop, dividend)
         pop = bsc.CalculateTSV(pop, price_history, dividend_history, CurrentPrice)
+        pop = bsc.DetermineEDF(pop)
 
 
-        ''' need also more things! EDF and UpdateFVAL'''
         # Market clearing
         pop, mismatch, CurrentPrice, price_history, ToLiquidate = marketClearing(
             pop, CurrentPrice, price_history, spoils, solver
