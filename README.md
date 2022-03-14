@@ -52,6 +52,9 @@ First, funds' fitness is computed as an exponential moving average of profits. N
 The funds observe market variables (price, fundamental value, random process) to decide their trading signal values for the period. 
 First, we recompute fund wealth to use its latest values. Second, we update the fundamental value observed by the value investors. Then, we compute the noise process values for noise traders. We can then compute the trading signal values (TSV) of all agents and update their individual excess demand functions (EDF).
 
+5. Market clearing
+We identify the clearing price, i.e. the price that is the root of the aggregate excess demand function; or alternatively the price that minimises the absolute value of the aggregate excess demand function. Various solver options are available and tested to find the faster one. The ESL solver currently appears faster.
+
 
 * Compute trading signal values
 * Determine excess demand functions

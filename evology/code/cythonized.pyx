@@ -35,7 +35,7 @@ cpdef big_edf(
     cdef double result = ToLiquidate
     cdef Individual ind
     cdef long t
-    cdef double zero
+    #cdef double zero
     for ind in pop:
         result += edf(ind, price)
     return result

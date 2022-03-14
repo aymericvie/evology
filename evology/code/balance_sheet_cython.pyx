@@ -104,31 +104,19 @@ def DetermineEDF(pop):
         if t==2:
             ind.edf = (
                 lambda ind, p: (LeverageTF * ind.wealth / p)
-                * math.tanh(SCALE_TF * ind.tsv)
+                * math.tanh(SCALE_TF * ind.tsv + 0.5)
                 - ind.asset
             )
-        #elif ind.type == "vi":
-        #    ind.edf = (
-        #        lambda ind, p: (parameters.LeverageVI * ind.wealth / p)
-        #        * math.tanh((5 / ind[0]) * (ind[0] - p))
-        #        - ind.asset
-        #    )
         elif t==1:
             ind.edf = (
                 lambda ind, p: (LeverageVI * ind.wealth / p)
-                * math.tanh(SCALE_VI * ind.tsv)
+                * math.tanh(SCALE_VI * ind.tsv + 0.5)
                 - ind.asset
             )
-        #elif ind.type == "nt":
-        #    ind.edf = (
-        #        lambda ind, p: (parameters.LeverageNT * ind.wealth / p)
-        #        * math.tanh((5 / (ind[0] * ind.process)) * (ind[0] * ind.process - p))
-        #        - ind.asset
-        #    )
         elif t==0:
             ind.edf = (
                 lambda ind, p: (LeverageNT * ind.wealth / p)
-                * math.tanh(SCALE_NT * ind.tsv)
+                * math.tanh(SCALE_NT * ind.tsv + 0.5)
                 - ind.asset
             )
         else:

@@ -49,7 +49,7 @@ def main(
             MUTATION_RATE,
             InvestmentHorizon,
         )
-        
+
         # Market decisions 
         bs.calculate_wealth(pop, CurrentPrice)
         bs.UpdatePrevWealth(pop)
@@ -57,7 +57,6 @@ def main(
         pop = bsc.UpdateFval(pop, dividend)
         pop = bsc.CalculateTSV(pop, price_history, dividend_history, CurrentPrice)
         pop = bsc.DetermineEDF(pop)
-
 
         # Market clearing
         pop, mismatch, CurrentPrice, price_history, ToLiquidate = marketClearing(

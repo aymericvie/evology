@@ -54,7 +54,7 @@ print(wealth_coordinates)
 df, pop = run(
     1000,
     0,
-    1000,
+    10000,
     "esl.true",
     wealth_coordinates,
     tqdm_display=False,
