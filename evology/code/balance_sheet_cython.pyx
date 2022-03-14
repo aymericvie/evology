@@ -41,9 +41,12 @@ cpdef CalculateTSV(list pop, list price_history, list dividend_history, double C
         else: # ind.type == "tf
             # Calculate TSV
             if len(price_history) >= ind[0]:
-                ind.tsv =  log2(price_history[-1]) - log2(
-                    price_history[-ind[0]]
-                )
+                #print(price_history)
+                #print(price_history[0])
+                #print(price_history[-1])
+                #print(type(price_history[-1]))
+                ind.tsv =  log2(CurrentPrice / price_history[-ind[0]])
+                
             else:
                 ind.tsv = 0
     return pop

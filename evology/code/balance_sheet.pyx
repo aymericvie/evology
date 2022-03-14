@@ -79,7 +79,7 @@ def DetermineTsvProc(pop, price_history, CurrentPrice):
             #    ind.tsv = np.random.normal(0, 0.01)
         elif ind.type == "nt":
             #print(ind.process)
-            ind.process = abs(ind.process + parameters.RHO_NT * (parameters.MU_NT - ind.process) + parameters.GAMMA_NT * randoms[count] * ind.process)
+            ind.process = abs(ind.process + RHO_NT * (MU_NT - ind.process) + GAMMA_NT * randoms[count] * ind.process)
                 
             #)
             #print(ind.process)
@@ -95,17 +95,17 @@ def DetermineTsvProc(pop, price_history, CurrentPrice):
 
 def UpdateFval(pop, dividend_history):
     estimated_daily_div_growth = (
-        (1 + parameters.DIVIDEND_GROWTH_RATE_G) ** (1 / parameters.TRADING_DAYS)
+        (1 + DIVIDEND_GROWTH_RATE_G) ** (1 / TRADING_DAYS)
     ) - 1
 
     if len(dividend_history) >= 1:
         numerator = (1 + estimated_daily_div_growth) * dividend_history[-1]
     elif len(dividend_history) < 1:
-        numerator = (1 + estimated_daily_div_growth) * parameters.INITIAL_DIVIDEND
+        numerator = (1 + estimated_daily_div_growth) * INITIAL_DIVIDEND
 
     for ind in pop:
         denuminator = (
-            1 + (parameters.AnnualInterestRate + ind.strategy) - parameters.DIVIDEND_GROWTH_RATE_G
+            1 + (AnnualInterestRate + ind.strategy) - DIVIDEND_GROWTH_RATE_G
         ) ** (1 / 252) - 1
         fval = numerator / denuminator
 
@@ -121,8 +121,8 @@ def DetermineEDF(pop):
     for ind in pop:
         if ind.type == "tf":
             ind.edf = (
-                lambda ind, p: (parameters.LeverageTF * ind.wealth / p)
-                * math.tanh(parameters.SCALE_TF * ind.tsv)
+                lambda ind, p: (LeverageTF * ind.wealth / p)
+                * math.tanh(SCALE_TF * ind.tsv)
                 - ind.asset
             )
         #elif ind.type == "vi":
@@ -133,8 +133,8 @@ def DetermineEDF(pop):
         #    )
         elif ind.type == "vi":
             ind.edf = (
-                lambda ind, p: (parameters.LeverageVI * ind.wealth / p)
-                * math.tanh(parameters.SCALE_VI * ind.tsv)
+                lambda ind, p: (LeverageVI * ind.wealth / p)
+                * math.tanh(SCALE_VI * ind.tsv)
                 - ind.asset
             )
         #elif ind.type == "nt":
@@ -145,8 +145,8 @@ def DetermineEDF(pop):
         #    )
         elif ind.type == "nt":
             ind.edf = (
-                lambda ind, p: (parameters.LeverageNT * ind.wealth / p)
-                * math.tanh(parameters.SCALE_NT * ind.tsv)
+                lambda ind, p: (LeverageNT * ind.wealth / p)
+                * math.tanh(SCALE_NT * ind.tsv)
                 - ind.asset
             )
         else:
@@ -245,11 +245,11 @@ def agg_ed(pop, spoils):
     ToLiquidate = 0
 
     if spoils > 0:
-        ToLiquidate = -min(spoils, parameters.LIQUIDATION_ORDER_SIZE)
+        ToLiquidate = -min(spoils, LIQUIDATION_ORDER_SIZE)
     elif spoils == 0:
         ToLiquidate = 0
     elif spoils < 0:
-        ToLiquidate = min(abs(spoils), parameters.LIQUIDATION_ORDER_SIZE)
+        ToLiquidate = min(abs(spoils), LIQUIDATION_ORDER_SIZE)
 
     array_pop = convert_to_array(pop)
 
@@ -270,11 +270,11 @@ def agg_ed_esl(pop, spoils):
     ToLiquidate = 0
 
     if spoils > 0:
-        ToLiquidate = -min(spoils, parameters.LIQUIDATION_ORDER_SIZE)
+        ToLiquidate = -min(spoils, LIQUIDATION_ORDER_SIZE)
     elif spoils == 0:
         ToLiquidate = 0
     elif spoils < 0:
-        ToLiquidate = min(abs(spoils), parameters.LIQUIDATION_ORDER_SIZE)
+        ToLiquidate = min(abs(spoils), LIQUIDATION_ORDER_SIZE)
 
     array_pop = convert_to_array(pop)
 
