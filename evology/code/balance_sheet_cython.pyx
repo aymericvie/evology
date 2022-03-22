@@ -43,8 +43,8 @@ cpdef UpdateWealthProfitAge(list pop, double current_price):
 def NoiseProcess(pop):
     randoms = np.random.normal(0, 1, len(pop))
     for i, ind in enumerate(pop):
-        t = ind.type_as_int
-        if t == 0:
+#        t = ind.type_as_int
+        if ind.type_as_int == 0:
             # Calculate process value
             X = ind.process
             ind.process = abs(X + RHO_NT * (MU_NT - X) + GAMMA_NT * randoms[i])

@@ -16,16 +16,10 @@ cdef class Individual(list):
     cdef public double investor_flow
     cdef public double investment_ratio
     cdef public double prev_wealth
-    cdef public double prev_wealth_noinv
     cdef public double DailyReturn
-    cdef public double DailyReturn_noinv
-    cdef public double leverage
     cdef public object fitness
     cdef public object edf
     cdef public int age
-    cdef public double sharpe
-    cdef public double tvalue_cpr
-    cdef public double tvalue
     cdef public double profit_internal
     cdef public double val
     cdef public double val_net

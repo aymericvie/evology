@@ -91,8 +91,5 @@ cdef class Individual(list):
         self.prev_wealth = 0.0
         self.DailyReturn = 0.0
         # This needs to be overriden as it is not always 0!
-        self.leverage = 0.0
         self.fitness = creator.fitness_strategy()
         self.edf = None
-        self.sharpe = 0.0
-        self.tvalue_cpr = 0.0

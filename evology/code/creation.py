@@ -36,15 +36,15 @@ def IndCreation(strat):
     ind = toolbox.gen_ind()
     if strat == "nt":
         ind.type = "nt"
-        ind.leverage = LeverageNT
+        #ind.leverage = LeverageNT
         ind.type_as_int = cythonized.convert_ind_type_to_num("nt")
     if strat == "vi":
         ind.type = "vi"
-        ind.leverage = LeverageVI
+        #ind.leverage = LeverageVI
         ind.type_as_int = cythonized.convert_ind_type_to_num("vi")
     if strat == "tf":
         ind.type = "tf"
-        ind.leverage = LeverageTF
+        #ind.leverage = LeverageTF
         ind.type_as_int = cythonized.convert_ind_type_to_num("tf")
     ind.process = 1.0
     return ind

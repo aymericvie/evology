@@ -29,7 +29,6 @@ def CreateHalfFund(pop, MaxFund):
     half.process = pop[MaxFund].process
     half.ema = pop[MaxFund].ema
     half.fitness = pop[MaxFund].fitness
-    half[0] = pop[MaxFund][0]
     half.age = -1.0
 
     # Copy fund j characteristics to be divided

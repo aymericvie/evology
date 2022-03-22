@@ -243,7 +243,7 @@ def ResultsProcess(list pop, double spoils, double price):
     NTcount, VIcount, TFcount = 0.0, 0.0, 0.0
     MeanNT, MeanVI, MeanTF = 0.0, 0.0, 0.0
     WSNT, WSVI, WSTF = 0.0, 0.0, 0.0
-    NTcash, NTlend, NTloan, NTnav, NTpnl, NTsignal, NTstocks, NTreturn, NTreturn_noinv = (
+    NTcash, NTlend, NTloan, NTnav, NTpnl, NTsignal, NTstocks, NTreturn = (
         0.0,
         0.0,
         0.0,
@@ -251,10 +251,9 @@ def ResultsProcess(list pop, double spoils, double price):
         0.0,
         0.0,
         0.0,
-        0.0, #float("nan"),
         0.0, #float("nan"),
     )
-    VIcash, VIlend, VIloan, VInav, VIpnl, VIsignal, VIstocks, VIreturn, VIreturn_noinv = (
+    VIcash, VIlend, VIloan, VInav, VIpnl, VIsignal, VIstocks, VIreturn = (
         0.0,
         0.0,
         0.0,
@@ -262,10 +261,9 @@ def ResultsProcess(list pop, double spoils, double price):
         0.0,
         0.0,
         0.0,
-        0.0, #float("nan"),
         0.0, #float("nan"),
     )
-    TFcash, TFlend, TFloan, TFnav, TFpnl, TFsignal, TFstocks, TFreturn, TFreturn_noinv = (
+    TFcash, TFlend, TFloan, TFnav, TFpnl, TFsignal, TFstocks, TFreturn = (
         0.0,
         0.0,
         0.0,
@@ -274,7 +272,6 @@ def ResultsProcess(list pop, double spoils, double price):
         0.0,
         0.0,
         0.0, #float("nan"),
-        0.0, # float("nan"),
     )
     NT_process = 0.0
 
@@ -307,8 +304,8 @@ def ResultsProcess(list pop, double spoils, double price):
             NTstocks += price * ind.asset
             if ind.prev_wealth != 0:
                 NTreturn += ind.DailyReturn
-            if ind.prev_wealth_noinv != 0:
-                NTreturn_noinv += ind.DailyReturn_noinv
+            #if ind.prev_wealth_noinv != 0:
+            #    NTreturn_noinv += ind.DailyReturn_noinv
             NTflows += ind.investment_ratio
             NT_process += ind.process
 
@@ -326,8 +323,6 @@ def ResultsProcess(list pop, double spoils, double price):
             VIstocks += price * ind.asset
             if ind.prev_wealth != 0:
                 VIreturn += ind.DailyReturn
-            if ind.prev_wealth_noinv != 0:
-                VIreturn_noinv += ind.DailyReturn_noinv
             VIflows += ind.investment_ratio
 
         elif ind.type == "tf":
@@ -344,8 +339,6 @@ def ResultsProcess(list pop, double spoils, double price):
             TFstocks += price * ind.asset
             if ind.prev_wealth != 0:
                 TFreturn += ind.DailyReturn
-            if ind.prev_wealth_noinv != 0:
-                TFreturn_noinv += ind.DailyReturn_noinv
             TFflows += ind.investment_ratio
 
     if NTcount != 0:
@@ -356,7 +349,7 @@ def ResultsProcess(list pop, double spoils, double price):
         NTpnl = NTpnl / NTcount
         NTstocks = NTstocks / NTcount
         NTreturn = NTreturn / NTcount
-        NTreturn_noinv = NTreturn_noinv / NTcount
+        #NTreturn_noinv = NTreturn_noinv / NTcount
         NTsignal = NTsignal / NTcount
         MeanNT = MeanNT / NTcount
         NT_process = NT_process / NTcount
@@ -369,7 +362,7 @@ def ResultsProcess(list pop, double spoils, double price):
         VIpnl = VIpnl / VIcount
         VIstocks = VIstocks / VIcount
         VIreturn = VIreturn / VIcount
-        VIreturnno_inv = VIreturn_noinv / VIcount
+        #VIreturnno_inv = VIreturn_noinv / VIcount
         MeanVI = MeanVI / VIcount
 
     if TFcount != 0:
@@ -380,7 +373,7 @@ def ResultsProcess(list pop, double spoils, double price):
         TFpnl = TFpnl / TFcount
         TFstocks = TFstocks / TFcount
         TFreturn = TFreturn / TFcount
-        TFreturn_noinv = TFreturn_noinv / TFcount
+        #TFreturn_noinv = TFreturn_noinv / TFcount
         TFsignal = TFsignal / TFcount
         MeanTF = MeanTF / TFcount
 
@@ -425,7 +418,7 @@ def ResultsProcess(list pop, double spoils, double price):
         NTsignal,
         NTstocks,
         NTreturn,
-        NTreturn_noinv,
+        0.0, #NTreturn_noinv,
         VIcash,
         VIlend,
         VIloan,
@@ -434,7 +427,7 @@ def ResultsProcess(list pop, double spoils, double price):
         VIsignal,
         VIstocks,
         VIreturn,
-        VIreturn_noinv,
+        0.0,
         TFcash,
         TFlend,
         TFloan,
@@ -443,7 +436,7 @@ def ResultsProcess(list pop, double spoils, double price):
         TFsignal,
         TFstocks,
         TFreturn,
-        TFreturn_noinv,
+        0.0,
         NTflows,
         VIflows,
         TFflows,
