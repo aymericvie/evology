@@ -55,7 +55,7 @@ print(wealth_coordinates)
 df, pop = run(
     1000,
     0,
-    10000,
+    100000,
     "esl.true",
     "extended",
     wealth_coordinates,
