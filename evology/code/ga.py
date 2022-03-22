@@ -253,7 +253,7 @@ def strategy_evolution(space, pop, PROBA_SELECTION, MUTATION_RATE, wealth_coordi
                         type_num = cythonized.convert_ind_type_to_num(winner.type)
                         pop[i].type_as_int = type_num
                         pop[i][0] = winner[0]
-                        pop[i].leverage = winner.leverage
+                        # pop[i].leverage = winner.leverage
 
             # Mutation
             if MUTATION_RATE > 0:
