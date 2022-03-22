@@ -2,23 +2,23 @@
 
 from balance_sheet import count_long_assets, count_short_assets, update_margin, clear_debt
 import numpy as np
-import parameters
+from parameters import div_atc, G, div_vol, interest_day
 cimport cythonized
 
 
 cpdef draw_dividend(double dividend, double random_dividend):
-    DIVIDEND_GROWTH_RATE = ((1.0 + parameters.G) ** (1.0 / 252.0)) - 1.0
+    DIVIDEND_GROWTH_RATE = ((1.0 + G) ** (1.0 / 252.0)) - 1.0
     #if len(random_dividend_history) > 1:
     random_dividend = (
-        1.0 - parameters.div_atc ** 2.0
+        1.0 - div_atc ** 2.0
     #) * random_dividend + parameters.div_atc * random_dividend_history[
     #    - 1.0 - 1.0
-    ) * random_dividend + parameters.div_atc * random_dividend
+    ) * random_dividend + div_atc * random_dividend
         #]
     dividend = abs(
         dividend
         + DIVIDEND_GROWTH_RATE * dividend
-        + parameters.div_vol * dividend * random_dividend
+        + div_vol * dividend * random_dividend
     )
     return dividend, random_dividend
 
@@ -32,7 +32,7 @@ cpdef earnings(list pop, double prev_dividend, double random_dividend):
 
     for ind in pop:
         div_asset = ind.asset * dividend  # Determine gain from dividends
-        interest_cash = ind.cash * parameters.interest_day  # Determine gain from interest
+        interest_cash = ind.cash * interest_day  # Determine gain from interest
         ind.cash += div_asset + interest_cash
     return pop, dividend, random_dividend
 
