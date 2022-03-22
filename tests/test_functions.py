@@ -86,6 +86,33 @@ def test_nolearning(repetitions, time, agents):
     went_smoothly = nolearning_runs(repetitions, time, agents)
     assert went_smoothly == True
 
+def nolearning_runs_ext(repetitions, time, agents):
+    went_smoothly = True
+    i = 0
+    while i < repetitions:
+        try: 
+            seed = random.randint(0,100)
+            f = random.randint(1,3)
+            np.random.seed(seed)
+            wealth_coordinates = np.random.dirichlet(np.ones(3),size=1)[0].tolist()
+            print(wealth_coordinates)
+            df,pop = main('extended', solver, wealth_coordinates, agents, time, 0, 0, ReinvestmentRate = f, InvestmentHorizon = 252, tqdm_display=True, reset_wealth = False)
+
+        except Exception as e: 
+            went_smoothly = False
+            print('Seed ' + str(seed))
+            print('F ' + str(f))
+            print('Process ' + str(i) + ' encoutered an exception.')
+            print(str(e))
+            traceback.print_exc()
+            break
+        i += 1
+    return went_smoothly
+
+
+def test_nolearning_ext(repetitions, time, agents):
+    went_smoothly = nolearning_runs_ext(repetitions, time, agents)
+    assert went_smoothly == True
 
 def nolearning_runs_reset(repetitions, time, agents):
 

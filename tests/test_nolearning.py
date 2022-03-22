@@ -12,4 +12,8 @@ print('Testing for 10 agents, 25,000 periods with 5 repetitions...')
 test_nolearning(5, 25000, 10)
 print('...Succesful!')
 
+print('[Extended] Testing for 10 agents, 25,000 periods with 5 repetitions...')
+test_nolearning_ext(5, 25000, 10)
+print('...Succesful!')
+
 
