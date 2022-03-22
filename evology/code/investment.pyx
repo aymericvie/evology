@@ -4,7 +4,7 @@ cimport cythonized
 import numpy as np
 import time 
 from libc.math cimport isnan, sqrt, exp
-from parameters import INTEREST_RATE, SHIELD_DURATION, ShieldResults, ShieldInvestment
+from parameters import SHIELD_DURATION, ShieldResults, ShieldInvestment
 cdef float NAN
 NAN = float("nan")
 

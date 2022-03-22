@@ -33,8 +33,8 @@ RefCash = 3 * 50_000_000
 RefAssets = 3 * 500_000
 RefInvestmentSupply = 10_000_000 / (21)
 
-AnnualInterestRate = 0.01
-INTEREST_RATE = AnnualInterestRate / TRADING_DAYS
+# AnnualInterestRate = 0.01
+# INTEREST_RATE = AnnualInterestRate / TRADING_DAYS
 EMA_HORIZON = 2 * TRADING_DAYS
 
 interest_year = 0.01

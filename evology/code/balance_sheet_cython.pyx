@@ -1,7 +1,8 @@
 #cython: boundscheck=False, wraparound=False, initializedcheck=False, cdivision=True
 cimport cythonized
-from libc.math cimport log2
-from parameters import *
+from libc.math cimport log2, tanh
+from parameters import G, GAMMA_NT, RHO_NT, MU_NT, LeverageNT, LeverageVI, LeverageTF, SCALE_NT, SCALE_TF, SCALE_VI, interest_year
+import warnings
 import numpy as np
 cdef float NAN
 NAN = float("nan")
@@ -81,14 +82,14 @@ cpdef UpdateFval(list pop, double dividend):
     cdef cythonized.Individual ind
 
     estimated_daily_div_growth = (
-        (1 + DIVIDEND_GROWTH_RATE_G) ** (1 / TRADING_DAYS)
-    ) - 1
+        (1.0 + G) ** (1.0 / 252.0)
+    ) - 1.0
     numerator = (1 + estimated_daily_div_growth) * dividend
     for ind in pop:
         t = ind.type_as_int
         if t==1:
             denuminator = (
-                1.0 + (AnnualInterestRate + ind.strategy) - DIVIDEND_GROWTH_RATE_G
+                1.0 + (interest_year + ind.strategy) - G
             ) ** (1.0 / 252.0) - 1.0
             fval = numerator / denuminator
             ind[0] = fval # TODO This might be something to change later on
@@ -104,19 +105,19 @@ def DetermineEDF(pop):
         if t==2:
             ind.edf = (
                 lambda ind, p: (LeverageTF * ind.wealth / p)
-                * math.tanh(SCALE_TF * ind.tsv + 0.5)
+                * tanh(SCALE_TF * ind.tsv + 0.5)
                 - ind.asset
             )
         elif t==1:
             ind.edf = (
                 lambda ind, p: (LeverageVI * ind.wealth / p)
-                * math.tanh(SCALE_VI * ind.tsv + 0.5)
+                * tanh(SCALE_VI * ind.tsv + 0.5)
                 - ind.asset
             )
         elif t==0:
             ind.edf = (
                 lambda ind, p: (LeverageNT * ind.wealth / p)
-                * math.tanh(SCALE_NT * ind.tsv + 0.5)
+                * tanh(SCALE_NT * ind.tsv + 0.5)
                 - ind.asset
             )
         else:
