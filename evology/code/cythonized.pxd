@@ -27,3 +27,5 @@ cdef class Individual(list):
     cdef public double tvalue_cpr
     cdef public double tvalue
     cdef public double profit_internal
+    cdef public double val
+    cdef public double val_net

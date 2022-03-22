@@ -133,6 +133,7 @@ def CreatePop(n, space, WealthCoords, CurrentPrice):
         if ind.type == "vi":
             ind.cash = PcVICash
             ind.asset = PcVIAsset
+            ind.val_net = (1.0 + (interest_year + ind.strategy) - G) ** (1.0 / 252.0) - 1.0
         if ind.type == "tf":
             ind.cash = PcTFCash
             ind.asset = PcTFAsset

@@ -11,14 +11,14 @@ cpdef clear_debt(list pop, double price):
     cdef cythonized.Individual ind
     for ind in pop:
         if ind.loan > 0:  # If the agent has outstanding debt:
-            if ind.cash >= ind.loan + 100 * price:  # If the agent has enough cash:
-                ind.loan = 0
+            if ind.cash >= ind.loan + 100.0 * price:  # If the agent has enough cash:
+                ind.loan = 0.0
                 ind.cash -= ind.loan
             if (
-                ind.cash < ind.loan + 100 * price
+                ind.cash < ind.loan + 100.0 * price
             ):  # If the agent does not have enough cash:
-                ind.loan -= ind.cash - 100 * price
-                ind.cash = 100 * price
+                ind.loan -= ind.cash - 100.0 * price
+                ind.cash = 100.0 * price
     return pop
 
 
@@ -26,13 +26,13 @@ cpdef update_margin(list pop, double current_price):
     cdef cythonized.Individual ind
     for ind in pop:
         ind.cash += ind.margin
-        ind.margin = 0
-        if ind.asset < 0:
+        ind.margin = 0.0
+        if ind.asset < 0.0:
             ind.margin += ind.asset * current_price
             ind.cash -= ind.asset * current_price
-        if ind.cash < 0:
+        if ind.cash < 0.0:
             ind.loan += abs(ind.cash)
-            ind.cash = 0
+            ind.cash = 0.0
     return pop
 
 
@@ -46,105 +46,9 @@ def calculate_wealth(pop, current_price):
     replace = False
     for ind in pop:
         ind.wealth = ind.cash + ind.asset * current_price - ind.loan
-        if ind.wealth < 0:
+        if ind.wealth < 0.0:
             replace = True
     return pop, replace
-
-
-def DetermineTsvProc(pop, price_history, CurrentPrice):
-    # Pre-generate the random number once for all, to reduce Numpy calling
-    # overhead.
-    randoms = np.random.normal(0, 1, len(pop))
-    for count, ind in enumerate(pop):
-        if ind.type == "tf":
-            if len(price_history) >= ind[0]:
-                ind.tsv =  math.log2(price_history[-1]) - math.log2(
-                    price_history[-ind[0]]
-                )
-                # ind.tsv = price_history[-1] / price_history[-ind[0]]
-                
-                ### DIFFERENCE
-                #ind.tsv = 10 * price_history[-1] / max(0.0001, price_history[-ind[0]])
-            elif len(price_history) < ind[0]:
-                ind.tsv = 0
-            #if ind.tsv == 0:
-            #    ind.tsv = np.random.normal(0, 0.01)
-        elif ind.type == "nt":
-            #print(ind.process)
-            ind.process = abs(ind.process + RHO_NT * (MU_NT - ind.process) + GAMMA_NT * randoms[count] * ind.process)
-                
-            #)
-            #print(ind.process)
-            if ind.process < 0:
-                warnings.warn("Negative process value for NT")
-
-            #ind.tsv = math.log2(ind.process * ind[0]) - math.log2(CurrentPrice)
-            ind.tsv = (ind.process - 1) 
-        elif ind.type == "vi":
-            ind.tsv = math.log2(ind[0] / CurrentPrice)
-            #print([ind[0], CurrentPrice, ind.tsv])
-
-
-def UpdateFval(pop, dividend_history):
-    estimated_daily_div_growth = (
-        (1 + DIVIDEND_GROWTH_RATE_G) ** (1 / TRADING_DAYS)
-    ) - 1
-
-    if len(dividend_history) >= 1:
-        numerator = (1 + estimated_daily_div_growth) * dividend_history[-1]
-    elif len(dividend_history) < 1:
-        numerator = (1 + estimated_daily_div_growth) * INITIAL_DIVIDEND
-
-    for ind in pop:
-        denuminator = (
-            1 + (AnnualInterestRate + ind.strategy) - DIVIDEND_GROWTH_RATE_G
-        ) ** (1 / 252) - 1
-        fval = numerator / denuminator
-
-        if fval < 0:
-            warnings.warn("Negative fval found in update_fval.")
-
-        if ind.type == "vi" or ind.type == "nt":
-            ind[0] = fval
-    return pop
-
-
-def DetermineEDF(pop):
-    for ind in pop:
-        if ind.type == "tf":
-            ind.edf = (
-                lambda ind, p: (LeverageTF * ind.wealth / p)
-                * math.tanh(SCALE_TF * ind.tsv)
-                - ind.asset
-            )
-        #elif ind.type == "vi":
-        #    ind.edf = (
-        #        lambda ind, p: (parameters.LeverageVI * ind.wealth / p)
-        #        * math.tanh((5 / ind[0]) * (ind[0] - p))
-        #        - ind.asset
-        #    )
-        elif ind.type == "vi":
-            ind.edf = (
-                lambda ind, p: (LeverageVI * ind.wealth / p)
-                * math.tanh(SCALE_VI * ind.tsv)
-                - ind.asset
-            )
-        #elif ind.type == "nt":
-        #    ind.edf = (
-        #        lambda ind, p: (parameters.LeverageNT * ind.wealth / p)
-        #        * math.tanh((5 / (ind[0] * ind.process)) * (ind[0] * ind.process - p))
-        #        - ind.asset
-        #    )
-        elif ind.type == "nt":
-            ind.edf = (
-                lambda ind, p: (LeverageNT * ind.wealth / p)
-                * math.tanh(SCALE_NT * ind.tsv)
-                - ind.asset
-            )
-        else:
-            raise Exception(f"Unexpected ind type: {ind.type}")
-    return pop
-
 
 def count_pop_long_assets(pop):
     count = 0

@@ -61,7 +61,7 @@ cpdef CalculateTSV(list pop, list price_history, list dividend_history, double C
             ind.tsv = (ind.process - 1) 
         elif t == 1:
             # Calculate TSV
-            ind.tsv = log2(ind[0] / CurrentPrice)
+            ind.tsv = log2(ind.val / CurrentPrice)
         else: # t==2
             # Calculate TSV
             if len(price_history) >= ind[0]:
@@ -79,22 +79,23 @@ cpdef UpdateFval(list pop, double dividend):
     cdef double estimated_daily_div_growth
     cdef double numerator
     cdef double denuminator
-    cdef double fval
+    #cdef double fval
     cdef cythonized.Individual ind
-
     
     numerator = (1 + G_day) * dividend
     for ind in pop:
         t = ind.type_as_int
         if t==1:
-            denuminator = (
-                1.0 + (interest_year + ind.strategy) - G
-            ) ** (1.0 / 252.0) - 1.0
-            fval = numerator / denuminator
-            ind[0] = fval # TODO This might be something to change later on
-            if fval < 0:
+            #denuminator = (
+            #    1.0 + (interest_year + ind.strategy) - G
+            #) ** (1.0 / 252.0) - 1.0
+            #fval = 
+            #ind.val = numerator / denuminator
+            ind.val = numerator / ind.val_net # TODO: Val_net only changes when val changes
+            #ind[0] = fval # TODO This might be something to change later on
+            if ind.val < 0:
                 warnings.warn("Negative fval found in update_fval.")
-            if fval == np.inf:
+            if ind.val == np.inf:
                 raise ValueError('Infinite FVal.')
     return pop
 
