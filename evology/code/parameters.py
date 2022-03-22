@@ -27,7 +27,6 @@ RHO_NT = 0.00045832561
 """ MARKET PARAMETERS """
 TRADING_DAYS = 252
 InitialPrice = 100
-CONSUMPTION_RATE = 0  # Inactive now
 
 RefLoan = 0
 RefCash = 3 * 50_000_000
@@ -38,12 +37,18 @@ AnnualInterestRate = 0.01
 INTEREST_RATE = AnnualInterestRate / TRADING_DAYS
 EMA_HORIZON = 2 * TRADING_DAYS
 
+interest_year = 0.01
+interest_day = interest_year / 252.0
+
+G = 0.01 # Dividend growth rate
 DIVIDEND_GROWTH_RATE_G = 0.01
-# EQUITY_COST = 0.02
-DIVIDEND_GROWTH_VOLATILITY = 0.1 / np.sqrt(TRADING_DAYS)
-DIVIDEND_AUTOCORRELATION = 0.1
 INITIAL_DIVIDEND = 0.003983
-INITIAL_RANDOM_DIVIDEND = 0
+
+div_vol = 0.1 / np.sqrt(TRADING_DAYS) # Dividend volatility
+# DIVIDEND_GROWTH_VOLATILITY = 0.1 / np.sqrt(TRADING_DAYS)
+# DIVIDEND_AUTOCORRELATION = 0.1
+div_atc = 0.1 # Dividend autocorrelation
+# INITIAL_RANDOM_DIVIDEND = 0
 DIVIDEND_ATC_TAU = 1
 LIQUIDATION_ORDER_SIZE = 20_000
 

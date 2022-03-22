@@ -65,4 +65,4 @@ df, pop = run(
 
 df.to_csv("rundata/run_data.csv")
 
-print(df)
+# print(df)
