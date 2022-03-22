@@ -10,38 +10,6 @@ import timeit
 import warnings
 import cythonized
 
-
-def CreateHalfFund(pop, MaxFund):
-
-    if pop[MaxFund].type == "nt":
-        half = IndCreation("nt")
-    if pop[MaxFund].type == "vi":
-        half = IndCreation("vi")
-    if pop[MaxFund].type == "tf":
-        half = IndCreation("tf")
-
-    # Copy fund MaxFund intangible characteristics
-    # TSV, EDF, EDV are totally reset.
-    half.tsv = 0
-    half.edf = None
-    half.edv = 0
-    half.strategy = pop[MaxFund].strategy
-    half.process = pop[MaxFund].process
-    half.ema = pop[MaxFund].ema
-    half.fitness = pop[MaxFund].fitness
-    half.age = -1.0
-
-    # Copy fund j characteristics to be divided
-    half.prev_wealth = pop[MaxFund].prev_wealth / 2
-    half.wealth = pop[MaxFund].wealth / 2
-    half.cash = pop[MaxFund].cash / 2
-    half.loan = pop[MaxFund].loan / 2
-    half.asset = pop[MaxFund].asset / 2
-    half.margin = pop[MaxFund].margin / 2
-    half.profit = 0.0
-    return half
-
-
 def CreateFractionalFund(pop, MaxFund, divisions):
 
     if pop[MaxFund].type == "nt":
@@ -60,7 +28,8 @@ def CreateFractionalFund(pop, MaxFund, divisions):
     half.process = pop[MaxFund].process
     half.ema = pop[MaxFund].ema
     half.fitness = pop[MaxFund].fitness
-    half[0] = pop[MaxFund][0]
+    half.val = pop[MaxFund].val
+    half.val_net = pop[MaxFund].val_net
     half.age = 0
     half.profit = 0.0
 
