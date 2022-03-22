@@ -1,7 +1,8 @@
 #cython: boundscheck=False, wraparound=False, initializedcheck=False, cdivision=True
 cimport cythonized
 from libc.math cimport log2, tanh
-from parameters import G, GAMMA_NT, RHO_NT, MU_NT, LeverageNT, LeverageVI, LeverageTF, SCALE_NT, SCALE_TF, SCALE_VI, interest_year
+from parameters import G, GAMMA_NT, RHO_NT, MU_NT, LeverageNT, LeverageVI, LeverageTF
+from parameters import G_day, SCALE_NT, SCALE_TF, SCALE_VI, interest_year
 import warnings
 import numpy as np
 cdef float NAN
@@ -81,10 +82,8 @@ cpdef UpdateFval(list pop, double dividend):
     cdef double fval
     cdef cythonized.Individual ind
 
-    estimated_daily_div_growth = (
-        (1.0 + G) ** (1.0 / 252.0)
-    ) - 1.0
-    numerator = (1 + estimated_daily_div_growth) * dividend
+    
+    numerator = (1 + G_day) * dividend
     for ind in pop:
         t = ind.type_as_int
         if t==1:

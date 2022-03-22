@@ -41,6 +41,8 @@ interest_year = 0.01
 interest_day = interest_year / 252.0
 
 G = 0.01 # Dividend growth rate
+G_day = (((1.0 + G) ** (1.0 / 252.0)) - 1.0)
+       
 DIVIDEND_GROWTH_RATE_G = 0.01
 INITIAL_DIVIDEND = 0.003983
 
