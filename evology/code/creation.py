@@ -14,9 +14,9 @@ def DrawStrategy(strat):
     if strat == "nt":
         strategy = np.random.uniform(min_nt_strat, max_nt_strat) / 10
     elif strat == "vi":
-        strategy = np.random.uniform(min_vi_strat, max_vi_strat) / 100
+        strategy = np.random.uniform(min_vi_strat, max_vi_strat) / 1000
     elif strat == "tf":
-        strategy = np.random.uniform(min_tf_strat, max_tf_strat)
+        strategy = np.random.randint(min_tf_strat, max_tf_strat + 1)
     else:
         raise ValueError("Unrecognised type. " + str(strat))
     return strategy
