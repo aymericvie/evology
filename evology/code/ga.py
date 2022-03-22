@@ -144,6 +144,7 @@ toolbox.register("mate", toolbox.feasible_crossover)
 
 # Creating our own mutation operator
 def mutate_both_ways(ind):
+    raise ValueError('Not updated to ind.strategy')
     if np.random.random() < 0.5:
         ind[0] -= 1
     else:
@@ -151,6 +152,7 @@ def mutate_both_ways(ind):
 
 
 def feasible_mutation(ind, MUTATION_RATE):
+    raise ValueError('Not updated to ind.strategy')
     if np.random.random() < MUTATION_RATE:
         if ind.type == "tf":
             if ind[0] == MAX_THETA:  # we can only mutate lower

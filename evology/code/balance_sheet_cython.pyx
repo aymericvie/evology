@@ -48,7 +48,6 @@ def NoiseProcess(pop):
             # Calculate process value
             X = ind.process
             ind.process = abs(X + RHO_NT * (MU_NT - X) + GAMMA_NT * randoms[i])
-            #ind.tsv = math.log2(ind.process * ind[0]) - math.log2(CurrentPrice)
     return pop
 
 cpdef CalculateTSV(list pop, list price_history, list dividend_history, double CurrentPrice):
@@ -64,12 +63,12 @@ cpdef CalculateTSV(list pop, list price_history, list dividend_history, double C
             ind.tsv = log2(ind.val / CurrentPrice)
         else: # t==2
             # Calculate TSV
-            if len(price_history) >= ind[0]:
+            if len(price_history) >= ind.strategy:
                 #print(price_history)
                 #print(price_history[0])
                 #print(price_history[-1])
                 #print(type(price_history[-1]))
-                ind.tsv =  log2(CurrentPrice / price_history[-ind[0]])
+                ind.tsv =  log2(CurrentPrice / price_history[-int(ind.strategy)])
             else:
                 ind.tsv = 0
     return pop
@@ -86,13 +85,7 @@ cpdef UpdateFval(list pop, double dividend):
     for ind in pop:
         t = ind.type_as_int
         if t==1:
-            #denuminator = (
-            #    1.0 + (interest_year + ind.strategy) - G
-            #) ** (1.0 / 252.0) - 1.0
-            #fval = 
-            #ind.val = numerator / denuminator
             ind.val = numerator / ind.val_net # TODO: Val_net only changes when val changes
-            #ind[0] = fval # TODO This might be something to change later on
             if ind.val < 0:
                 warnings.warn("Negative fval found in update_fval.")
             if ind.val == np.inf:

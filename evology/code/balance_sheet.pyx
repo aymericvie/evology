@@ -76,53 +76,6 @@ cpdef count_short_assets(list pop, double spoils):
         count += abs(spoils)
     return count
 
-
-def pop_report(pop):
-    for ind in pop:
-        agent_report(ind)
-
-
-def agent_report(ind):
-    if ind.type == "tf":
-        name = "TF agent - "
-    elif ind.type == "vi":
-        name = "VI agent - "
-    if ind.type == "nt":
-        name = "NT agent - "
-    else:
-        raise Exception(f"Unexpected ind type: {ind.type}")
-
-    print(
-        name
-        + str(round(ind[0], 2))
-        + ", Cash "
-        + str(int(ind.cash))
-        + ", Asset_Long "
-        + str(int(ind.asset))
-        + ", Wealth "
-        + str(int(ind.wealth))
-        + ", TS "
-        + str(round(ind.tsv, 2))
-        + ", EV "
-        + str(int(ind.edv))
-        + ", Margin "
-        + str(int(ind.margin))
-        + ", Loan "
-        + str(int(ind.loan))
-    )  # + ", Profit " + str(int(ind.profit)) + ", Fitness " + str(ind.fitness))
-
-
-#def CalcTsvVINT(pop, price):
- #   if price < 0:
- #       warnings.warn("Negative price " + str(price))
-###            ind.tsv = (5 / ind[0]) * (ind[0] - price)
-#    for ind in pop:
-#        if ind.type == "vi":
-#        if ind.type == "nt":
-#            ind.tsv = (5 / (ind[0] * ind.process)) * (ind[0] * ind.process - price)
-#    return ind
-
-
 def TotalWealth(pop):
     Wealth = 0
     for ind in pop:

@@ -106,23 +106,18 @@ def CreatePop(n, space, WealthCoords, CurrentPrice):
     if space == "scholl":
         for ind in pop:
             if ind.type == "nt":
-                ind.strategy = 0.01
-                ind[0] = 100
+                ind.strategy = 0
             if ind.type == "vi":
                 ind.strategy = 0.01
-                ind[0] = 100
             if ind.type == "tf":
-                ind.strategy = 0.01
-                ind[0] = 2
+                ind.strategy = 2
 
     if space == "extended":
         for ind in pop:
             if ind.type == "nt":
                 ind.strategy = DrawReturnRate("nt")
-                ind[0] = 100
             if ind.type == "vi":
                 ind.strategy = DrawReturnRate("vi")
-                ind[0] = 100
             if ind.type == "tf":
                 ind.strategy = DrawReturnRate("tf")
 

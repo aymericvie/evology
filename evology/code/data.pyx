@@ -292,7 +292,7 @@ def ResultsProcess(list pop, double spoils, double price):
         elif ind.asset < 0.0:
             ShortAssets += abs(ind.asset)
 
-        ind_zero = ind[0]
+        ind_zero = ind.strategy
         if ind.type == "nt":
             NTcount += 1
             MeanNT += ind_zero
@@ -322,7 +322,6 @@ def ResultsProcess(list pop, double spoils, double price):
             if ind.wealth > 0:
                 WSVI += ind.wealth
             VIpnl += ind.profit
-            # VIsignal += ind[0] #double with MeanVI
             VIsignal = ind.tsv
             VIstocks += price * ind.asset
             if ind.prev_wealth != 0:

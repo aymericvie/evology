@@ -19,7 +19,6 @@ cdef double edf(Individual ind, double price):
     if t == 0:
         return (LeverageNT * ind.wealth / price) * tanh(SCALE_NT * ind.tsv + 0.5) - ind.asset 
     elif t == 1:
-        #zero = ind[0]
         return (LeverageVI * ind.wealth / price) * tanh(SCALE_VI * ind.tsv + 0.5) - ind.asset
     elif t == 2:
         #
