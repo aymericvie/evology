@@ -8,6 +8,7 @@ def run(
     learning_mode,
     TIME,
     solver,
+    space,
     wealth_coordinates,
     tqdm_display,
     reset_wealth,
@@ -16,7 +17,7 @@ def run(
 ):
     if learning_mode == 0:
         df, pop = main(
-            "scholl",
+            space,
             solver,
             wealth_coordinates,
             POPULATION_SIZE,
@@ -31,7 +32,7 @@ def run(
 
     if learning_mode == 1:
         df, pop = main(
-            "scholl",
+            space,
             solver,
             wealth_coordinates,
             POPULATION_SIZE,
@@ -54,8 +55,9 @@ print(wealth_coordinates)
 df, pop = run(
     1000,
     0,
-    1000,
+    10000,
     "esl.true",
+    "extended",
     wealth_coordinates,
     tqdm_display=False,
     reset_wealth=False,
@@ -64,5 +66,4 @@ df, pop = run(
 )
 
 df.to_csv("rundata/run_data.csv")
-
 # print(df)

@@ -78,18 +78,26 @@ cpdef UpdateFval(list pop, double dividend):
     cdef double estimated_daily_div_growth
     cdef double numerator
     cdef double denuminator
-    #cdef double fval
+    cdef double fval
     cdef cythonized.Individual ind
     
     numerator = (1 + G_day) * dividend
     for ind in pop:
         t = ind.type_as_int
         if t==1:
-            ind.val = numerator / ind.val_net # TODO: Val_net only changes when val changes
-            if ind.val < 0:
-                warnings.warn("Negative fval found in update_fval.")
-            if ind.val == np.inf:
-                raise ValueError('Infinite FVal.')
+            fval = numerator / ind.val_net # TODO: Val_net only changes when val changes
+            if fval != np.inf:
+                ind.val = fval
+            #if ind.val < 0:
+            #    warnings.warn("Negative fval found in update_fval.")
+            #if ind.val == np.inf:
+            #    print(numerator)
+            #    print(ind.val_net)
+            ##    print(ind.strategy)
+            #    print(interest_year)
+            #    print(ind.val)
+            #    print((interest_year + ind.strategy) - G)
+            #    raise ValueError('Infinite FVal.')
     return pop
 
 def DetermineEDF(pop):

@@ -5,21 +5,21 @@ from deap import algorithms
 from deap import gp
 import numpy as np
 import random
-
 toolbox = base.Toolbox()
 from parameters import *
-
 import cythonized
 
 
-def DrawReturnRate(strat):
-    if strat == "vi":
-        rate = np.random.uniform(MIN_RR_VI, MAX_RR_VI) / 1000
+def DrawStrategy(strat):
     if strat == "nt":
-        rate = np.random.uniform(MIN_RR_NT, MAX_RR_NT) / 1000
+        strategy = np.random.uniform(min_nt_strat, max_nt_strat) / 10
+    elif strat == "vi":
+        strategy = np.random.uniform(min_vi_strat, max_vi_strat) / 100
+    elif strat == "tf":
+        strategy = np.random.uniform(min_tf_strat, max_tf_strat)
     else:
-        rate = np.random.uniform(MIN_RR_TF, MAX_RR_TF) / 1000
-    return rate
+        raise ValueError("Unrecognised type. " + str(strat))
+    return strategy
 
 
 creator.create("fitness_strategy", base.Fitness, weights=(1.0,))
@@ -38,11 +38,11 @@ def IndCreation(strat):
         ind.type = "nt"
         #ind.leverage = LeverageNT
         ind.type_as_int = cythonized.convert_ind_type_to_num("nt")
-    if strat == "vi":
+    elif strat == "vi":
         ind.type = "vi"
         #ind.leverage = LeverageVI
         ind.type_as_int = cythonized.convert_ind_type_to_num("vi")
-    if strat == "tf":
+    elif strat == "tf":
         ind.type = "tf"
         #ind.leverage = LeverageTF
         ind.type_as_int = cythonized.convert_ind_type_to_num("tf")
@@ -115,11 +115,11 @@ def CreatePop(n, space, WealthCoords, CurrentPrice):
     if space == "extended":
         for ind in pop:
             if ind.type == "nt":
-                ind.strategy = DrawReturnRate("nt")
+                ind.strategy = DrawStrategy("nt")
             if ind.type == "vi":
-                ind.strategy = DrawReturnRate("vi")
+                ind.strategy = DrawStrategy("vi")
             if ind.type == "tf":
-                ind.strategy = DrawReturnRate("tf")
+                ind.strategy = DrawStrategy("tf")
 
     for ind in pop:
         if ind.type == "nt":

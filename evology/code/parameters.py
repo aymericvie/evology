@@ -80,3 +80,14 @@ MAX_RR_NT = 20
 
 MIN_RR_TF = 0
 MAX_RR_TF = 20
+
+# NT strat is divided by 10
+min_nt_strat = 5
+max_nt_strat = 15
+
+# VI strat is divided by 100
+min_vi_strat = 0
+max_vi_strat = 2
+
+min_tf_strat = 2
+max_tf_strat = 21

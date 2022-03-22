@@ -289,10 +289,9 @@ def ResultsProcess(list pop, double spoils, double price):
         elif ind.asset < 0.0:
             ShortAssets += abs(ind.asset)
 
-        ind_zero = ind.strategy
         if ind.type == "nt":
             NTcount += 1
-            MeanNT += ind_zero
+            MeanNT += ind.strategy * ind.wealth
             NTcash += ind.cash
             NTlend += ind.margin
             NTloan += ind.loan
@@ -311,7 +310,7 @@ def ResultsProcess(list pop, double spoils, double price):
 
         elif ind.type == "vi":
             VIcount += 1
-            MeanVI += ind_zero
+            MeanVI += ind.strategy * ind.wealth
             VIcash += ind.cash
             VIlend += ind.margin
             VIloan += ind.loan
@@ -327,7 +326,7 @@ def ResultsProcess(list pop, double spoils, double price):
 
         elif ind.type == "tf":
             TFcount += 1
-            MeanTF += ind_zero
+            MeanTF += ind.strategy * ind.wealth
             TFcash += ind.cash
             TFlend += ind.margin
             TFloan += ind.loan
@@ -351,7 +350,7 @@ def ResultsProcess(list pop, double spoils, double price):
         NTreturn = NTreturn / NTcount
         #NTreturn_noinv = NTreturn_noinv / NTcount
         NTsignal = NTsignal / NTcount
-        MeanNT = MeanNT / NTcount
+        MeanNT = MeanNT / (NTnav * NTcount)
         NT_process = NT_process / NTcount
 
     if VIcount != 0:
@@ -363,7 +362,7 @@ def ResultsProcess(list pop, double spoils, double price):
         VIstocks = VIstocks / VIcount
         VIreturn = VIreturn / VIcount
         #VIreturnno_inv = VIreturn_noinv / VIcount
-        MeanVI = MeanVI / VIcount
+        MeanVI = MeanVI / (VIcount * VInav)
 
     if TFcount != 0:
         TFcash = TFcash / TFcount
@@ -375,7 +374,7 @@ def ResultsProcess(list pop, double spoils, double price):
         TFreturn = TFreturn / TFcount
         #TFreturn_noinv = TFreturn_noinv / TFcount
         TFsignal = TFsignal / TFcount
-        MeanTF = MeanTF / TFcount
+        MeanTF = MeanTF / (TFcount * TFnav)
 
     if spoils > 0:
         LongAssets += spoils
