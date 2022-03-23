@@ -72,11 +72,11 @@ def marketClearing(pop, current_price, price_history, spoils, solver, volume):
                 0.01,
             )
         elif solver == "newton.true":
-            ed_functions, ToLiquidate = bs.agg_ed(pop, spoils)
+            ed_functions, ToLiquidate = bs.agg_ed(pop, spoils, volume)
             current_price = min(
                 max(
                     optimize.newton(
-                        func=ed_functions[0], x0=current_price, maxiter=1000
+                        func=ed_functions[0], x0=current_price
                     ),
                     0.5 * current_price,
                 ),
@@ -131,6 +131,9 @@ def marketClearing(pop, current_price, price_history, spoils, solver, volume):
             current_price = optimize.minimize(
                 ed_functions[0], current_price, method="trust-exact"
             ).x
+        
+        elif solver == 'linear':
+            current_price, ToLiquidate = bsc.linear_solver(pop, spoils, volume)
 
         else:
             raise ValueError("No maintained solver was selected.")

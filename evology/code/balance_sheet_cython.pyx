@@ -2,7 +2,7 @@
 cimport cythonized
 from libc.math cimport log2, tanh
 from parameters import G, GAMMA_NT, RHO_NT, MU_NT, LeverageNT, LeverageVI, LeverageTF
-from parameters import G_day, SCALE_NT, SCALE_TF, SCALE_VI, interest_year
+from parameters import G_day, SCALE_NT, SCALE_TF, SCALE_VI, interest_year, liquidation_perc
 import warnings
 import numpy as np
 cdef float NAN
@@ -145,3 +145,34 @@ cpdef UpdateFullWealth(list pop, double current_price):
             replace = 1  
     return pop, replace
       
+cpdef linear_solver(list pop, double spoils, double volume):
+    cdef double price 
+    cdef cythonized.Individual ind
+    cdef double a = 0.0
+    cdef double b = 0.0
+    cdef double l 
+    cdef double c
+
+    if spoils > 0:
+        ToLiquidate = -min(spoils, liquidation_perc * volume)
+    elif spoils == 0:
+        ToLiquidate = 0
+    elif spoils < 0:
+        ToLiquidate = min(abs(spoils), liquidation_perc * volume)
+
+    for ind in pop:
+        if ind.type_as_int == 0:
+            l = LeverageNT * 1.0
+            c = SCALE_NT * 1.0
+        if ind.type_as_int == 1:
+            l = LeverageVI * 1.0
+            c = SCALE_VI * 1.0
+        if ind.type_as_int == 2:
+            l = LeverageTF * 1.0
+            c = SCALE_TF * 1.0
+        b += ind.asset
+        a += ind.wealth * l * (tanh(c * ind.tsv + 0.5))
+    
+    price = a / b
+
+    return price, ToLiquidate
