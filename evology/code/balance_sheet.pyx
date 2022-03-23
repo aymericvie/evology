@@ -90,16 +90,16 @@ def convert_to_array(pop):
     return array_pop
 
 
-def agg_ed(pop, spoils):
+def agg_ed(pop, spoils, volume):
     functions = []
     ToLiquidate = 0
 
     if spoils > 0:
-        ToLiquidate = -min(spoils, LIQUIDATION_ORDER_SIZE)
+        ToLiquidate = -min(spoils, liquidation_perc * volume)
     elif spoils == 0:
         ToLiquidate = 0
     elif spoils < 0:
-        ToLiquidate = min(abs(spoils), LIQUIDATION_ORDER_SIZE)
+        ToLiquidate = min(abs(spoils), liquidation_perc * volume)
 
     array_pop = convert_to_array(pop)
 
@@ -115,16 +115,16 @@ def agg_ed(pop, spoils):
     return functions, ToLiquidate
 
 
-def agg_ed_esl(pop, spoils):
+def agg_ed_esl(pop, spoils, volume):
     functions = []
     ToLiquidate = 0
 
     if spoils > 0:
-        ToLiquidate = -min(spoils, LIQUIDATION_ORDER_SIZE)
+        ToLiquidate = -min(spoils, liquidation_perc * volume)
     elif spoils == 0:
         ToLiquidate = 0
     elif spoils < 0:
-        ToLiquidate = min(abs(spoils), LIQUIDATION_ORDER_SIZE)
+        ToLiquidate = min(abs(spoils), liquidation_perc * volume)
 
     array_pop = convert_to_array(pop)
 

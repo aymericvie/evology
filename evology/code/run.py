@@ -55,8 +55,9 @@ print(wealth_coordinates)
 df, pop = run(
     300,
     0,
-    200000,
-    "esl.true",
+    100000,
+    #"esl.true",
+    "newton",
     "extended",
     wealth_coordinates,
     tqdm_display=False,

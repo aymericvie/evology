@@ -17,7 +17,7 @@ def main(
     # Initialisation
     generation, CurrentPrice, dividend, spoils = 0, InitialPrice, INITIAL_DIVIDEND, 0
     results = np.zeros((MAX_GENERATIONS - data.Barr, data.variables))
-    price_history, dividend_history, replace = [], [], 0
+    price_history, dividend_history, replace, volume = [], [], 0, 0
 
     # Population creation
     pop, asset_supply = cr.CreatePop(POPULATION_SIZE, space, wealth_coordinates, CurrentPrice)
@@ -32,11 +32,13 @@ def main(
         pop = cr.WealthReset(pop, space, wealth_coordinates, generation, reset_wealth)
 
         # Hypermutation
+        
         pop, replacements, spoils = ga.hypermutate(
             pop, spoils, replace
         ) 
         if replacements < 0:
             break
+
 
         # Strategy evolution
         pop = fit.ComputeFitness(pop, InvestmentHorizon)
@@ -59,7 +61,7 @@ def main(
 
         # Market clearing
         pop, mismatch, CurrentPrice, price_history, ToLiquidate = marketClearing(
-            pop, CurrentPrice, price_history, spoils, solver
+            pop, CurrentPrice, price_history, spoils, solver, volume
         )
 
         # Market activity

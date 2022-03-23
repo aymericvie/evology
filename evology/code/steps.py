@@ -50,16 +50,16 @@ def decision_updates(pop, price_history, dividend_history, CurrentPrice):
     return pop
 
 
-def marketClearing(pop, current_price, price_history, spoils, solver):
+def marketClearing(pop, current_price, price_history, spoils, solver, volume):
     try:
         if solver == "esl":
-            ed_functions, ToLiquidate = bs.agg_ed_esl(pop, spoils)
+            ed_functions, ToLiquidate = bs.agg_ed_esl(pop, spoils, volume)
             current_price = float(esl_mc.solve(ed_functions, current_price)[0])
         elif solver == "esl.true":
-            ed_functions, ToLiquidate = bs.agg_ed_esl(pop, spoils)
+            ed_functions, ToLiquidate = bs.agg_ed_esl(pop, spoils, volume)
             current_price = esl_mc.CircuitClearing(ed_functions, current_price)
         elif solver == "newton":
-            ed_functions, ToLiquidate = bs.agg_ed(pop, spoils)
+            ed_functions, ToLiquidate = bs.agg_ed(pop, spoils, volume)
             current_price = max(
                 optimize.newton(
                     func=ed_functions[0],
