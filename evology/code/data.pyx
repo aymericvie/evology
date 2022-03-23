@@ -134,7 +134,7 @@ columns = [
     # DiffReturns
     "DiffReturns",
     "NT_process",
-    "VI_val"
+    "VI_val",
 ]
 variables = len(columns) 
 
@@ -476,47 +476,15 @@ def record_results(
     AvgT,
     PropSignif,
     HighestT,
-    AvgAbsT
+    AvgAbsT,
 ):
 
     if generation >= Barr :
 
         ListOutput = ResultsProcess(pop, spoils, current_price)
         current = generation - Barr
-
-        #if current > Barr + 252:
-            #resultsNT = results[Barr:current, -12]
-            #resultsVI = results[Barr:current, -11]
-            #resultsTF = results[Barr:current, -10]
-            #SharpeNT, SharpeVI, SharpeTF, DeltaNTVI, DeltaNTTF, DeltaVITF = computeSharpe(resultsNT, resultsVI, resultsTF)
-        #else:
         SharpeNT, SharpeVI, SharpeTF, DeltaNTVI, DeltaNTTF, DeltaVITF  = NAN, NAN, NAN, NAN, NAN, NAN
-
-        #DailyNTReturns = FillList(GetDayReturn(pop, "nt"), len(pop))
-        #ReturnsNT[current, :] = DailyNTReturns
-
-        #DailyVIReturns = FillList(GetDayReturn(pop, "vi"), len(pop))
-        #ReturnsVI[current, :] = DailyVIReturns
-
-        #DailyTFReturns = FillList(GetDayReturn(pop, "tf"), len(pop))
-        #ReturnsTF[current, :] = DailyTFReturns
-
-        #try:
-        #    MeanNTReturn = np.nanmean(DailyNTReturns)
-        #except RuntimeWarning:
-        #    MeanNTReturn = np.nan
-        #try:
-        #    MeanVIReturn = np.nanmean(DailyVIReturns)
-        #except RuntimeWarning:
-        #    MeanVIReturn = np.nan
-        #try:
-        #    MeanTFReturn = np.nanmean(DailyTFReturns)
-        #except RuntimeWarning:
-        #    MeanTFReturn = np.nan
-
-        #wealth_tracker, wamp = TrackWealth(wealth_tracker, pop, generation)
         wamp_nt, wamp_vi, wamp_tf = 0,0,0 #AnnualReturns(wealth_tracker, pop, generation)
-        #NT_AR_noinv, VI_AR_noinv, TF_AR_noinv = AnnualReturnsNoInv(wealth_tracker_noinv, pop, generation)
 
         """ Global variables """
         arr = [
@@ -547,21 +515,11 @@ def record_results(
         arr += [ComputeAvgReturn(results, current, pop), spoils, Liquidations]
 
         """ More measures """
-
-        arr += [
-            abs(100 * spoils / asset_supply),
-            #MeanNTReturn,
-            #MeanVIReturn,
-            #MeanTFReturn,
-            #(results[current, 54] + results[current, 55] + results[current, 56]) / 3,
-        ]
+        arr += [abs(100 * spoils / asset_supply),]
 
         """ Measures of adaptation """
         arr += [CountSelected, CountMutated, CountCrossed]
         arr += StratFlow
-
-        #""" Wealth measures """
-        #arr += [wamp]
 
         """ Sharpe and Delta """
         arr += [SharpeNT, SharpeVI, SharpeTF,  DeltaNTVI, DeltaNTTF, DeltaVITF]
@@ -584,7 +542,7 @@ def record_results(
         ''' diff return '''
         arr += [(ListOutput[18] - ListOutput[27]) ** 2 + (ListOutput[18] - ListOutput[36]) ** 2 + (ListOutput[27] - ListOutput[36]) ** 2]
 
-        ''' NT noise process and VI val'''
+        ''' NT noise process and VI val '''
         arr += [ListOutput[42], ListOutput[43]]
 
 

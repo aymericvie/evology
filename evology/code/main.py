@@ -56,7 +56,7 @@ def main(
         pop, replace = bsc.UpdateFullWealth(pop, CurrentPrice)
         pop = bsc.NoiseProcess(pop)
         pop = bsc.UpdateFval(pop, dividend)
-        pop, avg_phi = bsc.CalculateTSV(pop, price_history, dividend_history, CurrentPrice, avg_phi)
+        pop = bsc.CalculateTSV(pop, price_history, dividend_history, CurrentPrice)
         pop = bsc.DetermineEDF(pop)
 
         # Market clearing
