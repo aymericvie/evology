@@ -50,14 +50,19 @@ def NoiseProcess(pop):
             ind.process = abs(X + RHO_NT * (MU_NT - X) + GAMMA_NT * randoms[i])
     return pop
 
-cpdef CalculateTSV(list pop, list price_history, list dividend_history, double CurrentPrice):
+cpdef CalculateTSV(list pop, list price_history, list dividend_history, double CurrentPrice, double avg_phi):
     cdef cythonized.Individual ind
+    cdef double sum_tsv = 0.0
 
-    for ind in pop:
+    randoms = np.random.normal(0, GAMMA_NT, len(pop))
+
+    for i, ind in enumerate(pop):
         t = ind.type_as_int
         if t == 0:
             # Calculate TSV
-            ind.tsv = (ind.process - 1) 
+            ind.strategy = (1.0 + avg_phi) * ind.strategy
+            ind.tsv = (randoms[i] + ind.strategy - 1) 
+            # ind.tsv = (ind.process - 1)
         elif t == 1:
             # Calculate TSV
             ind.tsv = log2(ind.val / CurrentPrice)
@@ -71,7 +76,8 @@ cpdef CalculateTSV(list pop, list price_history, list dividend_history, double C
                 ind.tsv =  log2(CurrentPrice / price_history[-int(ind.strategy)])
             else:
                 ind.tsv = 0
-    return pop
+        sum_tsv+= ind.tsv
+    return pop, sum_tsv/len(pop)
 
 cpdef UpdateFval(list pop, double dividend):
 

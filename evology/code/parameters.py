@@ -67,20 +67,6 @@ ShieldInvestment = 252
 dividend_history = []
 random_dividend_history = []
 
-
-# For extended strategy space
-MIN_THETA = 2
-MAX_THETA = 4
-
-MIN_RR_VI = 0
-MAX_RR_VI = 20
-
-MIN_RR_NT = 0
-MAX_RR_NT = 20
-
-MIN_RR_TF = 0
-MAX_RR_TF = 20
-
 # NT strat is divided by 10
 min_nt_strat = 5
 max_nt_strat = 15

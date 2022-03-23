@@ -133,7 +133,8 @@ columns = [
     "AvgAge",
     # DiffReturns
     "DiffReturns",
-    "NT_process"
+    "NT_process",
+    "VI_val"
 ]
 variables = len(columns) 
 
@@ -274,6 +275,7 @@ def ResultsProcess(list pop, double spoils, double price):
         0.0, #float("nan"),
     )
     NT_process = 0.0
+    VI_val = 0.0
 
     NTflows, VIflows, TFflows = 0.0, 0.0, 0.0
 
@@ -305,7 +307,7 @@ def ResultsProcess(list pop, double spoils, double price):
                 NTreturn += ind.DailyReturn
             #if ind.prev_wealth_noinv != 0:
             #    NTreturn_noinv += ind.DailyReturn_noinv
-            NTflows += ind.investment_ratio
+            NTflows += ind.investor_flow
             NT_process += ind.process
 
         elif ind.type == "vi":
@@ -322,7 +324,8 @@ def ResultsProcess(list pop, double spoils, double price):
             VIstocks += price * ind.asset
             if ind.prev_wealth != 0:
                 VIreturn += ind.DailyReturn
-            VIflows += ind.investment_ratio
+            VIflows += ind.investor_flow
+            VI_val += ind.val * ind.wealth
 
         elif ind.type == "tf":
             TFcount += 1
@@ -338,7 +341,7 @@ def ResultsProcess(list pop, double spoils, double price):
             TFstocks += price * ind.asset
             if ind.prev_wealth != 0:
                 TFreturn += ind.DailyReturn
-            TFflows += ind.investment_ratio
+            TFflows += ind.investor_flow
 
     if NTcount != 0:
         NTcash = NTcash / NTcount
@@ -363,6 +366,7 @@ def ResultsProcess(list pop, double spoils, double price):
         VIreturn = VIreturn / VIcount
         #VIreturnno_inv = VIreturn_noinv / VIcount
         MeanVI = MeanVI / (VIcount * VInav)
+        VI_val = VI_val / (VIcount * VInav)
 
     if TFcount != 0:
         TFcash = TFcash / TFcount
@@ -441,6 +445,7 @@ def ResultsProcess(list pop, double spoils, double price):
         TFflows,
         AvgAge,
         NT_process,
+        VI_val
     ]
 
     return ListOutput
@@ -579,8 +584,8 @@ def record_results(
         ''' diff return '''
         arr += [(ListOutput[18] - ListOutput[27]) ** 2 + (ListOutput[18] - ListOutput[36]) ** 2 + (ListOutput[27] - ListOutput[36]) ** 2]
 
-        ''' NT noise process'''
-        arr += [ListOutput[42]]
+        ''' NT noise process and VI val'''
+        arr += [ListOutput[42], ListOutput[43]]
 
 
         if len(arr) != len(results[current,:]):

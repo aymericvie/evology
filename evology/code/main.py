@@ -17,7 +17,7 @@ def main(
     # Initialisation
     generation, CurrentPrice, dividend, spoils = 0, InitialPrice, INITIAL_DIVIDEND, 0
     results = np.zeros((MAX_GENERATIONS - data.Barr, data.variables))
-    price_history, dividend_history, replace, volume = [], [], 0, 0
+    price_history, dividend_history, replace, volume, avg_phi = [], [], 0, 0.0, 0.0
 
     # Population creation
     pop, asset_supply = cr.CreatePop(POPULATION_SIZE, space, wealth_coordinates, CurrentPrice)
@@ -56,7 +56,7 @@ def main(
         pop, replace = bsc.UpdateFullWealth(pop, CurrentPrice)
         pop = bsc.NoiseProcess(pop)
         pop = bsc.UpdateFval(pop, dividend)
-        pop = bsc.CalculateTSV(pop, price_history, dividend_history, CurrentPrice)
+        pop, avg_phi = bsc.CalculateTSV(pop, price_history, dividend_history, CurrentPrice, avg_phi)
         pop = bsc.DetermineEDF(pop)
 
         # Market clearing
