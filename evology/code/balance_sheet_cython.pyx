@@ -1,6 +1,6 @@
 #cython: boundscheck=False, wraparound=False, initializedcheck=False, cdivision=True
 cimport cythonized
-from libc.math cimport log2, tanh
+from libc.math cimport log2, tanh, isnan
 from parameters import G, GAMMA_NT, RHO_NT, MU_NT, LeverageNT, LeverageVI, LeverageTF
 from parameters import G_day, SCALE_NT, SCALE_TF, SCALE_VI, interest_year, liquidation_perc
 import warnings
@@ -66,6 +66,12 @@ cpdef CalculateTSV(list pop, list price_history, list dividend_history, double C
         elif t == 1:
             # Calculate TSV
             ind.tsv = log2(ind.val / CurrentPrice)
+            if isnan(ind.tsv) == True:
+                print(ind.tsv)
+                print(ind.val)
+                print(CurrentPrice)
+                print(log2(ind.val/CurrentPrice))
+                raise ValueError('ind.tsv is NAN')
             #sum_tsv += ind.tsv
             #count += 1.0
         else: # t==2
@@ -145,7 +151,7 @@ cpdef UpdateFullWealth(list pop, double current_price):
             replace = 1  
     return pop, replace
       
-cpdef linear_solver(list pop, double spoils, double volume):
+cpdef linear_solver(list pop, double spoils, double volume, double prev_price):
     cdef double price 
     cdef cythonized.Individual ind
     cdef double a = 0.0
@@ -160,6 +166,8 @@ cpdef linear_solver(list pop, double spoils, double volume):
     elif spoils < 0:
         ToLiquidate = min(abs(spoils), min(liquidation_perc * volume, 10000))
 
+    b += ToLiquidate
+
     for ind in pop:
         if ind.type_as_int == 0:
             l = LeverageNT * 1.0
@@ -172,7 +180,24 @@ cpdef linear_solver(list pop, double spoils, double volume):
             c = SCALE_TF * 1.0
         b += ind.asset
         a += ind.wealth * l * (tanh(c * ind.tsv + 0.5))
-    
-    price = a / b
+        if isnan(a) == True:
+            print(a)
+            print([ind.type, ind.tsv, ind.wealth, l, c])  
+            raise ValueError('NAN output a for linear solver a/b.')  
+    price = min(max(a/b, 0.2*prev_price), 5*prev_price)
+
+
+    if isnan(price) == True:
+        print(price)
+        print(a)
+        print(b)
+        raise ValueError('Price is nan.')
+
+    if price < 0:
+        print(price)
+        print(a)
+        print(b)
+        print(ToLiquidate)
+        raise ValueError('Price is negative.')
 
     return price, ToLiquidate

@@ -133,7 +133,7 @@ def marketClearing(pop, current_price, price_history, spoils, solver, volume):
             ).x
         
         elif solver == 'linear':
-            current_price, ToLiquidate = bsc.linear_solver(pop, spoils, volume)
+            current_price, ToLiquidate = bsc.linear_solver(pop, spoils, volume, current_price)
 
         else:
             raise ValueError("No maintained solver was selected.")

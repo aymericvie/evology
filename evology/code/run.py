@@ -64,7 +64,7 @@ df, pop = run(
     wealth_coordinates,
     tqdm_display=False,
     reset_wealth=False,
-    ReinvestmentRate=1.05,
+    ReinvestmentRate=1,
     InvestmentHorizon=252,
 )
 
