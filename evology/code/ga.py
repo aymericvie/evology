@@ -47,8 +47,6 @@ def hypermutate(pop, spoils, replace):
     round_replacements = 0
 
     if replace == 1:
-        print("Replacement ongoing")
-        print(spoils)
         InitialPopSize = len(pop)
         i = 0
 
@@ -79,7 +77,6 @@ def hypermutate(pop, spoils, replace):
             half = CreateFractionalFund(pop, MaxFund, NumberReplace + 1)
             del pop[MaxFund]
             pop.insert(MaxFund, half)
-        print(spoils)
         # Check that the new population size is unchanged.
         if len(pop) != InitialPopSize:
             print([NumberReplace, round_replacements])

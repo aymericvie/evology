@@ -95,11 +95,11 @@ def agg_ed(pop, spoils, volume):
     ToLiquidate = 0
 
     if spoils > 0:
-        ToLiquidate = -min(spoils, liquidation_perc * volume)
+        ToLiquidate = -min(spoils, min(liquidation_perc * volume, 10000))
     elif spoils == 0:
         ToLiquidate = 0
     elif spoils < 0:
-        ToLiquidate = min(abs(spoils), liquidation_perc * volume)
+        ToLiquidate = min(abs(spoils), min(liquidation_perc * volume, 10000))
 
     array_pop = convert_to_array(pop)
 
@@ -120,11 +120,11 @@ def agg_ed_esl(pop, spoils, volume):
     ToLiquidate = 0
 
     if spoils > 0:
-        ToLiquidate = -min(spoils, liquidation_perc * volume)
+        ToLiquidate = -min(spoils, min(liquidation_perc * volume, 10000))
     elif spoils == 0:
         ToLiquidate = 0
     elif spoils < 0:
-        ToLiquidate = min(abs(spoils), liquidation_perc * volume)
+        ToLiquidate = min(abs(spoils), min(liquidation_perc * volume, 10000))
 
     array_pop = convert_to_array(pop)
 

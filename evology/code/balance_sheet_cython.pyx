@@ -154,11 +154,11 @@ cpdef linear_solver(list pop, double spoils, double volume):
     cdef double c
 
     if spoils > 0:
-        ToLiquidate = -min(spoils, liquidation_perc * volume)
+        ToLiquidate = -min(spoils, min(liquidation_perc * volume, 10000))
     elif spoils == 0:
         ToLiquidate = 0
     elif spoils < 0:
-        ToLiquidate = min(abs(spoils), liquidation_perc * volume)
+        ToLiquidate = min(abs(spoils), min(liquidation_perc * volume, 10000))
 
     for ind in pop:
         if ind.type_as_int == 0:
