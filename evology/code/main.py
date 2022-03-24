@@ -81,7 +81,7 @@ def main(
             dividend_history,
             spoils,
             ToLiquidate,
-            np.random.normal(0.0, 1.0)
+            random_dividend_history
         )
         pop, replace = bsc.UpdateWealthProfitAge(pop, CurrentPrice)
 

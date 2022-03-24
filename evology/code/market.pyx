@@ -2,33 +2,34 @@
 
 from balance_sheet import count_long_assets, count_short_assets, update_margin, clear_debt
 import numpy as np
-from parameters import div_atc, G, div_vol, interest_day
+from parameters import div_atc, G, div_vol, interest_day, G_day
 cimport cythonized
 
 
-cpdef draw_dividend(double dividend, double random_dividend):
-    DIVIDEND_GROWTH_RATE = ((1.0 + G) ** (1.0 / 252.0)) - 1.0
-    #if len(random_dividend_history) > 1:
-    random_dividend = (
-        1.0 - div_atc ** 2.0
+cpdef draw_dividend(double dividend, list random_dividend_history):
+    cdef double Z = np.random.normal(0,1)
+    if len(random_dividend_history) > 2:
+        random_dividend =  (
+            div_atc * random_dividend_history[-2] 
+            + (1.0 - div_atc ** 2.0) * Z)
+    else:
+        random_dividend = Z
     #) * random_dividend + parameters.div_atc * random_dividend_history[
     #    - 1.0 - 1.0
-    ) * random_dividend + div_atc * random_dividend
         #]
     dividend = abs(
-        dividend
-        + DIVIDEND_GROWTH_RATE * dividend
+        dividend * (1 + G_day)
         + div_vol * dividend * random_dividend
     )
     return dividend, random_dividend
 
-cpdef earnings(list pop, double prev_dividend, double random_dividend):
+cpdef earnings(list pop, double prev_dividend, list random_dividend_history):
     cdef cythonized.Individual ind
     cdef double dividend
     cdef double div_asset
     cdef double interest_cash
     
-    dividend, random_dividend = draw_dividend(prev_dividend, random_dividend)
+    dividend, random_dividend = draw_dividend(prev_dividend, random_dividend_history)
 
     for ind in pop:
         div_asset = ind.asset * dividend  # Determine gain from dividends
@@ -242,10 +243,10 @@ cpdef execute_ed(list pop, double current_price, double asset_supply, double spo
     return pop, volume, spoils, Liquidations
 
 cpdef MarketActivity(list pop, double current_price, double asset_supply,
-    double dividend, list dividend_history, double spoils, double ToLiquidate, double random_dividend):
+    double dividend, list dividend_history, double spoils, double ToLiquidate, list random_dividend_history):
     pop, volume, spoils, Liquidations = execute_ed(pop, current_price, asset_supply, spoils, ToLiquidate)
     
-    pop, dividend, random_dividend = earnings(pop, dividend, random_dividend)
+    pop, dividend, random_dividend = earnings(pop, dividend, random_dividend_history)
     dividend_history.append(dividend)
     pop = update_margin(pop, current_price)
     pop = clear_debt(pop, current_price)
