@@ -149,6 +149,14 @@ cpdef UpdateFullWealth(list pop, double current_price):
         ind.prev_wealth = ind.wealth
         if ind.wealth < 0:
             replace = 1  
+        if isnan(ind.wealth) == True:
+            print(ind.wealth)
+            print(ind.cash)
+            print(ind.asset)
+            print(current_price)
+            print(ind.loan)
+            print(ind.age)
+            raise ValueError('ind.wealth is NAN')
     return pop, replace
       
 cpdef linear_solver(list pop, double spoils, double volume, double prev_price):
