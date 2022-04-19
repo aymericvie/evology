@@ -92,7 +92,7 @@ def main(
         )
 
         # Record results 
-        results = data.record_results(
+        results, sim_break = data.record_results(
             results,
             generation,
             CurrentPrice,
@@ -114,6 +114,10 @@ def main(
             HighestT,
             AvgAbsT,
         )
+
+        if sim_break == True:
+            warnings.warn('Simulation break: one of the 3 strategy types is extinct.')
+            break
 
     if generation < MAX_GENERATIONS - data.Barr:
         # It means the simulation has breaked.

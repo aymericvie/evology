@@ -401,6 +401,11 @@ def ResultsProcess(list pop, double spoils, double price):
 
     AvgAge = AvgAge / len(pop)
 
+    if WSNT == 0 or WSVI == 0 or WSTF == 0:
+        sim_break = True
+    else:
+        sim_break = False
+
     ListOutput = [
         LongAssets,
         ShortAssets,
@@ -448,7 +453,7 @@ def ResultsProcess(list pop, double spoils, double price):
         VI_val
     ]
 
-    return ListOutput
+    return ListOutput, sim_break
 
 
 def record_results(
@@ -481,7 +486,7 @@ def record_results(
 
     if generation >= Barr :
 
-        ListOutput = ResultsProcess(pop, spoils, current_price)
+        ListOutput, sim_break = ResultsProcess(pop, spoils, current_price)
         current = generation - Barr
         SharpeNT, SharpeVI, SharpeTF, DeltaNTVI, DeltaNTTF, DeltaVITF  = NAN, NAN, NAN, NAN, NAN, NAN
         wamp_nt, wamp_vi, wamp_tf = 0,0,0 #AnnualReturns(wealth_tracker, pop, generation)
@@ -556,7 +561,7 @@ def record_results(
         """ Record results """
         results[current, :] = arr
 
-    return results #, wealth_tracker, wealth_tracker_noinv
+    return results, sim_break 
 
 
 def GetDayReturn(pop, strat):

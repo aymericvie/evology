@@ -51,11 +51,12 @@ np.random.seed(8)
 wealth_coordinates = [1/3,1/3,1/3]
 print(wealth_coordinates)
 df, pop = run(
-    100,
+    20,
     0,
-    200_000,
+    800 * 252, # 200_000,
     "esl.true", # "linear",
-    "extended", #"scholl"
+    #"extended", 
+    "scholl",
     wealth_coordinates,
     tqdm_display=False,
     reset_wealth=False,
