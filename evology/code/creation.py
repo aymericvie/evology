@@ -13,7 +13,7 @@ import cythonized
 def DrawStrategy(strat):
     if strat == "nt":
         #strategy = np.random.uniform(min_nt_strat, max_nt_strat) / 10
-        strategy = None
+        strategy = np.random.uniform(min_nt_strat, max_nt_strat) / 1000
     elif strat == "vi":
         strategy = np.random.uniform(min_vi_strat, max_vi_strat) / 1000
     elif strat == "tf":
@@ -107,7 +107,7 @@ def CreatePop(n, space, WealthCoords, CurrentPrice):
     if space == "scholl":
         for ind in pop:
             if ind.type == "nt":
-                ind.strategy = 0
+                ind.strategy = 0 # no bias in 3-strat space
             if ind.type == "vi":
                 ind.strategy = 0.01
             if ind.type == "tf":

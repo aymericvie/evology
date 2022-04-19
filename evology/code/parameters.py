@@ -68,8 +68,8 @@ dividend_history = []
 random_dividend_history = []
 
 # NT strat is divided by 10
-# min_nt_strat = 5
-# max_nt_strat = 15
+min_nt_strat = -10
+max_nt_strat = 10
 
 # VI strat is divided by 1000
 min_vi_strat = 5

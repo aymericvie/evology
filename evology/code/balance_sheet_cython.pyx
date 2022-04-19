@@ -43,51 +43,29 @@ cpdef UpdateWealthProfitAge(list pop, double current_price):
 def NoiseProcess(pop):
     randoms = np.random.normal(0, 1, len(pop))
     for i, ind in enumerate(pop):
-#        t = ind.type_as_int
         if ind.type_as_int == 0:
-            # Calculate process value
+            # Calculate process value, including individual strategy (bias)
             X = ind.process
-            ind.process = abs(X + RHO_NT * (MU_NT - X) + GAMMA_NT * randoms[i])
+            ind.process = abs(X + RHO_NT * (MU_NT + ind.strategy - X) + GAMMA_NT * randoms[i])
     return pop
 
 cpdef CalculateTSV(list pop, list price_history, list dividend_history, double CurrentPrice):
     cdef cythonized.Individual ind
 
-    #randoms = np.random.normal(0, GAMMA_NT, len(pop))
-
     for i, ind in enumerate(pop):
         t = ind.type_as_int
-        if t == 0:
-            # Calculate TSV
-            #ind.strategy = (1.0 + avg_phi / 100.0) * ind.strategy
-            #ind.tsv = (randoms[i] + ind.strategy - 1) 
-            
+        if t == 0: # NT
             ind.tsv = (ind.process - 1)
-        elif t == 1:
-            # Calculate TSV
+        elif t == 1: # VI
             ind.tsv = log2(ind.val / CurrentPrice)
             if isnan(ind.tsv) == True:
-                print(ind.tsv)
-                print(ind.val)
-                print(CurrentPrice)
-                print(log2(ind.val/CurrentPrice))
                 raise ValueError('ind.tsv is NAN')
-            #sum_tsv += ind.tsv
-            #count += 1.0
-        else: # t==2
-            # Calculate TSV
+        else: # TF
             if len(price_history) >= ind.strategy:
-                #print(price_history)
-                #print(price_history[0])
-                #print(price_history[-1])
-                #print(type(price_history[-1]))
                 ind.tsv =  log2(CurrentPrice / price_history[-int(ind.strategy)])
             else:
                 ind.tsv = 0
-            #sum_tsv += ind.tsv
-            #count += 1.0
     return pop
-    #, sum_tsv/len(pop)
 
 cpdef UpdateFval(list pop, double dividend):
 
