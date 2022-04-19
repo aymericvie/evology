@@ -120,11 +120,13 @@ def main(
             break
 
     if generation < MAX_GENERATIONS - data.Barr:
-        # It means the simulation has breaked.
-        results[generation + 1 : MAX_GENERATIONS - data.Barr, :] = (
-            np.empty((MAX_GENERATIONS - data.Barr - generation - 1, data.variables))
-            * np.nan
-        )
+        # # It means the simulation has breaked.
+        # results[generation + 1 : MAX_GENERATIONS - data.Barr, :] = (
+        #     np.empty((MAX_GENERATIONS - data.Barr - generation - 1, data.variables))
+        #     * np.nan
+        # )
+        # del results[generation + 1 : MAX_GENERATIONS - data.Barr]
+        results = results[0:generation+1]
 
     df = pd.DataFrame(results, columns=data.columns)
 

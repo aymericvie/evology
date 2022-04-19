@@ -27,7 +27,7 @@ RHO_NT = 0.00045832561
 """ MARKET PARAMETERS """
 TRADING_DAYS = 252
 InitialPrice = 100
-Short_Size_Percent = 50
+Short_Size_Percent = 80
 
 RefLoan = 0
 RefCash = 3 * 50_000_000

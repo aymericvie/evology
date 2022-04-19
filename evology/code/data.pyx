@@ -401,7 +401,7 @@ def ResultsProcess(list pop, double spoils, double price):
 
     AvgAge = AvgAge / len(pop)
 
-    if WSNT == 0 or WSVI == 0 or WSTF == 0:
+    if WSNT == 0.0 or WSVI == 0.0 or WSTF == 0.0:
         sim_break = True
     else:
         sim_break = False
