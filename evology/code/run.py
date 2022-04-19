@@ -2,7 +2,6 @@
 from main import *
 from parameters import *
 
-
 def run(
     POPULATION_SIZE,
     learning_mode,
@@ -48,19 +47,15 @@ def run(
 
 
 wealth_coordinates = np.random.dirichlet(np.ones(3), size=1)[0].tolist()
-np.random.seed(9)
+np.random.seed(8)
 wealth_coordinates = [1/3,1/3,1/3]
-wealth_coordinates = [0.09197907715627632, 0.7401382118614593, 0.16788271098226437]
 print(wealth_coordinates)
 df, pop = run(
-    10,
+    100,
     0,
-    25000,
-    #"esl.true",
-    #"newton.true",
-    #"esl.true",
+    200_000,
     "esl.true", # "linear",
-    "scholl", #exgtended
+    "extended", #"scholl"
     wealth_coordinates,
     tqdm_display=False,
     reset_wealth=False,
@@ -69,4 +64,3 @@ df, pop = run(
 )
 
 df.to_csv("rundata/run_data.csv")
-# print(df)

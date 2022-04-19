@@ -2,7 +2,7 @@
 
 from balance_sheet import count_long_assets, count_short_assets, update_margin, clear_debt
 import numpy as np
-from parameters import div_atc, G, div_vol, interest_day, G_day
+from parameters import div_atc, G, div_vol, interest_day, G_day, Short_Size_Percent
 cimport cythonized
 
 
@@ -84,7 +84,7 @@ cpdef determine_multiplier(list pop, double spoils, double ToLiquidate, double a
         print(asset_supply)
         raise ValueError('Limit on short position size was violated before computing order ratio. ')
     
-    effective_possible_short = min(total_short, max(0, asset_supply - CountShort))
+    effective_possible_short = min(total_short, max(0, Short_Size_Percent * 0.01 * asset_supply - CountShort))
 
     if total_short != 0:
         short_ratio = effective_possible_short / total_short
@@ -205,7 +205,7 @@ cpdef execute_ed(list pop, double current_price, double asset_supply, double spo
         # Isn't that a minus sign here instead?
 
 
-    if count_short_assets(pop, spoils) >= asset_supply + 1 :
+    if count_short_assets(pop, spoils) >= Short_Size_Percent * 0.01 * asset_supply + 1 :
         print(count_short_assets(pop, spoils))
         print(count_long_assets(pop, spoils))
         print(asset_supply)
