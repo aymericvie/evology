@@ -13,12 +13,12 @@ CROSSOVER_RATE = 1 / 21
 """ GP PARAMETERS """
 
 """ STRATEGY PARAMETERS """
-FlowCorr = 1.0
+FlowCorr = 0.9
 LeverageNT, LeverageVI, LeverageTF = 1.0 * FlowCorr, 1.0 * FlowCorr, 1.0 * FlowCorr
 
-ScaleCorr = 0.5
-SCALE_NT, SCALE_VI, SCALE_TF = 1.0 * ScaleCorr, 1.0 * ScaleCorr, 1.0 * ScaleCorr  
-ATC_TF = 1
+ScaleCorr = 1.0
+ATC_TF = 2.0
+SCALE_NT, SCALE_VI, SCALE_TF = 1.0 * ScaleCorr, 1.0 * ScaleCorr, 1.0 * ScaleCorr * ATC_TF
 
 GAMMA_NT = 0.2 * np.sqrt(1 / 252)
 MU_NT = 1.0
@@ -66,12 +66,12 @@ random_dividend_history = []
 
 # NT strat is divided by 1000 
 # And also substracted 10
-min_nt_strat = 0 
-max_nt_strat = 20
+min_nt_strat = 5 
+max_nt_strat = 15
 
 # VI strat is divided by 1000
-min_vi_strat = 0
-max_vi_strat = 20
+min_vi_strat = 5
+max_vi_strat = 15
 
 min_tf_strat = 2
 max_tf_strat = 21

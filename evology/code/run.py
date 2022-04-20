@@ -51,17 +51,17 @@ np.random.seed(8)
 wealth_coordinates = [1/3,1/3,1/3]
 print(wealth_coordinates)
 df, pop = run(
-    1000,
+    500,
     0,
-    500 * 252, # 200_000,
+    200 * 252, # 200_000,
     "esl.true", # "linear",
     "extended", 
     # "scholl",
     wealth_coordinates,
     tqdm_display=False,
     reset_wealth=False,
-    ReinvestmentRate=1,
-    InvestmentHorizon=252,
+    ReinvestmentRate=0.5,
+    InvestmentHorizon=21,
 )
 
 df.to_csv("rundata/run_data.csv")

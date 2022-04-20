@@ -122,7 +122,7 @@ cpdef Returns_Investment(list pop, double ReinvestmentRate):
         fit = ind.DailyReturn
         # fitness depends on profits, and profits are W(t)-W(t-1). We might have a steanrioll issue.
         if isnan(fit) == False:
-            ind.investor_flow = fit * (ReinvestmentRate - 1)
+            ind.investor_flow = fit * (ReinvestmentRate - 1.0)
             ind.cash += ind.investor_flow
         #if isnan(fit) == True:
         #    print(fit)
