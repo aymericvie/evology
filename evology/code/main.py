@@ -85,6 +85,7 @@ def main(
             random_dividend_history
         )
         pop, replace = bsc.UpdateWealthProfitAge(pop, CurrentPrice)
+        pop = bsc.UpdateQuarterlyWealth(pop, generation)
 
         # Investment
         (pop, AvgT, PropSignif, HighestT, AvgAbsT) = iv.Profit_Investment(

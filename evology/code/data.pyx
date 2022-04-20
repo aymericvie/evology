@@ -187,7 +187,7 @@ def AnnualReturns(wealth_tracker, pop, generation):
         
     return wamp_nt, wamp_vi, wamp_tf
 
-def ResultsProcess(list pop, double spoils, double price):
+def ResultsProcess(list pop, double spoils, double price, double generation):
 
     LongAssets, ShortAssets = 0.0, 0.0
     NTcount, VIcount, TFcount = 0.0, 0.0, 0.0
@@ -241,9 +241,12 @@ def ResultsProcess(list pop, double spoils, double price):
         elif ind.asset < 0.0:
             ShortAssets += abs(ind.asset)
 
-        flow = abs((ind.wealth / ind.prev_wealth) - 1)
-        if isnan(flow) == False:
-            nav_pct += flow
+        if generation % 63 == 0:
+            flow = abs((ind.wealth / ind.prev_wealth) - 1)
+            if isnan(flow) == False:
+                nav_pct += flow
+        else:
+            nav_pct = NAN
 
         if ind.type == "nt":
             NTcount += 1
@@ -443,7 +446,7 @@ def record_results(
 
     if generation >= Barr :
 
-        ListOutput, sim_break = ResultsProcess(pop, spoils, current_price)
+        ListOutput, sim_break = ResultsProcess(pop, spoils, current_price, generation)
         current = generation - Barr
         SharpeNT, SharpeVI, SharpeTF, DeltaNTVI, DeltaNTTF, DeltaVITF  = NAN, NAN, NAN, NAN, NAN, NAN
         wamp_nt, wamp_vi, wamp_tf = 0,0,0 #AnnualReturns(wealth_tracker, pop, generation)

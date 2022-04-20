@@ -53,7 +53,7 @@ print(wealth_coordinates)
 df, pop = run(
     1000,
     0,
-    800 * 252, # 200_000,
+    80 * 252, # 200_000,
     "esl.true", # "linear",
     "extended", 
     # "scholl",

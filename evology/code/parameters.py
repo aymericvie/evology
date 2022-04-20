@@ -13,8 +13,9 @@ CROSSOVER_RATE = 1 / 21
 """ GP PARAMETERS """
 
 """ STRATEGY PARAMETERS """
+FlowCorr = 0.5 
+LeverageNT, LeverageVI, LeverageTF = 1.0 * FlowCorr, 1.0 * FlowCorr, 1.0 * FlowCorr
 
-LeverageNT, LeverageVI, LeverageTF = 1, 1, 1
 SCALE_NT, SCALE_VI, SCALE_TF = 1, 1, 1  
 ATC_TF = 1
 
