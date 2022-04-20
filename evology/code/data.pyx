@@ -241,7 +241,7 @@ def ResultsProcess(list pop, double spoils, double price):
         elif ind.asset < 0.0:
             ShortAssets += abs(ind.asset)
 
-        flow = (ind.wealth / ind.prev_wealth) - 1
+        flow = abs((ind.wealth / ind.prev_wealth) - 1)
         if isnan(flow) == False:
             nav_pct += flow
 
