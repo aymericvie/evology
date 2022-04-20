@@ -135,31 +135,12 @@ columns = [
     "DiffReturns",
     "NT_process",
     "VI_val",
+    "nav_pct"
 ]
 variables = len(columns) 
 
 """ We only record results after a year to avoid transient period biases. """
 Barr = max(SHIELD_DURATION, ShieldResults)
-
-#def TrackWealth(wealth_tracker, pop, generation):
-#    cdef double wamp = NAN
-#    cdef int i = 0
-#    cdef cythonized.Individual ind
-#    wamp_list = []
-
-#    if generation - 21 >= 0:
-#        for i, ind in enumerate(pop):
-#         # We can start calculate the movements' monthly amplitude.
-#            old_wealth = wealth_tracker[generation-21,i]
-#            #for ind in pop:
-#            if old_wealth > 0 and ind.age >= 21:
-#                wamp_ind = (wealth_tracker[generation, i] - old_wealth) / old_wealth
-#            else: 
-#                wamp_ind = float("nan")
-#            wamp_list.append(100 * abs(wamp_ind))
-#    wamp = np.nanmean(wamp_list)
-#        
-#    return wealth_tracker, wamp
 
 
 def AnnualReturns(wealth_tracker, pop, generation):
@@ -206,38 +187,6 @@ def AnnualReturns(wealth_tracker, pop, generation):
         
     return wamp_nt, wamp_vi, wamp_tf
 
-
-#def AnnualReturnsNoInv(wealth_tracker_noinv, pop, generation):
-#    cdef double NT_AR_noinv = NAN
-#    cdef double VI_AR_noinv = NAN
-#    cdef double TF_AR_noinv = NAN
-#    cdef int i = 0
-#    cdef cythonized.Individual ind
-
-#    list_nt, list_vi, list_tf,  = [],[],[]
-    
-#    if generation - 252 >= 0: # We can start calculate the movements' annual amplitude.
-#        for i, ind in enumerate(pop):
-#            old_wealth = wealth_tracker_noinv[generation-252,i]
-            #for ind in pop:
-#            if old_wealth > 0 and ind.age >= 252 + 10:
-#                w_ind = (wealth_tracker_noinv[generation, i] - old_wealth) / old_wealth
-#            else: 
-#                w_ind = float("nan")#
-
-#            if ind.type == 'nt':
-#                list_nt.append(w_ind)
-#            elif ind.type == 'vi':
-#                list_vi.append(w_ind)
-#            elif ind.type == 'tf':
-#                list_tf.append(w_ind)
-
-#    NT_AR_noinv = np.nanmean(list_nt)
-#    VI_AR_noinv = np.nanmean(list_vi)
-#    TF_AR_noinv = np.nanmean(list_tf)
-        
-#    return NT_AR_noinv, VI_AR_noinv, TF_AR_noinv 
-
 def ResultsProcess(list pop, double spoils, double price):
 
     LongAssets, ShortAssets = 0.0, 0.0
@@ -278,6 +227,7 @@ def ResultsProcess(list pop, double spoils, double price):
     VI_val = 0.0
 
     NTflows, VIflows, TFflows = 0.0, 0.0, 0.0
+    nav_pct = 0.0
 
     cdef cythonized.Individual ind
     cdef double ind_zero
@@ -290,6 +240,10 @@ def ResultsProcess(list pop, double spoils, double price):
             LongAssets += ind.asset
         elif ind.asset < 0.0:
             ShortAssets += abs(ind.asset)
+
+        flow = (ind.wealth / ind.prev_wealth) - 1
+        if isnan(flow) == False:
+            nav_pct += flow
 
         if ind.type == "nt":
             NTcount += 1
@@ -406,6 +360,8 @@ def ResultsProcess(list pop, double spoils, double price):
     else:
         sim_break = False
 
+    nav_pct = nav_pct / len(pop)
+
     ListOutput = [
         LongAssets,
         ShortAssets,
@@ -450,7 +406,8 @@ def ResultsProcess(list pop, double spoils, double price):
         TFflows,
         AvgAge,
         NT_process,
-        VI_val
+        VI_val,
+        nav_pct
     ]
 
     return ListOutput, sim_break
@@ -547,8 +504,8 @@ def record_results(
         ''' diff return '''
         arr += [(ListOutput[18] - ListOutput[27]) ** 2 + (ListOutput[18] - ListOutput[36]) ** 2 + (ListOutput[27] - ListOutput[36]) ** 2]
 
-        ''' NT noise process and VI val '''
-        arr += [ListOutput[42], ListOutput[43]]
+        ''' NT noise process and VI val and nan avg flow'''
+        arr += [ListOutput[42], ListOutput[43], ListOutput[44]]
 
 
         if len(arr) != len(results[current,:]):
