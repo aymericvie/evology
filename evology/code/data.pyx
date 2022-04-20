@@ -242,7 +242,7 @@ def ResultsProcess(list pop, double spoils, double price, double generation):
             ShortAssets += abs(ind.asset)
 
         if generation % 63 == 0:
-            flow = abs((ind.wealth / ind.prev_wealth) - 1)
+            flow = abs((ind.wealth / ind.quarterly_wealth) - 1)
             if isnan(flow) == False:
                 nav_pct += flow
         else:
