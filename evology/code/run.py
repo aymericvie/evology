@@ -60,8 +60,8 @@ df, pop = run(
     wealth_coordinates,
     tqdm_display=False,
     reset_wealth=False,
-    ReinvestmentRate=0.5,
-    InvestmentHorizon=21,
+    ReinvestmentRate=1.0, #limited impact?
+    InvestmentHorizon=21, #ineffective right now?
 )
 
 df.to_csv("rundata/run_data.csv")
