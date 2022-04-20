@@ -191,6 +191,7 @@ cpdef linear_solver(list pop, double spoils, double volume, double prev_price):
 cpdef UpdateQuarterlyWealth(list pop, double generation):
     cdef cythonized.Individual ind
     if generation % 63 == 0:
+        print(generation)
         for ind in pop:
             ind.quarterly_wealth = ind.wealth
     return pop
