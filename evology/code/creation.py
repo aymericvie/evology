@@ -13,7 +13,7 @@ import cythonized
 def DrawStrategy(strat):
     if strat == "nt":
         #strategy = np.random.uniform(min_nt_strat, max_nt_strat) / 10
-        strategy = np.random.uniform(min_nt_strat, max_nt_strat) / 1000
+        strategy = (np.random.uniform(min_nt_strat, max_nt_strat) - 10) / 1000
     elif strat == "vi":
         strategy = np.random.uniform(min_vi_strat, max_vi_strat) / 1000
     elif strat == "tf":
