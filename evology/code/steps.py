@@ -139,8 +139,9 @@ def marketClearing(pop, current_price, price_history, spoils, solver, volume):
             raise ValueError("No maintained solver was selected.")
 
     except Exception as e:
-        ed_functions, ToLiquidate = bs.agg_ed(pop, spoils)
+        ed_functions, ToLiquidate = bs.agg_ed(pop, spoils, volume)
         func = ed_functions[0]
+        print("Debuggig from steps.py")
         print(current_price)
         print(func(0))
         print(func(0.01))
@@ -148,54 +149,54 @@ def marketClearing(pop, current_price, price_history, spoils, solver, volume):
         print(func(100000))
         print(e)
 
-        print("Avg ED at current price")
-        edtf, edvi, ednt = 0, 0, 0
-        tf, vi, nt = 0, 0, 0
-        for ind in pop:
-            if ind.type == "tf":
-                tf += 1
-                edtf += ind.edf(ind, current_price)
-            if ind.type == "nt":
-                nt += 1
-                ednt += ind.edf(ind, current_price)
-            if ind.type == "vi":
-                vi += 1
-                edvi += ind.edf(ind, current_price)
-        print([ednt / nt, edvi / vi, edtf / tf])
-        print(nt, vi, tf)
+        # print("Avg ED at current price")
+        # edtf, edvi, ednt = 0, 0, 0
+        # tf, vi, nt = 0, 0, 0
+        # for ind in pop:
+        #     if ind.type == "tf":
+        #         tf += 1
+        #         edtf += ind.edf(ind, current_price)
+        #     if ind.type == "nt":
+        #         nt += 1
+        #         ednt += ind.edf(ind, current_price)
+        #     if ind.type == "vi":
+        #         vi += 1
+        #         edvi += ind.edf(ind, current_price)
+        # print([ednt / nt, edvi / vi, edtf / tf])
+        # print(nt, vi, tf)
 
-        print("Avg ED at 1")
-        edtf, edvi, ednt = 0, 0, 0
-        tf, vi, nt = 0, 0, 0
-        for ind in pop:
-            if ind.type == "tf":
-                tf += 1
-                edtf += ind.edf(ind, 1)
-            if ind.type == "nt":
-                nt += 1
-                ednt += ind.edf(ind, 1)
-            if ind.type == "vi":
-                vi += 1
-                edvi += ind.edf(ind, 1)
-        print([ednt / nt, edvi / vi, edtf / tf])
+        # print("Avg ED at 1")
+        # edtf, edvi, ednt = 0, 0, 0
+        # tf, vi, nt = 0, 0, 0
+        # for ind in pop:
+        #     if ind.type == "tf":
+        #         tf += 1
+        #         edtf += ind.edf(ind, 1)
+        #     if ind.type == "nt":
+        #         nt += 1
+        #         ednt += ind.edf(ind, 1)
+        #     if ind.type == "vi":
+        #         vi += 1
+        #         edvi += ind.edf(ind, 1)
+        # print([ednt / nt, edvi / vi, edtf / tf])
 
-        print("Avg ED at 0.1")
-        edtf, edvi, ednt = 0, 0, 0
-        tf, vi, nt = 0, 0, 0
-        for ind in pop:
-            if ind.type == "tf":
-                tf += 1
-                edtf += ind.edf(ind, 0.1)
-            if ind.type == "nt":
-                nt += 1
-                ednt += ind.edf(ind, 0.1)
-            if ind.type == "vi":
-                vi += 1
-                edvi += ind.edf(ind, 0.1)
-        print([ednt / nt, edvi / vi, edtf / tf])
+        # print("Avg ED at 0.1")
+        # edtf, edvi, ednt = 0, 0, 0
+        # tf, vi, nt = 0, 0, 0
+        # for ind in pop:
+        #     if ind.type == "tf":
+        #         tf += 1
+        #         edtf += ind.edf(ind, 0.1)
+        #     if ind.type == "nt":
+        #         nt += 1
+        #         ednt += ind.edf(ind, 0.1)
+        #     if ind.type == "vi":
+        #         vi += 1
+        #         edvi += ind.edf(ind, 0.1)
+        # print([ednt / nt, edvi / vi, edtf / tf])
 
-        for ind in pop:
-            print([ind.type, ind.tsv, ind.edf(ind, current_price), ind.edf(ind, 1)])
+        # for ind in pop:
+        #     print([ind.type, ind.tsv, ind.edf(ind, current_price), ind.edf(ind, 1)])
 
         # func2 = np.vectorize(ed_functions[0])
 

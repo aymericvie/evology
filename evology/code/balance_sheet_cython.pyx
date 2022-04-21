@@ -113,6 +113,7 @@ def DetermineEDF(pop):
             ind.edf = (
                 lambda ind, p: (LeverageNT * ind.wealth / p)
                 * tanh(SCALE_NT * ind.tsv + 0.5)
+                #* tanh(SCALE_NT * ind.tsv)
                 - ind.asset
             )
         else:
@@ -144,6 +145,7 @@ cpdef linear_solver(list pop, double spoils, double volume, double prev_price):
     cdef double b = 0.0
     cdef double l 
     cdef double c
+    cdef double aind
 
     if spoils > 0:
         ToLiquidate = -min(spoils, min(liquidation_perc * volume, 10000))
@@ -166,17 +168,25 @@ cpdef linear_solver(list pop, double spoils, double volume, double prev_price):
             c = SCALE_TF * 1.0
         b += ind.asset
         a += ind.wealth * l * (tanh(c * ind.tsv + 0.5))
-        if isnan(a) == True:
+        if isnan(a) == True or isnan(b) == True:
             print(a)
+            print(b)
             print([ind.type, ind.tsv, ind.wealth, l, c])  
-            raise ValueError('NAN output a for linear solver a/b.')  
-    price = min(max(a/b, 0.2*prev_price), 5*prev_price)
+            raise ValueError('NAN output a or b for linear solver a/b.')  
+    #price = min(max(a/b, 0.2*prev_price), 5*prev_price)
+    price = a/b
 
 
     if isnan(price) == True:
+        print("price, a, b, pop ind with negative a")
         print(price)
         print(a)
         print(b)
+        for ind in pop:
+            aind = ind.wealth * (tanh(ind.tsv + 0.5))
+            if aind < 0:
+                print([ind.type, ind.wealth, ind.tsv, ind.asset, aind])
+
         raise ValueError('Price is nan.')
 
     if price < 0:

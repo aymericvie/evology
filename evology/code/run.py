@@ -55,14 +55,14 @@ print(wealth_coordinates)
 df, pop = run(
     250,
     0,
-    800 * 252, # 200_000,
-    "esl.true", # "linear",
+    400 * 252, # 200_000,
+    "linear", #"esl.true", # "linear",
     "extended", 
     # "scholl",
     wealth_coordinates,
     tqdm_display=False,
     reset_wealth=False,
-    ReinvestmentRate=1.0, #limited impact?
+    ReinvestmentRate=1.5, #limited impact?
     InvestmentHorizon=21, #ineffective right now?
 )
 
