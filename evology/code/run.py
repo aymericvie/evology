@@ -48,14 +48,12 @@ def run(
 
 wealth_coordinates = np.random.dirichlet(np.ones(3), size=1)[0].tolist()
 np.random.seed(8)
-wealth_coordinates = [1/3,1/3,1/3]
-# wealth_coordinates = [0.5, 0.15, 0.35]
-# wealth_coordinates = [0.09102807903879707, 0.5774996771459384, 0.33147224381526447]
+# wealth_coordinates = [1/3,1/3,1/3]
 print(wealth_coordinates)
 df, pop = run(
     1000,
     0,
-    500 * 252, # 200_000,
+    1000 * 252, # 200_000,
     "linear", #"esl.true", # "linear",
     "extended", 
     # "scholl",

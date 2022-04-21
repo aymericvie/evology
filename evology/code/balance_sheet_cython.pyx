@@ -176,7 +176,7 @@ cpdef linear_solver(list pop, double spoils, double volume, double prev_price):
     #price = min(max(a/b, 0.2*prev_price), 5*prev_price)
     #price = a/b
     # price = max(a/b, 0.01)
-    price = min(max(a/b, 0.5*prev_price), 2*prev_price)
+    price = min(max(a/b, 0.75*prev_price), 1.25*prev_price)
 
 
     if isnan(price) == True:
