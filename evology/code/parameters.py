@@ -13,11 +13,11 @@ CROSSOVER_RATE = 1 / 21
 """ GP PARAMETERS """
 
 """ STRATEGY PARAMETERS """
-FlowCorr = 0.9
+FlowCorr = 1.0
 LeverageNT, LeverageVI, LeverageTF = 1.0 * FlowCorr, 1.0 * FlowCorr, 1.0 * FlowCorr
 
 ScaleCorr = 1.0
-ATC_TF = 2.0
+ATC_TF = 1.0
 SCALE_NT, SCALE_VI, SCALE_TF = 1.0 * ScaleCorr, 1.0 * ScaleCorr, 1.0 * ScaleCorr * ATC_TF
 
 GAMMA_NT = 0.2 * np.sqrt(1 / 252)
@@ -28,7 +28,7 @@ RHO_NT = 0.00045832561
 """ MARKET PARAMETERS """
 TRADING_DAYS = 252
 InitialPrice = 100
-Short_Size_Percent = 50
+Short_Size_Percent = 1.17
 
 RefLoan = 0
 RefCash = 3 * 50_000_000
