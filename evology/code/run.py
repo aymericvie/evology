@@ -53,9 +53,9 @@ wealth_coordinates = [1/3,1/3,1/3]
 # wealth_coordinates = [0.09102807903879707, 0.5774996771459384, 0.33147224381526447]
 print(wealth_coordinates)
 df, pop = run(
-    250,
+    1000,
     0,
-    400 * 252, # 200_000,
+    500 * 252, # 200_000,
     "linear", #"esl.true", # "linear",
     "extended", 
     # "scholl",

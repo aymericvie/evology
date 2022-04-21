@@ -174,26 +174,30 @@ cpdef linear_solver(list pop, double spoils, double volume, double prev_price):
             print([ind.type, ind.tsv, ind.wealth, l, c])  
             raise ValueError('NAN output a or b for linear solver a/b.')  
     #price = min(max(a/b, 0.2*prev_price), 5*prev_price)
-    price = a/b
+    #price = a/b
+    # price = max(a/b, 0.01)
+    price = min(max(a/b, 0.5*prev_price), 2*prev_price)
 
 
     if isnan(price) == True:
-        print("price, a, b, pop ind with negative a")
+
         print(price)
         print(a)
         print(b)
-        for ind in pop:
-            aind = ind.wealth * (tanh(ind.tsv + 0.5))
-            if aind < 0:
-                print([ind.type, ind.wealth, ind.tsv, ind.asset, aind])
+
 
         raise ValueError('Price is nan.')
 
     if price < 0:
+        print("price, a, b, ToLiquidate, pop ind with negative a")
         print(price)
         print(a)
         print(b)
         print(ToLiquidate)
+        for ind in pop:
+            aind = ind.wealth * (tanh(ind.tsv + 0.5))
+            if aind < 0:
+                print([ind.type, ind.wealth, ind.tsv, ind.asset, aind])
         raise ValueError('Price is negative.')
 
     return price, ToLiquidate
