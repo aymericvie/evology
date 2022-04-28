@@ -93,3 +93,4 @@ cdef class Individual(list):
         # This needs to be overriden as it is not always 0!
         self.fitness = creator.fitness_strategy()
         self.edf = None
+        self.wealth_series = []

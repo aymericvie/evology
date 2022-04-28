@@ -86,6 +86,7 @@ def main(
         )
         pop, replace = bsc.UpdateWealthProfitAge(pop, CurrentPrice)
         pop = bsc.UpdateQuarterlyWealth(pop, generation)
+        pop = bsc.UpdateWealthSeries(pop)
 
         # Investment
         (pop, AvgT, PropSignif, HighestT, AvgAbsT) = iv.Profit_Investment(

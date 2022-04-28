@@ -209,3 +209,13 @@ cpdef UpdateQuarterlyWealth(list pop, double generation):
             ind.quarterly_wealth = ind.wealth
     return pop
     
+cpdef UpdateWealthSeries(list pop):
+    cdef cythonized.Individual ind
+    for ind in pop:
+        if len(ind.wealth_series) < 63:
+            pass
+        else:
+            del ind.wealth_series[0]
+        ind.wealth_series.append(ind.wealth)
+        print(ind.wealth_series)
+    return pop
