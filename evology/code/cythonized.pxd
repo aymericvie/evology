@@ -25,3 +25,4 @@ cdef class Individual(list):
     cdef public double val_net
     cdef public double quarterly_wealth
     cdef public list wealth_series
+    cdef public list investment_series

@@ -94,3 +94,4 @@ cdef class Individual(list):
         self.fitness = creator.fitness_strategy()
         self.edf = None
         self.wealth_series = []
+        self.investment_series = []

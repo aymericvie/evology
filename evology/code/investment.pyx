@@ -149,25 +149,33 @@ cpdef Emp_Investment(list pop):
             quarterly_return = (ind.wealth / ind.wealth_series[0]) - 1.
 
             # Draw the sign of the investment flow
-            if sigmoid(quarterly_return) <= randoms[i]:
+            if randoms[i] <= sigmoid(quarterly_return):
                 # Draw the value of the investment flow from Gumbel distributions (negative side)
-                ind.investor_flow = np.random.gumbel(3.89050923, 2.08605884) / -63.
+                ind.investment_ratio = - np.random.gumbel(3.89050923, 2.08605884) 
             else: #positive side
-                ind.investor_flow = np.random.gumbel(3.55311431, 2.13949923) / 63.
+                ind.investment_ratio = np.random.gumbel(3.55311431, 2.13949923) 
 
             # Apply investment flows converted to daily amounts and ratios instead of percentages
-            ind.cash += ind.investor_flow * ind.wealth / 100.
+            ind.investor_flow = (ind.investment_ratio / (63 * 100)) * ind.wealth
+            ind.cash += ind.investor_flow
 
-            if ind.investor_flow > 100:
+            if ind.investment_ratio > 100:
                 print([ind.type, quarterly_return, ind.wealth, ind.wealth_series[0], ind.investor_flow])
                 raise ValueError('wealth flow too high')
         
-            if isnan(ind.investor_flow) == True:
+            if isnan(ind.investment_ratio) == True:
                 print([ind.type, quarterly_return, ind.wealth, ind.wealth_series[0], ind.investor_flow])
                 raise ValueError('Nan investor flow')
+
+            if len(ind.investment_series) > 63:
+                del ind.investment_series[0]
+            ind.investment_series.append(ind.investor_flow)
+
+            #print([quarterly_return, ind.investment_ratio, ind.investment_ratio / 63., ind.investor_flow / ind.wealth])
         
         else:
             ind.investor_flow = NAN
+
 
 
 
