@@ -129,3 +129,36 @@ cpdef Returns_Investment(list pop, double ReinvestmentRate):
         #    raise ValueError('NAN investor flow.') 
     return pop
 
+
+
+
+# Code for the empirically-grounded investment mechanism
+
+cpdef sigmoid(x):
+    return 1.0 / exp(-2.68735918 * (x - 0.43503506))
+
+cpdef Emp_Investment(list pop):
+    cdef cythonized.Individual ind
+    cdef double quarterly_return = 0.0
+
+    randoms = np.random.random(size=len(pop))
+
+    for i, ind in enumerate(pop):
+        # Calculate quarterly return
+        quarterly_return = (ind.wealth / ind.wealth_series[0]) - 1.
+
+        # Draw the sign of the investment flow
+        if sigmoid(quarterly_return) <= randoms[i]:
+            # Draw the value of the investment flow from Gumbel distributions (negative side)
+            ind.investor_flow = np.random.gumbel(3.89050923, 2.08605884) / -63.
+        else: #positive side
+            ind.investor_flow = np.random.gumbel(3.55311431, 2.13949923) / 63.
+
+        # Apply investment flows converted to daily amounts and ratios instead of percentages
+        ind.cash += ind.investor_flow * ind.wealth / 100.
+
+        if ind.investor_flow > 100:
+            print([ind.type, quarterly_return, ind.wealth, ind.wealth_series[0], ind.investor_flow])
+            raise ValueError('wealth flow too high')
+
+    return pop

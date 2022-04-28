@@ -89,9 +89,14 @@ def main(
         pop = bsc.UpdateWealthSeries(pop)
 
         # Investment
+        ''' former investment process
         (pop, AvgT, PropSignif, HighestT, AvgAbsT) = iv.Profit_Investment(
         pop, ReinvestmentRate, InvestmentHorizon, generation
         )
+        '''
+
+        pop = iv.Emp_Investment(pop)
+        AvgT, PropSignif, HighestT, AvgAbsT = 0, 0, 0, 0
 
         # Record results 
         results, sim_break = data.record_results(

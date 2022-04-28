@@ -217,5 +217,4 @@ cpdef UpdateWealthSeries(list pop):
         else:
             del ind.wealth_series[0]
         ind.wealth_series.append(ind.wealth)
-        print(ind.wealth_series)
     return pop
