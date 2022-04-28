@@ -47,14 +47,15 @@ def run(
 
 
 wealth_coordinates = np.random.dirichlet(np.ones(3), size=1)[0].tolist()
-np.random.seed(8)
+np.random.seed()
 wealth_coordinates = [1/3,1/3,1/3]
 print(wealth_coordinates)
 df, pop = run(
-    500,
+    30,
     0,
-    20 * 252, # 200_000,
-    "linear", #"esl.true", # "linear",
+    100 * 252, # 200_000,
+    "linear", 
+    #"esl.true",
     #"extended", 
     "scholl",
     wealth_coordinates,
@@ -66,17 +67,4 @@ df, pop = run(
 
 df.to_csv("rundata/run_data.csv")
 
-arr = []
-for ind in pop:
-    arr.append(ind.investor_flow * 63.0)
-
-plt.hist(arr)
-plt.show()
-
-arr = []
-for ind in pop:
-    arr.append((ind.wealth / ind.wealth_series[0]) - 1)
-
-plt.hist(arr)
-plt.show()
 

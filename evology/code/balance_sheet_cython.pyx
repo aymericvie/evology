@@ -4,6 +4,7 @@ from libc.math cimport log2, tanh, isnan
 from parameters import G, GAMMA_NT, RHO_NT, MU_NT, LeverageNT, LeverageVI, LeverageTF
 from parameters import G_day, SCALE_NT, SCALE_TF, SCALE_VI, interest_year, liquidation_perc
 import warnings
+import math
 import numpy as np
 cdef float NAN
 NAN = float("nan")
@@ -27,6 +28,9 @@ cpdef UpdateWealthProfitAge(list pop, double current_price):
         ind.wealth = ind.cash + ind.asset * current_price - ind.loan
         if ind.wealth < 0:
             replace = 1
+        if isnan(ind.wealth) == True:
+            print([ind.cash, ind.asset, current_price, ind.loan, ind.wealth])
+            raise ValueError('ind.wealth is nan')
         # Compute profit
         ind.profit = ind.wealth - ind.prev_wealth
         ind.profit_internal = ind.wealth - ind.investor_flow - ind.prev_wealth
@@ -37,6 +41,7 @@ cpdef UpdateWealthProfitAge(list pop, double current_price):
             ind.DailyReturn = NAN
         # Update age
         ind.age += 1
+
         
     return pop, replace
 
@@ -177,6 +182,7 @@ cpdef linear_solver(list pop, double spoils, double volume, double prev_price):
     #price = a/b
     # price = max(a/b, 0.01)
     price = min(max(a/b, 0.75*prev_price), 1.25*prev_price)
+    price = max(price, 0.01)
 
 
     if isnan(price) == True:
@@ -217,4 +223,22 @@ cpdef UpdateWealthSeries(list pop):
         else:
             del ind.wealth_series[0]
         ind.wealth_series.append(ind.wealth)
+    return pop
+
+cpdef CalculateEDV(list pop, double current_price):
+    cdef cythonized.Individual ind
+    for ind in pop:
+        ind.edv = ind.edf(ind, current_price)
+    if ind.edv == math.inf:
+        print([ind.type, ind.edv, ind.tsv, ind.wealth])
+        print(ind.wealth / current_price)
+        print(tanh(ind.tsv + 0.5))
+        print(ind.asset)
+        raise ValueError('edv = +inf')
+    if ind.edv == - math.inf:
+        print([ind.type, ind.edv, ind.tsv, ind.wealth])
+        print(ind.wealth / current_price)
+        print(tanh(ind.tsv + 0.5))
+        print(ind.asset)
+        raise ValueError('edv = -inf')
     return pop

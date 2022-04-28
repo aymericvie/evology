@@ -145,20 +145,30 @@ cpdef Emp_Investment(list pop):
 
     for i, ind in enumerate(pop):
         # Calculate quarterly return
-        quarterly_return = (ind.wealth / ind.wealth_series[0]) - 1.
+        if len(ind.wealth_series) == 63:
+            quarterly_return = (ind.wealth / ind.wealth_series[0]) - 1.
 
-        # Draw the sign of the investment flow
-        if sigmoid(quarterly_return) <= randoms[i]:
-            # Draw the value of the investment flow from Gumbel distributions (negative side)
-            ind.investor_flow = np.random.gumbel(3.89050923, 2.08605884) / -63.
-        else: #positive side
-            ind.investor_flow = np.random.gumbel(3.55311431, 2.13949923) / 63.
+            # Draw the sign of the investment flow
+            if sigmoid(quarterly_return) <= randoms[i]:
+                # Draw the value of the investment flow from Gumbel distributions (negative side)
+                ind.investor_flow = np.random.gumbel(3.89050923, 2.08605884) / -63.
+            else: #positive side
+                ind.investor_flow = np.random.gumbel(3.55311431, 2.13949923) / 63.
 
-        # Apply investment flows converted to daily amounts and ratios instead of percentages
-        ind.cash += ind.investor_flow * ind.wealth / 100.
+            # Apply investment flows converted to daily amounts and ratios instead of percentages
+            ind.cash += ind.investor_flow * ind.wealth / 100.
 
-        if ind.investor_flow > 100:
-            print([ind.type, quarterly_return, ind.wealth, ind.wealth_series[0], ind.investor_flow])
-            raise ValueError('wealth flow too high')
+            if ind.investor_flow > 100:
+                print([ind.type, quarterly_return, ind.wealth, ind.wealth_series[0], ind.investor_flow])
+                raise ValueError('wealth flow too high')
+        
+            if isnan(ind.investor_flow) == True:
+                print([ind.type, quarterly_return, ind.wealth, ind.wealth_series[0], ind.investor_flow])
+                raise ValueError('Nan investor flow')
+        
+        else:
+            ind.investor_flow = NAN
+
+
 
     return pop

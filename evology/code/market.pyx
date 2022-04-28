@@ -4,6 +4,7 @@ from balance_sheet import count_long_assets, count_short_assets, update_margin, 
 import numpy as np
 from parameters import div_atc, G, div_vol, interest_day, G_day, Short_Size_Percent
 cimport cythonized
+from libc.math cimport isnan
 
 
 cpdef draw_dividend(double dividend, list random_dividend_history):
@@ -130,10 +131,12 @@ cpdef determine_multiplier(list pop, double spoils, double ToLiquidate, double a
     if multiplier_sell < 0:
         raise ValueError("Multiplier Sell is negative")
 
-    if round(abs(total_buy * multiplier_buy - total_sell_short * multiplier_sell),3) != 0:
+    if round(abs(total_buy * multiplier_buy - total_sell_short * multiplier_sell),5) >= 0.1:
         if abs(total_buy * multiplier_buy - total_sell_short * multiplier_sell) >= abs(
-            0.0001 * ((total_buy * multiplier_buy) + (total_sell_short * multiplier_sell))
+            0.1 * ((total_buy * multiplier_buy) + (total_sell_short * multiplier_sell))
         ):
+            print([total_buy, total_sell])
+            print([multiplier_buy, multiplier_sell])
             print(total_buy * multiplier_buy)
             print(total_sell_short * multiplier_sell)
             raise ValueError(
@@ -166,7 +169,11 @@ cpdef execute_ed(list pop, double current_price, double asset_supply, double spo
         amount = 0.0
 
         if ind.edv > 0:
-            amount = ind.edv * multiplier_buy
+            if multiplier_buy != 0.0:
+                amount = ind.edv * multiplier_buy
+            if isnan(amount) == True:
+                print([ind.edv, multiplier_buy])
+                raise ValueError('nan amount (buy)')
 
         if ind.edv < 0:
             if abs(ind.edv) * multiplier_sell <= ind.asset:
@@ -181,6 +188,9 @@ cpdef execute_ed(list pop, double current_price, double asset_supply, double spo
                     temp -= ind.asset
                 # The reminder is a short sell. Hence, both multiplier_sell AND short_ratio apply.
                 amount -= temp * short_ratio
+            if isnan(amount) == True:
+                print([ind.edv, multiplier_buy])
+                raise ValueError('nan amount (sell)')
 
         ind.asset += amount
         ind.cash -= amount * current_price
@@ -190,6 +200,10 @@ cpdef execute_ed(list pop, double current_price, double asset_supply, double spo
         if ind.cash < 0:
             ind.loan += abs(ind.cash)
             ind.cash = 0
+
+        if isnan(ind.cash) == True or isnan(ind.asset) == True:
+            print([ind.type, amount, ind.cash, ind.asset, ind.wealth, ind.edv, ind.tsv])
+            raise ValueError('Nan cash and asset at market')
 
     # Record that we liquidated some spoils
     if spoils > 0:

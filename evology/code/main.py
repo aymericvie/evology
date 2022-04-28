@@ -59,11 +59,14 @@ def main(
         pop = bsc.UpdateFval(pop, dividend)
         pop = bsc.CalculateTSV(pop, price_history, dividend_history, CurrentPrice)
         pop = bsc.DetermineEDF(pop)
+        
 
         # Market clearing
         pop, mismatch, CurrentPrice, price_history, ToLiquidate = marketClearing(
             pop, CurrentPrice, price_history, spoils, solver, volume
         )
+
+        pop = bsc.CalculateEDV(pop, CurrentPrice)
 
         # Market activity
         (
