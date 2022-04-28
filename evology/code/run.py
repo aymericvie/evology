@@ -51,9 +51,9 @@ np.random.seed()
 wealth_coordinates = [1/3,1/3,1/3]
 print(wealth_coordinates)
 df, pop = run(
-    100,
+    200,
     0,
-    100 * 252, # 200_000,
+    400 * 252, # 200_000,
     "linear", 
     #"esl.true",
     "extended", 

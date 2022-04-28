@@ -70,8 +70,8 @@ min_nt_strat = 5
 max_nt_strat = 15
 
 # VI strat is divided by 1000
-min_vi_strat = 8
-max_vi_strat = 12
+min_vi_strat = 5
+max_vi_strat = 15
 
 min_tf_strat = 2
 max_tf_strat = 21
