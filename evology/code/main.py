@@ -9,8 +9,8 @@ def main(
     MAX_GENERATIONS,
     PROBA_SELECTION,
     MUTATION_RATE,
-    ReinvestmentRate,
-    InvestmentHorizon,
+    # ReinvestmentRate,
+    # InvestmentHorizon,
     tqdm_display,
     reset_wealth,
 ):
@@ -42,7 +42,7 @@ def main(
 
 
         # Strategy evolution
-        pop = fit.ComputeFitness(pop, InvestmentHorizon)
+        pop = fit.ComputeFitness(pop, 252)
         pop, CountSelected, CountMutated, CountCrossed, StratFlow = ga_evolution(
             pop,
             space,
@@ -50,7 +50,7 @@ def main(
             wealth_coordinates,
             PROBA_SELECTION,
             MUTATION_RATE,
-            InvestmentHorizon,
+            252,
         )
 
         # Market decisions 

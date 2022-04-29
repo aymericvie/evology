@@ -11,8 +11,6 @@ def run(
     wealth_coordinates,
     tqdm_display,
     reset_wealth,
-    ReinvestmentRate,
-    InvestmentHorizon,
 ):
     if learning_mode == 0:
         df, pop = main(
@@ -23,8 +21,6 @@ def run(
             TIME,
             0,
             0,
-            ReinvestmentRate,
-            InvestmentHorizon,
             tqdm_display,
             reset_wealth,
         )
@@ -38,8 +34,6 @@ def run(
             TIME,
             PROBA_SELECTION,
             MUTATION_RATE,
-            ReinvestmentRate,
-            InvestmentHorizon,
             tqdm_display,
             reset_wealth,
         )
@@ -51,9 +45,9 @@ np.random.seed()
 wealth_coordinates = [1/3,1/3,1/3]
 print(wealth_coordinates)
 df, pop = run(
-    200,
+    100,
     0,
-    400 * 252, # 200_000,
+    100 * 252, # 200_000,
     "linear", 
     #"esl.true",
     "extended", 
@@ -61,8 +55,8 @@ df, pop = run(
     wealth_coordinates,
     tqdm_display=False,
     reset_wealth=False,
-    ReinvestmentRate=1.5, #limited impact?
-    InvestmentHorizon=21, #ineffective right now?
+    # ReinvestmentRate=1.5, #limited impact?
+    # InvestmentHorizon=21, #ineffective right now?
 )
 
 df.to_csv("rundata/run_data.csv")
