@@ -264,7 +264,7 @@ def ResultsProcess(list pop, double spoils, double price, double generation):
                 NTreturn += ind.DailyReturn
             #if ind.prev_wealth_noinv != 0:
             #    NTreturn_noinv += ind.DailyReturn_noinv
-            NTflows += ind.investor_flow
+            NTflows += 0 #ind.investor_flow
             NT_process += ind.process
 
         elif ind.type == "vi":
@@ -281,7 +281,7 @@ def ResultsProcess(list pop, double spoils, double price, double generation):
             VIstocks += price * ind.asset
             if ind.prev_wealth != 0:
                 VIreturn += ind.DailyReturn
-            VIflows += ind.investor_flow
+            VIflows += 0 #ind.investor_flow
             VI_val += ind.val * ind.wealth
 
         elif ind.type == "tf":
@@ -298,7 +298,7 @@ def ResultsProcess(list pop, double spoils, double price, double generation):
             TFstocks += price * ind.asset
             if ind.prev_wealth != 0:
                 TFreturn += ind.DailyReturn
-            TFflows += ind.investor_flow
+            TFflows += 0 #ind.investor_flow
 
     if NTcount != 0:
         NTcash = NTcash / NTcount

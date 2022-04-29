@@ -15,13 +15,25 @@ cpdef sigmoid(x):
 
 cpdef Emp_Investment(list pop):
     cdef cythonized.Individual ind
-    cdef double quarterly_return 
-    cdef double ind_wealth
-    cdef double flow
+    #cdef double quarterly_return 
+    #cdef double ind_wealth
+    #cdef double flow
 
     randoms = np.random.random(size=len(pop))
+    gumbel_draws_positive = np.random.gumbel(3.89050923, 2.08605884, size=len(pop)) 
+    gumbel_draws_negative = np.random.gumbel(3.55311431, 2.13949923, size=len(pop)) 
 
     for i, ind in enumerate(pop):
+
+        if ind.age >= 63:    
+            if randoms[i] <= sigmoid((ind.wealth / ind.wealth_series[0]) - 1.): # negative side
+                ind.cash += (- gumbel_draws_negative[i] / (6300)) * ind.wealth
+            else: #positive side
+                ind.cash += (gumbel_draws_positive[i] / (6300)) * ind.wealth
+    return pop
+
+'''
+        
         # Calculate quarterly return
         if len(ind.wealth_series) == 63:
             ind_wealth = ind.wealth
@@ -39,16 +51,15 @@ cpdef Emp_Investment(list pop):
             ind.investor_flow = flow
             ind.cash += ind.investor_flow
 
-            ind.investment_series.append(ind.investor_flow)
-            if len(ind.investment_series) > 63:
-                del ind.investment_series[0]
+            #ind.investment_series.append(ind.investor_flow)
+            #if len(ind.investment_series) > 63:
+            #    del ind.investment_series[0]
         
         else:
             ind.investor_flow = NAN
-    return pop
 
 
-
+'''
 
 '''
 cdef double Barr = max(SHIELD_DURATION, ShieldResults) 

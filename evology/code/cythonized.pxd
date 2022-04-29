@@ -13,8 +13,8 @@ cdef class Individual(list):
     cdef public double process 
     cdef public double ema
     cdef public double profit
-    cdef public double investor_flow
-    cdef public double investment_ratio
+    #cdef public double investor_flow
+    #cdef public double investment_ratio
     cdef public double prev_wealth
     cdef public double DailyReturn
     cdef public object fitness
@@ -25,4 +25,4 @@ cdef class Individual(list):
     cdef public double val_net
     cdef public double quarterly_wealth
     cdef public list wealth_series
-    cdef public list investment_series
+    #cdef public list investment_series

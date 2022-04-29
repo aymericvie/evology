@@ -33,7 +33,8 @@ cpdef UpdateWealthProfitAge(list pop, double current_price):
             raise ValueError('ind.wealth is nan')
         # Compute profit
         ind.profit = ind.wealth - ind.prev_wealth
-        ind.profit_internal = ind.wealth - ind.investor_flow - ind.prev_wealth
+        #ind.profit_internal = ind.wealth - ind.investor_flow - ind.prev_wealth
+        ind.profit_internal = ind.wealth - ind.prev_wealth
         # Compute return
         if ind.prev_wealth != 0:
             ind.DailyReturn = (ind.wealth - ind.prev_wealth) / ind.prev_wealth
