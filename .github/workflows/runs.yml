@@ -1,7 +1,4 @@
-# This is a basic workflow to help you get started with Actions
-
-name: no_learning_runs
-
+name: runs
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
@@ -34,11 +31,9 @@ jobs:
         run: python setup.py
       - name: test cython version
         run: cython -V
-      # - name: change permission
-      #   run: chmod +x tests/test_learning.py
       - name: compile cythonized files
         run: (cd evology/code && ./cythonize.sh)
-      - name: run test nolearning
-        run: python tests/test_nolearning.py
+      - name: run test 'run'
+        run: python tests/test_run.py
 
 
