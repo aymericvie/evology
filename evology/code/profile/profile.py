@@ -8,6 +8,7 @@ import numpy as np
 
 
 @profile
+
 def main(
     space,
     solver,
@@ -16,15 +17,13 @@ def main(
     MAX_GENERATIONS,
     PROBA_SELECTION,
     MUTATION_RATE,
-    ReinvestmentRate,
-    InvestmentHorizon,
     tqdm_display,
     reset_wealth,
 ):
     # Initialisation
     generation, CurrentPrice, dividend, spoils = 0, InitialPrice, INITIAL_DIVIDEND, 0
     results = np.zeros((MAX_GENERATIONS - data.Barr, data.variables))
-    price_history, dividend_history, replace = [], [], 0
+    price_history, dividend_history, replace, volume, avg_phi = [], [], 0, 0.0, 0.0
 
     # Population creation
     pop, asset_supply = cr.CreatePop(POPULATION_SIZE, space, wealth_coordinates, CurrentPrice)
@@ -33,20 +32,23 @@ def main(
         range(MAX_GENERATIONS), disable=tqdm_display, miniters=100, mininterval=0.5
     ):
         if CurrentPrice >= 1_000_000:
+            warnings.warn('Simulation break: price above 1M.')
             break
 
         # Population reset
         pop = cr.WealthReset(pop, space, wealth_coordinates, generation, reset_wealth)
 
         # Hypermutation
+        
         pop, replacements, spoils = ga.hypermutate(
             pop, spoils, replace
         ) 
         if replacements < 0:
             break
 
+
         # Strategy evolution
-        pop = fit.ComputeFitness(pop, InvestmentHorizon)
+        pop = fit.ComputeFitness(pop, 252)
         pop, CountSelected, CountMutated, CountCrossed, StratFlow = ga_evolution(
             pop,
             space,
@@ -54,7 +56,7 @@ def main(
             wealth_coordinates,
             PROBA_SELECTION,
             MUTATION_RATE,
-            InvestmentHorizon,
+            252,
         )
 
         # Market decisions 
@@ -63,11 +65,14 @@ def main(
         pop = bsc.UpdateFval(pop, dividend)
         pop = bsc.CalculateTSV(pop, price_history, dividend_history, CurrentPrice)
         pop = bsc.DetermineEDF(pop)
+        
 
         # Market clearing
         pop, mismatch, CurrentPrice, price_history, ToLiquidate = marketClearing(
-            pop, CurrentPrice, price_history, spoils, solver
+            pop, CurrentPrice, price_history, spoils, solver, volume
         )
+
+        pop = bsc.CalculateEDV(pop, CurrentPrice)
 
         # Market activity
         (
@@ -86,17 +91,24 @@ def main(
             dividend_history,
             spoils,
             ToLiquidate,
-            np.random.normal(0.0, 1.0)
+            random_dividend_history
         )
         pop, replace = bsc.UpdateWealthProfitAge(pop, CurrentPrice)
+        pop = bsc.UpdateQuarterlyWealth(pop, generation)
+        pop = bsc.UpdateWealthSeries(pop)
 
         # Investment
+        ''' former investment process
         (pop, AvgT, PropSignif, HighestT, AvgAbsT) = iv.Profit_Investment(
         pop, ReinvestmentRate, InvestmentHorizon, generation
         )
+        '''
+
+        pop = iv.Emp_Investment(pop)
+        AvgT, PropSignif, HighestT, AvgAbsT = 0, 0, 0, 0
 
         # Record results 
-        results = data.record_results(
+        results, sim_break = data.record_results(
             results,
             generation,
             CurrentPrice,
@@ -119,12 +131,12 @@ def main(
             AvgAbsT,
         )
 
+        if sim_break == True:
+            warnings.warn('Simulation break: one of the 3 strategy types is extinct.')
+            break
+
     if generation < MAX_GENERATIONS - data.Barr:
-        # It means the simulation has breaked.
-        results[generation + 1 : MAX_GENERATIONS - data.Barr, :] = (
-            np.empty((MAX_GENERATIONS - data.Barr - generation - 1, data.variables))
-            * np.nan
-        )
+        results = results[0:generation+1]
 
     df = pd.DataFrame(results, columns=data.columns)
 
@@ -136,15 +148,13 @@ np.random.seed(8)
 wealth_coordinates = [1 / 3, 1 / 3, 1 / 3]
 TIME, POPSIZE = 10000, 1000
 df, pop = main(
-    "scholl",
-    "esl.true",
+    "extended",
+    "linear",
     wealth_coordinates,
     POPSIZE,
     TIME,
     0,
     0,
-    1.05,
-    252,
     False,
     False,
 )
