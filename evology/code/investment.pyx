@@ -13,6 +13,7 @@ cpdef sigmoid(x):
 cpdef Emp_Investment(list pop):
     cdef cythonized.Individual ind
     cdef int i
+    cdef double ind_wealth
 
     cdef list randoms = np.random.random(size=len(pop)).tolist()
     cdef list gumbel_draws_positive = np.random.gumbel(3.89050923, 2.08605884, size=len(pop)).tolist()
@@ -20,11 +21,12 @@ cpdef Emp_Investment(list pop):
 
     for i, ind in enumerate(pop):
 
-        if ind.age >= 63:    
-            if randoms[i] <= sigmoid((ind.wealth / ind.wealth_series[0]) - 1.): # negative side
-                ind.cash += (- gumbel_draws_negative[i] / (6300)) * ind.wealth
+        if ind.age >= 63:   
+            ind_wealth = ind.wealth 
+            if randoms[i] <= sigmoid((ind_wealth / ind.wealth_series[0]) - 1.): # negative side
+                ind.cash += (- gumbel_draws_negative[i] / (6300)) * ind_wealth
             else: 
-                ind.cash += (gumbel_draws_positive[i] / (6300)) * ind.wealth
+                ind.cash += (gumbel_draws_positive[i] / (6300)) * ind_wealth
     return pop
 
 '''

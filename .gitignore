@@ -2,6 +2,7 @@
 .vscode
 *.csv
 *.lprof
+*.html
 *.py.lprof
 *.o
 *.png
