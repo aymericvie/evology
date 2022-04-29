@@ -1,5 +1,4 @@
 #cython: boundscheck=False, wraparound=False, initializedcheck=False, cdivision=True
-
 cimport cythonized
 import numpy as np
 import time 
@@ -8,27 +7,23 @@ from parameters import SHIELD_DURATION, ShieldResults
 cdef float NAN
 NAN = float("nan")
 
-# Code for the empirically-grounded investment mechanism
-
 cpdef sigmoid(x):
     return 1.0 / exp(-2.68735918 * (x - 0.43503506))
 
 cpdef Emp_Investment(list pop):
     cdef cythonized.Individual ind
-    #cdef double quarterly_return 
-    #cdef double ind_wealth
-    #cdef double flow
+    cdef int i
 
-    randoms = np.random.random(size=len(pop))
-    gumbel_draws_positive = np.random.gumbel(3.89050923, 2.08605884, size=len(pop)) 
-    gumbel_draws_negative = np.random.gumbel(3.55311431, 2.13949923, size=len(pop)) 
+    cdef list randoms = np.random.random(size=len(pop)).tolist()
+    cdef list gumbel_draws_positive = np.random.gumbel(3.89050923, 2.08605884, size=len(pop)).tolist()
+    cdef list gumbel_draws_negative = np.random.gumbel(3.55311431, 2.13949923, size=len(pop)).tolist()
 
     for i, ind in enumerate(pop):
 
         if ind.age >= 63:    
             if randoms[i] <= sigmoid((ind.wealth / ind.wealth_series[0]) - 1.): # negative side
                 ind.cash += (- gumbel_draws_negative[i] / (6300)) * ind.wealth
-            else: #positive side
+            else: 
                 ind.cash += (gumbel_draws_positive[i] / (6300)) * ind.wealth
     return pop
 
