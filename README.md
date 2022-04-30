@@ -11,7 +11,7 @@ We implement an artificial stock market with adaptive trading strategies: an evo
 
 ## Credits and funding
 
-Code developed by Aymeric Vié with support from Doyne Farmer, Maarten Scholl, Rudy H. Tanin and Louis Vié. This research has been supported by the EPSRC Centre for Doctoral Training in Mathematics of Random Systems: Analysis, Modelling and Simulation (EP/S023925/1)
+Code developed by Aymeric Vié with support from Doyne Farmer, Maarten Scholl, Publius Dirac and Louis Vié. This research has been supported by the EPSRC Centre for Doctoral Training in Mathematics of Random Systems: Analysis, Modelling and Simulation (EP/S023925/1)
 
 ## Documentation
 
