@@ -7,25 +7,27 @@ from parameters import SHIELD_DURATION, ShieldResults
 cdef float NAN
 NAN = float("nan")
 
-cpdef sigmoid(x):
+cpdef double sigmoid(double x):
     return 1.0 / exp(-2.68735918 * (x - 0.43503506))
 
 cpdef Emp_Investment(list pop):
     cdef cythonized.Individual ind
     cdef int i
     cdef double ind_wealth
+    cdef double first_wealth
 
-    cdef list randoms = np.random.random(size=len(pop)).tolist()
-    cdef list gumbel_draws_positive = np.random.gumbel(3.89050923, 2.08605884, size=len(pop)).tolist()
-    cdef list gumbel_draws_negative = np.random.gumbel(3.55311431, 2.13949923, size=len(pop)).tolist()
+    cdef double[:] randoms = np.random.random(size=len(pop))
+    cdef double[:] gumbel_draws_positive = np.random.gumbel(3.89050923, 2.08605884, size=len(pop))
+    cdef double[:] gumbel_draws_negative = np.random.gumbel(3.55311431, 2.13949923, size=len(pop))
 
     for i, ind in enumerate(pop):
 
-        if ind.age >= 63:   
-            ind_wealth = ind.wealth 
-            if randoms[i] <= sigmoid((ind_wealth / ind.wealth_series[0]) - 1.): # negative side
+        if ind.age >= 63:
+            ind_wealth = ind.wealth
+            first_wealth = ind.wealth_series[0]
+            if randoms[i] <= sigmoid((ind_wealth / first_wealth) - 1.): # negative side
                 ind.cash += (- gumbel_draws_negative[i] / (6300)) * ind_wealth
-            else: 
+            else:
                 ind.cash += (gumbel_draws_positive[i] / (6300)) * ind_wealth
     return pop
 
