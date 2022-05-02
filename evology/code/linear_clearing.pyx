@@ -39,7 +39,7 @@ cpdef linear_solver(list pop, double ToLiquidate, double prev_price):
         d = (tanh(c * ind.tsv + 0.5)) * ind.wealth
         a += l * d
 
-    price = fmin(fmax(a/b, 0.75*prev_price), 1.25*prev_price)
+    price = fmin(fmax(a/b, 0.8*prev_price), 1.2*prev_price)
     price = fmax(price, 0.01)
 
     

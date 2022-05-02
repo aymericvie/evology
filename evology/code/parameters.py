@@ -55,6 +55,7 @@ liquidation_perc = 10 / 100
 
 SHIELD_DURATION = 0  # 21
 ShieldResults = 0  # 1 #21
+ShieldInvestment = 25200
 SHIELD_TOLERANCE = 0.01
 MAX_ATTEMPTS = 100
 

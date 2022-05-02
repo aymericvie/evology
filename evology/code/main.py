@@ -103,7 +103,8 @@ def main(
         pop = bsc.UpdateQuarterlyWealth(pop, generation)
         pop = bsc.UpdateWealthSeries(pop)
 
-        pop = iv.Emp_Investment(pop)
+        if generation >= ShieldInvestment:
+            pop = iv.Emp_Investment(pop)
         #AvgT, PropSignif, HighestT, AvgAbsT = 0, 0, 0, 0
 
         # Record results 
