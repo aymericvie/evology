@@ -24,7 +24,7 @@ cpdef Emp_Investment(list pop):
 
         if ind.age >= 63:
             ind_wealth = ind.wealth
-            first_wealth = ind.wealth_series[0]
+            first_wealth = ind.last_wealth
             if randoms[i] <= sigmoid((ind_wealth / first_wealth) - 1.): # negative side
                 ind.cash += (- gumbel_draws_negative[i] / (6300)) * ind_wealth
             else:

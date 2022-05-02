@@ -224,6 +224,7 @@ cpdef UpdateWealthSeries(list pop):
         else:
             del ind.wealth_series[0]
         ind.wealth_series.append(ind.wealth)
+        ind.last_wealth = ind.wealth_series[0]
     return pop
 
 cpdef CalculateEDV(list pop, double current_price):
