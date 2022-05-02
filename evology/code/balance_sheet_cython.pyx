@@ -178,30 +178,22 @@ cpdef CalculateEDV(list pop, double current_price):
     cdef double a
     cdef double b
     cdef double c
-    #for ind in pop:
-    #    ind.edv = ind.edf(ind, current_price)
-    #return pop
-
     cdef int t
+
     for ind in pop:
         t = ind.type_as_int
-        if t==2:
+        if t == 2:
             a = (LeverageTF * ind.wealth / current_price)
             b = tanh(SCALE_TF * ind.tsv + 0.5)
             c = ind.asset
-            #ind.edv = (LeverageTF * ind.wealth / current_price) * tanh(SCALE_TF * ind.tsv + 0.5) - ind.asset
-        elif t==1:
+        elif t == 1:
             a = (LeverageVI * ind.wealth / current_price)
             b = tanh(SCALE_VI * ind.tsv + 0.5)
             c = ind.asset
-            #ind.edv = (LeverageVI * ind.wealth / current_price) * tanh(SCALE_VI * ind.tsv + 0.5) - ind.asset
-        elif t == 0:
+        else:
             a = (LeverageNT * ind.wealth / current_price)
             b = tanh(SCALE_NT * ind.tsv + 0.5)
             c = ind.asset
-            #ind.edv = (LeverageNT * ind.wealth / current_price) * tanh(SCALE_NT * ind.tsv + 0.5) - ind.asset
-        else:
-            raise Exception(f"Unexpected ind type: {ind.type}")
         ind.edv = a * b - c
         mismatch += ind.edv
     return pop, mismatch
