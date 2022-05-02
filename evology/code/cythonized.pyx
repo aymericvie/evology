@@ -95,4 +95,5 @@ cdef class Individual(list):
         #self.edf = None
         self.wealth_series = []
         self.last_wealth = 0.0
+        self.last_price = 100.0
         #self.investment_series = []

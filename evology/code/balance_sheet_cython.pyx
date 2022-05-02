@@ -82,9 +82,10 @@ cpdef CalculateTSV(list pop, list price_history, list dividend_history, double C
                 raise ValueError('ind.tsv is NAN')
         else: # TF
             if len(price_history) >= ind.strategy:
-                ind.tsv =  log2(CurrentPrice / price_history[-int(ind.strategy)])
+                ind.last_price = price_history[-int(ind.strategy)]
+                ind.tsv =  log2(CurrentPrice / ind.last_price)
             else:
-                ind.tsv = 0
+                ind.tsv = 0.0
     return pop
 
 cpdef UpdateFval(list pop, double dividend):
@@ -100,18 +101,8 @@ cpdef UpdateFval(list pop, double dividend):
         t = ind.type_as_int
         if t==1:
             fval = numerator / ind.val_net # TODO: Val_net only changes when val changes
-            if fval != np.inf:
-                ind.val = fval
-            #if ind.val < 0:
-            #    warnings.warn("Negative fval found in update_fval.")
-            #if ind.val == np.inf:
-            #    print(numerator)
-            #    print(ind.val_net)
-            ##    print(ind.strategy)
-            #    print(interest_year)
-            #    print(ind.val)
-            #    print((interest_year + ind.strategy) - G)
-            #    raise ValueError('Infinite FVal.')
+            #if fval != np.inf:
+            ind.val = fval
     return pop
 
 def DetermineEDF(pop):
@@ -151,14 +142,14 @@ cpdef UpdateFullWealth(list pop, double current_price):
         ind.prev_wealth = ind.wealth
         if ind.wealth < 0:
             replace = 1  
-        if isnan(ind.wealth) == True:
-            print(ind.wealth)
-            print(ind.cash)
-            print(ind.asset)
-            print(current_price)
-            print(ind.loan)
-            print(ind.age)
-            raise ValueError('ind.wealth is NAN')
+        #if isnan(ind.wealth) == True:
+        #    print(ind.wealth)
+        #    print(ind.cash)
+        #    print(ind.asset)
+        #    print(current_price)
+        #    print(ind.loan)
+        #    print(ind.age)
+        #    raise ValueError('ind.wealth is NAN')
     return pop, replace
       
 

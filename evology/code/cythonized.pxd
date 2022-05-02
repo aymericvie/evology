@@ -26,4 +26,5 @@ cdef class Individual(list):
     cdef public double quarterly_wealth
     cdef public list wealth_series
     cdef public double last_wealth
+    cdef double last_price
     #cdef public list investment_series
