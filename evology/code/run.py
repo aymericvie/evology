@@ -42,8 +42,7 @@ def run(
 
 wealth_coordinates = np.random.dirichlet(np.ones(3), size=1)[0].tolist()
 np.random.seed()
-# wealth_coordinates = [1/3,1/3,1/3]
-wealth_coordinates = [0.6, 0.05, 0.35]
+wealth_coordinates = [1/3,1/3,1/3]
 print(wealth_coordinates)
 df, pop = run(
     1000,
