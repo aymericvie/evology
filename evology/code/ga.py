@@ -5,7 +5,6 @@ from deap import tools
 from deap import algorithms
 from operator import attrgetter
 from creation import *
-import balance_sheet as bs
 import timeit
 import warnings
 import cythonized

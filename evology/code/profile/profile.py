@@ -137,7 +137,6 @@ def main(
 
     return df, pop
 
-
 np.random.seed(8)
 wealth_coordinates = [1 / 3, 1 / 3, 1 / 3]
 TIME, POPSIZE = 10000, 1000

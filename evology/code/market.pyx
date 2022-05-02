@@ -1,6 +1,6 @@
 #cython: boundscheck=False, wraparound=False, initializedcheck=False, cdivision=True
 
-from balance_sheet import count_long_assets, count_short_assets, update_margin, clear_debt
+from balance_sheet_cython import count_long_assets, count_short_assets, update_margin, clear_debt
 import numpy as np
 from parameters import div_atc, G, div_vol, interest_day, G_day, Short_Size_Percent
 cimport cythonized
@@ -9,6 +9,8 @@ from libc.math cimport isnan
 
 cpdef draw_dividend(double dividend, list random_dividend_history):
     cdef double Z = np.random.normal(0,1)
+    cdef double random_dividend
+
     if len(random_dividend_history) > 2:
         random_dividend =  (
             div_atc * random_dividend_history[-2] 
@@ -29,6 +31,7 @@ cpdef earnings(list pop, double prev_dividend, list random_dividend_history):
     cdef double dividend
     cdef double div_asset
     cdef double interest_cash
+    cdef double random_dividend
     
     dividend, random_dividend = draw_dividend(prev_dividend, random_dividend_history)
 
@@ -258,6 +261,11 @@ cpdef execute_ed(list pop, double current_price, double asset_supply, double spo
 
 cpdef MarketActivity(list pop, double current_price, double asset_supply,
     double dividend, list dividend_history, double spoils, double ToLiquidate, list random_dividend_history):
+
+    cdef double volume 
+    cdef double random_dividend
+    cdef double Liquidations
+
     pop, volume, spoils, Liquidations = execute_ed(pop, current_price, asset_supply, spoils, ToLiquidate)
     
     pop, dividend, random_dividend = earnings(pop, dividend, random_dividend_history)

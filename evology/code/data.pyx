@@ -3,7 +3,6 @@
 #!/usr/bin/env python3
 import pandas as pd
 import numpy as np
-import balance_sheet as bs
 from libc.math cimport log, sqrt, isnan
 
 from parameters import *

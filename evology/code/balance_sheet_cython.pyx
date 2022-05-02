@@ -198,3 +198,49 @@ cpdef CalculateEDV(list pop, double current_price):
             raise Exception(f"Unexpected ind type: {ind.type}")
         mismatch += ind.edv
     return pop, mismatch
+
+cpdef count_long_assets(list pop, double spoils):    
+    cdef cythonized.Individual ind
+    cdef double count = 0.0
+    for ind in pop:
+        count += ind.asset
+    count += spoils
+    return count
+
+
+cpdef count_short_assets(list pop, double spoils):
+    cdef cythonized.Individual ind
+    cdef double count = 0.0
+    for ind in pop:
+        if ind.asset < 0:
+            count += abs(ind.asset)
+    if spoils < 0:
+        count += abs(spoils)
+    return count
+
+cpdef update_margin(list pop, double current_price):
+    cdef cythonized.Individual ind
+    for ind in pop:
+        ind.cash += ind.margin
+        ind.margin = 0.0
+        if ind.asset < 0.0:
+            ind.margin += ind.asset * current_price
+            ind.cash -= ind.asset * current_price
+        if ind.cash < 0.0:
+            ind.loan += abs(ind.cash)
+            ind.cash = 0.0
+    return pop
+
+cpdef clear_debt(list pop, double price):
+    cdef cythonized.Individual ind
+    for ind in pop:
+        if ind.loan > 0:  # If the agent has outstanding debt:
+            if ind.cash >= ind.loan + 100.0 * price:  # If the agent has enough cash:
+                ind.loan = 0.0
+                ind.cash -= ind.loan
+            if (
+                ind.cash < ind.loan + 100.0 * price
+            ):  # If the agent does not have enough cash:
+                ind.loan -= ind.cash - 100.0 * price
+                ind.cash = 100.0 * price
+    return pop

@@ -1,4 +1,3 @@
-import balance_sheet as bs
 import balance_sheet_cython as bsc
 import ga as ga
 import timeit
@@ -44,13 +43,13 @@ def ga_evolution(
     return pop, CountSelected, CountMutated, CountCrossed, StratFlow
 
 
-def decision_updates(pop, price_history, dividend_history, CurrentPrice):
-    bs.DetermineTsvProc(pop, price_history, CurrentPrice)
-    bs.UpdateFval(pop, dividend_history)
-    bs.DetermineEDF(pop)
-    return pop
+#def decision_updates(pop, price_history, dividend_history, CurrentPrice):
+#    bs.DetermineTsvProc(pop, price_history, CurrentPrice)
+#    bs.UpdateFval(pop, dividend_history)
+#    bs.DetermineEDF(pop)
+#    return pop
 
-'''
+
 def marketClearing(pop, current_price, price_history, spoils, solver, volume):
     try:
         if solver == "esl":
@@ -212,10 +211,9 @@ def marketClearing(pop, current_price, price_history, spoils, solver, volume):
 
     # bs.CalcTsvVINT(pop, current_price)
     price_history.append(current_price)
-    pop, mismatch = bs.calculate_edv(pop, current_price)
 
-    return pop, mismatch, current_price, price_history, ToLiquidate
-'''
+    return pop, current_price, price_history, ToLiquidate
+
 
 
 

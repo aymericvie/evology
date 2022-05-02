@@ -12,7 +12,6 @@ extensions = [
         "cythonized",
         "data",
         "market",
-        "balance_sheet",
         "balance_sheet_cython",
         "investment",
         "fitness",
