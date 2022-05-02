@@ -51,14 +51,18 @@ cpdef NoiseProcess(pop):
     cdef double[:] randoms = np.random.normal(GAMMA_NT,1,size=len(pop))
     cdef int i
     cdef cythonized.Individual ind
+    cdef double a
+    cdef double b
 
     for i, ind in enumerate(pop):
         if ind.type_as_int == 0:
             # Calculate process value, including individual strategy (bias)
-            #ind.process = abs(ind.process + RHO_NT * (MU_NT + ind.strategy - ind.process) + randoms[i])
-            ind.process += RHO_NT * (MU_NT + ind.strategy - ind.process) + randoms[i]
-            if ind.process < 0:
-                ind.process = abs(ind.process)
+            a = ind.strategy - ind.process
+            b = RHO_NT * (MU_NT + a) + randoms[i]
+            ind.process = b
+            if b < 0:
+                #ind.process = abs(ind.process)
+                ind.process = abs(b)
 
 
     return pop
@@ -180,7 +184,9 @@ cpdef UpdateWealthSeries(list pop):
 cpdef CalculateEDV(list pop, double current_price):
     cdef cythonized.Individual ind
     cdef double mismatch = 0.0
-    
+    cdef double a
+    cdef double b
+    cdef double c
     #for ind in pop:
     #    ind.edv = ind.edf(ind, current_price)
     #return pop
@@ -189,13 +195,23 @@ cpdef CalculateEDV(list pop, double current_price):
     for ind in pop:
         t = ind.type_as_int
         if t==2:
-            ind.edv = (LeverageTF * ind.wealth / current_price) * tanh(SCALE_TF * ind.tsv + 0.5) - ind.asset
+            a = (LeverageTF * ind.wealth / current_price)
+            b = tanh(SCALE_TF * ind.tsv + 0.5)
+            c = ind.asset
+            #ind.edv = (LeverageTF * ind.wealth / current_price) * tanh(SCALE_TF * ind.tsv + 0.5) - ind.asset
         elif t==1:
-            ind.edv = (LeverageVI * ind.wealth / current_price) * tanh(SCALE_VI * ind.tsv + 0.5) - ind.asset
+            a = (LeverageVI * ind.wealth / current_price)
+            b = tanh(SCALE_VI * ind.tsv + 0.5)
+            c = ind.asset
+            #ind.edv = (LeverageVI * ind.wealth / current_price) * tanh(SCALE_VI * ind.tsv + 0.5) - ind.asset
         elif t == 0:
-            ind.edv = (LeverageNT * ind.wealth / current_price) * tanh(SCALE_NT * ind.tsv + 0.5) - ind.asset
+            a = (LeverageNT * ind.wealth / current_price)
+            b = tanh(SCALE_NT * ind.tsv + 0.5)
+            c = ind.asset
+            #ind.edv = (LeverageNT * ind.wealth / current_price) * tanh(SCALE_NT * ind.tsv + 0.5) - ind.asset
         else:
             raise Exception(f"Unexpected ind type: {ind.type}")
+        ind.edv = a * b - c
         mismatch += ind.edv
     return pop, mismatch
 

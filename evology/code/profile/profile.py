@@ -77,6 +77,7 @@ def main(
         pop, mismatch = bsc.CalculateEDV(pop, CurrentPrice)
 
         # Market activity
+        '''
         (
             pop,
             volume,
@@ -95,6 +96,14 @@ def main(
             ToLiquidate,
             random_dividend_history
         )
+        '''
+        dividend, random_dividend = mk.draw_dividend(dividend, random_dividend_history)
+        pop, volume, spoils, Liquidations = mk.execute_ed(pop, CurrentPrice, asset_supply, spoils, ToLiquidate)
+        pop = mk.earnings(pop, dividend)
+        dividend_history.append(dividend)
+        pop = mk.update_margin(pop, CurrentPrice)
+        pop = mk.clear_debt(pop, CurrentPrice)
+
         pop, replace = bsc.UpdateWealthProfitAge(pop, CurrentPrice)
         pop = bsc.UpdateQuarterlyWealth(pop, generation)
         pop = bsc.UpdateWealthSeries(pop)

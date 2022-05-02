@@ -26,20 +26,17 @@ cpdef draw_dividend(double dividend, list random_dividend_history):
     )
     return dividend, random_dividend
 
-cpdef earnings(list pop, double prev_dividend, list random_dividend_history):
+cpdef earnings(list pop, double dividend):
     cdef cythonized.Individual ind
-    cdef double dividend
     cdef double div_asset
     cdef double interest_cash
-    cdef double random_dividend
-    
-    dividend, random_dividend = draw_dividend(prev_dividend, random_dividend_history)
 
     for ind in pop:
         div_asset = ind.asset * dividend  # Determine gain from dividends
         interest_cash = ind.cash * interest_day  # Determine gain from interest
         ind.cash += div_asset + interest_cash
-    return pop, dividend, random_dividend
+        
+    return pop
 
 cpdef determine_multiplier(list pop, double spoils, double ToLiquidate, double asset_supply):
 
@@ -259,6 +256,7 @@ cpdef execute_ed(list pop, double current_price, double asset_supply, double spo
         raise ValueError('Asset supply violated by more than 1%.')
     return pop, volume, spoils, Liquidations
 
+'''
 cpdef MarketActivity(list pop, double current_price, double asset_supply,
     double dividend, list dividend_history, double spoils, double ToLiquidate, list random_dividend_history):
 
@@ -281,3 +279,4 @@ cpdef MarketActivity(list pop, double current_price, double asset_supply,
         spoils,
         Liquidations,
     )
+    '''

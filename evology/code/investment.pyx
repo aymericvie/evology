@@ -21,7 +21,6 @@ cpdef Emp_Investment(list pop):
     cdef double[:] gumbel_draws_negative = np.random.gumbel(3.55311431, 2.13949923, size=len(pop))
 
     for i, ind in enumerate(pop):
-
         if ind.age >= 63:
             ind_wealth = ind.wealth
             first_wealth = ind.last_wealth
