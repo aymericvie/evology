@@ -129,7 +129,7 @@ def main(
             AvgAbsT,
         )
 
-        if sim_break == True:
+        if sim_break == 1:
             warnings.warn('Simulation break: one of the 3 strategy types is extinct.')
             break
 

@@ -141,7 +141,7 @@ variables = len(columns)
 """ We only record results after a year to avoid transient period biases. """
 Barr = max(SHIELD_DURATION, ShieldResults)
 
-
+'''
 def AnnualReturns(wealth_tracker, pop, generation):
     cdef double wamp_nt = NAN
     cdef double wamp_vi = NAN
@@ -185,52 +185,65 @@ def AnnualReturns(wealth_tracker, pop, generation):
         wamp_tf = np.mean(wamp_list_tf)
         
     return wamp_nt, wamp_vi, wamp_tf
-
+'''
 def ResultsProcess(list pop, double spoils, double price, double generation):
-
-    LongAssets, ShortAssets = 0.0, 0.0
-    NTcount, VIcount, TFcount = 0.0, 0.0, 0.0
-    MeanNT, MeanVI, MeanTF = 0.0, 0.0, 0.0
-    WSNT, WSVI, WSTF = 0.0, 0.0, 0.0
-    NTcash, NTlend, NTloan, NTnav, NTpnl, NTsignal, NTstocks, NTreturn = (
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0, #float("nan"),
-    )
-    VIcash, VIlend, VIloan, VInav, VIpnl, VIsignal, VIstocks, VIreturn = (
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0, #float("nan"),
-    )
-    TFcash, TFlend, TFloan, TFnav, TFpnl, TFsignal, TFstocks, TFreturn = (
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0, #float("nan"),
-    )
-    NT_process = 0.0
-    VI_val = 0.0
-
-    NTflows, VIflows, TFflows = 0.0, 0.0, 0.0
-    nav_pct = 0.0
 
     cdef cythonized.Individual ind
     cdef double ind_zero
     cdef double AvgAge = 0.0
+    cdef double LongAssets = 0.0
+    cdef double ShortAssets = 0.0
+    cdef double NTcount = 0.0
+    cdef double VIcount = 0.0
+    cdef double TFcount = 0.0
+    cdef double MeanNT = 0.0
+    cdef double MeanVI = 0.0
+    cdef double MeanTF = 0.0
+    cdef double WSNT = 0.0
+    cdef double WSVI = 0.0
+    cdef double WSTF = 0.0
+    cdef double flow 
+    cdef double nav_pct = 0.0
+    cdef list ListOutput 
+
+    cdef double NTcash = 0.0
+    cdef double NTlend = 0.0
+    cdef double NTloan = 0.0
+    cdef double NTnav = 0.0
+    cdef double NTpnl = 0.0
+    cdef double NTsignal = 0.0
+    cdef double NTstocks = 0.0
+    cdef double NTreturn = 0.0
+
+    cdef double VIcash = 0.0
+    cdef double VIlend = 0.0
+    cdef double VIloan = 0.0
+    cdef double VInav = 0.0
+    cdef double VIpnl = 0.0
+    cdef double VIsignal = 0.0
+    cdef double VIstocks = 0.0
+    cdef double VIreturn = 0.0
+
+    cdef double TFcash = 0.0
+    cdef double TFlend = 0.0
+    cdef double TFloan = 0.0
+    cdef double TFnav = 0.0
+    cdef double TFpnl = 0.0
+    cdef double TFsignal = 0.0
+    cdef double TFstocks = 0.0
+    cdef double TFreturn = 0.0
+
+    cdef double NT_process = 0.0
+    cdef double VI_val = 0.0
+
+    cdef double NTflows = 0.0
+    cdef double VIflows = 0.0
+    cdef double TFflows = 0.0
+    cdef double WSNT_ 
+    cdef double WSVI_ 
+    cdef double WSTF_ 
+    cdef int sim_break
+
 
     for ind in pop:
         AvgAge += ind.age
@@ -253,7 +266,7 @@ def ResultsProcess(list pop, double spoils, double price, double generation):
             NTcash += ind.cash
             NTlend += ind.margin
             NTloan += ind.loan
-            NTnav += ind.wealth  # before, we imposed w>0
+            NTnav += ind.wealth
             if ind.wealth > 0:
                 WSNT += ind.wealth
             NTpnl += ind.profit
@@ -261,8 +274,6 @@ def ResultsProcess(list pop, double spoils, double price, double generation):
             NTstocks += price * ind.asset
             if ind.prev_wealth != 0:
                 NTreturn += ind.DailyReturn
-            #if ind.prev_wealth_noinv != 0:
-            #    NTreturn_noinv += ind.DailyReturn_noinv
             NTflows += 0 #ind.investor_flow
             NT_process += ind.process
 
@@ -358,9 +369,9 @@ def ResultsProcess(list pop, double spoils, double price, double generation):
     AvgAge = AvgAge / len(pop)
 
     if WSNT == 0.0 or WSVI == 0.0 or WSTF == 0.0:
-        sim_break = True
+        sim_break = 1
     else:
-        sim_break = False
+        sim_break = 0
 
     nav_pct = nav_pct / len(pop)
 
@@ -430,13 +441,6 @@ def record_results(
     spoils,
     Liquidations,
     asset_supply,
-    #ReturnsNT,
-    #ReturnsVI,
-    #ReturnsTF,
-    #CountSelected,
-    #CountMutated,
-    #CountCrossed,
-    #StratFlow,
     AvgT,
     PropSignif,
     HighestT,
