@@ -60,11 +60,14 @@ def main(
         
 
         # Market clearing
-        pop, mismatch, CurrentPrice, price_history, ToLiquidate = marketClearing(
-            pop, CurrentPrice, price_history, spoils, solver, volume
-        )
-
-        pop = bsc.CalculateEDV(pop, CurrentPrice)
+        #'''
+        #pop, mismatch, CurrentPrice, price_history, ToLiquidate = marketClearing(
+        #    pop, CurrentPrice, price_history, spoils, solver, volume
+        #)
+        #'''
+        CurrentPrice, ToLiquidate = lc.linear_solver(pop, spoils, volume, CurrentPrice)
+        price_history = lc.UpdatePriceHistory(price_history, CurrentPrice)
+        pop, mismatch = bsc.CalculateEDV(pop, CurrentPrice)
 
         # Market activity
         (
@@ -88,13 +91,6 @@ def main(
         pop, replace = bsc.UpdateWealthProfitAge(pop, CurrentPrice)
         pop = bsc.UpdateQuarterlyWealth(pop, generation)
         pop = bsc.UpdateWealthSeries(pop)
-
-        # Investment
-        ''' former investment process
-        (pop, AvgT, PropSignif, HighestT, AvgAbsT) = iv.Profit_Investment(
-        pop, ReinvestmentRate, InvestmentHorizon, generation
-        )
-        '''
 
         pop = iv.Emp_Investment(pop)
         AvgT, PropSignif, HighestT, AvgAbsT = 0, 0, 0, 0

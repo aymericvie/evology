@@ -109,6 +109,9 @@ cpdef UpdateFval(list pop, double dividend):
     return pop
 
 def DetermineEDF(pop):
+# Cant cpdef because closures are not supported
+    cdef cythonized.Individual ind
+    cdef int t
     for ind in pop:
         t = ind.type_as_int
         if t==2:
@@ -152,70 +155,7 @@ cpdef UpdateFullWealth(list pop, double current_price):
             raise ValueError('ind.wealth is NAN')
     return pop, replace
       
-cpdef linear_solver(list pop, double spoils, double volume, double prev_price):
-    cdef double price 
-    cdef cythonized.Individual ind
-    cdef double a = 0.0
-    cdef double b = 0.0
-    cdef double l 
-    cdef double c
-    cdef double aind
 
-    if spoils > 0:
-        ToLiquidate = -min(spoils, min(liquidation_perc * volume, 10000))
-    elif spoils == 0:
-        ToLiquidate = 0
-    elif spoils < 0:
-        ToLiquidate = min(abs(spoils), min(liquidation_perc * volume, 10000))
-
-    b += ToLiquidate
-
-    for ind in pop:
-        if ind.type_as_int == 0:
-            l = LeverageNT * 1.0
-            c = SCALE_NT * 1.0
-        if ind.type_as_int == 1:
-            l = LeverageVI * 1.0
-            c = SCALE_VI * 1.0
-        if ind.type_as_int == 2:
-            l = LeverageTF * 1.0
-            c = SCALE_TF * 1.0
-        b += ind.asset
-        a += ind.wealth * l * (tanh(c * ind.tsv + 0.5))
-        if isnan(a) == True or isnan(b) == True:
-            print(a)
-            print(b)
-            print([ind.type, ind.tsv, ind.wealth, l, c])  
-            raise ValueError('NAN output a or b for linear solver a/b.')  
-    #price = min(max(a/b, 0.2*prev_price), 5*prev_price)
-    #price = a/b
-    # price = max(a/b, 0.01)
-    price = min(max(a/b, 0.75*prev_price), 1.25*prev_price)
-    price = max(price, 0.01)
-
-
-    if isnan(price) == True:
-
-        print(price)
-        print(a)
-        print(b)
-
-
-        raise ValueError('Price is nan.')
-
-    if price < 0:
-        print("price, a, b, ToLiquidate, pop ind with negative a")
-        print(price)
-        print(a)
-        print(b)
-        print(ToLiquidate)
-        for ind in pop:
-            aind = ind.wealth * (tanh(ind.tsv + 0.5))
-            if aind < 0:
-                print([ind.type, ind.wealth, ind.tsv, ind.asset, aind])
-        raise ValueError('Price is negative.')
-
-    return price, ToLiquidate
 
 cpdef UpdateQuarterlyWealth(list pop, double generation):
     cdef cythonized.Individual ind
@@ -237,6 +177,7 @@ cpdef UpdateWealthSeries(list pop):
 
 cpdef CalculateEDV(list pop, double current_price):
     cdef cythonized.Individual ind
+    cdef double mismatch = 0.0
     
     #for ind in pop:
     #    ind.edv = ind.edf(ind, current_price)
@@ -253,4 +194,5 @@ cpdef CalculateEDV(list pop, double current_price):
             ind.edv = (LeverageNT * ind.wealth / current_price) * tanh(SCALE_NT * ind.tsv + 0.5) - ind.asset
         else:
             raise Exception(f"Unexpected ind type: {ind.type}")
-    return pop
+        mismatch += ind.edv
+    return pop, mismatch

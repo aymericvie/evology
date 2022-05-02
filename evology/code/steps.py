@@ -18,6 +18,7 @@ import warnings
 import matplotlib
 import matplotlib.pyplot as plt
 import investment as iv
+import linear_clearing as lc
 
 def ga_evolution(
     pop, space, generation, wealth_coordinates, PROBA_SELECTION, MUTATION_RATE, Horizon
@@ -49,7 +50,7 @@ def decision_updates(pop, price_history, dividend_history, CurrentPrice):
     bs.DetermineEDF(pop)
     return pop
 
-
+'''
 def marketClearing(pop, current_price, price_history, spoils, solver, volume):
     try:
         if solver == "esl":
@@ -214,7 +215,7 @@ def marketClearing(pop, current_price, price_history, spoils, solver, volume):
     pop, mismatch = bs.calculate_edv(pop, current_price)
 
     return pop, mismatch, current_price, price_history, ToLiquidate
-
+'''
 
 
 
