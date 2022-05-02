@@ -7,6 +7,7 @@ from parameters import *
 import numpy as np
 
 @profile
+
 def main(
     space,
     solver,
@@ -72,7 +73,8 @@ def main(
         #    pop, CurrentPrice, price_history, spoils, solver, volume
         #)
         #'''
-        CurrentPrice, ToLiquidate = lc.linear_solver(pop, spoils, volume, CurrentPrice)
+        ToLiquidate = lc.DetermineLiquidation(spoils, volume)
+        CurrentPrice = lc.linear_solver(pop, ToLiquidate, CurrentPrice)
         price_history = lc.UpdatePriceHistory(price_history, CurrentPrice)
         pop, mismatch = bsc.CalculateEDV(pop, CurrentPrice)
 
@@ -137,6 +139,7 @@ def main(
     df = pd.DataFrame(results, columns=data.columns)
 
     return df, pop
+
 
 np.random.seed(8)
 wealth_coordinates = [1 / 3, 1 / 3, 1 / 3]

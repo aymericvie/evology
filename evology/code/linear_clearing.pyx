@@ -1,24 +1,29 @@
 #cython: boundscheck=False, wraparound=False, initializedcheck=False, cdivision=True
 cimport cythonized
 from parameters import LeverageNT, LeverageVI, LeverageTF, SCALE_NT, SCALE_TF, SCALE_VI, liquidation_perc
-from libc.math cimport isnan, tanh
+from libc.math cimport isnan, tanh, fmin, fabs, fmax
 
-cpdef linear_solver(list pop, double spoils, double volume, double prev_price):
+cpdef DetermineLiquidation(double spoils, double volume):    
+    cdef double ToLiquidate = 0.0
+    if spoils > 0:
+        ToLiquidate = -fmin(spoils, fmin(liquidation_perc * volume, 10000))
+    #elif spoils == 0:
+    #    ToLiquidate = 0
+    elif spoils < 0:
+        ToLiquidate = fmin(fabs(spoils), fmin(liquidation_perc * volume, 10000))
+    return ToLiquidate
+
+
+cpdef linear_solver(list pop, double ToLiquidate, double prev_price):
     cdef double price 
     cdef cythonized.Individual ind
     cdef double a = 0.0
-    cdef double b 
+    cdef double b = 0.0
     cdef double l 
     cdef double c
+    cdef double d
 
-    if spoils > 0:
-        ToLiquidate = -min(spoils, min(liquidation_perc * volume, 10000))
-    elif spoils == 0:
-        ToLiquidate = 0
-    elif spoils < 0:
-        ToLiquidate = min(abs(spoils), min(liquidation_perc * volume, 10000))
-
-    b = ToLiquidate
+    b += ToLiquidate
 
     for ind in pop:
         if ind.type_as_int == 0: #NT
@@ -31,15 +36,11 @@ cpdef linear_solver(list pop, double spoils, double volume, double prev_price):
             l = LeverageTF * 1.0
             c = SCALE_TF * 1.0
         b += ind.asset
-        a += ind.wealth * l * (tanh(c * ind.tsv + 0.5))
-        #if isnan(a) == True or isnan(b) == True:
-        #    print(a)
-        #    print(b)
-        #    print([ind.type, ind.tsv, ind.wealth, l, c])  
-        #    raise ValueError('NAN output a or b for linear solver a/b.')  
+        d = (tanh(c * ind.tsv + 0.5)) * ind.wealth
+        a += l * d
 
-    price = min(max(a/b, 0.75*prev_price), 1.25*prev_price)
-    price = max(price, 0.01)
+    price = fmin(fmax(a/b, 0.75*prev_price), 1.25*prev_price)
+    price = fmax(price, 0.01)
 
     
     if isnan(price) == True:
@@ -61,7 +62,7 @@ cpdef linear_solver(list pop, double spoils, double volume, double prev_price):
         raise ValueError('Price is negative.')
     '''
 
-    return price, ToLiquidate
+    return price
 
 cpdef UpdatePriceHistory(list price_history, double current_price):
     price_history.append(current_price)
