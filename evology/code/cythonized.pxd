@@ -18,7 +18,7 @@ cdef class Individual(list):
     cdef public double prev_wealth
     cdef public double DailyReturn
     cdef public object fitness
-    cdef public object edf
+    #cdef public object edf
     cdef public int age
     cdef public double profit_internal
     cdef public double val

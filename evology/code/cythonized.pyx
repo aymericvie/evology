@@ -92,7 +92,7 @@ cdef class Individual(list):
         self.DailyReturn = 0.0
         # This needs to be overriden as it is not always 0!
         self.fitness = creator.fitness_strategy()
-        self.edf = None
+        #self.edf = None
         self.wealth_series = []
         self.last_wealth = 0.0
         #self.investment_series = []

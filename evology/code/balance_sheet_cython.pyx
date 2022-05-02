@@ -65,6 +65,8 @@ cpdef NoiseProcess(pop):
 
 cpdef CalculateTSV(list pop, list price_history, list dividend_history, double CurrentPrice):
     cdef cythonized.Individual ind
+    cdef int i 
+    cdef int t
 
     for i, ind in enumerate(pop):
         t = ind.type_as_int

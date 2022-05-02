@@ -96,15 +96,15 @@ columns = [
     #"TF_DayReturns",
     #"AvgDayReturn",
     # Measures of adaptation
-    "CountSelected",
-    "CountMutated",
-    "CountCrossed",
-    "TowardsNT",
-    "TowardsVI",
-    "TowardsTF",
-    "FromNT",
-    "FromVI",
-    "FromTF",
+    #"CountSelected",
+    #"CountMutated",
+    #"CountCrossed",
+    #"TowardsNT",
+    #"TowardsVI",
+    #"TowardsTF",
+    #"FromNT",
+    #"FromVI",
+    #"FromTF",
     #"WealthAmp",
     # Annual Sharpes and Delta
     "SharpeNT",
@@ -434,10 +434,10 @@ def record_results(
     #ReturnsNT,
     #ReturnsVI,
     #ReturnsTF,
-    CountSelected,
-    CountMutated,
-    CountCrossed,
-    StratFlow,
+    #CountSelected,
+    #CountMutated,
+    #CountCrossed,
+    #StratFlow,
     AvgT,
     PropSignif,
     HighestT,
@@ -482,9 +482,9 @@ def record_results(
         """ More measures """
         arr += [abs(100 * spoils / asset_supply),]
 
-        """ Measures of adaptation """
-        arr += [CountSelected, CountMutated, CountCrossed]
-        arr += StratFlow
+        #""" Measures of adaptation """
+        #arr += [CountSelected, CountMutated, CountCrossed]
+        #arr += StratFlow
 
         """ Sharpe and Delta """
         arr += [SharpeNT, SharpeVI, SharpeTF,  DeltaNTVI, DeltaNTTF, DeltaVITF]

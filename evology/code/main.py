@@ -40,23 +40,24 @@ def main(
 
 
         # Strategy evolution
-        pop = fit.ComputeFitness(pop, 252)
-        pop, CountSelected, CountMutated, CountCrossed, StratFlow = ga_evolution(
-            pop,
-            space,
-            generation,
-            wealth_coordinates,
-            PROBA_SELECTION,
-            MUTATION_RATE,
-            252,
-        )
+        #pop = fit.ComputeFitness(pop, 252)
+
+        #pop, CountSelected, CountMutated, CountCrossed, StratFlow = ga_evolution(
+        #    pop,
+        #    space,
+        #    generation,
+        #    wealth_coordinates,
+        #    PROBA_SELECTION,
+        #    MUTATION_RATE,
+        #    252,
+        #)
 
         # Market decisions 
         pop, replace = bsc.UpdateFullWealth(pop, CurrentPrice)
         pop = bsc.NoiseProcess(pop)
         pop = bsc.UpdateFval(pop, dividend)
         pop = bsc.CalculateTSV(pop, price_history, dividend_history, CurrentPrice)
-        pop = bsc.DetermineEDF(pop)
+        #pop = bsc.DetermineEDF(pop)
         
 
         # Market clearing
@@ -109,10 +110,10 @@ def main(
             spoils,
             Liquidations,
             asset_supply,
-            CountSelected,
-            CountMutated,
-            CountCrossed,
-            StratFlow,
+            #CountSelected,
+            #CountMutated,
+            #CountCrossed,
+            #StratFlow,
             AvgT,
             PropSignif,
             HighestT,
