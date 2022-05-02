@@ -8,16 +8,13 @@ import time
 import ternary
 from ternary.helpers import simplex_iterator
 import multiprocessing as mp
-
 # warnings.simplefilter("ignore")
-
 if sys.platform == "darwin":
     sys.path.append("/Users/aymericvie/Documents/GitHub/evology/evology/code")
     # Need to be executed from cd to MCarloLongRuns
 if sys.platform == "linux":
     sys.path.append("/home/vie/Documents/GitHub/evology/evology/code")
 from main import main as evology
-
 
 startTime = time.time()
 TimeHorizon = 252 * 5
@@ -60,10 +57,7 @@ def job(coords):
             result.append(np.nan)
         return result
 
-
 # Define the domains
-
-
 def GenerateCoords(reps, scale):
     param = []
     for (i, j, k) in simplex_iterator(scale):
@@ -71,10 +65,7 @@ def GenerateCoords(reps, scale):
             param.append([i / scale, j / scale, k / scale])
     return param
 
-
-
 param = GenerateCoords(reps, scale)
-# print(param)
 print(len(param))
 
 # Run experiment
@@ -89,12 +80,10 @@ def main():
 if __name__ == "__main__":
     data = main()
     df = pd.DataFrame()
-
     # Inputs
     df["WS_NT"] = data[:, 0]
     df["WS_VI"] = data[:, 1]
     df["WS_TF"] = data[:, 2]
-
     # Outputs
     df["NT_returns_mean"] = data[:, 3]
     df["VI_returns_mean"] = data[:, 4]
@@ -104,7 +93,7 @@ if __name__ == "__main__":
     df["TF_returns_std"] = data[:, 8]
     df["Gen"] = data[:, 9]
 
+    # Print and save the dataframes
     print(df)
-
     df.to_csv("data/data_return_landscape_ext.csv")
     print("Completion time: " + str(time.time() - startTime))
