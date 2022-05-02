@@ -90,41 +90,7 @@ columns = [
     "Liquidations",
     # More measures
     "PerSpoils",
-    #"NT_DayReturns",
-    #"VI_DayReturns",
-    #"TF_DayReturns",
-    #"AvgDayReturn",
-    # Measures of adaptation
-    #"CountSelected",
-    #"CountMutated",
-    #"CountCrossed",
-    #"TowardsNT",
-    #"TowardsVI",
-    #"TowardsTF",
-    #"FromNT",
-    #"FromVI",
-    #"FromTF",
-    #"WealthAmp",
-    # Annual Sharpes and Delta
-    "SharpeNT",
-    "SharpeVI",
-    "SharpeTF",
-    "DeltaNTVI",
-    "DeltaNTTF",
-    "DeltaVITF",
-    # Annual return computed over wealth
-    "NT_AnnualReturns",
-    "VI_AnnualReturns",
-    "TF_AnnualReturns",
-    # Annual return computed over wealth, without investment
-    #"NT_AnnualReturns_Noinv",
-    #"VI_AnnualReturns_Noinv",
-    #"TF_AnnualReturns_Noinv",
-    # Significance
-    "AvgT",
-    "AvgAbsT",
-    "HighestT",
-    "PropSignif",
+   # Investment statistics
     "NTflows",
     "VIflows",
     "TFflows",
@@ -132,6 +98,7 @@ columns = [
     "AvgAge",
     # DiffReturns
     "DiffReturns",
+    # NT noise process and VI val and nan avg flow
     "NT_process",
     "VI_val",
     "nav_pct"
@@ -430,29 +397,25 @@ def record_results(
     results,
     #wealth_tracker,
     #wealth_tracker_noinv,
-    generation,
-    current_price,
-    mismatch,
-    dividend,
-    random_dividend,
-    volume,
-    replacements,
-    pop,
-    spoils,
-    Liquidations,
-    asset_supply,
-    AvgT,
-    PropSignif,
-    HighestT,
-    AvgAbsT,
+    double generation,
+    double current_price,
+    double mismatch,
+    double dividend,
+    double random_dividend,
+    double volume,
+    int replacements,
+    list pop,
+    double spoils,
+    double Liquidations,
+    double asset_supply,
 ):
+
+    cdef int current = generation - Barr
+    cdef list arr 
 
     if generation >= Barr :
 
         ListOutput, sim_break = ResultsProcess(pop, spoils, current_price, generation)
-        current = generation - Barr
-        SharpeNT, SharpeVI, SharpeTF, DeltaNTVI, DeltaNTTF, DeltaVITF  = NAN, NAN, NAN, NAN, NAN, NAN
-        wamp_nt, wamp_vi, wamp_tf = 0,0,0 #AnnualReturns(wealth_tracker, pop, generation)
 
         """ Global variables """
         arr = [
@@ -483,26 +446,10 @@ def record_results(
         arr += [ComputeAvgReturn(results, current, pop), spoils, Liquidations]
 
         """ More measures """
-        arr += [abs(100 * spoils / asset_supply),]
-
-        #""" Measures of adaptation """
-        #arr += [CountSelected, CountMutated, CountCrossed]
-        #arr += StratFlow
-
-        """ Sharpe and Delta """
-        arr += [SharpeNT, SharpeVI, SharpeTF,  DeltaNTVI, DeltaNTTF, DeltaVITF]
-
-        """ Annual returns """
-        arr += [wamp_nt, wamp_vi, wamp_tf]
-        # -12, -11, -10
-
-        """ Annual returns without investment """
-        #arr += [NT_AR_noinv, VI_AR_noinv, TF_AR_noinv]
+        arr += [abs(100 * spoils / asset_supply)]
 
         """ Investment Statistics """
-        arr += [AvgT, AvgAbsT, HighestT, PropSignif]
-
-        arr += ListOutput[38:41]
+        arr += ListOutput[38:41] # flows
 
         ''' average age '''
         arr += [ListOutput[41]]

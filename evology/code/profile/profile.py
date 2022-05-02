@@ -109,7 +109,7 @@ def main(
         pop = bsc.UpdateWealthSeries(pop)
 
         pop = iv.Emp_Investment(pop)
-        AvgT, PropSignif, HighestT, AvgAbsT = 0, 0, 0, 0
+        #AvgT, PropSignif, HighestT, AvgAbsT = 0, 0, 0, 0
 
         # Record results 
         results, sim_break = data.record_results(
@@ -125,17 +125,9 @@ def main(
             spoils,
             Liquidations,
             asset_supply,
-            #CountSelected,
-            #CountMutated,
-            #CountCrossed,
-            #StratFlow,
-            AvgT,
-            PropSignif,
-            HighestT,
-            AvgAbsT,
         )
 
-        if sim_break == True:
+        if sim_break == 1:
             warnings.warn('Simulation break: one of the 3 strategy types is extinct.')
             break
 
