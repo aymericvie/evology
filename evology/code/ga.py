@@ -21,7 +21,7 @@ def CreateFractionalFund(pop, MaxFund, divisions):
     # Copy fund MaxFund intangible characteristics
     # TSV, EDF, EDV are totally reset.
     half.tsv = 0
-    half.edf = None
+    #half.edf = None
     half.edv = 0
     half.strategy = pop[MaxFund].strategy
     half.process = pop[MaxFund].process
