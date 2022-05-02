@@ -143,10 +143,10 @@ def CreatePop(n, space, WealthCoords, CurrentPrice):
     return pop, TotalAsset
 
 
-def WealthReset(pop, space, WealthCoords, generation, ResetWealth):
+def WealthReset(pop, space, WealthCoords, generation, ResetWealth, CurrentPrice):
     # generation > 1 and generation <= SHIELD_DURATION or
     if ResetWealth == True:
-        pop, asset_supply = CreatePop(len(pop), space, WealthCoords)
+        pop, asset_supply = CreatePop(len(pop), space, WealthCoords, CurrentPrice)
         for ind in pop:
             ind.age = generation
     return pop

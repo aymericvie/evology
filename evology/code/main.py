@@ -1,3 +1,4 @@
+from creation import WealthReset
 from steps import *
 
 
@@ -28,7 +29,7 @@ def main(
             break
 
         # Population reset
-        pop = cr.WealthReset(pop, space, wealth_coordinates, generation, reset_wealth)
+        pop = cr.WealthReset(pop, space, wealth_coordinates, generation, reset_wealth, CurrentPrice)
 
         # Hypermutation
         
@@ -123,7 +124,7 @@ def main(
             asset_supply,
         )
 
-        if sim_break == 1:
+        if sim_break == 1 and reset_wealth != True:
             warnings.warn('Simulation break: one of the 3 strategy types is extinct.')
             break
 
