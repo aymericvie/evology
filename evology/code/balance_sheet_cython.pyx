@@ -229,18 +229,20 @@ cpdef UpdateWealthSeries(list pop):
 
 cpdef CalculateEDV(list pop, double current_price):
     cdef cythonized.Individual ind
+    
+    #for ind in pop:
+    #    ind.edv = ind.edf(ind, current_price)
+    #return pop
+
+    cdef int t
     for ind in pop:
-        ind.edv = ind.edf(ind, current_price)
-    if ind.edv == math.inf:
-        print([ind.type, ind.edv, ind.tsv, ind.wealth])
-        print(ind.wealth / current_price)
-        print(tanh(ind.tsv + 0.5))
-        print(ind.asset)
-        raise ValueError('edv = +inf')
-    if ind.edv == - math.inf:
-        print([ind.type, ind.edv, ind.tsv, ind.wealth])
-        print(ind.wealth / current_price)
-        print(tanh(ind.tsv + 0.5))
-        print(ind.asset)
-        raise ValueError('edv = -inf')
+        t = ind.type_as_int
+        if t==2:
+            ind.edv = (LeverageTF * ind.wealth / current_price) * tanh(SCALE_TF * ind.tsv + 0.5) - ind.asset
+        elif t==1:
+            ind.edv = (LeverageVI * ind.wealth / current_price) * tanh(SCALE_VI * ind.tsv + 0.5) - ind.asset
+        elif t == 0:
+            ind.edv = (LeverageNT * ind.wealth / current_price) * tanh(SCALE_NT * ind.tsv + 0.5) - ind.asset
+        else:
+            raise Exception(f"Unexpected ind type: {ind.type}")
     return pop
