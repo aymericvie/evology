@@ -127,9 +127,13 @@ def main(
             warnings.warn('Simulation break: one of the 3 strategy types is extinct.')
             break
 
+    
+
     if generation < MAX_GENERATIONS - data.Barr:
         results = results[0:generation+1]
 
     df = pd.DataFrame(results, columns=data.columns)
 
-    return df, pop
+    av_stats = [df["AV_wealth"].iloc[-1] / df["AV_wealth"].iloc[0] - 1, df["AV_return"].mean(), df["AV_return"].std()]
+
+    return df, pop, av_stats

@@ -101,7 +101,10 @@ columns = [
     # NT noise process and VI val and nan avg flow
     "NT_process",
     "VI_val",
-    "nav_pct"
+    "nav_pct",
+    # Adaptive fund statistics
+    "AV_wealth",
+    "AV_return"
 ]
 variables = len(columns) 
 
@@ -211,6 +214,9 @@ def ResultsProcess(list pop, double spoils, double price, double generation):
     cdef double WSTF_ 
     cdef int sim_break
 
+    cdef double av_wealth 
+    cdef double av_return
+
 
     for ind in pop:
         AvgAge += ind.age
@@ -226,6 +232,13 @@ def ResultsProcess(list pop, double spoils, double price, double generation):
                 nav_pct += abs(flow)
         else:
             nav_pct = NAN
+
+        if ind.type == "av":
+            av_wealth = ind.wealth
+            if ind.prev_wealth != 0:
+                av_return = ind.DailyReturn
+            else:
+                av_return = NAN
 
         if ind.type == "nt":
             NTcount += 1
@@ -387,7 +400,9 @@ def ResultsProcess(list pop, double spoils, double price, double generation):
         AvgAge,
         NT_process,
         VI_val,
-        nav_pct
+        nav_pct,
+        av_wealth,
+        av_return
     ]
 
     return ListOutput, sim_break
@@ -459,6 +474,9 @@ def record_results(
 
         ''' NT noise process and VI val and nan avg flow'''
         arr += [ListOutput[42], ListOutput[43], ListOutput[44]]
+
+        ''' AV fund statistics '''
+        arr += [ListOutput[45], ListOutput[46]]
 
 
         if len(arr) != len(results[current,:]):
@@ -597,3 +615,4 @@ cdef ComputeDelta(double Sharpe1, double Sharpe2, double SE1, double SE2, list B
 
     return D
     
+

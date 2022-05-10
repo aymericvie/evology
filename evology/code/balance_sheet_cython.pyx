@@ -129,8 +129,6 @@ cpdef CalculateTSV_avf(list pop, double generation, object strategy, list price_
             t = ind.type_as_int
             if t == 3: #AV
                 ind.tsv = ind.adaptive_strategy(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, d, v, g, r)
-                #ind.tsv = ind.adaptive_strategy( d, v, g, r)
-
 
     return pop
 
