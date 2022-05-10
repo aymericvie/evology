@@ -1,4 +1,4 @@
-#cython: boundscheck=False, initializedcheck=False, cdivision=True
+#cython: boundscheck=False, wraparound = False, initializedcheck=False, cdivision=True
 cimport cythonized
 from libc.math cimport log2, tanh, isnan
 from parameters import G, GAMMA_NT, RHO_NT, MU_NT, LeverageNT, LeverageVI, LeverageTF
@@ -111,18 +111,19 @@ cpdef CalculateTSV_avf(list pop, double generation, object strategy, list price_
     cdef double v = (1+G_day) * dividend / (interest_day + 0.01 - G_day)
     cdef double g = G_day
     cdef double r = interest_day
+    cdef int length = len(price_history)
 
     if generation > 10 and strategy != None:
-        p1 = price_history[-1]
-        p2 = price_history[-2]
-        p3 = price_history[-3]
-        p4 = price_history[-4]
-        p5 = price_history[-5]
-        p6 = price_history[-6]
-        p7 = price_history[-7]
-        p8 = price_history[-8]
-        p9 = price_history[-9]
-        p10 = price_history[-10]
+        p1 = price_history[length-1]
+        p2 = price_history[length-2]
+        p3 = price_history[length-3]
+        p4 = price_history[length-4]
+        p5 = price_history[length-5]
+        p6 = price_history[length-6]
+        p7 = price_history[length-7]
+        p8 = price_history[length-8]
+        p9 = price_history[length-9]
+        p10 = price_history[length-10]
 
         for i, ind in enumerate(pop):
             t = ind.type_as_int
