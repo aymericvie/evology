@@ -35,6 +35,9 @@ cpdef linear_solver(list pop, double ToLiquidate, double prev_price):
         if ind.type_as_int == 2: #TF
             l = LeverageTF * 1.0
             c = SCALE_TF * 1.0
+        if ind.type_as_int == 3: #AV
+            l = 1.
+            c = 1.
         b += ind.asset
         d = (tanh(c * ind.tsv + 0.5)) * ind.wealth
         a += l * d

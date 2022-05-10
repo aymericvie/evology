@@ -17,10 +17,10 @@ def main(
     # Population creation
     pop, asset_supply = cr.CreatePop(POPULATION_SIZE, space, wealth_coordinates, CurrentPrice, strategy)
 
-    #for generation in tqdm(
-    #    range(MAX_GENERATIONS), disable=tqdm_display, miniters=100, mininterval=0.5
-    #    ):
-    for generation in range(MAX_GENERATIONS):
+    for generation in tqdm(
+        range(MAX_GENERATIONS), disable=tqdm_display, miniters=100, mininterval=0.5
+        ):
+    #for generation in range(MAX_GENERATIONS):
 
         if CurrentPrice >= 1_000_000:
             warnings.warn('Simulation break: price above 1M.')

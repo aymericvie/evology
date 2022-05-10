@@ -220,20 +220,29 @@ cpdef CalculateEDV(list pop, double current_price):
 
     for ind in pop:
         t = ind.type_as_int
-        if t == 2:
+        if t == 2: # TF
             a = (LeverageTF * ind.wealth / current_price)
             b = tanh(SCALE_TF * ind.tsv + 0.5)
             c = ind.asset
-        elif t == 1:
+
+        elif t == 1: #VI
             a = (LeverageVI * ind.wealth / current_price)
             b = tanh(SCALE_VI * ind.tsv + 0.5)
             c = ind.asset
-        else:
+
+        elif t == 0: #NT
             a = (LeverageNT * ind.wealth / current_price)
             b = tanh(SCALE_NT * ind.tsv + 0.5)
             c = ind.asset
+        
+        elif t == 3: #AV
+            a = ind.wealth / current_price
+            b = tanh(ind.tsv + 0.5)
+            c = ind.asset
+
         ind.edv = a * b - c
         mismatch += ind.edv
+
     return pop, mismatch
 
 cpdef count_long_assets(list pop, double spoils):    
