@@ -39,6 +39,7 @@ pset.addPrimitive(operator.neg, 1)
 pset.renameArguments(ARG0='x')
 pset.renameArguments(ARG1='y')
 pset.renameArguments(ARG2='z')
+''' (p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, d, v, g, r) '''
 
 creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
 creator.create("Individual", gp.PrimitiveTree, fitness=creator.FitnessMin)

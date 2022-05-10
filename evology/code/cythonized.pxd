@@ -14,12 +14,9 @@ cdef class Individual(list):
     cdef public double process 
     cdef public double ema
     cdef public double profit
-    #cdef public double investor_flow
-    #cdef public double investment_ratio
     cdef public double prev_wealth
     cdef public double DailyReturn
     cdef public object fitness
-    #cdef public object edf
     cdef public int age
     cdef public double profit_internal
     cdef public double val
@@ -28,4 +25,3 @@ cdef class Individual(list):
     cdef public list wealth_series
     cdef public double last_wealth
     cdef double last_price
-    #cdef public list investment_series

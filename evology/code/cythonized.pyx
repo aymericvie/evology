@@ -100,4 +100,5 @@ cdef class Individual(list):
         self.wealth_series = []
         self.last_wealth = 0.0
         self.last_price = 100.0
+        self.adaptive_strategy = None
         #self.investment_series = []

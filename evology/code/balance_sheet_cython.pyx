@@ -1,8 +1,8 @@
-#cython: boundscheck=False, wraparound=False, initializedcheck=False, cdivision=True
+#cython: boundscheck=False, initializedcheck=False, cdivision=True
 cimport cythonized
 from libc.math cimport log2, tanh, isnan
 from parameters import G, GAMMA_NT, RHO_NT, MU_NT, LeverageNT, LeverageVI, LeverageTF
-from parameters import G_day, SCALE_NT, SCALE_TF, SCALE_VI, interest_year, liquidation_perc
+from parameters import G_day, SCALE_NT, SCALE_TF, SCALE_VI, liquidation_perc, interest_day
 import warnings
 import math
 import numpy as np
@@ -16,8 +16,12 @@ cpdef convert_ind_type_to_num(t):
         return 0
     elif t == "vi":
         return 1
-    else:
+    elif t == 'tf':
         return 2
+    elif t == 'av':
+        return 3
+    else:
+        return TypeError('Type non recognised.')
 
 
 cpdef UpdateWealthProfitAge(list pop, double current_price):
@@ -46,7 +50,7 @@ cpdef UpdateWealthProfitAge(list pop, double current_price):
         
     return pop, replace
 
-cpdef NoiseProcess(pop):
+cpdef NoiseProcess(list pop):
 
     cdef double[:] randoms = np.random.normal(GAMMA_NT,1,size=len(pop))
     cdef int i
@@ -93,16 +97,38 @@ cpdef CalculateTSV_avf(list pop, double generation, object strategy, list price_
     cdef cythonized.Individual ind
     cdef int i 
     cdef int t
-
-    cdef double p1 = price_history[-1]
-    cdef double p2 = price_history[-2]
-    cdef double p3 = price_history[-3]
+    cdef double p1 
+    cdef double p2 
+    cdef double p3 
+    cdef double p4 
+    cdef double p5 
+    cdef double p6 
+    cdef double p7 
+    cdef double p8 
+    cdef double p9 
+    cdef double p10 
+    cdef double d = dividend
+    cdef double v = (1+G_day) * dividend / (interest_day + 0.01 - G_day)
+    cdef double g = G_day
+    cdef double r = interest_day
 
     if generation > 10 and strategy != None:
+        p1 = price_history[-1]
+        p2 = price_history[-2]
+        p3 = price_history[-3]
+        p4 = price_history[-4]
+        p5 = price_history[-5]
+        p6 = price_history[-6]
+        p7 = price_history[-7]
+        p8 = price_history[-8]
+        p9 = price_history[-9]
+        p10 = price_history[-10]
+
         for i, ind in enumerate(pop):
             t = ind.type_as_int
             if t == 3: #AV
-                ind.tsv = ind.adaptive_strategy(p1, p2, p3)
+                ind.tsv = ind.adaptive_strategy(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, d, v, g, r)
+                #ind.tsv = ind.adaptive_strategy( d, v, g, r)
 
 
     return pop
