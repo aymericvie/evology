@@ -54,7 +54,7 @@ def main(
         pop = bsc.NoiseProcess(pop)
         pop = bsc.UpdateFval(pop, dividend)
         pop = bsc.CalculateTSV_staticf(pop, price_history, dividend_history, CurrentPrice)
-        pop = bsc.CalculateTSV_avf(pop, generation, strategy)
+        pop = bsc.CalculateTSV_avf(pop, generation, strategy, price_history, dividend)
         #pop = bsc.DetermineEDF(pop)
         
 

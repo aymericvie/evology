@@ -1,5 +1,6 @@
 cdef class Individual(list):
     cdef object typecode
+    cdef public object adaptive_strategy
     cdef public double strategy
     cdef public double wealth
     cdef public object type

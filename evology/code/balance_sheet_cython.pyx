@@ -89,7 +89,7 @@ cpdef CalculateTSV_staticf(list pop, list price_history, list dividend_history, 
             pass
     return pop
 
-cpdef CalculateTSV_avf(list pop, double generation, strategy):
+cpdef CalculateTSV_avf(list pop, double generation, object strategy, list price_history, double dividend):
     cdef cythonized.Individual ind
     cdef int i 
     cdef int t
@@ -102,7 +102,7 @@ cpdef CalculateTSV_avf(list pop, double generation, strategy):
         for i, ind in enumerate(pop):
             t = ind.type_as_int
             if t == 3: #AV
-                ind.tsv = ind.strategy(p1, p2, p3)
+                ind.tsv = ind.adaptive_strategy(p1, p2, p3)
 
 
     return pop
