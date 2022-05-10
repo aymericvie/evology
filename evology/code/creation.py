@@ -47,11 +47,14 @@ def IndCreation(strat):
         ind.type = "tf"
         #ind.leverage = LeverageTF
         ind.type_as_int = cythonized.convert_ind_type_to_num("tf")
+    elif strat == 'av':
+        ind.type = 'av'
+        ind.type_as_int = cythonized.convert_ind_type_to_num("av")
     ind.process = 1.0
     return ind
 
 
-def CreatePop(n, space, WealthCoords, CurrentPrice):
+def CreatePop(n, space, WealthCoords, CurrentPrice, strategy):
 
     if n < 3:
         raise ValueError("Cannot create diverse population with less than 3 agents. ")
@@ -79,6 +82,9 @@ def CreatePop(n, space, WealthCoords, CurrentPrice):
     if WealthCoords[2] != 0:
         pop.append(IndCreation("tf"))
         NumTF += 1
+
+    if strategy != None:
+        pop.append(IndCreation("av"))
 
     for i in range(n - (NumNT + NumVI + NumTF)):
         rd = np.random.random()
@@ -123,6 +129,10 @@ def CreatePop(n, space, WealthCoords, CurrentPrice):
                 ind.strategy = DrawStrategy("tf")
 
     for ind in pop:
+        if ind.type == 'av':
+            ind.cash = RefCash
+            ind.asset = RefAssets
+            ind.strategy = strategy
         if ind.type == "nt":
             ind.cash = PcNTCash
             ind.asset = PcNTAsset
@@ -144,7 +154,6 @@ def CreatePop(n, space, WealthCoords, CurrentPrice):
 
 
 def WealthReset(pop, space, WealthCoords, generation, ResetWealth, CurrentPrice):
-    # generation > 1 and generation <= SHIELD_DURATION or
     if ResetWealth == True:
         pop, asset_supply = CreatePop(len(pop), space, WealthCoords, CurrentPrice)
         for ind in pop:

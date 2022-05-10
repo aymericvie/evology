@@ -3,12 +3,9 @@ from steps import *
 def main(
     strategy,
     space,
-    #solver,
     wealth_coordinates,
     POPULATION_SIZE,
     MAX_GENERATIONS,
-    #PROBA_SELECTION,
-    #MUTATION_RATE,
     tqdm_display,
     reset_wealth,
 ):
@@ -18,7 +15,7 @@ def main(
     price_history, dividend_history, replace, volume = [], [], 0, 0.0
 
     # Population creation
-    pop, asset_supply = cr.CreatePop(POPULATION_SIZE, space, wealth_coordinates, CurrentPrice)
+    pop, asset_supply = cr.CreatePop(POPULATION_SIZE, space, wealth_coordinates, CurrentPrice, strategy)
 
     for generation in tqdm(
         range(MAX_GENERATIONS), disable=tqdm_display, miniters=100, mininterval=0.5

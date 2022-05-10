@@ -31,9 +31,8 @@ InitialPrice = 100
 Short_Size_Percent = 1.17
 
 RefLoan = 0
-RefCash = 3 * 50_000_000
-RefAssets = 3 * 500_000
-RefInvestmentSupply = 10_000_000 / (21)
+RefCash = 50_000_000
+RefAssets = 500_000
 
 EMA_HORIZON = 2 * TRADING_DAYS
 

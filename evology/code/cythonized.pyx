@@ -59,8 +59,12 @@ def convert_ind_type_to_num(t):
         return 0
     elif t == "vi":
         return 1
-    else:
+    elif t == 'tf':
         return 2
+    elif t == 'av':
+        return 3
+    else:
+        return TypeError('Unrecognised type' +str(t))
 
 
 cdef class Individual(list):
