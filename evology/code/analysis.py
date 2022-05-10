@@ -11,3 +11,9 @@ print('Average wealth per fund in the strategy')
 df.plot(x="Gen", y = ["NT_nav", "VI_nav", "TF_nav", "AV_wealth"],
         kind="line", figsize=(15, 6))
 plt.show()
+
+df.plot(x="Gen", y="AV_return")
+plt.show()
+
+df.plot(x="Gen", y="Price")
+plt.show()
