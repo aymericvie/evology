@@ -23,5 +23,3 @@ print(df)
 df.to_csv("rundata/run_data.csv")
 
 print(av_stats)
-
-

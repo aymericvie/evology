@@ -189,7 +189,7 @@ def det_pop_learning(repetitions, time, agents):
         print(wealth_coordinates)
 
         np.random.seed(seed)
-        df,pop = main(None, 'scholl', wealth_coordinates, agents, time, tqdm_display=True, reset_wealth = False)
+        df,pop,av = main(None, 'scholl', wealth_coordinates, agents, time, tqdm_display=True, reset_wealth = False)
         np.random.seed(seed)
         df2,pop2,av = main(None, 'scholl', wealth_coordinates, agents, time, tqdm_display=True, reset_wealth = False)
 
