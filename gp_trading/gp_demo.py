@@ -3,6 +3,7 @@ import math
 import random
 import numpy 
 from deap import algorithms
+from deap.algorithms import varAnd
 from deap import base
 from deap import creator
 from deap import tools
@@ -55,7 +56,7 @@ creator.create("FitnessMax", base.Fitness, weights=(1.0,))
 creator.create("Individual", gp.PrimitiveTree, fitness=creator.FitnessMax)
 
 toolbox = base.Toolbox()
-toolbox.register("expr", gp.genHalfAndHalf, pset=pset, min_=1, max_=2)
+toolbox.register("expr", gp.genHalfAndHalf, pset=pset, min_=1, max_=4)
 toolbox.register("individual", tools.initIterate, creator.Individual, toolbox.expr)
 toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 toolbox.register("compile", gp.compile, pset=pset)
@@ -63,22 +64,23 @@ toolbox.register("compile", gp.compile, pset=pset)
 def main_eval(func):
     # takes a trading function and evaluates it
     fitness = 0
-    for _ in range(1): # Number of repetitions of the evology simulation
+    for _ in range(3): # Number of repetitions of the evology simulation
+        numpy.random.seed()
         df, pop, av_stats = evology(func, 'extended', [1/3, 1/3, 1/3], 500, 500, True, False)
         fitness += av_stats[0]
-    return fitness
+    return fitness / 3
 
-def evalSymbReg(individual, points):
+def evalSymbReg(individual):
     # Transform the tree expression in a callable function
     func = toolbox.compile(expr=individual)
     # fsum = func(p1, p2, p3)
     fsum = main_eval(func)
     return fsum, #math.fsum(sqerrors) / len(points),
 
-toolbox.register("evaluate", evalSymbReg, points=[x/1. for x in range(-10,10)])
+toolbox.register("evaluate", evalSymbReg)
 toolbox.register("select", tools.selTournament, tournsize=3)
 toolbox.register("mate", gp.cxOnePoint)
-toolbox.register("expr_mut", gp.genFull, min_=0, max_=2)
+toolbox.register("expr_mut", gp.genFull, min_=0, max_=4)
 toolbox.register("mutate", gp.mutUniform, expr=toolbox.expr_mut, pset=pset)
 
 toolbox.decorate("mate", gp.staticLimit(key=operator.attrgetter("height"), max_value=5)) #max_value is max depth (+1 for a terminal)
@@ -94,11 +96,15 @@ def round_max(x):
     return round(numpy.max(x), 2)
 
 def main():
+    # https://github.com/DEAP/deap/blob/eba726cf2ee64acba221213ccacaa74f63cfd174/deap/algorithms.py
+    random.seed(8)
 
-    random.seed(318)
-
-    pop = toolbox.population(n=20)
-    hof = tools.HallOfFame(1)
+    population = toolbox.population(n=50)
+    halloffame = tools.HallOfFame(1)
+    verbose = True
+    ngen = 50
+    cxpb = 0.5
+    mutpb = 0.05
 
     stats_fit = tools.Statistics(lambda ind: ind.fitness.values)
     stats_size = tools.Statistics(len)
@@ -108,10 +114,56 @@ def main():
     mstats.register("min", round_min)
     mstats.register("max", round_max)
 
-    pop, log = algorithms.eaSimple(pop, toolbox, 0.8, 0.1, 20, stats=mstats,
-                                   halloffame=hof, verbose=True)
+            # pop, log = algorithms.eaSimple(pop, toolbox, 0.8, 0.1, 20, stats=mstats,
+            #                                halloffame=hof, verbose=True)
     # print log
-    return pop, log, hof
+    logbook = tools.Logbook()
+    logbook.header = ['gen', 'nevals'] + (mstats.fields if mstats else [])
+
+    # Evaluate the individuals with an invalid fitness
+    invalid_ind = [ind for ind in population if not ind.fitness.valid]
+    fitnesses = toolbox.map(toolbox.evaluate, invalid_ind)
+    for ind, fit in zip(invalid_ind, fitnesses):
+        ind.fitness.values = fit
+
+    if halloffame is not None:
+        halloffame.update(population)
+
+    record = mstats.compile(population) if mstats else {}
+    logbook.record(gen=0, nevals=len(invalid_ind), **record)
+    if verbose:
+        print (logbook.stream)
+
+    # Begin the generational process
+    for gen in range(1, ngen + 1):
+        # Select the next generation individuals
+        offspring = toolbox.select(population, len(population))
+
+        # Vary the pool of individuals
+        offspring = varAnd(offspring, toolbox, cxpb, mutpb)
+
+        # Evaluate the individuals with an invalid fitness
+        invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
+        fitnesses = toolbox.map(toolbox.evaluate, invalid_ind)
+        for ind, fit in zip(invalid_ind, fitnesses):
+            ind.fitness.values = fit
+
+        # Update the hall of fame with the generated individuals
+        if halloffame is not None:
+            halloffame.update(offspring)
+            print(halloffame[0])
+
+        # Replace the current population by the offspring
+        population[:] = offspring
+
+        # Append the current generation statistics to the logbook
+        record = mstats.compile(population) if mstats else {}
+        logbook.record(gen=gen, nevals=len(invalid_ind), **record)
+        if verbose:
+            print (logbook.stream)
+
+    return population, logbook, halloffame
+    # return pop, log, hof
 
 if __name__ == "__main__":
     pop, log, hof = main()
@@ -141,7 +193,8 @@ if __name__ == "__main__":
     # Show best function
     bests = tools.selBest(pop, k=1)
     print(bests[0])
-    nodes, edges, labels = gp.graph(bests[0])
+    
+    nodes, edges, labels = gp.graph(hof[0])
     graph = nx.Graph()
     graph.add_nodes_from(nodes)
     graph.add_edges_from(edges)
