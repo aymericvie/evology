@@ -49,14 +49,21 @@ toolbox.register("individual", tools.initIterate, creator.Individual, toolbox.ex
 toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 toolbox.register("compile", gp.compile, pset=pset)
 
+def main_eval(func):
+    # takes a trading function and evaluates it
+    fitness = 0
+    for _ in range(3):
+        p1 = numpy.random.randint(0, 2)
+        p2 = numpy.random.randint(1,3)
+        p3 = numpy.random.randint(3, 6)
+        fitness += func(p1, p2, p3)
+    return fitness
+
 def evalSymbReg(individual, points):
     # Transform the tree expression in a callable function
     func = toolbox.compile(expr=individual)
-    # print(individual)
-    # Evaluate the mean squared error between the expression
-    # and the real function : x**4 + x**3 + x**2 + x
-    # sqerrors = ((func() - x**4 - x**3 - x**2 - x)**2 for x in points)
-    fsum = func(p1, p2, p3)
+    # fsum = func(p1, p2, p3)
+    fsum = main_eval(func)
     return fsum ** 2, #math.fsum(sqerrors) / len(points),
 
 toolbox.register("evaluate", evalSymbReg, points=[x/1. for x in range(-10,10)])
