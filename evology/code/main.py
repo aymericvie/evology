@@ -25,7 +25,7 @@ def main(
             break
 
         # Population reset
-        pop = cr.WealthReset(pop, space, wealth_coordinates, generation, reset_wealth, CurrentPrice)
+        pop = cr.WealthReset(pop, space, wealth_coordinates, generation, reset_wealth, CurrentPrice, strategy)
 
         # Hypermutation
         
@@ -53,7 +53,8 @@ def main(
         pop, replace = bsc.UpdateFullWealth(pop, CurrentPrice)
         pop = bsc.NoiseProcess(pop)
         pop = bsc.UpdateFval(pop, dividend)
-        pop = bsc.CalculateTSV(pop, price_history, dividend_history, CurrentPrice)
+        pop = bsc.CalculateTSV_staticf(pop, price_history, dividend_history, CurrentPrice)
+        pop = bsc.CalculateTSV_avf(pop, generation, strategy)
         #pop = bsc.DetermineEDF(pop)
         
 

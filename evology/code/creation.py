@@ -153,9 +153,9 @@ def CreatePop(n, space, WealthCoords, CurrentPrice, strategy):
     return pop, TotalAsset
 
 
-def WealthReset(pop, space, WealthCoords, generation, ResetWealth, CurrentPrice):
+def WealthReset(pop, space, WealthCoords, generation, ResetWealth, CurrentPrice, strategy):
     if ResetWealth == True:
-        pop, asset_supply = CreatePop(len(pop), space, WealthCoords, CurrentPrice)
+        pop, asset_supply = CreatePop(len(pop), space, WealthCoords, CurrentPrice, strategy)
         for ind in pop:
             ind.age = generation
     return pop

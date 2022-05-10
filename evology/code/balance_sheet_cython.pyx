@@ -61,13 +61,12 @@ cpdef NoiseProcess(pop):
             b = RHO_NT * (MU_NT + a) + randoms[i]
             ind.process = b
             if b < 0:
-                #ind.process = abs(ind.process)
                 ind.process = abs(b)
 
 
     return pop
 
-cpdef CalculateTSV(list pop, list price_history, list dividend_history, double CurrentPrice):
+cpdef CalculateTSV_staticf(list pop, list price_history, list dividend_history, double CurrentPrice):
     cdef cythonized.Individual ind
     cdef int i 
     cdef int t
@@ -80,13 +79,34 @@ cpdef CalculateTSV(list pop, list price_history, list dividend_history, double C
             ind.tsv = log2(ind.val / CurrentPrice)
             if isnan(ind.tsv) == True:
                 raise ValueError('ind.tsv is NAN')
-        else: # TF
+        elif t == 2: # TF
             if len(price_history) >= ind.strategy:
                 ind.last_price = price_history[-int(ind.strategy)]
                 ind.tsv =  log2(CurrentPrice / ind.last_price)
             else:
                 ind.tsv = 0.0
+        else:
+            pass
     return pop
+
+cpdef CalculateTSV_avf(list pop, double generation, strategy):
+    cdef cythonized.Individual ind
+    cdef int i 
+    cdef int t
+
+    cdef double p1 = price_history[-1]
+    cdef double p2 = price_history[-2]
+    cdef double p3 = price_history[-3]
+
+    if generation > 10 and strategy != None:
+        for i, ind in enumerate(pop):
+            t = ind.type_as_int
+            if t == 3: #AV
+                ind.tsv = ind.strategy(p1, p2, p3)
+
+
+    return pop
+
 
 cpdef UpdateFval(list pop, double dividend):
 
@@ -142,14 +162,6 @@ cpdef UpdateFullWealth(list pop, double current_price):
         ind.prev_wealth = ind.wealth
         if ind.wealth < 0:
             replace = 1  
-        #if isnan(ind.wealth) == True:
-        #    print(ind.wealth)
-        #    print(ind.cash)
-        #    print(ind.asset)
-        #    print(current_price)
-        #    print(ind.loan)
-        #    print(ind.age)
-        #    raise ValueError('ind.wealth is NAN')
     return pop, replace
       
 
