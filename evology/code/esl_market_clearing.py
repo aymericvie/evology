@@ -9,6 +9,7 @@ from esl.simulation import identity
 from esl.economics.markets import quote
 from esl.economics import price
 from esl.economics import currencies
+import scipy
 import numpy as np
 # import random
 # import matplotlib
@@ -71,7 +72,14 @@ def esl_solver(ed_functions, current_price):
         new_price = 0.01
     return new_price
 
+def scipy_solver(ed_functions, current_price): 
+    new_price = scipy.optimize.root(ed_functions, current_price).x
+    if new_price < 0:
+        new_price = 0.01
+    return new_price
 
+
+            
             
 
 

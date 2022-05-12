@@ -80,10 +80,18 @@ def main(
         
         ToLiquidate = lc.DetermineLiquidation(spoils, volume)
 
+        # ''' for VI on contemporaneous price ''' 
+        # ed_functions = bsc.agg_ed_esl(pop, ToLiquidate)
+        # #CurrentPrice = float(esl_mc.esl_solver(ed_functions, CurrentPrice)[0])
+        # CurrentPrice = esl_mc.esl_solver(ed_functions, CurrentPrice)
+
+        ''' Test scipy '''
         ''' for VI on contemporaneous price ''' 
-        ed_functions = bsc.agg_ed_esl(pop, ToLiquidate)
+        ed_functions = bsc.agg_ed(pop, ToLiquidate)[0]
         #CurrentPrice = float(esl_mc.esl_solver(ed_functions, CurrentPrice)[0])
-        CurrentPrice = esl_mc.esl_solver(ed_functions, CurrentPrice)
+        CurrentPrice = esl_mc.scipy_solver(ed_functions, CurrentPrice)
+
+
         # print(CurrentPrice)
         # print(float(CurrentPrice[0]))
         # print([type(price_history), type(CurrentPrice)])

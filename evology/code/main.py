@@ -78,6 +78,7 @@ def main(
         #CurrentPrice = float(esl_mc.esl_solver(ed_functions, CurrentPrice)[0])
         CurrentPrice = esl_mc.esl_solver(ed_functions, CurrentPrice)
 
+
         # print(CurrentPrice)
         # print(float(CurrentPrice[0]))
         # print([type(price_history), type(CurrentPrice)])
