@@ -73,15 +73,14 @@ def main(
         
         ToLiquidate = lc.DetermineLiquidation(spoils, volume)
 
+        # ''' for VI on contemporaneous price ''' 
+        # ed_functions = bsc.agg_ed_esl(pop, ToLiquidate)
+        # CurrentPrice = mc.esl_solver(ed_functions, CurrentPrice)
+
+        ''' Test scipy '''
         ''' for VI on contemporaneous price ''' 
-        ed_functions = bsc.agg_ed_esl(pop, ToLiquidate)
-        #CurrentPrice = float(esl_mc.esl_solver(ed_functions, CurrentPrice)[0])
-        CurrentPrice = esl_mc.esl_solver(ed_functions, CurrentPrice)
-
-
-        # print(CurrentPrice)
-        # print(float(CurrentPrice[0]))
-        # print([type(price_history), type(CurrentPrice)])
+        ed_functions = bsc.agg_ed(pop, ToLiquidate)[0]
+        CurrentPrice = mc.scipy_solver(ed_functions, CurrentPrice)
 
         price_history = lc.UpdatePriceHistory(price_history, CurrentPrice)
         pop, mismatch = bsc.CalculateEDV(pop, CurrentPrice)

@@ -73,7 +73,7 @@ def esl_solver(ed_functions, current_price):
     return new_price
 
 def scipy_solver(ed_functions, current_price): 
-    new_price = scipy.optimize.root(ed_functions, current_price).x
+    new_price = scipy.optimize.root(ed_functions, current_price, method='hybr').x
     if new_price < 0:
         new_price = 0.01
     return new_price

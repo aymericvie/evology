@@ -2,7 +2,7 @@ import balance_sheet_cython as bsc
 import ga as ga
 import timeit
 from parameters import *
-import esl_market_clearing as esl_mc
+import market_clearing as mc
 import market as mk
 import creation as cr
 from scipy import optimize
@@ -54,10 +54,10 @@ def marketClearing(pop, current_price, price_history, spoils, solver, volume):
     try:
         if solver == "esl":
             ed_functions, ToLiquidate = bs.agg_ed_esl(pop, spoils, volume)
-            current_price = float(esl_mc.solve(ed_functions, current_price)[0])
+            current_price = float(mc.solve(ed_functions, current_price)[0])
         elif solver == "esl.true":
             ed_functions, ToLiquidate = bs.agg_ed_esl(pop, spoils, volume)
-            current_price = esl_mc.CircuitClearing(ed_functions, current_price)
+            current_price = mc.CircuitClearing(ed_functions, current_price)
         elif solver == "newton":
             ed_functions, ToLiquidate = bs.agg_ed(pop, spoils, volume)
             current_price = max(
