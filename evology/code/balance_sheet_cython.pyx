@@ -319,4 +319,4 @@ def agg_ed_esl(pop, ToLiquidate):
         return cythonized.big_edf(array_pop, price, ToLiquidate)
 
     functions.append(big_edf)
-    return functions, ToLiquidate
+    return functions
