@@ -4,7 +4,7 @@ from parameters import *
 
 wealth_coordinates = np.random.dirichlet(np.ones(3), size=1)[0].tolist()
 np.random.seed(8)
-wealth_coordinates = [1/3,1/3,1/3]
+# wealth_coordinates = [1/3,1/3,1/3]
 # wealth_coordinates = [0.4, 0.1, 0.5]
 print(wealth_coordinates)
 
@@ -14,8 +14,8 @@ df, pop, av_stats = main(
     strategy = None, #func,
     space = 'extended', # 'extended',
     wealth_coordinates=wealth_coordinates,
-    POPULATION_SIZE = 1000,
-    MAX_GENERATIONS = 100000, #1000 * 252,
+    POPULATION_SIZE = 100,
+    MAX_GENERATIONS = 10000, #1000 * 252,
     tqdm_display=False,
     reset_wealth=False,
 )

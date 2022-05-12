@@ -214,8 +214,8 @@ def ResultsProcess(list pop, double spoils, double price, double generation):
     cdef double WSTF_ 
     cdef int sim_break
 
-    cdef double av_wealth 
-    cdef double av_return
+    cdef double av_wealth = NAN
+    cdef double av_return = NAN
 
 
     for ind in pop:
