@@ -427,6 +427,7 @@ def record_results(
 
     cdef int current = generation - Barr
     cdef list arr 
+    cdef int sim_break = 0
 
     if generation >= Barr :
 

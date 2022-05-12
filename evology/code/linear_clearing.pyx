@@ -41,9 +41,15 @@ cpdef linear_solver(list pop, double ToLiquidate, double prev_price):
         b += ind.asset
         d = (tanh(c * ind.tsv + 0.5)) * ind.wealth
         a += l * d
-
-    price = fmin(fmax(a/b, 0.8*prev_price), 1.2*prev_price)
-    price = fmax(price, 0.01)
+        if isnan(a) == True:
+            raise ValueError('nan a')
+        if isnan(b) == True:
+            raise ValueError('nan b')
+    price = a/b
+    if isnan(price) == True:
+        raise ValueError('nan price')
+    price = fmin(fmax(a/b, 0.5*prev_price), 2*prev_price)
+    price = fmax(price, 1) #0.01)
 
     
     if isnan(price) == True:

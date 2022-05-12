@@ -53,7 +53,7 @@ liquidation_perc = 10 / 100
 """ RESET WEALTH """
 
 SHIELD_DURATION = 0  # 21
-ShieldResults = 0  # 1 #21
+ShieldResults = 0 #252 * 2 #0  # 1 #21
 ShieldInvestment = 252
 SHIELD_TOLERANCE = 0.01
 MAX_ATTEMPTS = 100
@@ -73,4 +73,4 @@ min_vi_strat = 5
 max_vi_strat = 15
 
 min_tf_strat = 2
-max_tf_strat = 21
+max_tf_strat = 252 #21

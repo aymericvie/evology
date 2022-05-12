@@ -82,6 +82,9 @@ cpdef CalculateTSV_staticf(list pop, list price_history, list dividend_history, 
         elif t == 1: # VI
             ind.tsv = log2(ind.val / CurrentPrice)
             if isnan(ind.tsv) == True:
+                print(ind.val)
+                print(CurrentPrice)
+                print(ind.tsv)
                 raise ValueError('ind.tsv is NAN')
         elif t == 2: # TF
             if len(price_history) >= ind.strategy:
