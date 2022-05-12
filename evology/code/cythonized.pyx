@@ -1,7 +1,7 @@
 #cython: boundscheck=False, wraparound=False, initializedcheck=False, cdivision=True
 
 # See https://stackoverflow.com/questions/30564253/cython-boundscheck-true-faster-than-boundscheck-false
-from libc.math cimport tanh, log2
+from libc.math cimport tanh, log2, isnan
 from cpython cimport list
 
 from deap import creator
@@ -37,9 +37,12 @@ cpdef big_edf(
     cdef double result = ToLiquidate
     cdef Individual ind
     cdef long t
+    cdef double ind_result
     #cdef double zero
     for ind in pop:
-        result += edf(ind, price)
+        ind_result = edf(ind, price)
+        if isnan(ind_result) == False:
+            result += ind_result
     return result
 
 
