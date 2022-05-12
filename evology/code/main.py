@@ -67,7 +67,11 @@ def main(
         #)
         #'''
         ToLiquidate = lc.DetermineLiquidation(spoils, volume)
+
+        ''' for VI on contemporaneous price '''    
         CurrentPrice = lc.linear_solver(pop, ToLiquidate, CurrentPrice)
+
+
         price_history = lc.UpdatePriceHistory(price_history, CurrentPrice)
         pop, mismatch = bsc.CalculateEDV(pop, CurrentPrice)
 
