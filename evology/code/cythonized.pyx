@@ -1,7 +1,7 @@
 #cython: boundscheck=False, wraparound=False, initializedcheck=False, cdivision=True
 
 # See https://stackoverflow.com/questions/30564253/cython-boundscheck-true-faster-than-boundscheck-false
-from libc.math cimport tanh
+from libc.math cimport tanh, log2
 from cpython cimport list
 
 from deap import creator
@@ -19,7 +19,10 @@ cdef double edf(Individual ind, double price):
     if t == 0:
         return (LeverageNT * ind.wealth / price) * tanh(SCALE_NT * ind.tsv + 0.5) - ind.asset 
     elif t == 1:
-        return (LeverageVI * ind.wealth / price) * tanh(SCALE_VI * ind.tsv + 0.5) - ind.asset
+        ''' for previous-price VI '''
+        #return (LeverageVI * ind.wealth / price) * tanh(SCALE_VI * ind.tsv + 0.5) - ind.asset
+        ''' for contemporaneous-price VI '''
+        return (LeverageVI * ind.wealth / price) * tanh(SCALE_VI * (log2(ind.val / price)) + 0.5) - ind.asset
     elif t == 2:
         #
         return (LeverageTF * ind.wealth / price) * tanh(SCALE_TF * ind.tsv + 0.5) - ind.asset

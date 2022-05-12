@@ -1,5 +1,6 @@
 #cython: boundscheck=False, wraparound = False, initializedcheck=False, cdivision=True
 cimport cythonized
+import cythonized
 from libc.math cimport log2, tanh, isnan
 from parameters import G, GAMMA_NT, RHO_NT, MU_NT, LeverageNT, LeverageVI, LeverageTF
 from parameters import G_day, SCALE_NT, SCALE_TF, SCALE_VI, liquidation_perc, interest_day
@@ -80,7 +81,12 @@ cpdef CalculateTSV_staticf(list pop, list price_history, list dividend_history, 
         if t == 0: # NT
             ind.tsv = (ind.process - 1)
         elif t == 1: # VI
-            ind.tsv = log2(ind.val / CurrentPrice)
+            ''' for previous-price VI '''
+            # ind.tsv = log2(ind.val / CurrentPrice)
+
+            ''' for contemporaneous VI '''
+            pass    
+
             if isnan(ind.tsv) == True:
                 print(ind.val)
                 print(CurrentPrice)
@@ -153,6 +159,7 @@ cpdef UpdateFval(list pop, double dividend):
             ind.val = fval
     return pop
 
+'''
 def DetermineEDF(pop):
 # Cant cpdef because closures are not supported
     cdef cythonized.Individual ind
@@ -181,6 +188,7 @@ def DetermineEDF(pop):
         else:
             raise Exception(f"Unexpected ind type: {ind.type}")
     return pop
+'''
 
 cpdef UpdateFullWealth(list pop, double current_price):
     cdef cythonized.Individual ind
@@ -228,6 +236,10 @@ cpdef CalculateEDV(list pop, double current_price):
             c = ind.asset
 
         elif t == 1: #VI
+            ''' for contemporaneous VI '''
+            ind.tsv = log2(ind.val / current_price)
+
+            ''' for previous-price VI '''
             a = (LeverageVI * ind.wealth / current_price)
             b = tanh(SCALE_VI * ind.tsv + 0.5)
             c = ind.asset
@@ -292,3 +304,19 @@ cpdef clear_debt(list pop, double price):
                 ind.loan -= ind.cash - 100.0 * price
                 ind.cash = 100.0 * price
     return pop
+
+cdef convert_to_array(pop):
+    array_pop = np.empty(len(pop), object)
+    for idx, ind in enumerate(pop):
+        array_pop[idx] = ind
+    return array_pop
+
+def agg_ed_esl(pop, ToLiquidate):
+    functions = []
+    array_pop = convert_to_array(pop)
+
+    def big_edf(asset_key, price):
+        return cythonized.big_edf(array_pop, price, ToLiquidate)
+
+    functions.append(big_edf)
+    return functions, ToLiquidate

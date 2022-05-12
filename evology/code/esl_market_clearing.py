@@ -13,6 +13,7 @@ import numpy as np
 import random
 import matplotlib
 import matplotlib.pyplot as plt
+import balance_sheet_cython as bsc
 
 from parameters import InitialPrice
 
@@ -64,7 +65,16 @@ def solve(my_excess_demand_functions: list, current_price):
     del initial_price
     return prices
 
+def esl_solver(pop, Liquidate, current_price):
+    ed_functions, ToLiquidate = bsc.agg_ed_esl(pop, Liquidate)
+    price = float(solve(ed_functions, current_price)[0])
+    return price, ToLiquidate
 
+
+            
+
+
+'''
 def CircuitClearing(ed_functions, current_price):
 
     ClearingPrice = float(solve(ed_functions, current_price)[0])
@@ -77,3 +87,4 @@ def CircuitClearing(ed_functions, current_price):
     if ClearingPrice < LimitBelow:
         ClearingPrice = LimitBelow
     return ClearingPrice
+'''

@@ -66,11 +66,19 @@ def main(
         #    pop, CurrentPrice, price_history, spoils, solver, volume
         #)
         #'''
+        
+
+        ''' For VI on previous price (scalar tsf)'''
+        # CurrentPrice = lc.linear_solver(pop, ToLiquidate, CurrentPrice)
+        
         ToLiquidate = lc.DetermineLiquidation(spoils, volume)
 
-        ''' for VI on contemporaneous price '''    
-        CurrentPrice = lc.linear_solver(pop, ToLiquidate, CurrentPrice)
+        ''' for VI on contemporaneous price ''' 
+        CurrentPrice = float(esl_mc.esl_solver(pop, ToLiquidate, CurrentPrice)[0])
 
+        # print(CurrentPrice)
+        # print(float(CurrentPrice[0]))
+        # print([type(price_history), type(CurrentPrice)])
 
         price_history = lc.UpdatePriceHistory(price_history, CurrentPrice)
         pop, mismatch = bsc.CalculateEDV(pop, CurrentPrice)

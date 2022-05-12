@@ -15,7 +15,7 @@ df, pop, av_stats = main(
     space = 'scholl', # 'extended',
     wealth_coordinates=wealth_coordinates,
     POPULATION_SIZE = 1000,
-    MAX_GENERATIONS = 40 * 252,
+    MAX_GENERATIONS = 1000 * 252,
     tqdm_display=False,
     reset_wealth=False,
 )

@@ -74,6 +74,7 @@ cpdef linear_solver(list pop, double ToLiquidate, double prev_price):
     return price
 
 cpdef UpdatePriceHistory(list price_history, double current_price):
+    
     price_history.append(current_price)
     return price_history
 
