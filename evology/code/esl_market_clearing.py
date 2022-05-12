@@ -66,7 +66,7 @@ def solve(my_excess_demand_functions: list, current_price):
     return prices
 
 def esl_solver(ed_functions, current_price): 
-    return float(solve(ed_functions, current_price)[0])
+    return max(float(solve(ed_functions, current_price)[0]), 0.01)
 
 
             
