@@ -10,6 +10,7 @@ import numpy as np
 cdef float NAN
 NAN = float("nan")
 
+'''
 cpdef convert_ind_type_to_num(t):
     # We enumerate the individual type string into integer, for faster access
     # while inside Cython.
@@ -21,9 +22,13 @@ cpdef convert_ind_type_to_num(t):
         return 2
     elif t == 'av':
         return 3
+    elif t == 'bh':
+        return 4
+    elif t == 'ir':
+        return 5
     else:
         return TypeError('Type non recognised.')
-
+'''
 
 cpdef UpdateWealthProfitAge(list pop, double current_price):
     cdef cythonized.Individual ind
@@ -100,6 +105,7 @@ cpdef CalculateTSV_staticf(list pop, list price_history, list dividend_history, 
                 ind.tsv = 0.0
         else:
             pass
+            # BH stay at 1, IR stay at 0, AV is not computed here, VI cannot compute before price is known
     return pop
 
 cpdef CalculateTSV_avf(list pop, double generation, object strategy, list price_history, double dividend):
@@ -251,7 +257,17 @@ cpdef CalculateEDV(list pop, double current_price):
         
         elif t == 3: #AV
             a = ind.wealth / current_price
-            b = tanh(ind.tsv + 0.5)
+            b = tanh(ind.tsv)
+            c = ind.asset
+
+        elif t == 4: # BH
+            a = ind.wealth / current_price
+            b = 1.
+            c = ind.asset
+
+        elif t == 5: # IR
+            a = 0.
+            b = 0.
             c = ind.asset
 
         ind.edv = a * b - c

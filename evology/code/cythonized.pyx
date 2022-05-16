@@ -23,9 +23,14 @@ cdef double edf(Individual ind, double price):
         #return (LeverageVI * ind.wealth / price) * tanh(SCALE_VI * ind.tsv + 0.5) - ind.asset
         ''' for contemporaneous-price VI '''
         return (LeverageVI * ind.wealth / price) * tanh(SCALE_VI * (log2(ind.val / price)) + 0.5) - ind.asset
-    elif t == 2:
-        #
+    elif t == 2: # TF
         return (LeverageTF * ind.wealth / price) * tanh(SCALE_TF * ind.tsv + 0.5) - ind.asset
+    elif t == 3: # AV
+        return (ind.wealth / price) * tanh(ind.tsv) - ind.asset
+    elif t == 4: # BH
+        return (ind.wealth / price) - ind.asset 
+    elif t == 5: # IR
+        return - ind.asset
     else:
         raise Exception(f"Unexpected ind type: {ind.type}")
 
@@ -69,6 +74,10 @@ def convert_ind_type_to_num(t):
         return 2
     elif t == 'av':
         return 3
+    elif t == 'bh':
+        return 4
+    elif t == 'ir':
+        return 5
     else:
         return TypeError('Unrecognised type' +str(t))
 

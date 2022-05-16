@@ -50,6 +50,14 @@ def IndCreation(strat):
     elif strat == 'av':
         ind.type = 'av'
         ind.type_as_int = cythonized.convert_ind_type_to_num("av")
+    elif strat == 'bh':
+        ind.type = 'bh'
+        ind.type_as_int = cythonized.convert_ind_type_to_num("bh")
+        ind.tsv = 1.
+    elif strat == 'ir':
+        ind.type = 'ir'
+        ind.type_as_int = cythonized.convert_ind_type_to_num("ir")
+        ind.tsv = 0.
     ind.process = 1.0
     return ind
 
@@ -82,6 +90,10 @@ def CreatePop(n, space, WealthCoords, CurrentPrice, strategy):
     if WealthCoords[2] != 0:
         pop.append(IndCreation("tf"))
         NumTF += 1
+    # Add a buy and hold agent (for benchmark)
+    pop.append(IndCreation('bh'))
+    # Add a sell and deposit agent (for benchmark)
+    pop.append(IndCreation('ir'))
 
     if strategy != None:
         pop.append(IndCreation("av"))
@@ -133,6 +145,9 @@ def CreatePop(n, space, WealthCoords, CurrentPrice, strategy):
             ind.cash = RefCash
             ind.asset = RefAssets
             ind.adaptive_strategy = strategy
+        if ind.type == 'bh' or ind.type == 'ir':
+            ind.cash = RefCash
+            ind.asset = RefAssets
         if ind.type == "nt":
             ind.cash = PcNTCash
             ind.asset = PcNTAsset
