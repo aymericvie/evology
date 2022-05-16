@@ -104,7 +104,14 @@ columns = [
     "nav_pct",
     # Adaptive fund statistics
     "AV_wealth",
-    "AV_return"
+    "AV_return",
+    "AV_WShare",
+    "BH_wealth",
+    "BH_return",
+    "BH_WShare",
+    "IR_wealth",
+    "IR_return",
+    "IR_WShare",
 ]
 variables = len(columns) 
 
@@ -216,6 +223,13 @@ def ResultsProcess(list pop, double spoils, double price, double generation):
 
     cdef double av_wealth = NAN
     cdef double av_return = NAN
+    cdef double av_wshare = NAN
+    cdef double bh_wealth = NAN
+    cdef double bh_return = NAN
+    cdef double bh_wshare = NAN
+    cdef double ir_wealth = NAN
+    cdef double ir_return = NAN
+    cdef double ir_wshare = NAN
 
 
     for ind in pop:
@@ -239,6 +253,21 @@ def ResultsProcess(list pop, double spoils, double price, double generation):
                 av_return = ind.DailyReturn
             else:
                 av_return = NAN
+
+        if ind.type == "bh":
+            bh_wealth = ind.wealth
+            if ind.prev_wealth != 0:
+                bh_return = ind.DailyReturn
+            else:
+                bh_return = NAN
+
+        
+        if ind.type == "ir":
+            ir_wealth = ind.wealth
+            if ind.prev_wealth != 0:
+                ir_return = ind.DailyReturn
+            else:
+                ir_return = NAN
 
         if ind.type == "nt":
             NTcount += 1
@@ -332,19 +361,27 @@ def ResultsProcess(list pop, double spoils, double price, double generation):
     elif spoils < 0:
         ShortAssets += abs(spoils)
 
-
-    WSNT_ = (100 * WSNT) / (WSNT + WSVI + WSTF)
-    WSVI_ = (100 * WSVI) / (WSNT + WSVI + WSTF)
-    WSTF_ = (100 * WSTF) / (WSNT + WSVI + WSTF)
+    if isnan(av_wealth) == False:
+        WSNT_ = (100 * WSNT) / (WSNT + WSVI + WSTF + av_wealth)
+        WSVI_ = (100 * WSVI) / (WSNT + WSVI + WSTF + av_wealth)
+        WSTF_ = (100 * WSTF) / (WSNT + WSVI + WSTF + av_wealth)
+        av_wshare = (100 * av_wealth) / (WSNT + WSVI + WSTF + av_wealth)
+    else:
+        WSNT_ = (100 * WSNT) / (WSNT + WSVI + WSTF)
+        WSVI_ = (100 * WSVI) / (WSNT + WSVI + WSTF)
+        WSTF_ = (100 * WSTF) / (WSNT + WSVI + WSTF)
+        av_wshare = NAN
+    bh_wshare = bh_wealth / (WSNT + WSVI + WSTF)
+    ir_wshare = ir_wealth / (WSNT + WSVI + WSTF)
     WSNT = WSNT_
     WSVI = WSVI_
     WSTF = WSTF_
-    if abs(100 - (WSNT + WSVI + WSTF)) > 1:
+    if abs(100 - (WSNT + WSVI + WSTF + av_wealth)) > 1:
         raise ValueError(
-            "Sum of wealth shares superior to 100. " + str([WSNT + WSVI + WSTF])
+            "Sum of wealth shares superior to 100. " + str([WSNT + WSVI + WSTF + av_wealth])
         )
-    if WSNT < 0 or WSNT < 0 or WSNT < 0:
-        raise ValueError("Negative wealth share. " + str([WSNT, WSVI, WSTF]))
+    if WSNT < 0 or WSNT < 0 or WSNT < 0 or av_wshare < 0:
+        raise ValueError("Negative wealth share. " + str([WSNT, WSVI, WSTF, av_wshare]))
 
     AvgAge = AvgAge / len(pop)
 
@@ -402,7 +439,14 @@ def ResultsProcess(list pop, double spoils, double price, double generation):
         VI_val,
         nav_pct,
         av_wealth,
-        av_return
+        av_return,
+        av_wshare,
+        bh_wealth,
+        bh_return,
+        bh_wshare,
+        ir_wealth,
+        ir_return,
+        ir_wshare,
     ]
 
     return ListOutput, sim_break
@@ -476,8 +520,10 @@ def record_results(
         ''' NT noise process and VI val and nan avg flow'''
         arr += [ListOutput[42], ListOutput[43], ListOutput[44]]
 
-        ''' AV fund statistics '''
-        arr += [ListOutput[45], ListOutput[46]]
+        ''' AV, BH, IR fund statistics '''
+        arr += [ListOutput[45], ListOutput[46], ListOutput[47]]
+        arr += [ListOutput[48], ListOutput[49], ListOutput[50]]
+        arr += [ListOutput[51], ListOutput[52], ListOutput[53]]
 
 
         if len(arr) != len(results[current,:]):
