@@ -9,11 +9,11 @@ print(wealth_coordinates)
 def func(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, d, v, g, r):
     return 0
 df, pop, av_stats = main(
-    strategy = func, #None, #func,
+    strategy = None, #func, #None, #func,
     space = 'extended', # 'extended',
     wealth_coordinates=wealth_coordinates,
-    POPULATION_SIZE = 201,
-    MAX_GENERATIONS = 10000, #1000 * 252,
+    POPULATION_SIZE = 200,
+    MAX_GENERATIONS = 20 * 252, #20000, #1000 * 252,
     tqdm_display=False,
     reset_wealth=False,
 )
