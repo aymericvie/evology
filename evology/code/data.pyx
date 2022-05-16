@@ -112,6 +112,8 @@ columns = [
     "IR_wealth",
     "IR_return",
     "IR_WShare",
+    "BH_stocks",
+    "IR_stocks",
 ]
 variables = len(columns) 
 
@@ -230,6 +232,8 @@ def ResultsProcess(list pop, double spoils, double price, double generation):
     cdef double ir_wealth = NAN
     cdef double ir_return = NAN
     cdef double ir_wshare = NAN
+    cdef double bh_stocks = NAN
+    cdef double ir_stocks = NAN
 
 
     for ind in pop:
@@ -260,6 +264,7 @@ def ResultsProcess(list pop, double spoils, double price, double generation):
                 bh_return = ind.DailyReturn
             else:
                 bh_return = NAN
+            bh_stocks = ind.asset * price
 
         
         if ind.type == "ir":
@@ -268,6 +273,7 @@ def ResultsProcess(list pop, double spoils, double price, double generation):
                 ir_return = ind.DailyReturn
             else:
                 ir_return = NAN
+            ir_stocks = ind.asset * price 
 
         if ind.type == "nt":
             NTcount += 1
@@ -447,6 +453,8 @@ def ResultsProcess(list pop, double spoils, double price, double generation):
         ir_wealth,
         ir_return,
         ir_wshare,
+        bh_stocks,
+        ir_stocks
     ]
 
     return ListOutput, sim_break
@@ -524,6 +532,7 @@ def record_results(
         arr += [ListOutput[45], ListOutput[46], ListOutput[47]]
         arr += [ListOutput[48], ListOutput[49], ListOutput[50]]
         arr += [ListOutput[51], ListOutput[52], ListOutput[53]]
+        arr += [ListOutput[54], ListOutput[55]]
 
 
         if len(arr) != len(results[current,:]):

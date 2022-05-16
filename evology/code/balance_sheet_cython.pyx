@@ -10,26 +10,6 @@ import numpy as np
 cdef float NAN
 NAN = float("nan")
 
-'''
-cpdef convert_ind_type_to_num(t):
-    # We enumerate the individual type string into integer, for faster access
-    # while inside Cython.
-    if t == "nt":
-        return 0
-    elif t == "vi":
-        return 1
-    elif t == 'tf':
-        return 2
-    elif t == 'av':
-        return 3
-    elif t == 'bh':
-        return 4
-    elif t == 'ir':
-        return 5
-    else:
-        return TypeError('Type non recognised.')
-'''
-
 cpdef UpdateWealthProfitAge(list pop, double current_price):
     cdef cythonized.Individual ind
     cdef int replace = 0
@@ -261,14 +241,14 @@ cpdef CalculateEDV(list pop, double current_price):
             c = ind.asset
 
         elif t == 4: # BH
-            a = ind.wealth / current_price
+            a = 0. #ind.wealth / current_price
             b = 1.
-            c = ind.asset
+            c = 0. #ind.asset
 
         elif t == 5: # IR
             a = 0.
             b = 0.
-            c = ind.asset
+            c = 0. #ind.asset
 
         ind.edv = a * b - c
         mismatch += ind.edv
@@ -279,7 +259,8 @@ cpdef count_long_assets(list pop, double spoils):
     cdef cythonized.Individual ind
     cdef double count = 0.0
     for ind in pop:
-        count += ind.asset
+        if ind.type_as_int != 4:
+            count += ind.asset
     count += spoils
     return count
 
@@ -288,8 +269,9 @@ cpdef count_short_assets(list pop, double spoils):
     cdef cythonized.Individual ind
     cdef double count = 0.0
     for ind in pop:
-        if ind.asset < 0:
-            count += abs(ind.asset)
+        if ind.type_as_int != 4:
+            if ind.asset < 0:
+                count += abs(ind.asset)
     if spoils < 0:
         count += abs(spoils)
     return count
