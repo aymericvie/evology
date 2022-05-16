@@ -13,16 +13,19 @@ def CreateFractionalFund(pop, MaxFund, divisions):
 
     if pop[MaxFund].type == "nt":
         half = IndCreation("nt")
-    if pop[MaxFund].type == "vi":
+    elif pop[MaxFund].type == "vi":
         half = IndCreation("vi")
-    if pop[MaxFund].type == "tf":
+    elif pop[MaxFund].type == "tf":
         half = IndCreation("tf")
+    else:
+        # MaxFund is AV, BH or IR
+        half = IndCreation("vi")
 
     # Copy fund MaxFund intangible characteristics
     # TSV, EDF, EDV are totally reset.
-    half.tsv = 0
+    half.tsv = 0.
     #half.edf = None
-    half.edv = 0
+    half.edv = 0.
     half.strategy = pop[MaxFund].strategy
     half.process = pop[MaxFund].process
     half.ema = pop[MaxFund].ema
