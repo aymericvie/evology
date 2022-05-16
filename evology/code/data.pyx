@@ -225,13 +225,13 @@ def ResultsProcess(list pop, double spoils, double price, double generation):
 
     cdef double av_wealth = NAN
     cdef double av_return = NAN
-    cdef double av_wshare = NAN
+    cdef double av_wshare = 0.0
     cdef double bh_wealth = NAN
     cdef double bh_return = NAN
-    cdef double bh_wshare = NAN
+    cdef double bh_wshare = 0.0
     cdef double ir_wealth = NAN
     cdef double ir_return = NAN
-    cdef double ir_wshare = NAN
+    cdef double ir_wshare = 0.0
     cdef double bh_stocks = NAN
     cdef double ir_stocks = NAN
 
@@ -376,7 +376,7 @@ def ResultsProcess(list pop, double spoils, double price, double generation):
         WSNT_ = (100 * WSNT) / (WSNT + WSVI + WSTF)
         WSVI_ = (100 * WSVI) / (WSNT + WSVI + WSTF)
         WSTF_ = (100 * WSTF) / (WSNT + WSVI + WSTF)
-        av_wshare = NAN
+        av_wshare = 0.0
     bh_wshare = bh_wealth / (WSNT + WSVI + WSTF)
     ir_wshare = ir_wealth / (WSNT + WSVI + WSTF)
     WSNT = WSNT_

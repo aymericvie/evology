@@ -148,6 +148,8 @@ def main(
 
     df = pd.DataFrame(results, columns=data.columns)
 
-    av_stats = [df["AV_wealth"].iloc[-1] / df["AV_wealth"].iloc[0] - 1, df["AV_return"].mean(), df["AV_return"].std()]
+    print(df["AV_wealth"])
+    av_stats = [df["AV_wealth"].iloc[-1] / df["AV_wealth"].iloc[0] - 1, round(df["AV_return"].mean(),4), round(df["AV_return"].std(),3), 
+    df["AV_wealth"].iloc[0], df["AV_wealth"].iloc[-1]]
 
     return df, pop, av_stats

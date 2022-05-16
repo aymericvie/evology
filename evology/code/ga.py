@@ -69,10 +69,10 @@ def hypermutate(pop, spoils, replace):
 
         elif NumberReplace != 0:
             for index in index_to_replace:
+                print("Replaced " + str(pop[index].type) + "; " + str(round(pop[index].wealth)) + "; " + str(round(pop[index].asset)))
                 half = CreateFractionalFund(pop, MaxFund, NumberReplace + 1)
                 spoils += pop[index].asset
                 del pop[index]
-                #print("Deleted " + str(ind.type) "; " + str(ind.wealth) + "; " + str(ind.asset))
                 pop.insert(index, half)
                 round_replacements += 1
             # FInally, add the last subdivision in place of the maximum fund.

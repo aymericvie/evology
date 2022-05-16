@@ -7,9 +7,9 @@ wealth_coordinates = [1/3,1/3,1/3]
 print(wealth_coordinates)
 
 def func(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, d, v, g, r):
-    return (v/p2) - 1
+    return 0
 df, pop, av_stats = main(
-    strategy = func, #None, #func,
+    strategy = None, #func, #None, #func,
     space = 'extended', # 'extended',
     wealth_coordinates=wealth_coordinates,
     POPULATION_SIZE = 200,
