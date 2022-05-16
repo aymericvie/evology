@@ -148,7 +148,7 @@ def CreatePop(n, space, WealthCoords, CurrentPrice, strategy):
         if ind.type == 'bh':
             ind.cash = 0. #RefCash
             ind.asset = 2. * RefAssets
-        if ind.type == 'bh':
+        if ind.type == 'ir':
             ind.cash = 2. * RefCash
             ind.asset = 0. #RefAssets
         if ind.type == "nt":

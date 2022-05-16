@@ -368,10 +368,10 @@ def ResultsProcess(list pop, double spoils, double price, double generation):
         ShortAssets += abs(spoils)
 
     if isnan(av_wealth) == False:
-        WSNT_ = (100 * WSNT) / (WSNT + WSVI + WSTF + av_wealth)
-        WSVI_ = (100 * WSVI) / (WSNT + WSVI + WSTF + av_wealth)
-        WSTF_ = (100 * WSTF) / (WSNT + WSVI + WSTF + av_wealth)
-        av_wshare = (100 * av_wealth) / (WSNT + WSVI + WSTF + av_wealth)
+        WSNT_ = (100 * WSNT) / (WSNT + WSVI + WSTF + max(av_wealth,0))
+        WSVI_ = (100 * WSVI) / (WSNT + WSVI + WSTF + max(av_wealth,0))
+        WSTF_ = (100 * WSTF) / (WSNT + WSVI + WSTF + max(av_wealth,0))
+        av_wshare = max(((100 * av_wealth) / (WSNT + WSVI + WSTF + av_wealth)),0.0)
     else:
         WSNT_ = (100 * WSNT) / (WSNT + WSVI + WSTF)
         WSVI_ = (100 * WSVI) / (WSNT + WSVI + WSTF)
@@ -382,9 +382,10 @@ def ResultsProcess(list pop, double spoils, double price, double generation):
     WSNT = WSNT_
     WSVI = WSVI_
     WSTF = WSTF_
-    if abs(100 - (WSNT + WSVI + WSTF + av_wealth)) > 1:
+    if abs(100 - (WSNT + WSVI + WSTF + av_wshare)) > 1:
+        print([WSNT, WSVI, WSTF, av_wshare])
         raise ValueError(
-            "Sum of wealth shares superior to 100. " + str([WSNT + WSVI + WSTF + av_wealth])
+            "Sum of wealth shares superior to 100. " + str([WSNT + WSVI + WSTF + av_wshare])
         )
     if WSNT < 0 or WSNT < 0 or WSNT < 0 or av_wshare < 0:
         raise ValueError("Negative wealth share. " + str([WSNT, WSVI, WSTF, av_wshare]))
