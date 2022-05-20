@@ -120,6 +120,8 @@ def nolearning_runs_reset(repetitions, time, agents):
     i = 0
     while i < repetitions:
         try: 
+            seed = random.randint(0,10)
+            np.random.seed(seed)
             wealth_coordinates = np.random.dirichlet(np.ones(3),size=1)[0].tolist()
             print(wealth_coordinates)
             df,pop = main(None, 'scholl', wealth_coordinates, agents, time, seed, tqdm_display=True, reset_wealth = True)
