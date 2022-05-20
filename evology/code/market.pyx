@@ -7,7 +7,10 @@ cimport cythonized
 from libc.math cimport isnan
 
 
+np.random.seed(8) 
+
 cpdef draw_dividend(double dividend, list random_dividend_history):
+
     cdef double Z = np.random.normal(0,1)
     cdef double random_dividend
 

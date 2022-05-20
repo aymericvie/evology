@@ -6,6 +6,7 @@ def main(
     wealth_coordinates,
     POPULATION_SIZE,
     MAX_GENERATIONS,
+    seed,
     tqdm_display,
     reset_wealth,
 ):
@@ -14,8 +15,14 @@ def main(
     results = np.zeros((MAX_GENERATIONS - data.Barr, data.variables))
     price_history, dividend_history, replace, volume = [], [], 0, 0.0
 
+    # Random generator 
+    rng = np.random.default_rng(seed=seed)
+
     # Population creation
     pop, asset_supply = cr.CreatePop(POPULATION_SIZE, space, wealth_coordinates, CurrentPrice, strategy)
+
+    # Dividend generation
+    dividend_series, rd_dividend_series = div.ExogeneousDividends(MAX_GENERATIONS, rng)
 
     for generation in tqdm(
         range(MAX_GENERATIONS), disable=tqdm_display, miniters=100, mininterval=0.5
@@ -104,10 +111,11 @@ def main(
             random_dividend_history
         )
         '''
-        dividend, random_dividend = mk.draw_dividend(dividend, random_dividend_history)
+        #dividend, random_dividend = mk.draw_dividend(dividend, random_dividend_history)
+        dividend, random_dividend = dividend_series[0, generation], rd_dividend_series[0, generation]
         pop, volume, spoils, Liquidations = mk.execute_ed(pop, CurrentPrice, asset_supply, spoils, ToLiquidate)
         pop = mk.earnings(pop, dividend)
-        dividend_history.append(dividend)
+        #dividend_history.append(dividend)
         pop = mk.update_margin(pop, CurrentPrice)
         pop = mk.clear_debt(pop, CurrentPrice)
 
@@ -163,8 +171,12 @@ def main(
 
     df = pd.DataFrame(results, columns=data.columns)
 
+
     #print(df["AV_wealth"])
     # av_stats = [df["AV_wealth"].iloc[-1] / df["AV_wealth"].iloc[0] - 1, round(df["AV_return"].mean(),4), round(df["AV_return"].std(),3), 
     # df["AV_wealth"].iloc[0], df["AV_wealth"].iloc[-1]]
+
+
+    # print(dividend_series[0,:10])
 
     return df, pop #, av_stats

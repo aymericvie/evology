@@ -19,6 +19,7 @@ import matplotlib.pyplot as plt
 import investment as iv
 import linear_clearing as lc
 import math
+import dividend as div
 
 def ga_evolution(
     pop, space, generation, wealth_coordinates, PROBA_SELECTION, MUTATION_RATE, Horizon
