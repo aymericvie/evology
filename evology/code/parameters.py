@@ -39,15 +39,18 @@ EMA_HORIZON = 2 * TRADING_DAYS
 interest_year = 0.01
 interest_day = interest_year / 252.0
 
+
+''' Dividend process '''
+
 G = 0.01 # Dividend growth rate
 G_day = (((1.0 + G) ** (1.0 / 252.0)) - 1.0)
-
-DIVIDEND_GROWTH_RATE_G = 0.01
 INITIAL_DIVIDEND = 0.003983
-
 div_vol = 0.1 / np.sqrt(TRADING_DAYS) # Dividend volatility
 div_atc = 0.1 # Dividend autocorrelation
-DIVIDEND_ATC_TAU = 1
+div_tau = 252 // 12 # https://github.com/INET-Complexity/market-ecology/blob/b002d0bc715e264b70d1b1c8d573359fd71d24ca/traded_company.hpp
+
+
+
 liquidation_perc = 10 / 100
 
 """ RESET WEALTH """

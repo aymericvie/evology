@@ -1,25 +1,27 @@
 import numpy as np
-from parameters import div_atc, G_day, div_vol, INITIAL_DIVIDEND
+from parameters import div_atc, G_day, div_vol, INITIAL_DIVIDEND, div_tau
 
 def ExogeneousDividends(max_generations, rng):
 
     dividend_series = np.zeros((1, max_generations))
     rd_dividend_series = np.zeros((1, max_generations))
-    z_process = rng.random(max_generations)
+    z_process = rng.standard_normal(max_generations)
 
     dividend = INITIAL_DIVIDEND
-    rdiv = z_process[0]
 
     dividend_series[0,0] = dividend
-    rd_dividend_series[0,0] = rdiv 
+    rd_dividend_series[0,0] = z_process[0]
 
-    for i in range(max_generations - 1):
+    for i in range(max_generations):
 
-        rdiv = div_atc * rdiv + (1 - div_atc ** 2) * z_process[i]
-        dividend = (1. + G_day + div_vol * rdiv) * dividend 
+        wiener_back = z_process[i]
+        if i > div_tau:
+            wiener_back = (1. - div_atc ** 2) * z_process[i] + div_atc * rd_dividend_series[0, i - div_tau -1 ]
+
+        dividend = abs(dividend + G_day * dividend + div_vol * dividend * wiener_back) 
 
         dividend_series[0,i] = dividend
-        rd_dividend_series[0,i] = rdiv 
+        rd_dividend_series[0,i] = wiener_back 
 
     return dividend_series, rd_dividend_series
 
