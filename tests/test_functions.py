@@ -22,7 +22,7 @@ def learning_runs(repetitions, time, agents):
         try: 
             seed = random.randint(0,100)
             np.random.seed(seed)
-            df,pop = main(None, 'scholl', wealth_coordinates, agents, time, tqdm_display=True, reset_wealth = False)
+            df,pop = main(None, 'scholl', wealth_coordinates, agents, time, seed, tqdm_display=True, reset_wealth = False)
         except Exception as e: 
             went_smoothly = False
             print('Seed ' + str(seed))
@@ -45,7 +45,7 @@ def learning_runs_reset(repetitions, time, agents):
         wealth_coordinates = np.random.dirichlet(np.ones(3),size=1)[0].tolist()
         print(wealth_coordinates)
         try: 
-            df,pop = main(None, 'scholl', wealth_coordinates, agents, time, tqdm_display=True, reset_wealth = True)
+            df,pop = main(None, 'scholl', wealth_coordinates, agents, time, seed, tqdm_display=True, reset_wealth = True)
 
         except Exception as e: 
             went_smoothly = False
@@ -69,7 +69,7 @@ def nolearning_runs(repetitions, time, agents):
             np.random.seed(seed)
             wealth_coordinates = np.random.dirichlet(np.ones(3),size=1)[0].tolist()
             print(wealth_coordinates)
-            df,pop = main(None, 'scholl', wealth_coordinates, agents, time, tqdm_display=True, reset_wealth = False)
+            df,pop = main(None, 'scholl', wealth_coordinates, agents, time, seed, tqdm_display=True, reset_wealth = False)
 
         except Exception as e: 
             went_smoothly = False
@@ -102,7 +102,7 @@ def nolearning_runs_ext(repetitions, time, agents):
             went_smoothly = False
             print('Seed ' + str(seed))
             print('F ' + str(f))
-            print('Process ' + str(i) + ' encoutered an exception.')
+            print('Process ' + str(i) + ' encountered an exception.')
             print(str(e))
             traceback.print_exc()
             break
