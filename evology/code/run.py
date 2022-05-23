@@ -15,12 +15,12 @@ def func(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, d, v, g, r):
 df, pop = main(
     strategy = None, #func, #None, #func,
     space = 'extended', # 'extended',
-    wealth_coordinates=wealth_coordinates,
+    wealth_coordinates = wealth_coordinates,
     POPULATION_SIZE = 10,
     MAX_GENERATIONS = 1000, #50 * 252, #20000, #1000 * 252,
     seed = seed,
-    tqdm_display=False,
-    reset_wealth=True,
+    tqdm_display = False,
+    reset_wealth = False,
 )
 
 print(df)

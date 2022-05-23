@@ -29,7 +29,7 @@ reps = 10  #TBD
 scale = 30
 
 def job(coords):
-    np.random.seed()
+    
     try:
         df, pop = evology(
             strategy = None,
@@ -37,6 +37,7 @@ def job(coords):
             wealth_coordinates = coords,
             POPULATION_SIZE = PopulationSize,
             MAX_GENERATIONS = TimeHorizon,
+            seed = np.random.seed()
             tqdm_display=True,
             reset_wealth=False,
         )
