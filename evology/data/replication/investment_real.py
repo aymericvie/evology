@@ -73,12 +73,25 @@ for i in range(len(df)):
 arr.append(np.nan)
 df["nav_diff_4"] = arr
 
-#df.count()
+# 4 quarters
+arr = [np.nan]
+for i in range(len(df)):
+    if i > 1:
+        if df["series_id"].iloc[i] == df["series_id"].iloc[i-8]:
+            arr.append((df["net_assets"].iloc[i] - df["Sum_redemptions"].iloc[i]) / df["net_assets"].iloc[i-8] - 1)
+        else:
+            arr.append(np.nan)
+# print(arr)
+arr.append(np.nan)
+df["nav_diff_8"] = arr
+
+print(df.count())
 '''
 nav_diff_1                     4617
 nav_diff_2                     5395
 nav_diff_3                     5469
 nav_diff_4                     5644
+mav_diff_8                      4553
 '''
 
 # number of distinct funds and dates
@@ -100,8 +113,26 @@ plt.vlines(x=0, colors='black', linestyles='dashed',ymin = -50, ymax = 50)
 sns.regplot(x="nav_diff_1", y="Red_flows_nav", data=df2, line_kws={"color": "red"}, lowess=True, scatter_kws={'s':2})
 plt.xlabel('Return')
 plt.ylabel('% of redemption flows to NAV')
-plt.title('Redemption flows vs quarterly(1) returns, with linear fit')
+plt.title('Redemption flows vs quarterly(1) returns, with lowess fit')
 # plt.savefig('redemption_flows_linear.png', dpi=300)
+plt.show()
+
+# %%
+params = {"ytick.color" : "w",
+          "xtick.color" : "w",
+          "axes.labelcolor" : "w",
+          "axes.edgecolor" : "w"}
+plt.rcParams.update(params)
+
+df2 = df[(df["nav_diff_1"] <= 0.5) &  (df["nav_diff_1"] >= -0.5)]
+df2 = df2[(df2["Red_flows_nav"] <= 50) & (df2["Red_flows_nav"] >= -50)]
+plt.hlines(y=0, colors='black', linestyles='dashed',xmin = -0.5, xmax = 0.5)
+plt.vlines(x=0, colors='black', linestyles='dashed',ymin = -50, ymax = 50)
+sns.regplot(x="nav_diff_1", y="Red_flows_nav", data=df2, line_kws={"color": "red"}, lowess=True, scatter_kws={'s':2})
+plt.xlabel('Return')
+plt.ylabel('% of redemption flows to NAV')
+# plt.title('Redemption flows vs quarterly(1) returns, with lowess fit')
+plt.savefig('redemption_flows_lowess.png', dpi=300)
 plt.show()
 
 # %%
@@ -115,8 +146,8 @@ plt.hlines(y=0, colors='black', linestyles='dashed',xmin = -1, xmax = 1)
 plt.vlines(x=0, colors='black', linestyles='dashed',ymin = -50, ymax = 50)
 plt.xlabel('Return')
 plt.ylabel('% of redemption flows to NAV')
-plt.title('Redemption flows vs quarterly(2) returns, with linear fit')
-# plt.savefig('redemption_flows_linear.png', dpi=300)
+plt.title('Redemption flows vs quarterly(2) returns, with lowess fit')
+# plt.savefig('redemption_flows_lowess.png', dpi=300)
 plt.show()
 
 # %%
@@ -128,7 +159,7 @@ plt.hlines(y=0, colors='black', linestyles='dashed',xmin = -1, xmax = 1)
 plt.vlines(x=0, colors='black', linestyles='dashed',ymin = -50, ymax = 50)
 plt.xlabel('Return')
 plt.ylabel('% of redemption flows to NAV')
-plt.title('Redemption flows vs quarterly(3) returns, with linear fit')
+plt.title('Redemption flows vs quarterly(3) returns, with lowess fit')
 # plt.savefig('redemption_flows_linear.png', dpi=300)
 plt.show()
 
@@ -147,4 +178,17 @@ plt.title('Redemption flows vs yearly returns, with lowess fit')
 # plt.savefig('redemption_flows_linear.png', dpi=300)
 plt.show()
 
+# %%
+df2 = df[(df["nav_diff_8"] <= 1.0) &  (df["nav_diff_8"] >= -1.0)]
+df2 = df2[(df2["Red_flows_nav"] <= 50) & (df2["Red_flows_nav"] >= -50)]
+
+# sns.regplot(x="nav_diff_4", y="Red_flows_nav", data=df2, line_kws={"color": "red"}, scatter_kws={'s':2, "color": "black"})
+plt.hlines(y=0, colors='black', linestyles='dashed',xmin = -1, xmax = 1)
+plt.vlines(x=0, colors='black', linestyles='dashed',ymin = -50, ymax = 50)
+sns.regplot(x="nav_diff_8", y="Red_flows_nav", data=df2, line_kws={"color": "red"}, lowess=True, scatter_kws={'s':2})
+plt.xlabel('Return')
+plt.ylabel('% of redemption flows to NAV')
+plt.title('Redemption flows vs 2Y returns, with lowess fit')
+# plt.savefig('redemption_flows_linear.png', dpi=300)
+plt.show()
 # %%
