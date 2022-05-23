@@ -19,20 +19,21 @@ from main import main as evology
 startTime = time.time()
 TimeHorizon = 252 * 20
 PopulationSize = 100
-reps = 10 
-scale = 30 # increment = 1/scale
+reps = 1 #10 
+scale = 3 #30 # increment = 1/scale
 
 def job(coords):
     np.random.seed()
     try:
         df, pop = evology(
             strategy = None,
-            space="extended",
-            wealth_coordinates=coords,
-            POPULATION_SIZE=PopulationSize,
-            MAX_GENERATIONS=TimeHorizon,
-            tqdm_display=True,
-            reset_wealth=True,
+            space = "extended",
+            wealth_coordinates = coords,
+            POPULATION_SIZE = PopulationSize,
+            MAX_GENERATIONS = TimeHorizon,
+            seed = np.random.seed(),
+            tqdm_display = True,
+            reset_wealth = True,
         )
         result = [
             coords[0], #Initial NT WS
@@ -51,7 +52,7 @@ def job(coords):
         print(e)
         print("Failed run" + str(coords) + str(e))
         result = [coords[0], coords[1], coords[2]]
-        for _ in range(6):
+        for _ in range(7):
             result.append(np.nan)
         return result
 

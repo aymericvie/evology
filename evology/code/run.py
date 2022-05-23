@@ -17,10 +17,10 @@ df, pop = main(
     space = 'extended', # 'extended',
     wealth_coordinates=wealth_coordinates,
     POPULATION_SIZE = 100,
-    MAX_GENERATIONS = 50000, #50 * 252, #20000, #1000 * 252,
+    MAX_GENERATIONS = 1000, #50 * 252, #20000, #1000 * 252,
     seed = seed,
     tqdm_display=False,
-    reset_wealth=False,
+    reset_wealth=True,
 )
 
 print(df)
