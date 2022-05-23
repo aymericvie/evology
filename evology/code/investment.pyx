@@ -10,15 +10,15 @@ NAN = float("nan")
 cpdef double sigmoid(double x):
     return 1.0 / exp(-2.68735918 * (x - 0.43503506))
 
-cpdef Emp_Investment(list pop):
+cpdef Emp_Investment(list pop, rng):
     cdef cythonized.Individual ind
     cdef int i
     cdef double ind_wealth
     cdef double first_wealth
 
-    cdef double[:] randoms = np.random.random(size=len(pop))
-    cdef double[:] gumbel_draws_positive = np.random.gumbel(3.89050923, 2.08605884, size=len(pop))
-    cdef double[:] gumbel_draws_negative = np.random.gumbel(3.55311431, 2.13949923, size=len(pop))
+    cdef double[:] randoms = rng.random(size=len(pop))
+    cdef double[:] gumbel_draws_positive = rng.gumbel(3.89050923, 2.08605884, size=len(pop))
+    cdef double[:] gumbel_draws_negative = rng.gumbel(3.55311431, 2.13949923, size=len(pop))
 
     for i, ind in enumerate(pop):
         if ind.age >= 63:

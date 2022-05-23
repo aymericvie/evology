@@ -4,20 +4,19 @@ from deap import tools
 from deap import algorithms
 from deap import gp
 import numpy as np
-import random
 toolbox = base.Toolbox()
 from parameters import *
 import cythonized
 
 
-def DrawStrategy(strat):
+def DrawStrategy(strat, rng):
     if strat == "nt":
         #strategy = np.random.uniform(min_nt_strat, max_nt_strat) / 10
-        strategy = (np.random.uniform(min_nt_strat, max_nt_strat) - 10) / 1000
+        strategy = (rng.uniform(min_nt_strat, max_nt_strat) - 10) / 1000
     elif strat == "vi":
-        strategy = np.random.uniform(min_vi_strat, max_vi_strat) / 1000
+        strategy = rng.uniform(min_vi_strat, max_vi_strat) / 1000
     elif strat == "tf":
-        strategy = np.random.randint(min_tf_strat, max_tf_strat + 1)
+        strategy = rng.integers(min_tf_strat, max_tf_strat + 1)
     else:
         raise ValueError("Unrecognised type. " + str(strat))
     return strategy
@@ -62,7 +61,7 @@ def IndCreation(strat):
     return ind
 
 
-def CreatePop(n, space, WealthCoords, CurrentPrice, strategy):
+def CreatePop(n, space, WealthCoords, CurrentPrice, strategy, rng):
 
     if n < 3:
         raise ValueError("Cannot create diverse population with less than 3 agents. ")
@@ -99,7 +98,7 @@ def CreatePop(n, space, WealthCoords, CurrentPrice, strategy):
         pop.append(IndCreation("av"))
 
     for i in range(n - (NumNT + NumVI + NumTF)):
-        rd = np.random.random()
+        rd = rng.random()
         if rd <= ShareNT:
             pop.append(IndCreation("nt"))
             NumNT += 1
@@ -134,11 +133,11 @@ def CreatePop(n, space, WealthCoords, CurrentPrice, strategy):
     if space == "extended":
         for ind in pop:
             if ind.type == "nt":
-                ind.strategy = DrawStrategy("nt")
+                ind.strategy = DrawStrategy("nt", rng)
             if ind.type == "vi":
-                ind.strategy = DrawStrategy("vi")
+                ind.strategy = DrawStrategy("vi", rng)
             if ind.type == "tf":
-                ind.strategy = DrawStrategy("tf")
+                ind.strategy = DrawStrategy("tf", rng)
 
     for ind in pop:
         if ind.type == 'av':
@@ -171,11 +170,11 @@ def CreatePop(n, space, WealthCoords, CurrentPrice, strategy):
     return pop, TotalAsset
 
 
-def WealthReset(pop, popsize, space, WealthCoords, generation, ResetWealth, CurrentPrice, strategy):
+def WealthReset(pop, popsize, space, WealthCoords, generation, ResetWealth, CurrentPrice, strategy, rng):
     current_size = len(pop)
     types = [ind.type for ind in pop]
     if ResetWealth == True:
-        pop, asset_supply = CreatePop(popsize, space, WealthCoords, CurrentPrice, strategy)
+        pop, asset_supply = CreatePop(popsize, space, WealthCoords, CurrentPrice, strategy, rng)
         for ind in pop:
             ind.age = generation
     if len(pop) != current_size:

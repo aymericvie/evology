@@ -17,9 +17,10 @@ def main(
 
     # Random generator 
     rng = np.random.default_rng(seed=seed)
+    np.random.seed(seed)
 
     # Population creation
-    pop, asset_supply = cr.CreatePop(POPULATION_SIZE, space, wealth_coordinates, CurrentPrice, strategy)
+    pop, asset_supply = cr.CreatePop(POPULATION_SIZE, space, wealth_coordinates, CurrentPrice, strategy, rng)
 
     # Dividend generation
     dividend_series, rd_dividend_series = div.ExogeneousDividends(MAX_GENERATIONS, rng)
@@ -32,7 +33,7 @@ def main(
 
 
         # Population reset
-        pop = cr.WealthReset(pop, POPULATION_SIZE, space, wealth_coordinates, generation, reset_wealth, CurrentPrice, strategy)
+        pop = cr.WealthReset(pop, POPULATION_SIZE, space, wealth_coordinates, generation, reset_wealth, CurrentPrice, strategy, rng)
 
         # Hypermutation
         
@@ -58,7 +59,7 @@ def main(
 
         # Market decisions 
         pop, replace = bsc.UpdateFullWealth(pop, CurrentPrice)
-        pop = bsc.NoiseProcess(pop)
+        pop = bsc.NoiseProcess(pop, rng)
         pop = bsc.UpdateFval(pop, dividend)
         pop = bsc.CalculateTSV_staticf(pop, price_history, dividend_history, CurrentPrice)
         pop = bsc.CalculateTSV_avf(pop, generation, strategy, price_history, dividend)
@@ -124,7 +125,7 @@ def main(
         pop = bsc.UpdateWealthSeries(pop)
 
         if generation >= ShieldInvestment:
-            pop = iv.Emp_Investment(pop)
+            pop = iv.Emp_Investment(pop, rng)
         #AvgT, PropSignif, HighestT, AvgAbsT = 0, 0, 0, 0
 
         # Record results 

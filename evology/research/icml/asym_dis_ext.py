@@ -37,7 +37,7 @@ def job(coords):
             wealth_coordinates = coords,
             POPULATION_SIZE = PopulationSize,
             MAX_GENERATIONS = TimeHorizon,
-            seed = np.random.seed()
+            seed = np.random.seed(),
             tqdm_display=True,
             reset_wealth=False,
         )
