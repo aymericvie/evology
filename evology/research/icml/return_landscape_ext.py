@@ -19,8 +19,8 @@ from main import main as evology
 startTime = time.time()
 TimeHorizon = 252 * 20
 PopulationSize = 100
-reps = 1 #10 
-scale = 3 #30 # increment = 1/scale
+reps = 20 
+scale = 30 #30 # increment = 1/scale
 
 def job(coords):
     np.random.seed()
