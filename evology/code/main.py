@@ -32,7 +32,7 @@ def main(
 
 
         # Population reset
-        pop = cr.WealthReset(pop, space, wealth_coordinates, generation, reset_wealth, CurrentPrice, strategy)
+        pop = cr.WealthReset(pop, POPULATION_SIZE, space, wealth_coordinates, generation, reset_wealth, CurrentPrice, strategy)
 
         # Hypermutation
         

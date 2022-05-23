@@ -171,9 +171,15 @@ def CreatePop(n, space, WealthCoords, CurrentPrice, strategy):
     return pop, TotalAsset
 
 
-def WealthReset(pop, space, WealthCoords, generation, ResetWealth, CurrentPrice, strategy):
+def WealthReset(pop, popsize, space, WealthCoords, generation, ResetWealth, CurrentPrice, strategy):
+    current_size = len(pop)
+    types = [ind.type for ind in pop]
     if ResetWealth == True:
-        pop, asset_supply = CreatePop(len(pop), space, WealthCoords, CurrentPrice, strategy)
+        pop, asset_supply = CreatePop(popsize, space, WealthCoords, CurrentPrice, strategy)
         for ind in pop:
             ind.age = generation
+    if len(pop) != current_size:
+        print([current_size, len(pop)])
+        print([types, [ind.type for ind in pop]])
+        raise ValueError('Wealth reset generated a population size mismatch.')
     return pop
