@@ -86,7 +86,7 @@ def convert_ind_type_to_num(t):
         return TypeError('Unrecognised type' +str(t))
 
 
-cdef class Individual(list):
+cdef class Individual(object):
     def __init__(self, x):
         super().__init__(x)
         self.typecode = 'd'
@@ -121,3 +121,5 @@ cdef class Individual(list):
         self.last_price = 100.0
         self.adaptive_strategy = None
         #self.investment_series = []
+
+

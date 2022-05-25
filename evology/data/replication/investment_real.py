@@ -343,3 +343,4 @@ result = sm.ols(formula="Red_flows_nav ~ nav_diff_1 ",
     data=df).fit()
 print (result.summary())
 print (result.rsquared, result.rsquared_adj)
+# %%
