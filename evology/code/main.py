@@ -11,7 +11,7 @@ def main(
     reset_wealth,
 ):
     # Initialisation
-    generation, CurrentPrice, dividend, spoils = 0, InitialPrice, INITIAL_DIVIDEND, 0
+    generation, CurrentPrice, dividend, spoils, process = 0, InitialPrice, INITIAL_DIVIDEND, 0.0, 0.0
     results = np.zeros((MAX_GENERATIONS - data.Barr, data.variables))
     price_history, dividend_history, replace, volume = [], [], 0, 0.0
 
@@ -59,7 +59,7 @@ def main(
 
         # Market decisions 
         pop, replace = bsc.UpdateFullWealth(pop, CurrentPrice)
-        pop = bsc.NoiseProcess(pop, rng)
+        pop = bsc.NoiseProcess(pop, rng, process)
         pop = bsc.UpdateFval(pop, dividend)
         pop = bsc.CalculateTSV_staticf(pop, price_history, dividend_history, CurrentPrice)
         pop = bsc.CalculateTSV_avf(pop, generation, strategy, price_history, dividend)
