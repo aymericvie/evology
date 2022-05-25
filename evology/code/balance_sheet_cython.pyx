@@ -39,12 +39,12 @@ cpdef UpdateWealthProfitAge(list pop, double current_price):
 cpdef NoiseProcess(list pop, rng, double process):
 
     #cdef double[:] randoms = rng.normal(GAMMA_NT,1,size=len(pop))
-    cdef double randoms = rng.normal(GAMMA_NT, 1)
+    cdef double randoms = rng.normal(0, 1)
     #cdef int i
     cdef cythonized.Individual ind
     #cdef double a
     #cdef double b
-    process = abs(RHO_NT * (MU_NT - process) + randoms) 
+    process = abs(RHO_NT * (MU_NT - process) + GAMMA_NT * randoms) 
 
     #for i, ind in enumerate(pop):
     for ind in pop:
