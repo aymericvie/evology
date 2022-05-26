@@ -1,0 +1,153 @@
+         Gen      Price      Mismatch  ...  NT_Sub_Var  VI_Sub_Var  TF_Sub_Var
+0        0.0  96.401539 -4.470348e-08  ...         NaN         NaN         NaN
+1        1.0  94.334338  1.982151e-05  ...         NaN         NaN         NaN
+2        2.0  94.064811  4.697358e-08  ...         NaN         NaN         NaN
+3        3.0  93.983787 -3.551249e-07  ...         NaN         NaN         NaN
+4        4.0  93.584220  1.172302e-07  ...         NaN         NaN         NaN
+...      ...        ...           ...  ...         ...         ...         ...
+9995  9995.0   1.498353  7.590943e+09  ...         NaN         NaN         NaN
+9996  9996.0   1.498353  7.721347e+09  ...         NaN         NaN         NaN
+9997  9997.0   1.498353  7.654300e+09  ...         NaN         NaN         NaN
+9998  9998.0   1.498353  7.431837e+09  ...         NaN         NaN         NaN
+9999  9999.0   1.498353  7.271424e+09  ...         NaN         NaN         NaN
+
+[10000 rows x 71 columns]
+Wrote profile results to profile.py.lprof
+Timer unit: 1e-06 s
+
+Total time: 13.9523 s
+File: profile/profile.py
+Function: main at line 9
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+     9                                           @profile
+    10                                           
+    11                                           def main(
+    12                                               strategy,
+    13                                               space,
+    14                                               wealth_coordinates,
+    15                                               POPULATION_SIZE,
+    16                                               MAX_GENERATIONS,
+    17                                               seed,
+    18                                               tqdm_display,
+    19                                               reset_wealth,
+    20                                           ):
+    21                                               # Initialisation
+    22         1         10.0     10.0      0.0      generation, CurrentPrice, dividend, spoils = 0, InitialPrice, INITIAL_DIVIDEND, 0.0
+    23         1       1248.0   1248.0      0.0      results = np.zeros((MAX_GENERATIONS - data.Barr, data.variables))
+    24         1          2.0      2.0      0.0      dividend_history, replace, volume = [], 0, 0.0
+    25                                           
+    26                                               # Random generator 
+    27         1        143.0    143.0      0.0      rng = np.random.default_rng(seed=seed)
+    28         1          5.0      5.0      0.0      np.random.seed(seed)
+    29                                           
+    30                                               # Population creation
+    31         1      51656.0  51656.0      0.4      pop, asset_supply = cr.CreatePop(POPULATION_SIZE, space, wealth_coordinates, CurrentPrice, strategy, rng)
+    32                                           
+    33                                               # Dividend and NT process generation
+    34         1        413.0    413.0      0.0      price_history = prc.FictiousPriceSeries(rng)
+    35         1      26237.0  26237.0      0.2      dividend_series, rd_dividend_series = div.ExogeneousDividends(MAX_GENERATIONS, rng)
+    36         1        108.0    108.0      0.0      rng = np.random.default_rng(seed=seed)
+    37         1       8939.0   8939.0      0.1      process_series = prc.ExogeneousProcess(MAX_GENERATIONS, rng)
+    38                                           
+    39     10002      69909.0      7.0      0.5      for generation in tqdm(
+    40         1          2.0      2.0      0.0          range(MAX_GENERATIONS), disable=tqdm_display, miniters=100, mininterval=0.5
+    41                                                   ):
+    42                                               #for generation in range(MAX_GENERATIONS):
+    43                                           
+    44                                                   # Population reset
+    45                                                   
+    46     10000      23657.0      2.4      0.2          pop = cr.WealthReset(pop, POPULATION_SIZE, space, wealth_coordinates, generation, reset_wealth, CurrentPrice, strategy, rng)
+    47                                           
+    48                                                   # Hypermutation
+    49     20000      57185.0      2.9      0.4          pop, replacements, spoils = ga.hypermutate(
+    50     10000      13653.0      1.4      0.1              pop, spoils, replace
+    51                                                   ) 
+    52     10000      13907.0      1.4      0.1          if replacements < 0:
+    53                                                       break
+    54                                           
+    55                                           
+    56                                                   # Strategy evolution
+    57                                                   #pop = fit.ComputeFitness(pop, 252)
+    58                                           
+    59                                                   #pop, CountSelected, CountMutated, CountCrossed, StratFlow = ga_evolution(
+    60                                                   #    pop,
+    61                                                   #    space,
+    62                                                   #    generation,
+    63                                                   #    wealth_coordinates,
+    64                                                   #    PROBA_SELECTION,
+    65                                                   #    MUTATION_RATE,
+    66                                                   #    252,
+    67                                                   #)
+    68                                           
+    69                                                   # Market decisions 
+    70     10000      58133.0      5.8      0.4          pop, replace = bsc.UpdateFullWealth(pop, CurrentPrice)
+    71                                                   #pop = bsc.NoiseProcess(pop, rng, process)
+    72     10000      50766.0      5.1      0.4          pop = bsc.UpdateFval(pop, dividend)
+    73     10000      99741.0     10.0      0.7          pop = bsc.CalculateTSV_staticf(pop, price_history, dividend_history, CurrentPrice, process_series[generation])
+    74     10000      18586.0      1.9      0.1          pop = bsc.CalculateTSV_avf(pop, generation, strategy, price_history, dividend)        
+    75                                                   
+    76     10000      15805.0      1.6      0.1          ToLiquidate = lc.DetermineLiquidation(spoils, volume)
+    77                                           
+    78                                                   # ''' for VI on contemporaneous price ''' 
+    79                                                   # ed_functions = bsc.agg_ed_esl(pop, ToLiquidate)
+    80                                                   
+    81     10000     539738.0     54.0      3.9          ed_functions = cz.agg_ed(pop, ToLiquidate)
+    82                                           
+    83     10000   10733919.0   1073.4     76.9          NewPrice = mc.scipy_solver(ed_functions, CurrentPrice)
+    84     10000     166038.0     16.6      1.2          pop, mismatch = cz.calculate_edv(pop, NewPrice)
+    85                                           
+    86                                                   # Market activity
+    87     10000      20850.0      2.1      0.1          dividend, random_dividend = dividend_series[0, generation], rd_dividend_series[0, generation]
+    88     10000     252977.0     25.3      1.8          pop, volume, spoils, Liquidations = mk.execute_ed(pop, NewPrice, asset_supply, spoils, ToLiquidate)
+    89                                           
+    90     10000      14720.0      1.5      0.1          if volume != 0:
+    91      1511       2139.0      1.4      0.0              CurrentPrice = NewPrice
+    92     10000      17094.0      1.7      0.1          price_history = lc.UpdatePriceHistory(price_history, CurrentPrice)
+    93                                           
+    94     10000     266740.0     26.7      1.9          pop = mk.earnings(pop, dividend)
+    95     10000      60273.0      6.0      0.4          pop = mk.update_margin(pop, CurrentPrice)
+    96     10000      47020.0      4.7      0.3          pop = mk.clear_debt(pop, CurrentPrice)
+    97                                           
+    98     10000      61777.0      6.2      0.4          pop, replace = bsc.UpdateWealthProfitAge(pop, CurrentPrice)
+    99     10000      16789.0      1.7      0.1          pop = bsc.UpdateQuarterlyWealth(pop, generation)
+   100     10000     461081.0     46.1      3.3          pop = bsc.UpdateWealthSeries(pop)
+   101                                                   
+   102                                                   '''
+   103                                                   if generation >= ShieldInvestment:
+   104                                                       pop = iv.Emp_Investment(pop, rng)
+   105                                                   '''
+   106                                           
+   107                                                   # Record results 
+   108     20000     589443.0     29.5      4.2          results, sim_break = data.record_results(
+   109     10000      13554.0      1.4      0.1              results,
+   110     10000      13384.0      1.3      0.1              generation,
+   111     10000      13238.0      1.3      0.1              CurrentPrice,
+   112     10000      13350.0      1.3      0.1              mismatch,
+   113     10000      13318.0      1.3      0.1              dividend,
+   114     10000      13312.0      1.3      0.1              random_dividend,
+   115     10000      13245.0      1.3      0.1              volume,
+   116     10000      13280.0      1.3      0.1              replacements,
+   117     10000      13268.0      1.3      0.1              pop,
+   118     10000      13275.0      1.3      0.1              spoils,
+   119     10000      13216.0      1.3      0.1              Liquidations,
+   120     10000      13387.0      1.3      0.1              asset_supply,
+   121     10000      14481.0      1.4      0.1              process_series[generation]
+   122                                                   )
+   123                                                   
+   124     10000      15116.0      1.5      0.1          if sim_break == 1 and reset_wealth != True:
+   125                                                      warnings.warn('Only one base strategy left.')
+   126                                                      break
+   127                                           
+   128         1          2.0      2.0      0.0      if generation < MAX_GENERATIONS - data.Barr:
+   129         1          3.0      3.0      0.0          results = results[0:generation+1]
+   130                                           
+   131         1       2117.0   2117.0      0.0      df = pd.DataFrame(results, columns=data.columns)
+   132                                           
+   133                                               # av_stats = [df["AV_wealth"].iloc[-1] / df["AV_wealth"].iloc[0] - 1, round(df["AV_return"].mean(),4), round(df["AV_return"].std(),3), 
+   134                                               # df["AV_wealth"].iloc[0], df["AV_wealth"].iloc[-1]]
+   135                                           
+   136                                           
+   137         1          2.0      2.0      0.0      return df, pop #, av_stats
+
