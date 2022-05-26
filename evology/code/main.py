@@ -22,19 +22,15 @@ def main(
     # Population creation
     pop, asset_supply = cr.CreatePop(POPULATION_SIZE, space, wealth_coordinates, CurrentPrice, strategy, rng)
 
-    # Dividend generation
+    # Dividend and NT process generation
     dividend_series, rd_dividend_series = div.ExogeneousDividends(MAX_GENERATIONS, rng)
+    rng = np.random.default_rng(seed=seed)
     process_series = prc.ExogeneousProcess(MAX_GENERATIONS, rng)
-
-    # plt.plot(process_series)
-    # plt.show()
 
     for generation in tqdm(
         range(MAX_GENERATIONS), disable=tqdm_display, miniters=100, mininterval=0.5
         ):
     #for generation in range(MAX_GENERATIONS):
-
-
 
         # Population reset
         pop = cr.WealthReset(pop, POPULATION_SIZE, space, wealth_coordinates, generation, reset_wealth, CurrentPrice, strategy, rng)
