@@ -21,7 +21,7 @@ ATC_TF = 1.0
 SCALE_NT, SCALE_VI, SCALE_TF = 1.0 * ScaleCorr, 1.0 * ScaleCorr, 1.0 * ScaleCorr * ATC_TF
 
 GAMMA_NT = 0.2 * np.sqrt(1 / 252)
-MU_NT = 1.
+MU_NT = 0.
 RHO_NT = 0.00045832561
 
 

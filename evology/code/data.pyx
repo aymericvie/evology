@@ -3,7 +3,7 @@
 #!/usr/bin/env python3
 import pandas as pd
 import numpy as np
-from libc.math cimport log, sqrt, isnan
+from libc.math cimport log, sqrt, isnan, log2
 
 from parameters import *
 cimport cythonized
@@ -217,7 +217,7 @@ def ResultsProcess(list pop, double spoils, double price, double generation, dou
     cdef double TFreturn = 0.0
 
     cdef double NT_process = NAN
-    cdef double VI_val = NAN
+    cdef double VI_val = 0.0
 
     cdef double NTflows = 0.0
     cdef double VIflows = 0.0
@@ -317,7 +317,7 @@ def ResultsProcess(list pop, double spoils, double price, double generation, dou
             if ind.wealth > 0:
                 WSVI += ind.wealth
             VIpnl += ind.profit
-            VIsignal = ind.tsv
+            VIsignal += log2(ind.val / price)
             VIstocks += price * ind.asset
             if ind.prev_wealth != 0:
                 VIreturn += ind.DailyReturn
@@ -356,6 +356,9 @@ def ResultsProcess(list pop, double spoils, double price, double generation, dou
         #NT_process = NT_process / NTcount
         NT_process = process
 
+    if VIcount == 0:
+        VI_val = NAN
+
     if VIcount != 0:
         VIcash = VIcash / VIcount
         VIlend = VIlend / VIcount
@@ -364,6 +367,7 @@ def ResultsProcess(list pop, double spoils, double price, double generation, dou
         VIpnl = VIpnl / VIcount
         VIstocks = VIstocks / VIcount
         VIreturn = VIreturn / VIcount
+        VIsignal = VIsignal / VIcount
         #VIreturnno_inv = VIreturn_noinv / VIcount
         MeanVI = MeanVI / (VIcount * VInav)
         VI_val = VI_val / (VIcount * VInav)

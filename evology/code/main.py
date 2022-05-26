@@ -90,7 +90,8 @@ def main(
         NewPrice = mc.scipy_solver(ed_functions, CurrentPrice)
 
 
-        pop, mismatch = bsc.CalculateEDV(pop, NewPrice)
+        #pop, mismatch = bsc.CalculateEDV(pop, NewPrice)
+        pop, mismatch = cz.calculate_edv(pop, NewPrice)
 
         # Market activity
         '''
@@ -158,11 +159,11 @@ def main(
             process_series[generation]
         )
 
-        '''
+        
         if sim_break == 1 and reset_wealth != True:
            warnings.warn('Only one base strategy left.')
            break
-        '''
+        
 
         if CurrentPrice >= 1_000_000:
             warnings.warn('Simulation break: price above 1M.' + str(generation))

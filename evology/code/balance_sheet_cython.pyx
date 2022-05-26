@@ -81,11 +81,11 @@ cpdef CalculateTSV_staticf(list pop, list price_history, list dividend_history, 
             ''' for contemporaneous VI '''
             pass    
 
-            if isnan(ind.tsv) == True:
-                print(ind.val)
-                print(CurrentPrice)
-                print(ind.tsv)
-                raise ValueError('ind.tsv is NAN')
+            #if isnan(ind.tsv) == True:
+            #    print(ind.val)
+            #    print(CurrentPrice)
+            #    print(ind.tsv)
+            #    raise ValueError('ind.tsv is NAN')
         elif t == 2: # TF
             if len(price_history) >= ind.strategy:
                 ind.last_price = price_history[-int(ind.strategy)]
@@ -218,6 +218,7 @@ cpdef UpdateWealthSeries(list pop):
         ind.last_wealth = ind.wealth_series[0]
     return pop
 
+'''
 cpdef CalculateEDV(list pop, double current_price):
     cdef cythonized.Individual ind
     cdef double mismatch = 0.0
@@ -234,10 +235,10 @@ cpdef CalculateEDV(list pop, double current_price):
             c = ind.asset
 
         elif t == 1: #VI
-            ''' for contemporaneous VI '''
+            #for contemporaneous VI 
             ind.tsv = log2(ind.val / current_price)
 
-            ''' for previous-price VI '''
+            #for previous-price VI
             a = (LeverageVI * ind.wealth / current_price)
             b = tanh(SCALE_VI * ind.tsv + 0.5)
             c = ind.asset
@@ -270,6 +271,7 @@ cpdef CalculateEDV(list pop, double current_price):
             raise TypeError('NAN EDV')
 
     return pop, mismatch
+'''
 
 cpdef count_long_assets(list pop, double spoils):    
     cdef cythonized.Individual ind
@@ -319,11 +321,7 @@ cpdef clear_debt(list pop, double price):
                 ind.cash = 100.0 * price
     return pop
 
-cdef convert_to_array(pop):
-    array_pop = np.empty(len(pop), object)
-    for idx, ind in enumerate(pop):
-        array_pop[idx] = ind
-    return array_pop
+
 
 
 

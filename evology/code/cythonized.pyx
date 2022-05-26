@@ -19,13 +19,16 @@ cdef double edf(Individual ind, double price):
     t = ind.type_as_int
     if t == 0:
         return (LeverageNT * ind.wealth / price) * tanh(SCALE_NT * ind.tsv + 0.5) - ind.asset 
+        #return (LeverageNT * ind.wealth / price) * tanh(SCALE_NT * ind.tsv) - ind.asset 
     elif t == 1:
         ''' for previous-price VI '''
         #return (LeverageVI * ind.wealth / price) * tanh(SCALE_VI * ind.tsv + 0.5) - ind.asset
         ''' for contemporaneous-price VI '''
         return (LeverageVI * ind.wealth / price) * tanh(SCALE_VI * (log2(ind.val / price)) + 0.5) - ind.asset
+        #return (LeverageVI * ind.wealth / price) * tanh(SCALE_VI * (log2(ind.val / price))) - ind.asset
     elif t == 2: # TF
         return (LeverageTF * ind.wealth / price) * tanh(SCALE_TF * ind.tsv + 0.5) - ind.asset
+        #return (LeverageTF * ind.wealth / price) * tanh(SCALE_TF * ind.tsv ) - ind.asset
     elif t == 3: # AV
         return (ind.wealth / price) * tanh(ind.tsv) - ind.asset
     # BH and IR agents do not interact in the market, they are fictious agents to measure their strategy performance.
