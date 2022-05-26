@@ -13,7 +13,7 @@ def main(
     # Initialisation
     generation, CurrentPrice, dividend, spoils = 0, InitialPrice, INITIAL_DIVIDEND, 0.0
     results = np.zeros((MAX_GENERATIONS - data.Barr, data.variables))
-    price_history, dividend_history, replace, volume = [], [], 0, 0.0
+    dividend_history, replace, volume = [], 0, 0.0
 
     # Random generator 
     rng = np.random.default_rng(seed=seed)
@@ -23,6 +23,7 @@ def main(
     pop, asset_supply = cr.CreatePop(POPULATION_SIZE, space, wealth_coordinates, CurrentPrice, strategy, rng)
 
     # Dividend and NT process generation
+    price_history = prc.FictiousPriceSeries(rng)
     dividend_series, rd_dividend_series = div.ExogeneousDividends(MAX_GENERATIONS, rng)
     rng = np.random.default_rng(seed=seed)
     process_series = prc.ExogeneousProcess(MAX_GENERATIONS, rng)
