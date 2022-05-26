@@ -27,7 +27,7 @@ def CreateFractionalFund(pop, MaxFund, divisions):
     #half.edf = None
     half.edv = 0.
     half.strategy = pop[MaxFund].strategy
-    half.process = pop[MaxFund].process
+    # half.process = pop[MaxFund].process
     half.ema = pop[MaxFund].ema
     half.fitness = pop[MaxFund].fitness
     half.val = pop[MaxFund].val

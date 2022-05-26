@@ -11,7 +11,7 @@ def main(
     reset_wealth,
 ):
     # Initialisation
-    generation, CurrentPrice, dividend, spoils, process = 0, InitialPrice, INITIAL_DIVIDEND, 0.0, 1.
+    generation, CurrentPrice, dividend, spoils = 0, InitialPrice, INITIAL_DIVIDEND, 0.0
     results = np.zeros((MAX_GENERATIONS - data.Barr, data.variables))
     price_history, dividend_history, replace, volume = [], [], 0, 0.0
 
@@ -65,7 +65,7 @@ def main(
         pop, replace = bsc.UpdateFullWealth(pop, CurrentPrice)
         #pop = bsc.NoiseProcess(pop, rng, process)
         pop = bsc.UpdateFval(pop, dividend)
-        pop = bsc.CalculateTSV_staticf(pop, price_history, dividend_history, CurrentPrice, process)
+        pop = bsc.CalculateTSV_staticf(pop, price_history, dividend_history, CurrentPrice, process_series[generation])
         pop = bsc.CalculateTSV_avf(pop, generation, strategy, price_history, dividend)
         #pop = bsc.DetermineEDF(pop)
         
@@ -90,10 +90,11 @@ def main(
         ''' Test scipy '''
         ''' for VI on contemporaneous price ''' 
         ed_functions = bsc.agg_ed(pop, ToLiquidate)[0]
-        CurrentPrice = mc.scipy_solver(ed_functions, CurrentPrice)
 
-        price_history = lc.UpdatePriceHistory(price_history, CurrentPrice)
-        pop, mismatch = bsc.CalculateEDV(pop, CurrentPrice)
+        NewPrice = mc.scipy_solver(ed_functions, CurrentPrice)
+
+
+        pop, mismatch = bsc.CalculateEDV(pop, NewPrice)
 
         # Market activity
         '''
@@ -118,7 +119,12 @@ def main(
         '''
         #dividend, random_dividend = mk.draw_dividend(dividend, random_dividend_history)
         dividend, random_dividend = dividend_series[0, generation], rd_dividend_series[0, generation]
-        pop, volume, spoils, Liquidations = mk.execute_ed(pop, CurrentPrice, asset_supply, spoils, ToLiquidate)
+        pop, volume, spoils, Liquidations = mk.execute_ed(pop, NewPrice, asset_supply, spoils, ToLiquidate)
+
+        if volume != 0:
+            CurrentPrice = NewPrice
+        price_history = lc.UpdatePriceHistory(price_history, CurrentPrice)
+
         pop = mk.earnings(pop, dividend)
         #dividend_history.append(dividend)
         pop = mk.update_margin(pop, CurrentPrice)
