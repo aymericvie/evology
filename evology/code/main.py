@@ -34,6 +34,7 @@ def main(
     #for generation in range(MAX_GENERATIONS):
 
         # Population reset
+        
         pop = cr.WealthReset(pop, POPULATION_SIZE, space, wealth_coordinates, generation, reset_wealth, CurrentPrice, strategy, rng)
 
         # Hypermutation

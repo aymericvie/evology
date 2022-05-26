@@ -140,15 +140,17 @@ def CreatePop(n, space, WealthCoords, CurrentPrice, strategy, rng):
                 ind.strategy = DrawStrategy("tf", rng)
 
     for ind in pop:
+        ind.loan = 0.
+        ind.margin = 0.
         if ind.type == 'av':
             ind.cash = RefCash
             ind.asset = RefAssets
             ind.adaptive_strategy = strategy
         if ind.type == 'bh':
             ind.cash = 0. #RefCash
-            ind.asset = 2. * RefAssets
+            ind.asset = 1. * RefAssets
         if ind.type == 'ir':
-            ind.cash = 2. * RefCash
+            ind.cash = 1. * RefCash
             ind.asset = 0. #RefAssets
         if ind.type == "nt":
             ind.cash = PcNTCash
@@ -161,24 +163,47 @@ def CreatePop(n, space, WealthCoords, CurrentPrice, strategy, rng):
             ind.cash = PcTFCash
             ind.asset = PcTFAsset
 
+    
+
     for ind in pop:
         ind.wealth = ind.cash + ind.asset * CurrentPrice - ind.loan
         ind.prev_wealth = ind.wealth
         if ind.wealth < 0:
             raise ValueError("Negative wealth at population creation.")
+        if ind.type == 'nt':
+            if ind.asset != PcNTAsset:
+                raise RuntimeError('NT asset position mismatch.')
+
+
+
+
+    
 
     return pop, TotalAsset
 
 
 def WealthReset(pop, popsize, space, WealthCoords, generation, ResetWealth, CurrentPrice, strategy, rng):
-    current_size = len(pop)
-    types = [ind.type for ind in pop]
+    # current_size = len(pop)
+    # types = [ind.type for ind in pop]
     if ResetWealth == True:
+        sum_w, w_nt, w_vi, w_tf = 0, 0, 0, 0
+        del pop
         pop, asset_supply = CreatePop(popsize, space, WealthCoords, CurrentPrice, strategy, rng)
         for ind in pop:
             ind.age = generation
-    if len(pop) != current_size:
-        print([current_size, len(pop)])
-        print([types, [ind.type for ind in pop]])
-        raise ValueError('Wealth reset generated a population size mismatch.')
+            sum_w += ind.wealth
+            if ind.type == 'nt':
+                w_nt += ind.wealth 
+            if ind.type == 'vi':
+                w_vi += ind.wealth 
+            if ind.type == 'tf':
+                w_tf += ind.wealth
+    if abs(w_nt / sum_w - WealthCoords[0]) >= 0.000001 or abs(w_vi / sum_w - WealthCoords[1]) >= 0.000001 or abs(w_tf / sum_w - WealthCoords[2]) >= 0.000001:
+        print(WealthCoords)
+        print([w_nt / sum_w, w_vi / sum_w, w_tf / sum_w])
+        raise RuntimeError('Wealth creation did not respect desired coordinates.')
+    # if len(pop) != current_size:
+    #     print([current_size, len(pop)])
+    #     print([types, [ind.type for ind in pop]])
+    #     raise ValueError('Wealth reset generated a population size mismatch.')
     return pop

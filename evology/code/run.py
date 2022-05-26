@@ -1,10 +1,10 @@
 from main import *
 from parameters import *
 
-seed = 6
+seed = 9
 np.random.seed()
 wealth_coordinates = [1/3,1/3,1/3]
-wealth_coordinates = [0.3, 0.3, 0.4]
+# wealth_coordinates = [0.3, 0.3, 0.4]
 # wealth_coordinates=[0., 0., 1.]
 # wealth_coordinates = np.random.dirichlet(np.ones(3), size=1)[0].tolist()
 np.random.seed(seed)
@@ -17,10 +17,10 @@ df, pop = main(
     space = 'scholl', # 'extended',
     wealth_coordinates = wealth_coordinates,
     POPULATION_SIZE = 3,
-    MAX_GENERATIONS = 10000, #50 * 252, #20000, #1000 * 252,
+    MAX_GENERATIONS = 100000, #50 * 252, #20000, #1000 * 252,
     seed = seed,
     tqdm_display = False,
-    reset_wealth = False,
+    reset_wealth = True,
 )
 
 print(df)
