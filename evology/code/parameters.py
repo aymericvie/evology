@@ -28,7 +28,7 @@ RHO_NT = 0.00045832561
 """ MARKET PARAMETERS """
 TRADING_DAYS = 252
 InitialPrice = 100
-Short_Size_Percent = 100 #1.17
+Short_Size_Percent = 5  #1.17
 
 RefLoan = 0
 RefCash = 50_000_000
@@ -76,4 +76,4 @@ min_vi_strat = 5
 max_vi_strat = 15
 
 min_tf_strat = 2
-max_tf_strat = 252 #252
+max_tf_strat = 5 #252 #252

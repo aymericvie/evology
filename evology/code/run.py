@@ -4,7 +4,7 @@ from parameters import *
 seed = 8
 np.random.seed(8)
 wealth_coordinates = [1/3,1/3,1/3]
-wealth_coordinates = [0.3, 0.5, 0.2]
+# wealth_coordinates = [0.3, 0.5, 0.2]
 # wealth_coordinates = [0.3, 0.3, 0.4]
 # wealth_coordinates=[0., 0., 1.]
 # wealth_coordinates = np.random.dirichlet(np.ones(3), size=1)[0].tolist()
@@ -18,7 +18,7 @@ df, pop = main(
     space = 'extended', # 'extended',
     wealth_coordinates = wealth_coordinates,
     POPULATION_SIZE = 1000,
-    MAX_GENERATIONS = 2000, #50 * 252, #20000, #1000 * 252,
+    MAX_GENERATIONS = 1200, #50 * 252, #20000, #1000 * 252,
     seed = seed,
     tqdm_display = False,
     reset_wealth = False,
