@@ -136,4 +136,12 @@ cdef class Individual(object):
         self.adaptive_strategy = None
         #self.investment_series = []
 
+    def compute_wealth(self, double price):
+        cdef int replace = 0
+        self.wealth = self.cash + self.asset * price - self.loan
+        self.prev_wealth = self.wealth
+        
+        ''' if self.wealth < 0:
+            replace = 1
+        return replace  '''
 

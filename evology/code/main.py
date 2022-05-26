@@ -59,7 +59,10 @@ def main(
         #)
 
         # Market decisions 
-        pop, replace = bsc.UpdateFullWealth(pop, CurrentPrice)
+
+        pop, replace = bsc.UpdateFullWealth(pop, CurrentPrice) 
+        #cz.Individual.compute_wealth(CurrentPrice)
+
         #pop = bsc.NoiseProcess(pop, rng, process)
         pop = bsc.UpdateFval(pop, dividend)
         pop = bsc.CalculateTSV_staticf(pop, price_history, dividend_history, CurrentPrice, process_series[generation])
