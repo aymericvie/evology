@@ -217,7 +217,7 @@ def ResultsProcess(list pop, double spoils, double price, double generation, dou
     cdef double TFreturn = 0.0
 
     cdef double NT_process = NAN
-    cdef double VI_val = 0.0
+    cdef double VI_val = NAN
 
     cdef double NTflows = 0.0
     cdef double VIflows = 0.0
