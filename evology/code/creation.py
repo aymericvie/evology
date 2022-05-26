@@ -186,22 +186,9 @@ def WealthReset(pop, popsize, space, WealthCoords, generation, ResetWealth, Curr
     # current_size = len(pop)
     # types = [ind.type for ind in pop]
     if ResetWealth == True:
-        sum_w, w_nt, w_vi, w_tf = 0, 0, 0, 0
         del pop
         pop, asset_supply = CreatePop(popsize, space, WealthCoords, CurrentPrice, strategy, rng)
-        for ind in pop:
-            ind.age = generation
-            sum_w += ind.wealth
-            if ind.type == 'nt':
-                w_nt += ind.wealth 
-            if ind.type == 'vi':
-                w_vi += ind.wealth 
-            if ind.type == 'tf':
-                w_tf += ind.wealth
-    if abs(w_nt / sum_w - WealthCoords[0]) >= 0.000001 or abs(w_vi / sum_w - WealthCoords[1]) >= 0.000001 or abs(w_tf / sum_w - WealthCoords[2]) >= 0.000001:
-        print(WealthCoords)
-        print([w_nt / sum_w, w_vi / sum_w, w_tf / sum_w])
-        raise RuntimeError('Wealth creation did not respect desired coordinates.')
+
     # if len(pop) != current_size:
     #     print([current_size, len(pop)])
     #     print([types, [ind.type for ind in pop]])
