@@ -28,7 +28,7 @@ RHO_NT = 0.00045832561
 """ MARKET PARAMETERS """
 TRADING_DAYS = 252
 InitialPrice = 100
-Short_Size_Percent = 50 #1.17
+Short_Size_Percent = 100 #1.17
 
 RefLoan = 0
 RefCash = 50_000_000
@@ -68,12 +68,12 @@ random_dividend_history = []
 
 # NT strat is divided by 1000 
 # And also substracted 10
-min_nt_strat = 5 
-max_nt_strat = 15
+min_nt_strat = 0 
+max_nt_strat = 0
 
 # VI strat is divided by 1000
-min_vi_strat = 5
-max_vi_strat = 15
+min_vi_strat = 8
+max_vi_strat = 12
 
 min_tf_strat = 2
-max_tf_strat = 252 #21
+max_tf_strat = 21 #252
