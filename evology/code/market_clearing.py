@@ -78,10 +78,14 @@ def scipy_solver(ed_functions, current_price):
     if new_price > 2 * current_price or new_price < 0.5 * current_price:
         new_price = scipy.optimize.minimize(ed_functions, current_price, bounds=[(current_price * 0.5,current_price*2)]).x
         #new_price = scipy.optimize.brentq(ed_functions, 0.01, current_price * 10)
+        if new_price > 2 * current_price:
+            new_price = 2 * current_price
+        elif new_price < 0.5 * current_price:
+            new_price = 0.5 * current_price
     if new_price < 0:
         new_price = 0.01
     if math.isnan(new_price) == True:
-        raise TypeError('Nan price')
+        raise TypeError('NaN price')
     return new_price
 
 
