@@ -53,7 +53,7 @@ def ga_evolution(
 #    bs.DetermineEDF(pop)
 #    return pop
 
-
+'''
 def marketClearing(pop, current_price, price_history, spoils, solver, volume):
     try:
         if solver == "esl":
@@ -217,7 +217,7 @@ def marketClearing(pop, current_price, price_history, spoils, solver, volume):
     price_history.append(current_price)
 
     return pop, current_price, price_history, ToLiquidate
-
+'''
 
 
 

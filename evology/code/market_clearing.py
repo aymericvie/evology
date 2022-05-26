@@ -1,4 +1,4 @@
-# import warnings
+import warnings
 import esl
 from esl.economics.markets.walras import (
     excess_demand_model,
@@ -11,13 +11,8 @@ from esl.economics import price
 from esl.economics import currencies
 import scipy
 import numpy as np
-# import random
-# import matplotlib
-# import matplotlib.pyplot as plt
 import balance_sheet_cython as bsc
 import math
-
-# from parameters import InitialPrice
 
 
 def solve(my_excess_demand_functions: list, current_price):
@@ -86,6 +81,10 @@ def scipy_solver(ed_functions, current_price):
         new_price = 0.01
     if math.isnan(new_price) == True:
         raise TypeError('NaN price')
+
+    if new_price >= 1_000_000:
+        warnings.warn('Simulation break: price above 1M.')
+
     return new_price
 
 

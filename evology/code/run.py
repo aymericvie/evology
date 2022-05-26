@@ -1,7 +1,7 @@
 from main import *
 from parameters import *
 
-seed = 9
+seed = 10
 np.random.seed()
 wealth_coordinates = [1/3,1/3,1/3]
 # wealth_coordinates = [0.3, 0.3, 0.4]
@@ -20,7 +20,7 @@ df, pop = main(
     MAX_GENERATIONS = 100000, #50 * 252, #20000, #1000 * 252,
     seed = seed,
     tqdm_display = False,
-    reset_wealth = True,
+    reset_wealth = False,
 )
 
 print(df)

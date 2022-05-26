@@ -15,7 +15,6 @@ extensions = [
         "balance_sheet_cython",
         "investment",
         "fitness",
-        "linear_clearing"
     ]
 ]
 
