@@ -65,7 +65,7 @@ def main(
         pop = bsc.CalculateTSV_staticf(pop, price_history, dividend_history, CurrentPrice, process_series[generation])
         pop = bsc.CalculateTSV_avf(pop, generation, strategy, price_history, dividend)        
         
-        ToLiquidate = lc.DetermineLiquidation(spoils, volume)
+        ToLiquidate = bsc.DetermineLiquidation(spoils, volume)
 
         # ''' for VI on contemporaneous price ''' 
         # ed_functions = bsc.agg_ed_esl(pop, ToLiquidate)
@@ -80,7 +80,7 @@ def main(
 
         if volume != 0:
             CurrentPrice = NewPrice
-        price_history = lc.UpdatePriceHistory(price_history, CurrentPrice)
+        price_history = bsc.UpdatePriceHistory(price_history, CurrentPrice)
 
         pop = mk.earnings(pop, dividend)
         pop = mk.update_margin(pop, CurrentPrice)

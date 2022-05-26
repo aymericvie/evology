@@ -273,6 +273,16 @@ cpdef CalculateEDV(list pop, double current_price):
     return pop, mismatch
 '''
 
+cpdef DetermineLiquidation(double spoils, double volume):    
+    cdef double ToLiquidate = 0.0
+    if spoils > 0:
+        ToLiquidate = -fmin(spoils, fmin(liquidation_perc * volume, 10000))
+    #elif spoils == 0:
+    #    ToLiquidate = 0
+    elif spoils < 0:
+        ToLiquidate = fmin(fabs(spoils), fmin(liquidation_perc * volume, 10000))
+    return ToLiquidate
+    
 cpdef count_long_assets(list pop, double spoils):    
     cdef cythonized.Individual ind
     cdef double count = 0.0
@@ -281,6 +291,12 @@ cpdef count_long_assets(list pop, double spoils):
             count += ind.asset
     count += spoils
     return count
+
+cpdef UpdatePriceHistory(list price_history, double current_price):
+    
+    price_history.append(current_price)
+    return price_history
+
 
 
 cpdef count_short_assets(list pop, double spoils):
