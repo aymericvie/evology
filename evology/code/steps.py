@@ -21,6 +21,7 @@ import linear_clearing as lc
 import math
 import dividend as div
 import process as prc
+import cythonized as cz
 
 def ga_evolution(
     pop, space, generation, wealth_coordinates, PROBA_SELECTION, MUTATION_RATE, Horizon

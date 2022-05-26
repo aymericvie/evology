@@ -85,7 +85,7 @@ def main(
 
         ''' Test scipy '''
         ''' for VI on contemporaneous price ''' 
-        ed_functions = bsc.agg_ed(pop, ToLiquidate)[0]
+        ed_functions = cz.agg_ed(pop, ToLiquidate)
 
         NewPrice = mc.scipy_solver(ed_functions, CurrentPrice)
 

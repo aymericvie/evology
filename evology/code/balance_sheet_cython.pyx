@@ -325,22 +325,5 @@ cdef convert_to_array(pop):
         array_pop[idx] = ind
     return array_pop
 
-def agg_ed_esl(pop, ToLiquidate):
-    functions = []
-    array_pop = convert_to_array(pop)
 
-    def big_edf(asset_key, price):
-        return cythonized.big_edf(array_pop, price, ToLiquidate)
 
-    functions.append(big_edf)
-    return functions
-
-def agg_ed(pop, ToLiquidate):
-    functions = []
-    array_pop = convert_to_array(pop)
-
-    def big_edf(price):
-        return cythonized.big_edf(array_pop, price, ToLiquidate)
-
-    functions.append(big_edf)
-    return functions

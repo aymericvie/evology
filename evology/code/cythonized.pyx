@@ -3,6 +3,7 @@
 # See https://stackoverflow.com/questions/30564253/cython-boundscheck-true-faster-than-boundscheck-false
 from libc.math cimport tanh, log2, isnan
 from cpython cimport list
+import numpy as np
 
 from deap import creator
 import parameters
@@ -27,14 +28,9 @@ cdef double edf(Individual ind, double price):
         return (LeverageTF * ind.wealth / price) * tanh(SCALE_TF * ind.tsv + 0.5) - ind.asset
     elif t == 3: # AV
         return (ind.wealth / price) * tanh(ind.tsv) - ind.asset
-
     # BH and IR agents do not interact in the market, they are fictious agents to measure their strategy performance.
-    elif t == 4: # BH
+    elif t == 4 or t == 5:
         pass
-    #    return (ind.wealth / price) - ind.asset 
-    elif t == 5: # IR
-        pass
-    #    return - ind.asset
     else:
         raise Exception(f"Unexpected ind type: {ind.type}")
 
@@ -54,6 +50,23 @@ cpdef big_edf(
             result += ind_result
     return result
 
+def agg_ed_esl(pop, ToLiquidate):
+    # array_pop = convert_to_array(pop)
+    def aggregate_ed(asset_key, price):
+        return big_edf(pop, price, ToLiquidate)
+    return aggregate_ed
+
+cdef convert_to_array(pop):
+    array_pop = np.empty(len(pop), object)
+    for idx, ind in enumerate(pop):
+        array_pop[idx] = ind
+    return array_pop
+
+def agg_ed(pop, ToLiquidate):
+    array_pop = convert_to_array(pop)
+    def aggregate_ed(price):
+        return big_edf(array_pop, price, ToLiquidate)
+    return aggregate_ed
 
 cpdef calculate_edv(
     list pop,
