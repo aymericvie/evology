@@ -3,8 +3,8 @@ from parameters import *
 
 seed = 8
 np.random.seed()
-wealth_coordinates = [1/3,1/3,1/3]
-# wealth_coordinates=[0.3, 0.3, 0.4]
+# wealth_coordinates = [1/3,1/3,1/3]
+wealth_coordinates=[1., 0., 0.]
 # wealth_coordinates = np.random.dirichlet(np.ones(3), size=1)[0].tolist()
 # wealth_coordinates = [0.31418887808615753, 0.029839754449283655, 0.6559713674645588]
 np.random.seed(seed)
