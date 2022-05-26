@@ -1,7 +1,7 @@
 #cython: boundscheck=False, wraparound = False, initializedcheck=False, cdivision=True
 cimport cythonized
 import cythonized
-from libc.math cimport log2, tanh, isnan
+from libc.math cimport log2, tanh, isnan, fabs, fmin, fmax
 from parameters import G, GAMMA_NT, RHO_NT, MU_NT, LeverageNT, LeverageVI, LeverageTF
 from parameters import G_day, SCALE_NT, SCALE_TF, SCALE_VI, liquidation_perc, interest_day
 import warnings

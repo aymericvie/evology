@@ -71,7 +71,7 @@ def esl_solver(ed_functions, current_price):
 def scipy_solver(ed_functions, current_price): 
     new_price = scipy.optimize.root(ed_functions, current_price, method='hybr').x
     if new_price > 2 * current_price or new_price < 0.5 * current_price:
-        new_price = scipy.optimize.minimize(ed_functions, current_price, bounds=[(current_price * 0.5,current_price*2)]).x
+        #new_price = scipy.optimize.minimize(ed_functions, current_price, bounds=[(current_price * 0.5,current_price*2)]).x
         #new_price = scipy.optimize.brentq(ed_functions, 0.01, current_price * 10)
         if new_price > 2 * current_price:
             new_price = 2 * current_price
