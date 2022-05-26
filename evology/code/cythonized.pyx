@@ -106,7 +106,7 @@ cdef class Individual(object):
         self.margin = 0.0
         self.tsv = 0.0
         self.edv = 0.0
-        self.process = 1.0
+        #self.process = 1.0
         self.ema = 0.0
         self.profit = 0.0
         #self.investor_flow = 0.0

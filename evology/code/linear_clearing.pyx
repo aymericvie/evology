@@ -13,7 +13,7 @@ cpdef DetermineLiquidation(double spoils, double volume):
         ToLiquidate = fmin(fabs(spoils), fmin(liquidation_perc * volume, 10000))
     return ToLiquidate
 
-
+'''
 cpdef linear_solver(list pop, double ToLiquidate, double prev_price):
     cdef double price 
     cdef cythonized.Individual ind
@@ -57,7 +57,7 @@ cpdef linear_solver(list pop, double ToLiquidate, double prev_price):
         print(a)
         print(b)
         raise ValueError('Price is nan.')
-    '''
+        
     if price < 0:
         print("price, a, b, ToLiquidate, pop ind with negative a")
         print(price)
@@ -69,10 +69,10 @@ cpdef linear_solver(list pop, double ToLiquidate, double prev_price):
             if aind < 0:
                 print([ind.type, ind.wealth, ind.tsv, ind.asset, aind])
         raise ValueError('Price is negative.')
-    '''
+    
 
     return price
-
+'''
 cpdef UpdatePriceHistory(list price_history, double current_price):
     
     price_history.append(current_price)

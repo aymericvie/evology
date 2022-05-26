@@ -36,6 +36,7 @@ cpdef UpdateWealthProfitAge(list pop, double current_price):
         
     return pop, replace
 
+'''
 cpdef NoiseProcess(list pop, rng, double process):
 
     #cdef double[:] randoms = rng.normal(GAMMA_NT,1,size=len(pop))
@@ -44,25 +45,27 @@ cpdef NoiseProcess(list pop, rng, double process):
     cdef cythonized.Individual ind
     #cdef double a
     #cdef double b
-    process = abs(RHO_NT * (MU_NT - process) + GAMMA_NT * randoms)
+    process = RHO_NT * (MU_NT - process) + GAMMA_NT * randoms
 
     #for i, ind in enumerate(pop):
     for ind in pop:
         if ind.type_as_int == 0:
             # Calculate process value, including individual strategy (bias)
-            #a = ind.strategy - ind.process
-            #b = RHO_NT * (MU_NT + a) + randoms[i]
-            #ind.process = b
+            a = ind.strategy - ind.process
+            b = RHO_NT * (MU_NT - a) + randoms
+            ind.process = b
             #if b < 0:
             #    ind.process = abs(b)
 
             #ind.process = abs(RHO_NT * (MU_NT + ind.strategy  - ind.process) + randoms) 
-            ind.process = process + ind.strategy * RHO_NT
+            #ind.process = process #+ ind.strategy * RHO_NT
+            ind.process = process
 
 
     return pop
+'''
 
-cpdef CalculateTSV_staticf(list pop, list price_history, list dividend_history, double CurrentPrice):
+cpdef CalculateTSV_staticf(list pop, list price_history, list dividend_history, double CurrentPrice, double process):
     cdef cythonized.Individual ind
     cdef int i 
     cdef int t
@@ -70,7 +73,7 @@ cpdef CalculateTSV_staticf(list pop, list price_history, list dividend_history, 
     for i, ind in enumerate(pop):
         t = ind.type_as_int
         if t == 0: # NT
-            ind.tsv = (ind.process - 1)
+            ind.tsv = process - 1.
         elif t == 1: # VI
             ''' for previous-price VI '''
             # ind.tsv = log2(ind.val / CurrentPrice)

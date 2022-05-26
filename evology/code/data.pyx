@@ -169,7 +169,7 @@ def AnnualReturns(wealth_tracker, pop, generation):
         
     return wamp_nt, wamp_vi, wamp_tf
 '''
-def ResultsProcess(list pop, double spoils, double price, double generation):
+def ResultsProcess(list pop, double spoils, double price, double generation, double process):
 
     cdef cythonized.Individual ind
     cdef double ind_zero
@@ -216,7 +216,7 @@ def ResultsProcess(list pop, double spoils, double price, double generation):
     cdef double TFstocks = 0.0
     cdef double TFreturn = 0.0
 
-    cdef double NT_process = 0.0
+    cdef double NT_process = NAN
     cdef double VI_val = 0.0
 
     cdef double NTflows = 0.0
@@ -304,7 +304,7 @@ def ResultsProcess(list pop, double spoils, double price, double generation):
             if ind.prev_wealth != 0:
                 NTreturn += ind.DailyReturn
             NTflows += 0 #ind.investor_flow
-            NT_process += ind.process
+            #NT_process += ind.process
             NT_substrategies.append(ind.strategy)
 
         elif ind.type == "vi":
@@ -353,7 +353,8 @@ def ResultsProcess(list pop, double spoils, double price, double generation):
         #NTreturn_noinv = NTreturn_noinv / NTcount
         NTsignal = NTsignal / NTcount
         MeanNT = MeanNT / (NTnav * NTcount)
-        NT_process = NT_process / NTcount
+        #NT_process = NT_process / NTcount
+        NT_process = process
 
     if VIcount != 0:
         VIcash = VIcash / VIcount
@@ -512,6 +513,7 @@ def record_results(
     double spoils,
     double Liquidations,
     double asset_supply,
+    double process,
 ):
 
     cdef int current = generation - Barr
@@ -520,7 +522,7 @@ def record_results(
 
     if generation >= Barr :
 
-        ListOutput, sim_break = ResultsProcess(pop, spoils, current_price, generation)
+        ListOutput, sim_break = ResultsProcess(pop, spoils, current_price, generation, process)
 
         """ Global variables """
         arr = [

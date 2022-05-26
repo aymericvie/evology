@@ -11,7 +11,7 @@ def main(
     reset_wealth,
 ):
     # Initialisation
-    generation, CurrentPrice, dividend, spoils, process = 0, InitialPrice, INITIAL_DIVIDEND, 0.0, 0.0
+    generation, CurrentPrice, dividend, spoils, process = 0, InitialPrice, INITIAL_DIVIDEND, 0.0, 1.
     results = np.zeros((MAX_GENERATIONS - data.Barr, data.variables))
     price_history, dividend_history, replace, volume = [], [], 0, 0.0
 
@@ -24,6 +24,10 @@ def main(
 
     # Dividend generation
     dividend_series, rd_dividend_series = div.ExogeneousDividends(MAX_GENERATIONS, rng)
+    process_series = prc.ExogeneousProcess(MAX_GENERATIONS, rng)
+
+    # plt.plot(process_series)
+    # plt.show()
 
     for generation in tqdm(
         range(MAX_GENERATIONS), disable=tqdm_display, miniters=100, mininterval=0.5
@@ -59,9 +63,9 @@ def main(
 
         # Market decisions 
         pop, replace = bsc.UpdateFullWealth(pop, CurrentPrice)
-        pop = bsc.NoiseProcess(pop, rng, process)
+        #pop = bsc.NoiseProcess(pop, rng, process)
         pop = bsc.UpdateFval(pop, dividend)
-        pop = bsc.CalculateTSV_staticf(pop, price_history, dividend_history, CurrentPrice)
+        pop = bsc.CalculateTSV_staticf(pop, price_history, dividend_history, CurrentPrice, process)
         pop = bsc.CalculateTSV_avf(pop, generation, strategy, price_history, dividend)
         #pop = bsc.DetermineEDF(pop)
         
@@ -149,11 +153,14 @@ def main(
             spoils,
             Liquidations,
             asset_supply,
+            process_series[generation]
         )
 
+        '''
         if sim_break == 1 and reset_wealth != True:
            warnings.warn('Only one base strategy left.')
            break
+        '''
 
         if CurrentPrice >= 1_000_000:
             warnings.warn('Simulation break: price above 1M.' + str(generation))

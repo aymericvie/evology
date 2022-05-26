@@ -57,7 +57,7 @@ def IndCreation(strat):
         ind.type = 'ir'
         ind.type_as_int = cythonized.convert_ind_type_to_num("ir")
         ind.tsv = 0.
-    ind.process = 1.0
+    #ind.process = 1.0
     return ind
 
 
@@ -90,9 +90,9 @@ def CreatePop(n, space, WealthCoords, CurrentPrice, strategy, rng):
         pop.append(IndCreation("tf"))
         NumTF += 1
     # Add a buy and hold agent (for benchmark)
-    pop.append(IndCreation('bh'))
+    #pop.append(IndCreation('bh'))
     # Add a sell and deposit agent (for benchmark)
-    pop.append(IndCreation('ir'))
+    #pop.append(IndCreation('ir'))
 
     if strategy != None:
         pop.append(IndCreation("av"))
