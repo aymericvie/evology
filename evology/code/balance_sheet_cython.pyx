@@ -89,6 +89,7 @@ cpdef CalculateTSV_staticf(list pop, list price_history, list dividend_history, 
     cdef int t
     cdef list price_means = subset_means(price_history, max_strat_lag)
     cdef double[:] randoms = rng.normal(0, 0.1, len(pop))
+    cdef double ma5_price = price_means[4]
 
     for i, ind in enumerate(pop):
         t = ind.type_as_int
@@ -105,7 +106,8 @@ cpdef CalculateTSV_staticf(list pop, list price_history, list dividend_history, 
                 #ind.last_price = price_history[-int(ind.strategy)]
                 #ind.tsv =  log2(CurrentPrice / ind.last_price)
                 ''' Moving average TF (compares p(t-1) to moving average at time horizon'''
-                ind.tsv = log2(CurrentPrice / price_means[int(ind.strategy - 1)])
+                #ind.tsv = log2(CurrentPrice / price_means[int(ind.strategy - 1)])
+                ind.tsv = log2(ma5_price / price_means[int(ind.strategy - 1)])
             #ind.tsv = (CurrentPrice / price_means[int(ind.strategy - 1)]) - 1.
             else:
                 ind.tsv = 0.5 #0.0
