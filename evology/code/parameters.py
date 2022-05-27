@@ -68,8 +68,8 @@ random_dividend_history = []
 
 # NT strat is divided by 1000 
 # And also substracted 10
-min_nt_strat = 0 
-max_nt_strat = 0
+min_nt_strat = 5
+max_nt_strat = 15
 
 # VI strat is divided by 1000
 min_vi_strat = 5
@@ -78,4 +78,5 @@ max_vi_strat = 15
 min_tf_strat = 2
 max_tf_strat = 21 #252 #252
 
+# We coudl save a lot of runtime if TFs were in a discrete set of horizons a la Brock & Hommes
 max_strat_lag = max_tf_strat

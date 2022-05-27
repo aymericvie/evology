@@ -83,16 +83,17 @@ cpdef subset_means(list series, int max_lag):
     means = [mean(subset) for subset in subset_list]
     return means
 
-cpdef CalculateTSV_staticf(list pop, list price_history, list dividend_history, double CurrentPrice, double process):
+cpdef CalculateTSV_staticf(list pop, list price_history, list dividend_history, double CurrentPrice, double process, rng):
     cdef cythonized.Individual ind
     cdef int i 
     cdef int t
     cdef list price_means = subset_means(price_history, max_strat_lag)
+    cdef double[:] randoms = rng.normal(0, 0.1, len(pop))
 
     for i, ind in enumerate(pop):
         t = ind.type_as_int
         if t == 0: # NT
-            ind.tsv = process - 1.
+            ind.tsv = process - 1. + ind.strategy * randoms[i]
         elif t == 1: # VI
             ''' for previous-price VI '''
             # ind.tsv = log2(ind.val / CurrentPrice)

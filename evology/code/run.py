@@ -1,8 +1,8 @@
 from main import *
 from parameters import *
 
-seed = 8
-np.random.seed(8)
+seed = 1
+np.random.seed(seed)
 wealth_coordinates = [1/3,1/3,1/3]
 # wealth_coordinates = [0.3, 0.5, 0.2]
 # wealth_coordinates = [0.3, 0.3, 0.4]
@@ -18,7 +18,7 @@ df, pop = main(
     space = 'extended', # 'extended',
     wealth_coordinates = wealth_coordinates,
     POPULATION_SIZE = 200,
-    MAX_GENERATIONS = 100_000, #50 * 252, #20000, #1000 * 252,
+    MAX_GENERATIONS = 100000, #50 * 252, #20000, #1000 * 252,
     seed = seed,
     tqdm_display = False,
     reset_wealth = False,

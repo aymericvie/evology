@@ -65,7 +65,7 @@ def main(
 
         #pop = bsc.NoiseProcess(pop, rng, process)
         pop = bsc.UpdateFval(pop, dividend)
-        pop, price_means = bsc.CalculateTSV_staticf(pop, price_history, dividend_history, CurrentPrice, process_series[generation])
+        pop, price_means = bsc.CalculateTSV_staticf(pop, price_history, dividend_history, CurrentPrice, process_series[generation], rng)
         pop = bsc.CalculateTSV_avf(pop, generation, strategy, price_history, dividend)        
         
         ToLiquidate = bsc.DetermineLiquidation(spoils, volume)
@@ -81,8 +81,9 @@ def main(
         dividend, random_dividend = dividend_series[0, generation], rd_dividend_series[0, generation]
         pop, volume, spoils, Liquidations = mk.execute_ed(pop, NewPrice, asset_supply, spoils, ToLiquidate)
 
-        if volume != 0:
-            CurrentPrice = NewPrice
+        #if volume != 0:
+        #    CurrentPrice = NewPrice
+        CurrentPrice = NewPrice
         price_history = bsc.UpdatePriceHistory(price_history, CurrentPrice)
 
         pop = mk.earnings(pop, dividend)
