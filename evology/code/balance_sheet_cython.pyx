@@ -2,13 +2,21 @@
 cimport cythonized
 import cythonized
 from libc.math cimport log2, tanh, isnan, fabs, fmin, fmax
-from parameters import G, GAMMA_NT, RHO_NT, MU_NT, LeverageNT, LeverageVI, LeverageTF
+from parameters import G, GAMMA_NT, RHO_NT, MU_NT, LeverageNT, LeverageVI, LeverageTF, max_strat_lag
 from parameters import G_day, SCALE_NT, SCALE_TF, SCALE_VI, liquidation_perc, interest_day
 import warnings
 import math
 import numpy as np
 cdef float NAN
 NAN = float("nan")
+
+cpdef mean(series):
+    cdef double cumsum = 0.
+    cdef int length = 0
+    for item in series:
+        cumsum += item
+        length += 1
+    return cumsum / length
 
 cpdef UpdateWealthProfitAge(list pop, double current_price):
     cdef cythonized.Individual ind
@@ -65,10 +73,21 @@ cpdef NoiseProcess(list pop, rng, double process):
     return pop
 '''
 
+cpdef subset_means(list series, int max_lag):
+    cdef int i 
+    cdef list subset_list
+    cdef list means 
+
+    subset_list = [series[-i:] for i in range(1, max_lag + 1)]
+    #means = [np.mean(subset) for subset in subset_list]
+    means = [mean(subset) for subset in subset_list]
+    return means
+
 cpdef CalculateTSV_staticf(list pop, list price_history, list dividend_history, double CurrentPrice, double process):
     cdef cythonized.Individual ind
     cdef int i 
     cdef int t
+    cdef list price_means = subset_means(price_history, max_strat_lag)
 
     for i, ind in enumerate(pop):
         t = ind.type_as_int
@@ -77,25 +96,21 @@ cpdef CalculateTSV_staticf(list pop, list price_history, list dividend_history, 
         elif t == 1: # VI
             ''' for previous-price VI '''
             # ind.tsv = log2(ind.val / CurrentPrice)
-
             ''' for contemporaneous VI '''
             pass    
-
-            #if isnan(ind.tsv) == True:
-            #    print(ind.val)
-            #    print(CurrentPrice)
-            #    print(ind.tsv)
-            #    raise ValueError('ind.tsv is NAN')
         elif t == 2: # TF
             if len(price_history) >= ind.strategy:
-                ind.last_price = price_history[-int(ind.strategy)]
-                ind.tsv =  log2(CurrentPrice / ind.last_price)
+                ''' Rate of change TF (compare price values)'''
+                #ind.last_price = price_history[-int(ind.strategy)]
+                #ind.tsv =  log2(CurrentPrice / ind.last_price)
+                ''' Moving average TF (compares p(t-1) to moving average at time horizon'''
+                ind.tsv = log2(CurrentPrice / price_means[int(ind.strategy - 1)])
             else:
                 ind.tsv = 0.0
         else:
             pass
             # BH stay at 1, IR stay at 0, AV is not computed here, VI cannot compute before price is known
-    return pop
+    return pop, price_means
 
 cpdef CalculateTSV_avf(list pop, double generation, object strategy, list price_history, double dividend):
     cdef cythonized.Individual ind

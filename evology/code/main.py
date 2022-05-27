@@ -65,7 +65,7 @@ def main(
 
         #pop = bsc.NoiseProcess(pop, rng, process)
         pop = bsc.UpdateFval(pop, dividend)
-        pop = bsc.CalculateTSV_staticf(pop, price_history, dividend_history, CurrentPrice, process_series[generation])
+        pop, price_means = bsc.CalculateTSV_staticf(pop, price_history, dividend_history, CurrentPrice, process_series[generation])
         pop = bsc.CalculateTSV_avf(pop, generation, strategy, price_history, dividend)        
         
         ToLiquidate = bsc.DetermineLiquidation(spoils, volume)
@@ -73,9 +73,9 @@ def main(
         # ''' for VI on contemporaneous price ''' 
         # ed_functions = bsc.agg_ed_esl(pop, ToLiquidate)
         # CurrentPrice = mc.esl_solver(ed_functions, CurrentPrice)
-        ed_functions = cz.agg_ed(pop, ToLiquidate)
+        ed_functions = cz.agg_ed(pop, ToLiquidate, price_means)
         NewPrice = mc.scipy_solver(ed_functions, CurrentPrice)
-        pop, mismatch = cz.calculate_edv(pop, NewPrice)
+        pop, mismatch = cz.calculate_edv(pop, NewPrice, price_means)
 
         # Market activity
         dividend, random_dividend = dividend_series[0, generation], rd_dividend_series[0, generation]

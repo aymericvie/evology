@@ -46,3 +46,20 @@ def ExogeneousProcess(MAX_GENERATIONS, rng):
 
     return process_series
 
+# %%
+import numpy as np
+prices = [100, 10, 20, 10, 30]
+subset = prices[-2:]
+print(subset)
+print(np.mean(subset))
+# %%
+
+def subset_means(series, max_lag):
+        subset_list = [series[-i:] for i in range(1, max_lag + 1)]
+        means = [np.mean(subset) for subset in subset_list]
+        return means
+
+print(subset_means(prices, 5))
+
+
+# %%

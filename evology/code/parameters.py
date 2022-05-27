@@ -76,4 +76,6 @@ min_vi_strat = 5
 max_vi_strat = 15
 
 min_tf_strat = 2
-max_tf_strat = 5 #252 #252
+max_tf_strat = 21 #252 #252
+
+max_strat_lag = max_tf_strat

@@ -15,9 +15,10 @@ cdef double SCALE_TF = parameters.SCALE_TF
 cdef double SCALE_VI = parameters.SCALE_VI
 cdef double SCALE_NT = parameters.SCALE_NT
 
-cdef double edf(Individual ind, double price):
+cdef double edf(Individual ind, double price, list price_means):
     cdef int t = ind.type_as_int
     cdef double corr = 0.5
+    #cdef double VI_price = price_means[20]
     if t == 0:
         return (LeverageNT * ind.wealth / price) * tanh(SCALE_NT * ind.tsv + corr) - ind.asset 
     elif t == 1:
@@ -25,6 +26,7 @@ cdef double edf(Individual ind, double price):
         #return (LeverageVI * ind.wealth / price) * tanh(SCALE_VI * ind.tsv + 0.5) - ind.asset
         ''' for contemporaneous-price VI '''
         return (LeverageVI * ind.wealth / price) * tanh(SCALE_VI * (log2(ind.val / price)) + corr) - ind.asset
+        #return (LeverageVI * ind.wealth / price) * tanh(SCALE_VI * (log2(ind.val / VI_price)) + corr) - ind.asset
     elif t == 2: # TF
         return (LeverageTF * ind.wealth / price) * tanh(SCALE_TF * ind.tsv + corr) - ind.asset
     elif t == 3: # AV
@@ -39,6 +41,7 @@ cpdef big_edf(
     Individual[:] pop,
     double price,
     double ToLiquidate,
+    list price_means
 ):
     cdef double result = ToLiquidate
     cdef Individual ind
@@ -46,15 +49,15 @@ cpdef big_edf(
     cdef double ind_result
     #cdef double zero
     for ind in pop:
-        ind_result = edf(ind, price)
+        ind_result = edf(ind, price, price_means)
         if isnan(ind_result) == False:
             result += ind_result
     return result
 
-def agg_ed_esl(pop, ToLiquidate):
+def agg_ed_esl(pop, ToLiquidate, price_means):
     # array_pop = convert_to_array(pop)
     def aggregate_ed(asset_key, price):
-        return big_edf(pop, price, ToLiquidate)
+        return big_edf(pop, price, ToLiquidate, price_means)
     return aggregate_ed
 
 cdef convert_to_array(pop):
@@ -63,20 +66,21 @@ cdef convert_to_array(pop):
         array_pop[idx] = ind
     return array_pop
 
-def agg_ed(pop, ToLiquidate):
+def agg_ed(pop, ToLiquidate, price_means):
     array_pop = convert_to_array(pop)
     def aggregate_ed(price):
-        return big_edf(array_pop, price, ToLiquidate)
+        return big_edf(array_pop, price, ToLiquidate, price_means)
     return aggregate_ed
 
 cpdef calculate_edv(
     list pop,
     double price,
+    list price_means
 ):
     cdef double total_edv = 0.0
     cdef Individual ind
     for ind in pop:
-        ind.edv = edf(ind, price)
+        ind.edv = edf(ind, price, price_means)
         total_edv += ind.edv
     return pop, total_edv
 
