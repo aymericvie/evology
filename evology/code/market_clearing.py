@@ -84,6 +84,7 @@ def scipy_solver(ed_functions, current_price):
 
     if new_price >= 1_000_000:
         warnings.warn('Simulation break: price above 1M.')
+        raise RuntimeError('Simulation break: price above 1M.')
 
     return new_price
 

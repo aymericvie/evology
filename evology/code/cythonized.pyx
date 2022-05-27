@@ -17,16 +17,15 @@ cdef double SCALE_NT = parameters.SCALE_NT
 
 cdef double edf(Individual ind, double price, list price_means):
     cdef int t = ind.type_as_int
-    cdef double corr = 0.5
-    #cdef double VI_price = price_means[20]
+    cdef double corr = 0.0
+    cdef double VI_price = price_means[1]
     if t == 0:
         return (LeverageNT * ind.wealth / price) * tanh(SCALE_NT * ind.tsv + corr) - ind.asset 
     elif t == 1:
         ''' for previous-price VI '''
-        #return (LeverageVI * ind.wealth / price) * tanh(SCALE_VI * ind.tsv + 0.5) - ind.asset
+        #return (LeverageVI * ind.wealth / price) * tanh(SCALE_VI * ind.tsv + corr) - ind.asset
         ''' for contemporaneous-price VI '''
         return (LeverageVI * ind.wealth / price) * tanh(SCALE_VI * (log2(ind.val / price)) + corr) - ind.asset
-        #return (LeverageVI * ind.wealth / price) * tanh(SCALE_VI * (log2(ind.val / VI_price)) + corr) - ind.asset
     elif t == 2: # TF
         return (LeverageTF * ind.wealth / price) * tanh(SCALE_TF * ind.tsv + corr) - ind.asset
     elif t == 3: # AV

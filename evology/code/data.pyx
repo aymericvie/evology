@@ -414,6 +414,9 @@ def ResultsProcess(list pop, double spoils, double price, double generation, dou
     WSTF = WSTF_
     if abs(100 - (WSNT + WSVI + WSTF + av_wshare)) > 1:
         print([WSNT, WSVI, WSTF, av_wshare])
+        print(WSNT + WSVI + WSTF)
+        for ind in pop:
+            print([ind.type, ind.wealth])
         raise ValueError(
             "Sum of wealth shares superior to 100. " + str([WSNT + WSVI + WSTF + av_wshare])
         )
