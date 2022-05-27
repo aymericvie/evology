@@ -110,7 +110,7 @@ cpdef CalculateTSV_staticf(list pop, list price_history, list dividend_history, 
                 ind.tsv = log2(ma5_price / price_means[int(ind.strategy - 1)])
             #ind.tsv = (CurrentPrice / price_means[int(ind.strategy - 1)]) - 1.
             else:
-                ind.tsv = 0.5 #0.0
+                ind.tsv = 0. #0.0
         else:
             pass
             # BH stay at 1, IR stay at 0, AV is not computed here, VI cannot compute before price is known

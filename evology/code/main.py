@@ -89,7 +89,7 @@ def main(
 
         if CurrentPrice >= 1_000_000:
             warnings.warn('Simulation break: price above 1M.')
-            raise RuntimeError('Price above 1M')
+            #raise RuntimeError('Price above 1M')
             break
         price_history = bsc.UpdatePriceHistory(price_history, CurrentPrice)
 

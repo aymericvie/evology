@@ -76,7 +76,7 @@ min_vi_strat = 5
 max_vi_strat = 15
 
 min_tf_strat = 2
-max_tf_strat = 21 #252 #252
+max_tf_strat = 52 #252 #252
 scholl_tf_strat = 50
 
 # We coudl save a lot of runtime if TFs were in a discrete set of horizons a la Brock & Hommes
