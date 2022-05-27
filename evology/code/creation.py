@@ -128,7 +128,7 @@ def CreatePop(n, space, WealthCoords, CurrentPrice, strategy, rng):
             if ind.type == "vi":
                 ind.strategy = 0.01
             if ind.type == "tf":
-                ind.strategy = 2
+                ind.strategy = scholl_tf_strat
 
     if space == "extended":
         for ind in pop:

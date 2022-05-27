@@ -100,15 +100,15 @@ cpdef CalculateTSV_staticf(list pop, list price_history, list dividend_history, 
             ''' for contemporaneous VI '''
             pass    
         elif t == 2: # TF
-            #if len(price_history) >= ind.strategy:
-            ''' Rate of change TF (compare price values)'''
+            if len(price_history) >= ind.strategy:
+                ''' Rate of change TF (compare price values)'''
                 #ind.last_price = price_history[-int(ind.strategy)]
                 #ind.tsv =  log2(CurrentPrice / ind.last_price)
-            ''' Moving average TF (compares p(t-1) to moving average at time horizon'''
-            ind.tsv = log2(CurrentPrice / price_means[int(ind.strategy - 1)])
+                ''' Moving average TF (compares p(t-1) to moving average at time horizon'''
+                ind.tsv = log2(CurrentPrice / price_means[int(ind.strategy - 1)])
             #ind.tsv = (CurrentPrice / price_means[int(ind.strategy - 1)]) - 1.
-            #else:
-            #    ind.tsv = 0.5 #0.0
+            else:
+                ind.tsv = 0.5 #0.0
         else:
             pass
             # BH stay at 1, IR stay at 0, AV is not computed here, VI cannot compute before price is known
