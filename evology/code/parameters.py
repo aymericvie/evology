@@ -72,11 +72,11 @@ min_nt_strat = 5
 max_nt_strat = 15
 
 # VI strat is divided by 1000
-min_vi_strat = 0
-max_vi_strat = 20
+min_vi_strat = 5
+max_vi_strat = 15
 
 min_tf_strat = 2
-max_tf_strat = 21 #252 #252
+max_tf_strat = 150 #252 #252
 
 # We coudl save a lot of runtime if TFs were in a discrete set of horizons a la Brock & Hommes
 max_strat_lag = max_tf_strat
