@@ -428,8 +428,12 @@ def ResultsProcess(list pop, double spoils, double price, double generation, dou
         raise RuntimeError('NAN av wshare')
     AvgAge = AvgAge / len(pop)
 
+    '''
     # if either TF is only left, or VI is only left, or NT is only left
     if (WSNT + WSVI <= 0.001) or (WSNT + WSTF <= 0.001) or (WSVI + WSTF <= 0.001):
+    '''
+    if WSNT == 0.0 or WSVI == 0.0 or WSTF == 0.0:
+        print([WSNT, WSVI, WSTF])
         sim_break = 1
     else:
         sim_break = 0

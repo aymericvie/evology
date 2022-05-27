@@ -76,6 +76,7 @@ min_vi_strat = 5
 max_vi_strat = 15
 
 min_tf_strat = 2
+# A max horizon of 50 (extended) seems necessary to avoid price explosions too early.
 max_tf_strat = 52 #252 #252
 scholl_tf_strat = 50
 
