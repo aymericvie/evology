@@ -1,13 +1,13 @@
 from main import *
 from parameters import *
 
-seed = 88
+seed = 8
 np.random.seed(seed)
-# wealth_coordinates = [1/3,1/3,1/3]
+wealth_coordinates = [1/3,1/3,1/3]
 # wealth_coordinates = [0.15, 0.8, 0.05]
 # wealth_coordinates = [0.3, 0.3, 0.4]
 # wealth_coordinates=[0., 0., 1.]
-wealth_coordinates = np.random.dirichlet(np.ones(3), size=1)[0].tolist()
+# wealth_coordinates = np.random.dirichlet(np.ones(3), size=1)[0].tolist()
 np.random.seed(seed)
 print(wealth_coordinates)
 
