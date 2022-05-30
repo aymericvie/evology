@@ -4,6 +4,7 @@ import cythonized
 from libc.math cimport log2, tanh, isnan, fabs, fmin, fmax
 from parameters import G, GAMMA_NT, RHO_NT, MU_NT, LeverageNT, LeverageVI, LeverageTF, max_strat_lag
 from parameters import G_day, SCALE_NT, SCALE_TF, SCALE_VI, liquidation_perc, interest_day
+from parameters import tf_daily_ma_horizons
 import warnings
 import math
 import numpy as np
@@ -78,8 +79,8 @@ cpdef subset_means(list series, int max_lag):
     cdef list subset_list
     cdef list means 
 
-    subset_list = [series[-i:] for i in range(1, max_lag + 1)]
-    #means = [np.mean(subset) for subset in subset_list]
+    #subset_list = [series[-i:] for i in range(1, max_lag + 1)]
+    subset_list = [series[-i:] for i in tf_daily_ma_horizons]
     means = [mean(subset) for subset in subset_list]
     return means
 
@@ -89,15 +90,19 @@ cpdef CalculateTSV_staticf(list pop, list price_history, list dividend_history, 
     cdef int t
     cdef list price_means = subset_means(price_history, max_strat_lag)
     cdef double[:] randoms = rng.normal(0, 0.1, len(pop))
-    cdef double ma5_price = price_means[4]
+    #cdef double ma5_price = price_means[4]
 
     for i, ind in enumerate(pop):
         t = ind.type_as_int
         if t == 0: # NT
-            ind.tsv = process - 1. + ind.strategy * randoms[i]
+            #ind.tsv = process - 1. + ind.strategy * randoms[i]
+            #ind.tsv = process + ind.strategy * randoms[i]
+            ind.tsv = process - MU_NT + ind.strategy * randoms[i]
+            #ind.tsv = process - MU_NT + ind.strategy * randoms[i]
         elif t == 1: # VI
             ''' for previous-price VI '''
             ind.tsv = log2(ind.val / CurrentPrice)
+            #ind.tsv = log2(ind.val / price_means[0])
             ''' for contemporaneous VI '''
             pass    
         elif t == 2: # TF
@@ -107,10 +112,13 @@ cpdef CalculateTSV_staticf(list pop, list price_history, list dividend_history, 
                 #ind.tsv =  log2(CurrentPrice / ind.last_price)
                 ''' Moving average TF (compares p(t-1) to moving average at time horizon'''
                 #ind.tsv = log2(CurrentPrice / price_means[int(ind.strategy - 1)])
-                ind.tsv = log2(ma5_price / price_means[int(ind.strategy - 1)])
+                #ind.tsv = log2(ma5_price / price_means[int(ind.strategy - 1)])
+                
+                #ind.tsv = log2(CurrentPrice / price_means[int(ind.strategy_index)])
+                ind.tsv = log2(price_means[0] / price_means[int(ind.strategy_index)])
             #ind.tsv = (CurrentPrice / price_means[int(ind.strategy - 1)]) - 1.
             else:
-                ind.tsv = 0. #0.0
+                ind.tsv = 0.5 #0.0
         else:
             pass
             # BH stay at 1, IR stay at 0, AV is not computed here, VI cannot compute before price is known

@@ -25,3 +25,4 @@ cdef class Individual(list):
     cdef public list wealth_series
     cdef public double last_wealth
     cdef double last_price
+    cdef public int strategy_index

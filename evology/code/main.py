@@ -23,7 +23,7 @@ def main(
     pop, asset_supply = cr.CreatePop(POPULATION_SIZE, space, wealth_coordinates, CurrentPrice, strategy, rng)
 
     # Dividend and NT process generation
-    #price_history = prc.FictiousPriceSeries(rng)
+    price_history = prc.FictiousPriceSeries(rng)
     price_history = []
     dividend_series, rd_dividend_series = div.ExogeneousDividends(MAX_GENERATIONS, rng)
     rng = np.random.default_rng(seed=seed)
@@ -82,9 +82,9 @@ def main(
         dividend, random_dividend = dividend_series[0, generation], rd_dividend_series[0, generation]
         pop, volume, spoils, Liquidations = mk.execute_ed(pop, NewPrice, asset_supply, spoils, ToLiquidate)
 
-        #if volume != 0:
-        #    CurrentPrice = NewPrice
-        CurrentPrice = NewPrice
+        if volume != 0:
+            CurrentPrice = NewPrice
+        #CurrentPrice = NewPrice
 
 
         if CurrentPrice >= 1_000_000:

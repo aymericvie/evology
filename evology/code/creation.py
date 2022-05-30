@@ -10,16 +10,20 @@ import cythonized
 
 
 def DrawStrategy(strat, rng):
+    index = 0
     if strat == "nt":
         #strategy = np.random.uniform(min_nt_strat, max_nt_strat) / 10
         strategy = (rng.uniform(min_nt_strat, max_nt_strat) - 10) / 1000
     elif strat == "vi":
         strategy = rng.uniform(min_vi_strat, max_vi_strat) / 1000
     elif strat == "tf":
-        strategy = rng.integers(min_tf_strat, max_tf_strat + 1)
+        #strategy = rng.integers(min_tf_strat, max_tf_strat + 1)
+        ''' Discrete TF-substrategy space'''
+        index = int(rng.choice(tf_daily_ma_horizon_index, 1, p=tf_daily_ma_horizons_probas))
+        strategy = tf_daily_ma_horizons[index]
     else:
         raise ValueError("Unrecognised type. " + str(strat))
-    return strategy
+    return strategy, index
 
 
 creator.create("fitness_strategy", base.Fitness, weights=(1.0,))
@@ -133,11 +137,11 @@ def CreatePop(n, space, WealthCoords, CurrentPrice, strategy, rng):
     if space == "extended":
         for ind in pop:
             if ind.type == "nt":
-                ind.strategy = DrawStrategy("nt", rng)
+                ind.strategy, ind.strategy_index = DrawStrategy("nt", rng)
             if ind.type == "vi":
-                ind.strategy = DrawStrategy("vi", rng)
+                ind.strategy, ind.strategy_index = DrawStrategy("vi", rng)
             if ind.type == "tf":
-                ind.strategy = DrawStrategy("tf", rng)
+                ind.strategy, ind.strategy_index = DrawStrategy("tf", rng)
 
     for ind in pop:
         ind.loan = 0.
