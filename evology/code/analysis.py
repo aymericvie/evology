@@ -63,3 +63,15 @@ print(subset_means(prices, 5))
 
 
 # %%
+import numpy as np
+
+x_values = [1, 2, 3, 4, 5]
+x = [.05 , .2, .2, .5, .05 ]
+
+# sample from `x` 100 times according to `x`
+n_samples = 100
+samples = np.random.choice(x_values, n_samples, p=x)
+
+print(samples)
+
+# %%
