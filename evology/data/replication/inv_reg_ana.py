@@ -23,19 +23,20 @@ print(df.columns)
 
 # Remove the funds for which we don't even have lag1 returns
 df = df.dropna(subset=['nav_diff_1'])
-
+print([df["Red_flows_nav"].quantile(0.05), df["Red_flows_nav"].quantile(0.95)])
 # Remove funds with excessive flows
 df = df[(df["Red_flows_nav"] >= -100) & (df["Red_flows_nav"] <= 100)]
+df = df[(df["Red_flows_nav"] >= df["Red_flows_nav"].quantile(0.05)) & (df["Red_flows_nav"] <= df["Red_flows_nav"].quantile(0.95))]
 
 # Remove excessive returns (300% in abs in a quarter)
-df = df[(df["nav_diff_1"] >= -3) & (df["nav_diff_1"] <= 3)]
-df = df[(df["nav_diff_2"] >= -3) & (df["nav_diff_2"] <= 3)]
-df = df[(df["nav_diff_3"] >= -3) & (df["nav_diff_3"] <= 3)]
-df = df[(df["nav_diff_4"] >= -3) & (df["nav_diff_4"] <= 3)]
-df = df[(df["nav_diff_5"] >= -3) & (df["nav_diff_5"] <= 3)]
-df = df[(df["nav_diff_6"] >= -3) & (df["nav_diff_6"] <= 3)]
-df = df[(df["nav_diff_7"] >= -3) & (df["nav_diff_7"] <= 3)]
-df = df[(df["nav_diff_8"] >= -3) & (df["nav_diff_8"] <= 3)]
+df = df[(df["nav_diff_1"] >= -1) & (df["nav_diff_1"] <= 1)]
+df = df[(df["nav_diff_2"] >= -1) & (df["nav_diff_2"] <= 1)]
+df = df[(df["nav_diff_3"] >= -1) & (df["nav_diff_3"] <= 1)]
+df = df[(df["nav_diff_4"] >= -1) & (df["nav_diff_4"] <= 1)]
+df = df[(df["nav_diff_5"] >= -1) & (df["nav_diff_5"] <= 1)]
+df = df[(df["nav_diff_6"] >= -1) & (df["nav_diff_6"] <= 1)]
+df = df[(df["nav_diff_7"] >= -1) & (df["nav_diff_7"] <= 1)]
+df = df[(df["nav_diff_8"] >= -1) & (df["nav_diff_8"] <= 1)]
 
 
 # %%
@@ -90,13 +91,13 @@ ols_model = sm.ols(
 ols_results = ols_model.fit(cov_type='HC1')
 analysis(ols_results)
 # %%
-# Trying with quantiles
+# Trying with quantiles and adding nonlinearity
 
-highq = 0.99
-lowq = 0.01
+highq = 1. #0.99
+lowq = 0. #0.01
 
 df2 = df.copy()
-df2 = df2[(df2["Red_flows_nav"] <= df["Red_flows_nav"].quantile(highq)) & (df2["Red_flows_nav"] >= df["Red_flows_nav"].quantile(lowq))]
+# df2 = df2[(df2["Red_flows_nav"] <= df["Red_flows_nav"].quantile(highq)) & (df2["Red_flows_nav"] >= df["Red_flows_nav"].quantile(lowq))]
 df2 = df2[(df2["nav_diff_1"] <= df["nav_diff_1"].quantile(highq)) & (df2["nav_diff_1"] >= df["nav_diff_1"].quantile(lowq))]
 df2 = df2[(df2["nav_diff_2"] <= df["nav_diff_2"].quantile(highq)) & (df2["nav_diff_2"] >= df["nav_diff_2"].quantile(lowq))]
 df2 = df2[(df2["nav_diff_3"] <= df["nav_diff_3"].quantile(highq)) & (df2["nav_diff_3"] >= df["nav_diff_3"].quantile(lowq))]
@@ -107,15 +108,18 @@ df2 = df2[(df2["nav_diff_7"] <= df["nav_diff_7"].quantile(highq)) & (df2["nav_di
 df2 = df2[(df2["nav_diff_8"] <= df["nav_diff_8"].quantile(highq)) & (df2["nav_diff_8"] >= df["nav_diff_8"].quantile(lowq))]
 
 ols_model = sm.ols(
-    formula="Red_flows_nav ~ nav_diff_1 + nav_diff_2 + nav_diff_3 + nav_diff_4 + nav_diff_5 + nav_diff_6 + nav_diff_7 + nav_diff_8", 
+    formula="Red_flows_nav ~ nav_diff_1 + I(nav_diff_1 ** 2) + nav_diff_2 + I(nav_diff_2 ** 2) + nav_diff_3 + I(nav_diff_3 ** 2) + nav_diff_4 + I(nav_diff_4 ** 2) + nav_diff_5 + I(nav_diff_5 ** 2) + nav_diff_6 + I(nav_diff_6 ** 2) + nav_diff_7 + I(nav_diff_7 ** 2) + nav_diff_8 + I(nav_diff_8 ** 2)", 
     data=df2)
 ols_results = ols_model.fit(cov_type='HC1')
 analysis(ols_results)
 
 # %%
 ols_model = sm.ols(
-    formula="Red_flows_nav ~ nav_diff_1", 
+    formula="Red_flows_nav ~ nav_diff_1 + I(nav_diff_1 ** 2)+ I(nav_diff_1 **3) + nav_diff_2 + I(nav_diff_2 ** 2) + I(nav_diff_2 ** 3)+ nav_diff_3 + I(nav_diff_3 ** 2) + + I(nav_diff_3 ** 3) + nav_diff_4 + I(nav_diff_4 ** 2) + + I(nav_diff_4 ** 3) + nav_diff_5 + I(nav_diff_5 ** 2) + + I(nav_diff_5 ** 3) + nav_diff_6 + I(nav_diff_6 ** 2) + + I(nav_diff_6 ** 3) + nav_diff_7 + I(nav_diff_7 ** 2) + + I(nav_diff_7 ** 3) + nav_diff_8 + I(nav_diff_8 ** 2) + I(nav_diff_8 ** 3)", 
     data=df2)
 ols_results = ols_model.fit(cov_type='HC1')
 analysis(ols_results)
+
+# %%
+print(ols_results.summary().as_latex())
 # %%
