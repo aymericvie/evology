@@ -19,6 +19,7 @@ df["Red_flows_nav"] = 100 * df["Sum_redemptions"] / df["net_assets"]
 
 df.hist(column='Red_flows_nav', bins = range(-40,40))
 # plt.vlines(x=np.nanmean(df["Red_flows_nav"]), ymin=0, ymax=15000, colors='red', linestyles='dashed')
+plt.savefig('/Users/aymericvie/Documents/GitHub/evology/evology/data/replication/empirical_funds/hist_flows.png', dpi=300)
 plt.show()
 
 # %%
@@ -303,7 +304,9 @@ result = sm.ols(
 print (result.summary())
 print (result.rsquared, result.rsquared_adj)
 
+
 # %%
+'''
 print(result.summary().as_latex())
 # %%
 result = sm.ols(
@@ -343,4 +346,202 @@ result = sm.ols(formula="Red_flows_nav ~ nav_diff_1 ",
     data=df).fit()
 print (result.summary())
 print (result.rsquared, result.rsquared_adj)
+'''
+
+# %%
+import statsmodels
+
+# Remove outliers from the data
+quant05 = df["Red_flows_nav"].quantile(.05)
+quant95 = df["Red_flows_nav"].quantile(.95)
+
+print([quant05, quant95])
+
+# Generate data without outliers
+# df2 = df[(df["nav_diff_1"] <= 1.0) &  (df["nav_diff_1"] >= -1.0)]
+df2 = df[(df["Red_flows_nav"] <= quant95) & (df["Red_flows_nav"] >= quant05)]
+
+print(len(df))
+print(len(df2))
+
+ols_model = sm.ols(
+    formula="Red_flows_nav ~ nav_diff_1 + nav_diff_2 + nav_diff_3 + nav_diff_4 + nav_diff_5 + nav_diff_6 + nav_diff_7 + nav_diff_8", 
+    data=df2)
+ols_results = ols_model.fit()
+print(ols_results.summary())
+
+name = ['Jarque-Bera', 'Chi^2 two-tail prob.', 'Skew', 'Kurtosis']
+test = statsmodels.stats.stattools.jarque_bera(ols_results.resid)
+print(name)
+print(test)
+
+# %%
+print(ols_results.resid)
+resid = pd.DataFrame()
+resid["resid"] = ols_results.resid
+resid.hist("resid")
+plt.show()
+
+# %%
+print(result.summary().as_latex())
+
+# %%
+# ols_model = sm.quantreg(
+#     formula="Red_flows_nav ~ nav_diff_1 + nav_diff_2 + nav_diff_3 + nav_diff_4 + nav_diff_5 + nav_diff_6 + nav_diff_7 + nav_diff_8", 
+#     data=df)
+# ols_results = ols_model.fit(q=0.5)
+# print(ols_results.summary())
+
+# name = ['Jarque-Bera', 'Chi^2 two-tail prob.', 'Skew', 'Kurtosis']
+# test = statsmodels.stats.stattools.jarque_bera(ols_results.resid)
+# print(name)
+# print(test)
+# print(ols_results.resid)
+# resid = pd.DataFrame()
+# resid["resid"] = ols_results.resid
+# resid.hist("resid", bins = 100)
+# plt.show()
+# %%
+
+
+
+# %%
+
+import statsmodels
+
+# Remove outliers from the data
+quant05 = df["Red_flows_nav"].quantile(.2)
+quant95 = df["Red_flows_nav"].quantile(.8)
+
+print([quant05, quant95])
+
+# Generate data without outliers
+# df2 = df[(df["nav_diff_1"] <= 1.0) &  (df["nav_diff_1"] >= -1.0)]
+df2 = df[(df["Red_flows_nav"] <= quant95) & (df["Red_flows_nav"] >= quant05)]
+
+print(len(df))
+print(len(df2))
+
+ols_model = sm.ols(
+    formula="Red_flows_nav ~ nav_diff_1 + nav_diff_2 + nav_diff_3 + nav_diff_4 + nav_diff_5 + nav_diff_6 + nav_diff_7 + nav_diff_8", 
+    data=df2)
+ols_results = ols_model.fit()
+print(ols_results.summary())
+
+name = ['Jarque-Bera', 'Chi^2 two-tail prob.', 'Skew', 'Kurtosis']
+test = statsmodels.stats.stattools.jarque_bera(ols_results.resid)
+print(name)
+print(test)
+
+fig = statsmodels.graphics.gofplots.qqplot(ols_results.resid)
+plt.show()
+
+# %%
+import pandas as pd
+from scipy.special import boxcox1p
+df2 = pd.DataFrame()
+df2["Red_flows_nav"] = df["Red_flows_nav"]
+df2["nav_diff_1"] = df["nav_diff_1"]
+df2["nav_diff_2"] = df["nav_diff_2"]
+df2["nav_diff_3"] = df["nav_diff_3"]
+df2["nav_diff_4"] = df["nav_diff_4"]
+df2["nav_diff_5"] = df["nav_diff_5"]
+df2["nav_diff_6"] = df["nav_diff_6"]
+df2["nav_diff_7"] = df["nav_diff_7"]
+df2["nav_diff_8"] = df["nav_diff_8"]
+
+
+# Remove outliers from the data
+quant05 = df["Red_flows_nav"].quantile(.05)
+quant95 = df["Red_flows_nav"].quantile(.95)
+
+print([quant05, quant95])
+
+# Generate data without outliers
+# df2 = df[(df["nav_diff_1"] <= 1.0) &  (df["nav_diff_1"] >= -1.0)]
+df2 = df2[(df2["Red_flows_nav"] <= quant95) & (df2["Red_flows_nav"] >= quant05)]
+
+df2 = df2.apply(lambda x: boxcox1p(x,0.25))
+
+ols_model = sm.ols(
+    formula="Red_flows_nav ~ nav_diff_1 + nav_diff_2 + nav_diff_3 + nav_diff_4 + nav_diff_5 + nav_diff_6 + nav_diff_7 + nav_diff_8", 
+    data=df2)
+ols_results = ols_model.fit()
+print(ols_results.summary())
+
+name = ['Jarque-Bera', 'Chi^2 two-tail prob.', 'Skew', 'Kurtosis']
+test = statsmodels.stats.stattools.jarque_bera(ols_results.resid)
+print(name)
+print(test)
+
+fig = statsmodels.graphics.gofplots.qqplot(ols_results.resid)
+plt.show()
+
+# %%
+
+df2.hist('nav_diff_8')
+plt.show()
+# %%
+from scipy.special import boxcox1p
+from sklearn.preprocessing import PowerTransformer
+from scipy import stats
+import statsmodels.formula.api as sm
+from statsmodels.stats.stattools import jarque_bera
+from statsmodels.graphics.gofplots import qqplot
+
+
+df2 = pd.DataFrame()
+
+df2["Red_flows_nav"] = df["Red_flows_nav"]
+df2["nav_diff_1"] = df["nav_diff_1"]
+df2["nav_diff_2"] = df["nav_diff_2"]
+df2["nav_diff_3"] = df["nav_diff_3"]
+df2["nav_diff_4"] = df["nav_diff_4"]
+df2["nav_diff_5"] = df["nav_diff_5"]
+df2["nav_diff_6"] = df["nav_diff_6"]
+df2["nav_diff_7"] = df["nav_diff_7"]
+df2["nav_diff_8"] = df["nav_diff_8"]
+df2 = df2[(df2["Red_flows_nav"] != 0)]
+highq, lowq = 0.9, 0.1
+
+df2 = df2.dropna(subset=['Red_flows_nav'])
+df2 = df2.dropna(subset=['nav_diff_1'])
+# print(df2)
+
+df2 = df2[(df2["Red_flows_nav"] <= df["Red_flows_nav"].quantile(highq)) & (df2["Red_flows_nav"] >= df["Red_flows_nav"].quantile(lowq))]
+df2 = df2[(df2["nav_diff_1"] <= df["nav_diff_1"].quantile(highq)) & (df2["nav_diff_1"] >= df["nav_diff_1"].quantile(lowq))]
+df2 = df2[(df2["nav_diff_2"] <= df["nav_diff_2"].quantile(highq)) & (df2["nav_diff_2"] >= df["nav_diff_2"].quantile(lowq))]
+df2 = df2[(df2["nav_diff_3"] <= df["nav_diff_3"].quantile(highq)) & (df2["nav_diff_3"] >= df["nav_diff_3"].quantile(lowq))]
+df2 = df2[(df2["nav_diff_4"] <= df["nav_diff_4"].quantile(highq)) & (df2["nav_diff_4"] >= df["nav_diff_4"].quantile(lowq))]
+df2 = df2[(df2["nav_diff_5"] <= df["nav_diff_5"].quantile(highq)) & (df2["nav_diff_5"] >= df["nav_diff_5"].quantile(lowq))]
+df2 = df2[(df2["nav_diff_6"] <= df["nav_diff_6"].quantile(highq)) & (df2["nav_diff_6"] >= df["nav_diff_6"].quantile(lowq))]
+df2 = df2[(df2["nav_diff_7"] <= df["nav_diff_7"].quantile(highq)) & (df2["nav_diff_7"] >= df["nav_diff_7"].quantile(lowq))]
+df2 = df2[(df2["nav_diff_8"] <= df["nav_diff_8"].quantile(highq)) & (df2["nav_diff_8"] >= df["nav_diff_8"].quantile(lowq))]
+
+
+
+pt = PowerTransformer(method='yeo-johnson')
+pt.fit(df2)
+print(pt.lambdas_)
+
+# df2 = pt.transform(df2)
+
+df2 = df2.apply(lambda x: boxcox1p(x,0.5))
+# df["Red_flows_nav"] = pt.transform(df["Red_flows_nav"])
+
+ols_model = sm.ols(
+    formula="Red_flows_nav ~ nav_diff_1 + nav_diff_2 + nav_diff_3 + nav_diff_4 + nav_diff_5 + nav_diff_6 + nav_diff_7 + nav_diff_8", 
+    data=df2)
+ols_results = ols_model.fit()
+
+print(ols_results.summary())
+
+name = ['Jarque-Bera', 'Chi^2 two-tail prob.', 'Skew', 'Kurtosis']
+test = jarque_bera(ols_results.resid)
+print(name)
+print(test)
+
+fig = qqplot(ols_results.resid)
+plt.show()
+
 # %%
