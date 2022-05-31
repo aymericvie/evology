@@ -43,6 +43,24 @@ df["nav_diff_7"] = returns(7)
 df["nav_diff_8"] = returns(8)
 
 # %%
+# Remove unecessary columns
+del df['Unnamed: 0']
+# del df['Unnamed: 0.1']
+del df['form']
+del df['report_date']
+del df['as_of_date']
+del df['total_liabilities']
+del df['month_1_flow_redemption']
+del df['month_2_flow_redemption']
+del df['month_3_flow_redemption']
+del df["month_1_flow_sales"]
+del df["month_2_flow_sales"]
+del df["month_3_flow_sales"]
+del df["month_1_flow_reinvestment"]
+del df["month_2_flow_reinvestment"]
+del df["month_3_flow_reinvestment"]
+
+# %%
 # Save adjusted data
 df.to_csv("flow_data_processed.csv")
 # %%
