@@ -123,3 +123,4 @@ analysis(ols_results)
 # %%
 print(ols_results.summary().as_latex())
 # %%
+# %%
