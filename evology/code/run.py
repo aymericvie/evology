@@ -29,6 +29,6 @@ print(df)
 df.to_csv("rundata/run_data.csv")
 print(df["WShare_NT"].iloc[-1], df["WShare_VI"].iloc[-1], df["WShare_TF"].iloc[-1])
 
-for ind in pop:
-    if ind.type == 'vi':
-        print([ind.strategy, ind.val, ind.val_net])
+# for ind in pop:
+#     if ind.type == 'vi':
+#         print([ind.strategy, ind.val, ind.val_net])

@@ -23,8 +23,9 @@ def main(
     pop, asset_supply = cr.CreatePop(POPULATION_SIZE, space, wealth_coordinates, CurrentPrice, strategy, rng)
 
     # Dividend and NT process generation
-    price_history = prc.FictiousPriceSeries(rng)
+    #price_history = prc.FictiousPriceSeries(rng)
     price_history = []
+
     dividend_series, rd_dividend_series = div.ExogeneousDividends(MAX_GENERATIONS, rng)
     rng = np.random.default_rng(seed=seed)
     process_series = prc.ExogeneousProcess(MAX_GENERATIONS, rng)

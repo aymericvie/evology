@@ -19,7 +19,7 @@ def FictiousPriceSeries(rng):
     randoms = rng.normal(0, 1, length)
 
     for i in range(length):
-        value = value + RHO_NT * (MU_NT - value) + GAMMA_NT * randoms[i]
+        value = value + (RHO_NT/10) * (100 - value) + GAMMA_NT * randoms[i]
         previous_price_series.append(value)
 
     previous_price_series_reversed = reversed(previous_price_series)
@@ -28,4 +28,12 @@ def FictiousPriceSeries(rng):
         price_history.append(item)
     
     return price_history
+
+
+# import numpy as np
+# import matplotlib.pyplot as plt
+# rng = np.random.default_rng(seed=9)
+# price_history = FictiousPriceSeries(rng)
+# plt.plot(price_history)
+# plt.show()
 

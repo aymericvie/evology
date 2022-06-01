@@ -23,9 +23,9 @@ cdef double edf(Individual ind, double price, list price_means):
         return (LeverageNT * ind.wealth / price) * tanh(SCALE_NT * ind.tsv + corr) - ind.asset 
     elif t == 1:
         ''' for previous-price VI '''
-        return (LeverageVI * ind.wealth / price) * tanh(SCALE_VI * ind.tsv + corr) - ind.asset
+        #return (LeverageVI * ind.wealth / price) * tanh(SCALE_VI * ind.tsv + corr) - ind.asset
         ''' for contemporaneous-price VI '''
-        #return (LeverageVI * ind.wealth / price) * tanh(SCALE_VI * (log2(ind.val / price)) + corr) - ind.asset
+        return (LeverageVI * ind.wealth / price) * tanh(SCALE_VI * (log2(ind.val / price)) + corr) - ind.asset
     elif t == 2: # TF
         return (LeverageTF * ind.wealth / price) * tanh(SCALE_TF * ind.tsv + corr) - ind.asset
     elif t == 3: # AV
