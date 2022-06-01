@@ -36,7 +36,7 @@ RefAssets = 500_000
 
 EMA_HORIZON = 2 * TRADING_DAYS
 
-interest_year = 0.01 #0.01 #0.005 #0.01
+interest_year = 0.01 #0.01 #0.01 #0.005 #0.01
 interest_day = interest_year / 252.0
 
 
