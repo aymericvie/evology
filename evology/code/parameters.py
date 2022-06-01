@@ -72,8 +72,8 @@ min_nt_strat = 5
 max_nt_strat = 15
 
 # VI strat is divided by 1000
-min_vi_strat = 5
-max_vi_strat = 15
+min_vi_strat = 5 #5
+max_vi_strat = 15 #15
 
 min_tf_strat = 2
 # A max horizon of 50 (extended) seems necessary to avoid price explosions too early.

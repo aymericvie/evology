@@ -27,7 +27,7 @@ def main(
     price_history = []
 
     dividend_series, rd_dividend_series = div.ExogeneousDividends(MAX_GENERATIONS, rng)
-    rng = np.random.default_rng(seed=seed)
+    rng = np.random.default_rng(seed=seed+1)
     process_series = prc.ExogeneousProcess(MAX_GENERATIONS, rng)
     rng = np.random.default_rng(seed=seed)
 
@@ -78,9 +78,9 @@ def main(
         dividend, random_dividend = dividend_series[0, generation], rd_dividend_series[0, generation]
         pop, volume, spoils, Liquidations = mk.execute_ed(pop, NewPrice, asset_supply, spoils, ToLiquidate)
 
-        if volume != 0:
-            CurrentPrice = NewPrice
-        # CurrentPrice = NewPrice
+        # if volume != 0:
+        #     CurrentPrice = NewPrice
+        CurrentPrice = NewPrice
 
 
         if CurrentPrice >= 1_000_000:

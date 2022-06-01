@@ -3,7 +3,7 @@ from parameters import RHO_NT, MU_NT, GAMMA_NT
 def ExogeneousProcess(MAX_GENERATIONS, rng):
     process_series = []
     value = MU_NT # Initial value of the process
-    randoms = rng.normal(0, 1, MAX_GENERATIONS)
+    randoms = rng.standard_normal(MAX_GENERATIONS)
 
     for i in range(MAX_GENERATIONS):
         value = abs(value + RHO_NT * (MU_NT - value) + GAMMA_NT * randoms[i])
