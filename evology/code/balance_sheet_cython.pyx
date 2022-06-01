@@ -95,10 +95,10 @@ cpdef CalculateTSV_staticf(list pop, list price_history, list dividend_history, 
     for i, ind in enumerate(pop):
         t = ind.type_as_int
         if t == 0: # NT
-            ind.tsv = process - MU_NT #+ ind.strategy  #* randoms[i]
+            ind.tsv = process - MU_NT / 2. #+ ind.strategy #* randoms[i]
         elif t == 1: # VI
             ''' for previous-price VI '''
-            ind.tsv = log2(ind.val / CurrentPrice)
+            ind.tsv = log2(ind.val / CurrentPrice) 
             #ind.tsv = log2(ind.val / price_means[0])
             ''' for contemporaneous VI '''
             pass    
@@ -108,8 +108,8 @@ cpdef CalculateTSV_staticf(list pop, list price_history, list dividend_history, 
                 #ind.last_price = price_history[-int(ind.strategy)]
                 #ind.tsv =  log2(CurrentPrice / ind.last_price)
                 ''' Moving average TF (compares p(t-1) to moving average at time horizon'''
-                #ind.tsv = log2(CurrentPrice / price_means[int(ind.strategy_index)])
-                ind.tsv = log2(price_means[0] / price_means[int(ind.strategy_index)])
+                ind.tsv = log2(CurrentPrice / price_means[int(ind.strategy_index)])
+                #ind.tsv = log2(price_means[0] / price_means[int(ind.strategy_index)]) 
             else:
                 ind.tsv = 0.5 #0.0
         else:

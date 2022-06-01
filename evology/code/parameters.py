@@ -36,7 +36,7 @@ RefAssets = 500_000
 
 EMA_HORIZON = 2 * TRADING_DAYS
 
-interest_year = 0.01 #0.005 #0.01
+interest_year = 0.01 #0.01 #0.005 #0.01
 interest_day = interest_year / 252.0
 
 
@@ -80,7 +80,7 @@ min_tf_strat = 2
 max_tf_strat = 52 #252 #252
 scholl_tf_strat = 250
 
-tf_daily_ma_horizons = [5, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500]
+tf_daily_ma_horizons = [5, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950, 1000]
 tf_daily_ma_horizon_index = list(range(len(tf_daily_ma_horizons)))
 tf_daily_ma_horizons_probas = [1/len(tf_daily_ma_horizons)] * len(tf_daily_ma_horizons)
 
