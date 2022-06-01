@@ -84,7 +84,7 @@ cpdef subset_means(list series, int max_lag):
     means = [mean(subset) for subset in subset_list]
     return means
 
-cpdef CalculateTSV_staticf(list pop, list price_history, list dividend_history, double CurrentPrice, double process, rng):
+cpdef CalculateTSV_staticf(list pop, list price_history, double CurrentPrice, double process, rng):
     cdef cythonized.Individual ind
     cdef int i 
     cdef int t

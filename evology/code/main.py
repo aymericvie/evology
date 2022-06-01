@@ -13,7 +13,7 @@ def main(
     # Initialisation
     generation, CurrentPrice, dividend, spoils = 0, InitialPrice, INITIAL_DIVIDEND, 0.0
     results = np.zeros((MAX_GENERATIONS - data.Barr, data.variables))
-    dividend_history, replace, volume = [], 0, 0.0
+    replace, volume = 0, 0.0
 
     # Random generator 
     rng = np.random.default_rng(seed=seed)
@@ -63,7 +63,7 @@ def main(
 
         pop, replace = bsc.UpdateFullWealth(pop, CurrentPrice) 
         pop = bsc.UpdateFval(pop, dividend)
-        pop, price_means = bsc.CalculateTSV_staticf(pop, price_history, dividend_history, CurrentPrice, process_series[generation], rng)
+        pop, price_means = bsc.CalculateTSV_staticf(pop, price_history, CurrentPrice, process_series[generation], rng)
         pop = bsc.CalculateTSV_avf(pop, generation, strategy, price_history, dividend)        
         ToLiquidate = bsc.DetermineLiquidation(spoils, volume)
 
