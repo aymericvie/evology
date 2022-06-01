@@ -21,7 +21,7 @@ def main(
     # Initialisation
     generation, CurrentPrice, dividend, spoils = 0, InitialPrice, INITIAL_DIVIDEND, 0.0
     results = np.zeros((MAX_GENERATIONS - data.Barr, data.variables))
-    dividend_history, replace, volume = [], 0, 0.0
+    replace, volume = 0, 0.0
 
     # Random generator 
     rng = np.random.default_rng(seed=seed)
@@ -31,10 +31,13 @@ def main(
     pop, asset_supply = cr.CreatePop(POPULATION_SIZE, space, wealth_coordinates, CurrentPrice, strategy, rng)
 
     # Dividend and NT process generation
-    price_history = prc.FictiousPriceSeries(rng)
+    #price_history = prc.FictiousPriceSeries(rng)
+    price_history = []
+
     dividend_series, rd_dividend_series = div.ExogeneousDividends(MAX_GENERATIONS, rng)
-    rng = np.random.default_rng(seed=seed)
+    rng = np.random.default_rng(seed=seed+1)
     process_series = prc.ExogeneousProcess(MAX_GENERATIONS, rng)
+    rng = np.random.default_rng(seed=seed)
 
     for generation in tqdm(
         range(MAX_GENERATIONS), disable=tqdm_display, miniters=100, mininterval=0.5
@@ -42,7 +45,6 @@ def main(
     #for generation in range(MAX_GENERATIONS):
 
         # Population reset
-        
         pop = cr.WealthReset(pop, POPULATION_SIZE, space, wealth_coordinates, generation, reset_wealth, CurrentPrice, strategy, rng)
 
         # Hypermutation
@@ -51,7 +53,6 @@ def main(
         ) 
         if replacements < 0:
             break
-
 
         # Strategy evolution
         #pop = fit.ComputeFitness(pop, 252)
@@ -67,28 +68,34 @@ def main(
         #)
 
         # Market decisions 
-        pop, replace = bsc.UpdateFullWealth(pop, CurrentPrice)
-        #pop = bsc.NoiseProcess(pop, rng, process)
+
+        pop, replace = bsc.UpdateFullWealth(pop, CurrentPrice) 
         pop = bsc.UpdateFval(pop, dividend)
-        pop = bsc.CalculateTSV_staticf(pop, price_history, dividend_history, CurrentPrice, process_series[generation])
+        price_means = bsc.subset_means(price_history, max_strat_lag)
+        pop, price_means = bsc.CalculateTSV_staticf(pop, price_history, CurrentPrice, process_series[generation], rng, price_means)
         pop = bsc.CalculateTSV_avf(pop, generation, strategy, price_history, dividend)        
-        
         ToLiquidate = bsc.DetermineLiquidation(spoils, volume)
 
         # ''' for VI on contemporaneous price ''' 
         # ed_functions = bsc.agg_ed_esl(pop, ToLiquidate)
-        
-        ed_functions = cz.agg_ed(pop, ToLiquidate)
-
+        # CurrentPrice = mc.esl_solver(ed_functions, CurrentPrice)
+        ed_functions = cz.agg_ed(pop, ToLiquidate, price_means)
         NewPrice = mc.scipy_solver(ed_functions, CurrentPrice)
-        pop, mismatch = cz.calculate_edv(pop, NewPrice)
+        pop, mismatch = cz.calculate_edv(pop, NewPrice, price_means)
 
         # Market activity
         dividend, random_dividend = dividend_series[0, generation], rd_dividend_series[0, generation]
         pop, volume, spoils, Liquidations = mk.execute_ed(pop, NewPrice, asset_supply, spoils, ToLiquidate)
 
-        if volume != 0:
-            CurrentPrice = NewPrice
+        # if volume != 0:
+        #     CurrentPrice = NewPrice
+        CurrentPrice = NewPrice
+
+
+        if CurrentPrice >= 1_000_000:
+            warnings.warn('Simulation break: price above 1M.')
+            #raise RuntimeError('Price above 1M')
+            break
         price_history = bsc.UpdatePriceHistory(price_history, CurrentPrice)
 
         pop = mk.earnings(pop, dividend)
@@ -126,7 +133,7 @@ def main(
            break
 
     if generation < MAX_GENERATIONS - data.Barr:
-        results = results[0:generation+1]
+        results = results[0:generation]
 
     df = pd.DataFrame(results, columns=data.columns)
 

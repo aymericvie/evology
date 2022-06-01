@@ -84,12 +84,11 @@ cpdef subset_means(list series, int max_lag):
     means = [mean(subset) for subset in subset_list]
     return means
 
-cpdef CalculateTSV_staticf(list pop, list price_history, double CurrentPrice, double process, rng):
+cpdef CalculateTSV_staticf(list pop, list price_history, double CurrentPrice, double process, rng, list price_means):
     cdef cythonized.Individual ind
     cdef int i 
     cdef int t
-    cdef list price_means = subset_means(price_history, max_strat_lag)
-    cdef double[:] randoms = rng.normal(0, 0.1, len(pop))
+    #cdef double[:] randoms = rng.normal(0, 0.1, len(pop))
     #cdef double ma5_price = price_means[4]
 
     for i, ind in enumerate(pop):
