@@ -28,6 +28,7 @@ def main(
     dividend_series, rd_dividend_series = div.ExogeneousDividends(MAX_GENERATIONS, rng)
     rng = np.random.default_rng(seed=seed)
     process_series = prc.ExogeneousProcess(MAX_GENERATIONS, rng)
+    rng = np.random.default_rng(seed=seed)
 
     for generation in tqdm(
         range(MAX_GENERATIONS), disable=tqdm_display, miniters=100, mininterval=0.5
@@ -35,7 +36,6 @@ def main(
     #for generation in range(MAX_GENERATIONS):
 
         # Population reset
-        
         pop = cr.WealthReset(pop, POPULATION_SIZE, space, wealth_coordinates, generation, reset_wealth, CurrentPrice, strategy, rng)
 
         # Hypermutation
@@ -44,7 +44,6 @@ def main(
         ) 
         if replacements < 0:
             break
-
 
         # Strategy evolution
         #pop = fit.ComputeFitness(pop, 252)
@@ -62,13 +61,9 @@ def main(
         # Market decisions 
 
         pop, replace = bsc.UpdateFullWealth(pop, CurrentPrice) 
-        #cz.Individual.compute_wealth(CurrentPrice)
-
-        #pop = bsc.NoiseProcess(pop, rng, process)
         pop = bsc.UpdateFval(pop, dividend)
         pop, price_means = bsc.CalculateTSV_staticf(pop, price_history, dividend_history, CurrentPrice, process_series[generation], rng)
         pop = bsc.CalculateTSV_avf(pop, generation, strategy, price_history, dividend)        
-        
         ToLiquidate = bsc.DetermineLiquidation(spoils, volume)
 
         # ''' for VI on contemporaneous price ''' 
