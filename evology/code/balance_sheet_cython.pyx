@@ -108,10 +108,11 @@ cpdef CalculateTSV_staticf(list pop, list price_history, double CurrentPrice, do
                 #ind.last_price = price_history[-int(ind.strategy)]
                 #ind.tsv =  log2(CurrentPrice / ind.last_price)
                 ''' Moving average TF (compares p(t-1) to moving average at time horizon'''
-                ind.tsv = log2((CurrentPrice / price_means[int(ind.strategy_index)]) + 0.5)
-                #ind.tsv = log2((CurrentPrice / price_means[int(ind.strategy_index)]))
+                #ind.tsv = log2((CurrentPrice / price_means[int(ind.strategy_index)]) + 0.5)
+                ind.tsv = log2((CurrentPrice / price_means[int(ind.strategy_index)]))
                 #print('TF with strat ' + str(ind.strategy) + '// Current Price ' + str(CurrentPrice) + ' vs MA ' + str(price_means[int(ind.strategy_index)]) + ' gives tsv ' + str(tanh(ind.tsv))) 
                 #ind.tsv = log2(price_means[0] / price_means[int(ind.strategy_index)]) 
+                ''' this setting has big impact on price jumps and ecology dynamics '''
             else:
                 ind.tsv = 0.5 #0.0
         else:
