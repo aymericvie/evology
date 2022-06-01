@@ -117,7 +117,11 @@ columns = [
     # Substrategies variuance
     "NT_Sub_Var",
     "VI_Sub_Var",
-    "TF_Sub_Var"
+    "TF_Sub_Var",
+    # Info on holdings
+    "NT_asset",
+    "VI_asset",
+    "TF_asset"
 ]
 variables = len(columns) 
 
@@ -246,6 +250,10 @@ def ResultsProcess(list pop, double spoils, double price, double generation, dou
     cdef double VI_sub_var = NAN 
     cdef double TF_sub_var = NAN
 
+    cdef double NT_asset = 0.0
+    cdef double VI_asset = 0.0
+    cdef double TF_asset = 0.0
+
 
     for ind in pop:
         AvgAge += ind.age
@@ -306,6 +314,7 @@ def ResultsProcess(list pop, double spoils, double price, double generation, dou
             NTflows += 0 #ind.investor_flow
             #NT_process += ind.process
             NT_substrategies.append(ind.strategy)
+            NT_asset += ind.asset
 
         elif ind.type == "vi":
             VIcount += 1
@@ -324,6 +333,7 @@ def ResultsProcess(list pop, double spoils, double price, double generation, dou
             VIflows += 0 #ind.investor_flow
             VI_val += ind.val * ind.wealth
             VI_substrategies.append(ind.strategy)
+            VI_asset += ind.asset
 
         elif ind.type == "tf":
             TFcount += 1
@@ -341,6 +351,7 @@ def ResultsProcess(list pop, double spoils, double price, double generation, dou
                 TFreturn += ind.DailyReturn
             TFflows += 0 #ind.investor_flow
             TF_substrategies.append(ind.strategy)
+            TF_asset += ind.asset
 
     if NTcount != 0:
         NTcash = NTcash / NTcount
@@ -503,7 +514,10 @@ def ResultsProcess(list pop, double spoils, double price, double generation, dou
         ir_stocks,
         NT_sub_var,
         VI_sub_var,
-        TF_sub_var
+        TF_sub_var,
+        NT_asset,
+        VI_asset,
+        TF_asset,
     ]
 
     return ListOutput, sim_break
@@ -586,6 +600,9 @@ def record_results(
 
         ''' substrat variance '''
         arr += [ListOutput[56], ListOutput[57], ListOutput[58]]
+
+        ''' strat positions '''
+        arr += [ListOutput[59], ListOutput[60], ListOutput[61]]
 
         if len(arr) != len(results[current,:]):
             print(len(arr))

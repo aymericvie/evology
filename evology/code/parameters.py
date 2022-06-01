@@ -21,7 +21,7 @@ ATC_TF = 1.0
 SCALE_NT, SCALE_VI, SCALE_TF = 1.0 * ScaleCorr, 1.0 * ScaleCorr, 1.0 * ScaleCorr * ATC_TF
 
 GAMMA_NT = 0.2 * np.sqrt(1 / 252)
-MU_NT = 0.5 #1.
+MU_NT = 1. #1.
 RHO_NT = 0.00045832561
 
 
@@ -80,7 +80,7 @@ min_tf_strat = 2
 max_tf_strat = 52 #252 #252
 scholl_tf_strat = 250
 
-tf_daily_ma_horizons = [5, 10, 20, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 750, 1000]
+tf_daily_ma_horizons = [5, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500]
 tf_daily_ma_horizon_index = list(range(len(tf_daily_ma_horizons)))
 tf_daily_ma_horizons_probas = [1/len(tf_daily_ma_horizons)] * len(tf_daily_ma_horizons)
 

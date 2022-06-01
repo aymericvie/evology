@@ -17,8 +17,8 @@ cdef double SCALE_NT = parameters.SCALE_NT
 
 cdef double edf(Individual ind, double price, list price_means):
     cdef int t = ind.type_as_int
-    cdef double corr = 0.0
-    cdef double VI_price = price_means[1]
+    cdef double corr = 0.1
+    #cdef double VI_price = price_means[1]
     if t == 0:
         return (LeverageNT * ind.wealth / price) * tanh(SCALE_NT * ind.tsv + corr) - ind.asset 
     elif t == 1:

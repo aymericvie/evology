@@ -19,7 +19,7 @@ df, pop = main(
     space = 'extended', # 'extended',
     wealth_coordinates = wealth_coordinates,
     POPULATION_SIZE = 1000,
-    MAX_GENERATIONS = 20000, #50 * 252, #20000, #1000 * 252,
+    MAX_GENERATIONS = 300, #50 * 252, #20000, #1000 * 252,
     seed = seed,
     tqdm_display = False,
     reset_wealth = False,
@@ -29,6 +29,6 @@ print(df)
 df.to_csv("rundata/run_data.csv")
 print(df["WShare_NT"].iloc[-1], df["WShare_VI"].iloc[-1], df["WShare_TF"].iloc[-1])
 
-# for ind in pop:
-#     if ind.type == 'tf':
-#         print(ind.strategy)
+for ind in pop:
+    if ind.type == 'vi':
+        print([ind.strategy, ind.val, ind.val_net])
