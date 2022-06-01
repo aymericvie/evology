@@ -27,9 +27,9 @@ cdef double edf(Individual ind, double price, list price_means):
         ''' for contemporaneous-price VI '''
         return (LeverageVI * ind.wealth / price) * tanh(SCALE_VI * (log2(ind.val / price)) + corr) - ind.asset
     elif t == 2: # TF
-        return (LeverageTF * ind.wealth / price) * tanh(SCALE_TF * ind.tsv + corr) - ind.asset
+        return (LeverageTF * ind.wealth / price) * tanh(SCALE_TF * ind.tsv + corr) - ind.asset 
     elif t == 3: # AV
-        return (ind.wealth / price) * tanh(ind.tsv) - ind.asset
+        return (ind.wealth / price) * tanh(ind.tsv) - ind.asset 
     # BH and IR agents do not interact in the market, they are fictious agents to measure their strategy performance.
     elif t == 4 or t == 5:
         pass

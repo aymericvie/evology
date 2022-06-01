@@ -80,7 +80,7 @@ def main(
 
         if volume != 0:
             CurrentPrice = NewPrice
-        #CurrentPrice = NewPrice
+        # CurrentPrice = NewPrice
 
 
         if CurrentPrice >= 1_000_000:
