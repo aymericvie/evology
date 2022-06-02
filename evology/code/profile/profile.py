@@ -45,7 +45,6 @@ def main(
     for generation in tqdm(
         range(MAX_GENERATIONS), disable=tqdm_display, miniters=100, mininterval=0.5
     ):
-        # for generation in range(MAX_GENERATIONS):
 
         # Population reset
         pop = cr.WealthReset(
