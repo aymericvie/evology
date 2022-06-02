@@ -4,14 +4,14 @@ import cythonized
 from libc.math cimport log2, tanh, isnan, fabs, fmin, fmax
 from parameters import G, GAMMA_NT, RHO_NT, MU_NT, LeverageNT, LeverageVI, LeverageTF, max_strat_lag
 from parameters import G_day, SCALE_NT, SCALE_TF, SCALE_VI, liquidation_perc, interest_day
-from parameters import tf_daily_ma_horizons
+from parameters import tf_daily_ma_horizons, ema_factors
 import warnings
 import math
 import numpy as np
 cdef float NAN
 NAN = float("nan")
 
-cpdef mean(series):
+cpdef mean(list series):
     cdef double cumsum = 0.
     cdef int length = 0
     for item in series:
@@ -74,17 +74,42 @@ cpdef NoiseProcess(list pop, rng, double process):
     return pop
 '''
 
-cpdef subset_means(list series, int max_lag):
+'''
+cpdef back_slice(list arr, int index):
+    " A fast function to extract the mean of last n items of a list "
+    cdef double[:] arr_sliced[index]
+    cdef double mean_arr_sliced
+
+    arr_sliced = arr[-index:]
+    mean_arr_sliced = mean(arr_sliced)
+
+    return mean_arr_sliced
+
+
+cpdef subset_means(list series, int max_lag, list tf_daily_ma_horizons):
+    # adding list tf etc does not make any difference.
     cdef int i 
-    cdef list subset_list
+    #cdef list subset_list
     cdef list means 
 
-    #subset_list = [series[-i:] for i in range(1, max_lag + 1)]
-    subset_list = [series[-i:] for i in tf_daily_ma_horizons]
-    means = [mean(subset) for subset in subset_list]
+    #subset_list = [series[-i:] for i in tf_daily_ma_horizons]
+    means = [back_slice(series, i) for i in tf_daily_ma_horizons]
+    #means = [mean(subset) for subset in subset_list]
     return means
+'''
 
-cpdef CalculateTSV_staticf(list pop, list price_history, double CurrentPrice, double process, rng, list price_means):
+cpdef price_emas(double price, list emas):
+    cdef int i 
+    #print(ema_factors)
+    #print(emas)
+    #print(ema_factors[0])
+    #print(emas[0])
+    
+    emas = [(ema_factors[i] * (price - emas[i]) + emas[i]) for i in range(len(emas))]
+
+    return emas
+
+cpdef CalculateTSV_staticf(list pop, list price_history, double CurrentPrice, double process, rng, list price_emas):
     cdef cythonized.Individual ind
     cdef int i 
     cdef int t
@@ -108,7 +133,7 @@ cpdef CalculateTSV_staticf(list pop, list price_history, double CurrentPrice, do
                 #ind.tsv =  log2(CurrentPrice / ind.last_price)
                 ''' Moving average TF (compares p(t-1) to moving average at time horizon'''
                 #ind.tsv = log2((CurrentPrice / price_means[int(ind.strategy_index)]) + 0.5)
-                ind.tsv = log2((CurrentPrice / price_means[int(ind.strategy_index)]))
+                ind.tsv = log2((CurrentPrice / price_emas[int(ind.strategy_index)]))
                 #print('TF with strat ' + str(ind.strategy) + '// Current Price ' + str(CurrentPrice) + ' vs MA ' + str(price_means[int(ind.strategy_index)]) + ' gives tsv ' + str(tanh(ind.tsv))) 
                 #ind.tsv = log2(price_means[0] / price_means[int(ind.strategy_index)]) 
                 ''' this setting has big impact on price jumps and ecology dynamics '''
@@ -117,7 +142,7 @@ cpdef CalculateTSV_staticf(list pop, list price_history, double CurrentPrice, do
         else:
             pass
             # BH stay at 1, IR stay at 0, AV is not computed here, VI cannot compute before price is known
-    return pop, price_means
+    return pop
 
 cpdef CalculateTSV_avf(list pop, double generation, object strategy, list price_history, double dividend):
     cdef cythonized.Individual ind
