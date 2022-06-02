@@ -71,7 +71,7 @@ def main(
 
         pop, replace = bsc.UpdateFullWealth(pop, CurrentPrice) 
         pop = bsc.UpdateFval(pop, dividend)
-        price_means = bsc.subset_means(price_history, max_strat_lag)
+        price_means = bsc.subset_means(price_history, max_strat_lag, tf_daily_ma_horizons)
         pop, price_means = bsc.CalculateTSV_staticf(pop, price_history, CurrentPrice, process_series[generation], rng, price_means)
         pop = bsc.CalculateTSV_avf(pop, generation, strategy, price_history, dividend)        
         ToLiquidate = bsc.DetermineLiquidation(spoils, volume)
