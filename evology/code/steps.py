@@ -22,6 +22,7 @@ import dividend as div
 import process as prc
 import cythonized as cz
 
+
 def ga_evolution(
     pop, space, generation, wealth_coordinates, PROBA_SELECTION, MUTATION_RATE, Horizon
 ):
@@ -46,13 +47,13 @@ def ga_evolution(
     return pop, CountSelected, CountMutated, CountCrossed, StratFlow
 
 
-#def decision_updates(pop, price_history, dividend_history, CurrentPrice):
+# def decision_updates(pop, price_history, dividend_history, CurrentPrice):
 #    bs.DetermineTsvProc(pop, price_history, CurrentPrice)
 #    bs.UpdateFval(pop, dividend_history)
 #    bs.DetermineEDF(pop)
 #    return pop
 
-'''
+"""
 def marketClearing(pop, current_price, price_history, spoils, solver, volume):
     try:
         if solver == "esl":
@@ -216,8 +217,4 @@ def marketClearing(pop, current_price, price_history, spoils, solver, volume):
     price_history.append(current_price)
 
     return pop, current_price, price_history, ToLiquidate
-'''
-
-
-
-
+"""

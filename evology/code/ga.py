@@ -9,6 +9,7 @@ import timeit
 import warnings
 import cythonized
 
+
 def CreateFractionalFund(pop, MaxFund, divisions):
 
     if pop[MaxFund].type == "nt":
@@ -23,9 +24,9 @@ def CreateFractionalFund(pop, MaxFund, divisions):
 
     # Copy fund MaxFund intangible characteristics
     # TSV, EDF, EDV are totally reset.
-    half.tsv = 0.
-    #half.edf = None
-    half.edv = 0.
+    half.tsv = 0.0
+    # half.edf = None
+    half.edv = 0.0
     half.strategy = pop[MaxFund].strategy
     # half.process = pop[MaxFund].process
     half.ema = pop[MaxFund].ema
@@ -69,7 +70,7 @@ def hypermutate(pop, spoils, replace):
 
         elif NumberReplace != 0:
             for index in index_to_replace:
-                #print("Replaced " + str(pop[index].type) + "; " + str(round(pop[index].wealth)) + "; " + str(round(pop[index].asset)))
+                # print("Replaced " + str(pop[index].type) + "; " + str(round(pop[index].wealth)) + "; " + str(round(pop[index].asset)))
                 half = CreateFractionalFund(pop, MaxFund, NumberReplace + 1)
                 spoils += pop[index].asset
                 del pop[index]
@@ -114,7 +115,7 @@ toolbox.register("mate", toolbox.feasible_crossover)
 
 # Creating our own mutation operator
 def mutate_both_ways(ind):
-    raise ValueError('Not updated to ind.strategy')
+    raise ValueError("Not updated to ind.strategy")
     if np.random.random() < 0.5:
         ind[0] -= 1
     else:
@@ -122,7 +123,7 @@ def mutate_both_ways(ind):
 
 
 def feasible_mutation(ind, MUTATION_RATE):
-    raise ValueError('Not updated to ind.strategy')
+    raise ValueError("Not updated to ind.strategy")
     if np.random.random() < MUTATION_RATE:
         if ind.type == "tf":
             if ind[0] == MAX_THETA:  # we can only mutate lower

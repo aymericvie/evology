@@ -4,6 +4,7 @@ from deap import tools
 from deap import algorithms
 from deap import gp
 import numpy as np
+
 toolbox = base.Toolbox()
 from parameters import *
 import cythonized
@@ -12,14 +13,16 @@ import cythonized
 def DrawStrategy(strat, rng):
     index = 0
     if strat == "nt":
-        #strategy = np.random.uniform(min_nt_strat, max_nt_strat) / 10
+        # strategy = np.random.uniform(min_nt_strat, max_nt_strat) / 10
         strategy = (rng.uniform(min_nt_strat, max_nt_strat) - 10) / 1000
     elif strat == "vi":
         strategy = rng.uniform(min_vi_strat, max_vi_strat) / 1000
     elif strat == "tf":
-        #strategy = rng.integers(min_tf_strat, max_tf_strat + 1)
-        ''' Discrete TF-substrategy space'''
-        index = int(rng.choice(tf_daily_ma_horizon_index, 1, p=tf_daily_ma_horizons_probas))
+        # strategy = rng.integers(min_tf_strat, max_tf_strat + 1)
+        """Discrete TF-substrategy space"""
+        index = int(
+            rng.choice(tf_daily_ma_horizon_index, 1, p=tf_daily_ma_horizons_probas)
+        )
         strategy = tf_daily_ma_horizons[index]
     else:
         raise ValueError("Unrecognised type. " + str(strat))
@@ -40,28 +43,28 @@ def IndCreation(strat):
     ind = toolbox.gen_ind()
     if strat == "nt":
         ind.type = "nt"
-        #ind.leverage = LeverageNT
+        # ind.leverage = LeverageNT
         ind.type_as_int = cythonized.convert_ind_type_to_num("nt")
     elif strat == "vi":
         ind.type = "vi"
-        #ind.leverage = LeverageVI
+        # ind.leverage = LeverageVI
         ind.type_as_int = cythonized.convert_ind_type_to_num("vi")
     elif strat == "tf":
         ind.type = "tf"
-        #ind.leverage = LeverageTF
+        # ind.leverage = LeverageTF
         ind.type_as_int = cythonized.convert_ind_type_to_num("tf")
-    elif strat == 'av':
-        ind.type = 'av'
+    elif strat == "av":
+        ind.type = "av"
         ind.type_as_int = cythonized.convert_ind_type_to_num("av")
-    elif strat == 'bh':
-        ind.type = 'bh'
+    elif strat == "bh":
+        ind.type = "bh"
         ind.type_as_int = cythonized.convert_ind_type_to_num("bh")
-        ind.tsv = 1.
-    elif strat == 'ir':
-        ind.type = 'ir'
+        ind.tsv = 1.0
+    elif strat == "ir":
+        ind.type = "ir"
         ind.type_as_int = cythonized.convert_ind_type_to_num("ir")
-        ind.tsv = 0.
-    #ind.process = 1.0
+        ind.tsv = 0.0
+    # ind.process = 1.0
     return ind
 
 
@@ -94,9 +97,9 @@ def CreatePop(n, space, WealthCoords, CurrentPrice, strategy, rng):
         pop.append(IndCreation("tf"))
         NumTF += 1
     # Add a buy and hold agent (for benchmark)
-    #pop.append(IndCreation('bh'))
+    # pop.append(IndCreation('bh'))
     # Add a sell and deposit agent (for benchmark)
-    #pop.append(IndCreation('ir'))
+    # pop.append(IndCreation('ir'))
 
     if strategy != None:
         pop.append(IndCreation("av"))
@@ -128,7 +131,7 @@ def CreatePop(n, space, WealthCoords, CurrentPrice, strategy, rng):
     if space == "scholl":
         for ind in pop:
             if ind.type == "nt":
-                ind.strategy = 0 # no bias in 3-strat space
+                ind.strategy = 0  # no bias in 3-strat space
             if ind.type == "vi":
                 ind.strategy = 0.01
             if ind.type == "tf":
@@ -144,54 +147,61 @@ def CreatePop(n, space, WealthCoords, CurrentPrice, strategy, rng):
                 ind.strategy, ind.strategy_index = DrawStrategy("tf", rng)
 
     for ind in pop:
-        ind.loan = 0.
-        ind.margin = 0.
-        if ind.type == 'av':
+        ind.loan = 0.0
+        ind.margin = 0.0
+        if ind.type == "av":
             ind.cash = RefCash
             ind.asset = RefAssets
             ind.adaptive_strategy = strategy
-        if ind.type == 'bh':
-            ind.cash = 0. #RefCash
-            ind.asset = 1. * RefAssets
-        if ind.type == 'ir':
-            ind.cash = 1. * RefCash
-            ind.asset = 0. #RefAssets
+        if ind.type == "bh":
+            ind.cash = 0.0  # RefCash
+            ind.asset = 1.0 * RefAssets
+        if ind.type == "ir":
+            ind.cash = 1.0 * RefCash
+            ind.asset = 0.0  # RefAssets
         if ind.type == "nt":
             ind.cash = PcNTCash
             ind.asset = PcNTAsset
         if ind.type == "vi":
             ind.cash = PcVICash
             ind.asset = PcVIAsset
-            ind.val_net = (1.0 + (interest_year + ind.strategy) - G) ** (1.0 / 252.0) - 1.0
+            ind.val_net = (1.0 + (interest_year + ind.strategy) - G) ** (
+                1.0 / 252.0
+            ) - 1.0
         if ind.type == "tf":
             ind.cash = PcTFCash
             ind.asset = PcTFAsset
-
-    
 
     for ind in pop:
         ind.wealth = ind.cash + ind.asset * CurrentPrice - ind.loan
         ind.prev_wealth = ind.wealth
         if ind.wealth < 0:
             raise ValueError("Negative wealth at population creation.")
-        if ind.type == 'nt':
+        if ind.type == "nt":
             if ind.asset != PcNTAsset:
-                raise RuntimeError('NT asset position mismatch.')
-
-
-
-
-    
+                raise RuntimeError("NT asset position mismatch.")
 
     return pop, TotalAsset
 
 
-def WealthReset(pop, popsize, space, WealthCoords, generation, ResetWealth, CurrentPrice, strategy, rng):
+def WealthReset(
+    pop,
+    popsize,
+    space,
+    WealthCoords,
+    generation,
+    ResetWealth,
+    CurrentPrice,
+    strategy,
+    rng,
+):
     # current_size = len(pop)
     # types = [ind.type for ind in pop]
     if ResetWealth == True:
         del pop
-        pop, asset_supply = CreatePop(popsize, space, WealthCoords, CurrentPrice, strategy, rng)
+        pop, asset_supply = CreatePop(
+            popsize, space, WealthCoords, CurrentPrice, strategy, rng
+        )
 
     # if len(pop) != current_size:
     #     print([current_size, len(pop)])

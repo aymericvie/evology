@@ -6,86 +6,100 @@ import matplotlib.pyplot as plt
 import sys
 
 # Import the data
-if sys.platform == 'darwin':
-    df = pd.read_csv("/Users/aymericvie/Documents/GitHub/evology/evology/code/rundata/run_data.csv")
-if sys.platform == 'win32':
-    df = pd.read_csv("D:/OneDrive/Research/2021_Market_Ecology/evology/evology/code/rundata/run_data.csv")
+if sys.platform == "darwin":
+    df = pd.read_csv(
+        "/Users/aymericvie/Documents/GitHub/evology/evology/code/rundata/run_data.csv"
+    )
+if sys.platform == "win32":
+    df = pd.read_csv(
+        "D:/OneDrive/Research/2021_Market_Ecology/evology/evology/code/rundata/run_data.csv"
+    )
 
 # %%
-df['Dividends (x1,000)'] = 10000 * df['Dividends']
-df['Process (x100)'] = 100 * df['NT_process'].add(1)
-df['VI_val_1000'] = df['VI_val']
-df['PriceEma'] = pd.Series.ewm(df['Price'], span=21).mean()
+df["Dividends (x1,000)"] = 10000 * df["Dividends"]
+df["Process (x100)"] = 100 * df["NT_process"].add(1)
+df["VI_val_1000"] = df["VI_val"]
+df["PriceEma"] = pd.Series.ewm(df["Price"], span=21).mean()
 
-df.plot(x="Gen", y = ['Price', 'Dividends (x1,000)', 'VI_val_1000'],
-        kind="line", figsize=(15, 6))
+df.plot(
+    x="Gen",
+    y=["Price", "Dividends (x1,000)", "VI_val_1000"],
+    kind="line",
+    figsize=(15, 6),
+)
 plt.show()
 
-df.plot(x="Gen", y = ['Volume'],
-        kind="line", figsize=(15, 6))
+df.plot(x="Gen", y=["Volume"], kind="line", figsize=(15, 6))
 plt.show()
 
-df.plot(x="Gen", y = ['Pos-'],
-        kind="line", figsize=(15, 6))
+df.plot(x="Gen", y=["Pos-"], kind="line", figsize=(15, 6))
 plt.show()
 
-df.plot(x="Gen", y = ["WShare_TF", "WShare_VI", "WShare_NT", "AV_WShare"],
-        kind="line", figsize=(15, 6), ylim=(0,100))
+df.plot(
+    x="Gen",
+    y=["WShare_TF", "WShare_VI", "WShare_NT", "AV_WShare"],
+    kind="line",
+    figsize=(15, 6),
+    ylim=(0, 100),
+)
 plt.show()
 
-df['NT_signal2'] = np.tanh(df['NT_signal'])
-df['VI_signal2'] = np.tanh(df['VI_signal'])
-df['TF_signal2'] = np.tanh(df['TF_signal'])
+df["NT_signal2"] = np.tanh(df["NT_signal"])
+df["VI_signal2"] = np.tanh(df["VI_signal"])
+df["TF_signal2"] = np.tanh(df["TF_signal"])
 
-df.plot(x="Gen", y=["NT_process"],
-        kind="line", figsize=(15, 6))
-plt.show()
-
-# %%
-df.plot(x="Gen", y=["NT_signal2", "VI_signal2", "TF_signal2"],
-        kind="line", figsize=(15, 6))
-plt.hlines(y=0, xmin = 0, xmax = max(df["Gen"]), colors='gray', linestyles='dashed')
-plt.show()
-
-df.plot(x="Gen", y = ['Price'],
-        kind="line", figsize=(15, 6))
-plt.show()
-
-df['NT_signalW'] = np.tanh(df['NT_signal']) * df['WShare_NT']
-df['VI_signalW'] = np.tanh(df['VI_signal']) * df['WShare_VI']
-df['TF_signalW'] = np.tanh(df['TF_signal']) * df['WShare_TF']
-
-df.plot(x="Gen", y=["NT_signalW", "VI_signalW", "TF_signalW"],
-        kind="line", figsize=(15, 6))
-plt.hlines(y=0, xmin = 0, xmax = max(df["Gen"]), colors='gray', linestyles='dashed')
-plt.show()
-
-df.plot(x="Gen", y = ["NT_stocks", "VI_stocks", "TF_stocks"],
-        kind="line", figsize=(15, 6))
-plt.hlines(y=0, xmin = 0, xmax = max(df["Gen"]), colors='gray', linestyles='dashed')
-plt.show()
-
-df.plot(x="Gen", y = ["NT_asset", "VI_asset", "TF_asset"],
-        kind="line", figsize=(15, 6))
-plt.hlines(y=0, xmin = 0, xmax = max(df["Gen"]), colors='gray', linestyles='dashed')
+df.plot(x="Gen", y=["NT_process"], kind="line", figsize=(15, 6))
 plt.show()
 
 # %%
-df.plot(x="Gen", y=["Dividends (x1,000)", "Price", "Process (x100)", 'VI_val_1000'],
-        kind="line", figsize=(15, 6))
+df.plot(
+    x="Gen", y=["NT_signal2", "VI_signal2", "TF_signal2"], kind="line", figsize=(15, 6)
+)
+plt.hlines(y=0, xmin=0, xmax=max(df["Gen"]), colors="gray", linestyles="dashed")
+plt.show()
+
+df.plot(x="Gen", y=["Price"], kind="line", figsize=(15, 6))
+plt.show()
+
+df["NT_signalW"] = np.tanh(df["NT_signal"]) * df["WShare_NT"]
+df["VI_signalW"] = np.tanh(df["VI_signal"]) * df["WShare_VI"]
+df["TF_signalW"] = np.tanh(df["TF_signal"]) * df["WShare_TF"]
+
+df.plot(
+    x="Gen", y=["NT_signalW", "VI_signalW", "TF_signalW"], kind="line", figsize=(15, 6)
+)
+plt.hlines(y=0, xmin=0, xmax=max(df["Gen"]), colors="gray", linestyles="dashed")
+plt.show()
+
+df.plot(
+    x="Gen", y=["NT_stocks", "VI_stocks", "TF_stocks"], kind="line", figsize=(15, 6)
+)
+plt.hlines(y=0, xmin=0, xmax=max(df["Gen"]), colors="gray", linestyles="dashed")
+plt.show()
+
+df.plot(x="Gen", y=["NT_asset", "VI_asset", "TF_asset"], kind="line", figsize=(15, 6))
+plt.hlines(y=0, xmin=0, xmax=max(df["Gen"]), colors="gray", linestyles="dashed")
+plt.show()
+
+# %%
+df.plot(
+    x="Gen",
+    y=["Dividends (x1,000)", "Price", "Process (x100)", "VI_val_1000"],
+    kind="line",
+    figsize=(15, 6),
+)
 plt.show()
 # %%
 df["Mispricing"] = abs((df["VI_val"] / df["Price"]) - 1)
 mispricing = df["Mispricing"].mean()
-           
-           
+
+
 if df["Gen"].iloc[-1] >= 252:
-    df["LogPriceReturns"] = np.log(df["Price"]/df["Price"].shift(1))
-    df["Volatility"] = df["LogPriceReturns"].rolling(window=252).std()*np.sqrt(252)
+    df["LogPriceReturns"] = np.log(df["Price"] / df["Price"].shift(1))
+    df["Volatility"] = df["LogPriceReturns"].rolling(window=252).std() * np.sqrt(252)
     volatility = df["Volatility"].mean()
 
-    df.plot(x="Gen", y=["Mispricing", "Volatility"],
-        kind="line", figsize=(15, 6))
+    df.plot(x="Gen", y=["Mispricing", "Volatility"], kind="line", figsize=(15, 6))
     plt.show()
 
 
@@ -93,53 +107,55 @@ else:
     volatility = np.nan
     # mispricing = np.nan
 
- 
 
 # %%
-df['TF_signal2x100'] = 100 * np.tanh(df['TF_signal'])
-df['NT_signal2x100'] = 100 * np.tanh(df['NT_signal'])
-df['VI_signal2x100'] = 100 * np.tanh(df['VI_signal'])
+df["TF_signal2x100"] = 100 * np.tanh(df["TF_signal"])
+df["NT_signal2x100"] = 100 * np.tanh(df["NT_signal"])
+df["VI_signal2x100"] = 100 * np.tanh(df["VI_signal"])
 
 df["Price_ma"] = df["Price"].rolling(50).mean()
 
-df.plot(x="Gen", y=["Price", "Price_ma", "TF_signal2x100", "VI_signal2x100", 'NT_signal2x100'],
-        kind="line", figsize=(15, 6))
-plt.hlines(y=0, xmin=0, xmax=max(df["Gen"]), color='black')
+df.plot(
+    x="Gen",
+    y=["Price", "Price_ma", "TF_signal2x100", "VI_signal2x100", "NT_signal2x100"],
+    kind="line",
+    figsize=(15, 6),
+)
+plt.hlines(y=0, xmin=0, xmax=max(df["Gen"]), color="black")
 plt.show()
 # %%
-df["NT_returns_ma"] = df["NT_returns"].rolling(252*5).mean()
-df["VI_returns_ma"] = df["VI_returns"].rolling(252*5).mean()
-df["TF_returns_ma"] = df["TF_returns"].rolling(252*5).mean()
+df["NT_returns_ma"] = df["NT_returns"].rolling(252 * 5).mean()
+df["VI_returns_ma"] = df["VI_returns"].rolling(252 * 5).mean()
+df["TF_returns_ma"] = df["TF_returns"].rolling(252 * 5).mean()
 
 print([df["NT_returns"].mean(), df["VI_returns"].mean(), df["TF_returns"].mean()])
 
-df.plot(x="Gen", y = ["NT_returns_ma", "VI_returns_ma", "TF_returns_ma"],
-        kind="line", figsize=(15, 6))
-plt.hlines(y=0, xmin = 0, xmax = max(df["Gen"]), colors='gray', linestyles='dashed')
+df.plot(
+    x="Gen",
+    y=["NT_returns_ma", "VI_returns_ma", "TF_returns_ma"],
+    kind="line",
+    figsize=(15, 6),
+)
+plt.hlines(y=0, xmin=0, xmax=max(df["Gen"]), colors="gray", linestyles="dashed")
 plt.show()
 
 
-
-df.plot(x="Gen", y = ['Pos-'],
-        kind="line", figsize=(15, 6))
+df.plot(x="Gen", y=["Pos-"], kind="line", figsize=(15, 6))
 plt.show()
 
-df.plot(x="Gen", y = ['Volume'],
-        kind="line", figsize=(15, 6))
+df.plot(x="Gen", y=["Volume"], kind="line", figsize=(15, 6))
 plt.show()
 
-df.plot(x="Gen", y = ['Mismatch'],
-        kind="line", figsize=(15, 6))
+df.plot(x="Gen", y=["Mismatch"], kind="line", figsize=(15, 6))
 plt.show()
 
 # %%
-df.plot(x="Gen", y = ['Dividends'],
-        kind="line", figsize=(15, 6))
+df.plot(x="Gen", y=["Dividends"], kind="line", figsize=(15, 6))
 plt.show()
 
 
 # %%
-pct_changes = list(df['nav_pct'])
+pct_changes = list(df["nav_pct"])
 # print(pct_changes)
 print(np.nanmean(pct_changes))
 print(len(pct_changes))
@@ -148,9 +164,9 @@ for i in range(len(pct_changes)):
         pct_changes[i] = np.nan
 print(np.nanmean(pct_changes))
 print(max(pct_changes))
-bins = range(0,100)
+bins = range(0, 100)
 bins = [item / 100 for item in bins]
-plt.hist(pct_changes, bins = bins)
+plt.hist(pct_changes, bins=bins)
 plt.show()
 # bins = range(0,10)
 # bins = [item / 100 for item in bins]
@@ -161,66 +177,62 @@ plt.show()
 # %%
 # Calibration of short volume ratio
 
-print('short volume ratio')
+print("short volume ratio")
 asset_supply = df["Pos+"].mean() - df["Pos-"].mean()
 # Average short volume ratio in our ABM:
 print(100 * df["Pos-"].mean() / asset_supply)
 
-print('Short ratio (numb short sold / avg rolling volume)')
+print("Short ratio (numb short sold / avg rolling volume)")
 # Short interest ratio as days to cover
 df["short_ratio"] = df["Pos-"] / (df["Volume"] + 1)
 print(df["short_ratio"].mean())
 print(df["Pos-"].mean() / df["Volume"].mean())
 
 # Short interest as percentage of float (outstanding)
-print('Short % of float ')
+print("Short % of float ")
 df["FloatPer"] = df["Pos-"] / df["Pos+"]
 # df["FloatPer"] = df["Pos-"] / asset_supply
 print(100 * df["FloatPer"].mean())
 
-df.plot(x="Gen", y = ["Pos-", "Pos+"],
-        kind="line", figsize=(15, 6))
+df.plot(x="Gen", y=["Pos-", "Pos+"], kind="line", figsize=(15, 6))
 plt.show()
 
 # the short volume ratio and short percentage of float are consistent after limiting max short size
-# However, the short ratio (to volumne) is higher. It mostly means that the short positions are liquidated much faster in our model. 
+# However, the short ratio (to volumne) is higher. It mostly means that the short positions are liquidated much faster in our model.
 # But siunce they still occupy the same relative amount to outstanding shares, it just means that they are closed/opened at higher frequencies
 # than in regular data. Which makes sense because not all happens at a daily scale, and there are some funds who maintain short positions
 # over long time horizons.
 
 # %%
 
-df.plot(x="Gen", y = ["Mismatch"],
-        kind="line", figsize=(15, 6))
+df.plot(x="Gen", y=["Mismatch"], kind="line", figsize=(15, 6))
 plt.show()
 
 
-df.plot(x="Gen", y = ["NT_signal"],
-        kind="line", figsize=(15, 6))
+df.plot(x="Gen", y=["NT_signal"], kind="line", figsize=(15, 6))
 plt.show()
 # %%
 
-df.plot(x="Gen", y = ["Mean_NT"],
-        kind="line", figsize=(5, 6))
+df.plot(x="Gen", y=["Mean_NT"], kind="line", figsize=(5, 6))
 plt.show()
-df.plot(x="Gen", y = ["Mean_VI"],
-        kind="line", figsize=(5, 6), ylim=(-0.02, 0.02))
+df.plot(x="Gen", y=["Mean_VI"], kind="line", figsize=(5, 6), ylim=(-0.02, 0.02))
 plt.show()
-df.plot(x="Gen", y = ["Mean_TF"],
-        kind="line", figsize=(5, 6))
+df.plot(x="Gen", y=["Mean_TF"], kind="line", figsize=(5, 6))
 plt.show()
 # %%
-df.plot(x="Gen", y = ["NT_stocks", "VI_stocks", "TF_stocks", "BH_stocks", "IR_stocks"],
-        kind="line", figsize=(15, 6))
+df.plot(
+    x="Gen",
+    y=["NT_stocks", "VI_stocks", "TF_stocks", "BH_stocks", "IR_stocks"],
+    kind="line",
+    figsize=(15, 6),
+)
 plt.show()
 
-df.plot(x="Gen", y = ["Price"],
-        kind="line", figsize=(15, 6))
+df.plot(x="Gen", y=["Price"], kind="line", figsize=(15, 6))
 plt.show()
 
 
-df.plot(x="Gen", y = ["Pos-"],
-        kind="line", figsize=(15, 6))
+df.plot(x="Gen", y=["Pos-"], kind="line", figsize=(15, 6))
 plt.show()
 
 
@@ -238,9 +250,8 @@ df["Rolling_DR"] = df["DiffReturns"].rolling(252).mean()
 
 tol = 0.000001
 
-df.plot(x="Gen", y = ["Rolling_DR"],
-        kind="line", figsize=(15, 6))
-plt.hlines(y=tol, xmin = 0, xmax = 20000)
+df.plot(x="Gen", y=["Rolling_DR"], kind="line", figsize=(15, 6))
+plt.hlines(y=tol, xmin=0, xmax=20000)
 plt.show()
 
 for i in range(len(df["Gen"])):
@@ -249,52 +260,62 @@ for i in range(len(df["Gen"])):
         break
 
 # %%
-SharpeNT = np.nanmean(df['NT_returns']) / np.nanstd(df['NT_returns'])
-SharpeVI = np.nanmean(df['VI_returns']) / np.nanstd(df['VI_returns'])
-SharpeTF = np.nanmean(df['TF_returns']) / np.nanstd(df['TF_returns'])
+SharpeNT = np.nanmean(df["NT_returns"]) / np.nanstd(df["NT_returns"])
+SharpeVI = np.nanmean(df["VI_returns"]) / np.nanstd(df["VI_returns"])
+SharpeTF = np.nanmean(df["TF_returns"]) / np.nanstd(df["TF_returns"])
 
-print('Daily Sharpe ratios ')
+print("Daily Sharpe ratios ")
 print(SharpeNT, SharpeVI, SharpeTF)
-print('Daily mean returns 2 ')
-print([np.nanmean(df['NT_returns']), np.nanmean(df['VI_returns']), np.nanmean(df['TF_returns'])])
+print("Daily mean returns 2 ")
+print(
+    [
+        np.nanmean(df["NT_returns"]),
+        np.nanmean(df["VI_returns"]),
+        np.nanmean(df["TF_returns"]),
+    ]
+)
 
-DiffSharpe = (SharpeNT - SharpeVI) ** 2  + (SharpeNT - SharpeTF) ** 2 + (SharpeVI - SharpeTF) ** 2
+DiffSharpe = (
+    (SharpeNT - SharpeVI) ** 2 + (SharpeNT - SharpeTF) ** 2 + (SharpeVI - SharpeTF) ** 2
+)
 print(DiffSharpe)
 
 # %%
-print(df['Rep'].sum())
-if df['Rep'].sum() != 0:
-        df.plot(x="Gen", y = ['Rep'],
-                kind="line", figsize=(15, 6))
-        plt.show()
+print(df["Rep"].sum())
+if df["Rep"].sum() != 0:
+    df.plot(x="Gen", y=["Rep"], kind="line", figsize=(15, 6))
+    plt.show()
 
 df2 = pd.DataFrame()
-df2['nav_pct-non-nan'] = df['nav_pct'].dropna()
-df2['nav_pct-non-nan'] = df2['nav_pct-non-nan'][df2['nav_pct-non-nan'] <1000]
-df2['Gen'] = df['Gen']
-df2.plot(x="Gen", y = ['nav_pct-non-nan'],
-                kind="line", figsize=(15, 6))
+df2["nav_pct-non-nan"] = df["nav_pct"].dropna()
+df2["nav_pct-non-nan"] = df2["nav_pct-non-nan"][df2["nav_pct-non-nan"] < 1000]
+df2["Gen"] = df["Gen"]
+df2.plot(x="Gen", y=["nav_pct-non-nan"], kind="line", figsize=(15, 6))
 plt.show()
 
 # %%# Basic plots
 
-df.plot(x="Gen", y = ["Num_TF", "Num_VI", "Num_NT"],
-        kind="line", figsize=(15, 6))
-plt.savefig('/Users/aymericvie/Documents/GitHub/evology/evology/figures/num_evo.png', dpi = 300)
+df.plot(x="Gen", y=["Num_TF", "Num_VI", "Num_NT"], kind="line", figsize=(15, 6))
+plt.savefig(
+    "/Users/aymericvie/Documents/GitHub/evology/evology/figures/num_evo.png", dpi=300
+)
 plt.show()
 
 # %%
-''' NAV '''
-print('Average wealth per fund in the strategy')
-df.plot(x="Gen", y = ["NT_nav", "VI_nav", "TF_nav", "AV_wealth", "BH_wealth", "IR_wealth"],
-        kind="line", figsize=(15, 6))
+""" NAV """
+print("Average wealth per fund in the strategy")
+df.plot(
+    x="Gen",
+    y=["NT_nav", "VI_nav", "TF_nav", "AV_wealth", "BH_wealth", "IR_wealth"],
+    kind="line",
+    figsize=(15, 6),
+)
 plt.show()
 
 df.plot(x="Gen", y="AV_wealth")
 plt.show()
 
-NT_mul = df["NT_nav"].iloc[-1] / df["NT_nav"].iloc[0]  
+NT_mul = df["NT_nav"].iloc[-1] / df["NT_nav"].iloc[0]
 print(NT_mul)
-NT_mul = df["VI_nav"].iloc[-1] / df["VI_nav"].iloc[0]  
+NT_mul = df["VI_nav"].iloc[-1] / df["VI_nav"].iloc[0]
 print(NT_mul)
-
