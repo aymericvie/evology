@@ -1,3 +1,4 @@
+from matplotlib.pyplot import annotate
 from setuptools import Extension, setup
 import os
 
@@ -19,6 +20,6 @@ extensions = [
 ]
 
 setup(
-    ext_modules=cythonize(extensions, annotate=False),
+    ext_modules=cythonize(extensions, annotate=True),
     # include_dirs=[numpy.get_include()],
 )

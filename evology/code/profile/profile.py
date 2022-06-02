@@ -33,6 +33,7 @@ def main(
     # Dividend and NT process generation
     #price_history = prc.FictiousPriceSeries(rng)
     price_history = []
+    price_emas = [InitialPrice] * len(tf_daily_ma_horizons)
 
     dividend_series, rd_dividend_series = div.ExogeneousDividends(MAX_GENERATIONS, rng)
     rng = np.random.default_rng(seed=seed+1)
@@ -71,17 +72,17 @@ def main(
 
         pop, replace = bsc.UpdateFullWealth(pop, CurrentPrice) 
         pop = bsc.UpdateFval(pop, dividend)
-        price_means = bsc.subset_means(price_history, max_strat_lag, tf_daily_ma_horizons)
-        pop, price_means = bsc.CalculateTSV_staticf(pop, price_history, CurrentPrice, process_series[generation], rng, price_means)
+        price_emas = bsc.price_emas(CurrentPrice, price_emas)
+        pop = bsc.CalculateTSV_staticf(pop, price_history, CurrentPrice, process_series[generation], rng, price_emas)
         pop = bsc.CalculateTSV_avf(pop, generation, strategy, price_history, dividend)        
         ToLiquidate = bsc.DetermineLiquidation(spoils, volume)
 
         # ''' for VI on contemporaneous price ''' 
         # ed_functions = bsc.agg_ed_esl(pop, ToLiquidate)
         # CurrentPrice = mc.esl_solver(ed_functions, CurrentPrice)
-        ed_functions = cz.agg_ed(pop, ToLiquidate, price_means)
+        ed_functions = cz.agg_ed(pop, ToLiquidate)
         NewPrice = mc.scipy_solver(ed_functions, CurrentPrice)
-        pop, mismatch = cz.calculate_edv(pop, NewPrice, price_means)
+        pop, mismatch = cz.calculate_edv(pop, NewPrice)
 
         # Market activity
         dividend, random_dividend = dividend_series[0, generation], rd_dividend_series[0, generation]
@@ -170,3 +171,11 @@ cythonize -i cythonized.pyx
 chmod +x ./profile/profile.py
 kernprof -v -l profile/profile.py > profile/profile.txt
  ; no need to be in python env first"""
+
+
+'''
+Annotation ]
+
+cythonize -a -i yourmod.pyx
+
+'''
