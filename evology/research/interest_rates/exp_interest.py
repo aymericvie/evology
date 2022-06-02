@@ -23,8 +23,8 @@ from main import main as evology
 
 
 startTime = time.time()
-TimeHorizon = 50_000 
-PopulationSize = 100
+TimeHorizon = 100_000 
+PopulationSize = 1000
 obs = 10000
 reps = 4
 coords = [0.1, 0.8, 0.1]
