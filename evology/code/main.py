@@ -7,6 +7,7 @@ def main(
     wealth_coordinates,
     POPULATION_SIZE,
     MAX_GENERATIONS,
+    investment,
     seed,
     tqdm_display,
     reset_wealth,
@@ -120,10 +121,10 @@ def main(
         pop = bsc.UpdateQuarterlyWealth(pop, generation)
         pop = bsc.UpdateWealthSeries(pop)
 
-        """
-        if generation >= ShieldInvestment:
+        
+        if generation >= ShieldInvestment and investment != None:
             pop = iv.Emp_Investment(pop, rng)
-        """
+        
 
         # Record results
         results, sim_break = data.record_results(

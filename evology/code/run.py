@@ -20,6 +20,7 @@ df, pop = main(
     POPULATION_SIZE=300,
     MAX_GENERATIONS=30000,  # 50 * 252, #20000, #1000 * 252,
     seed=seed,
+    investment=None,
     tqdm_display=False,
     reset_wealth=False,
 )
