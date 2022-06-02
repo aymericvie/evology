@@ -110,6 +110,3 @@ tf_daily_ma_horizons_probas = [1 / len(tf_daily_ma_horizons)] * len(
     tf_daily_ma_horizons
 )
 ema_factors = [(2 / (n + 1)) for n in tf_daily_ma_horizons]
-
-# We coudl save a lot of runtime if TFs were in a discrete set of horizons a la Brock & Hommes
-max_strat_lag = max(max_tf_strat, scholl_tf_strat)

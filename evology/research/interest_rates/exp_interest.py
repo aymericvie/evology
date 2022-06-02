@@ -23,14 +23,14 @@ from main import main as evology
 
 
 startTime = time.time()
-TimeHorizon = 10_000 
+TimeHorizon = 50_000 
 PopulationSize = 100
 obs = 10000
 reps = 4
 coords = [0.1, 0.8, 0.1]
 
 
-def job(seed):
+def job(param):
     try:
         df, pop = evology(
             strategy=None,
@@ -38,9 +38,9 @@ def job(seed):
             wealth_coordinates=coords,
             POPULATION_SIZE=PopulationSize,
             MAX_GENERATIONS=TimeHorizon,
-            interest_year=0.01,
+            interest_year=param[0],
             investment=None,
-            seed=seed,
+            seed=param[1],
             tqdm_display=True,
             reset_wealth=False,
         )
@@ -62,7 +62,8 @@ def job(seed):
         df_tail = df.tail(obs)
         result = [
             # Seed 
-            seed,
+            param[0],
+            param[1],
 
             # Final wealth share (means)
             df_tail["WShare_NT"].mean(),
@@ -118,15 +119,20 @@ def job(seed):
     except Exception as e:
         print(e)
         # traceback.print_stack()
-        print("Failed run" + str(coords) + str(e))
-        result = seed
+        print("Failed run" + str(param) + str(e))
+        result = [param[0], param[1]]
         for _ in range(34):
             result.append(np.nan)
         return result
 
 
 # Define the domains
-param = np.random.random(reps)
+randoms = np.random.randint(0, 100000, reps)
+param = []
+for seed in randoms:
+    param.append([0.01, int(seed)])
+    param.append([0.02, int(seed)])
+print(len(param)) 
 
 def main():
     p = mp.Pool()
@@ -139,50 +145,52 @@ def main():
 if __name__ == "__main__":
     data = main()
     df = pd.DataFrame()
+
     # Inputs
-    df["seed"] = data[:, 0]
+    df["interest_rate"] = data[:, 0]
+    df["seed"] = data[:, 1]
 
     # Outputs
-    df["WS_NT_final"] = data[:, 1]
-    df["WS_VI_final"] = data[:, 2]
-    df["WS_TF_final"] = data[:, 3]
+    df["WS_NT_final"] = data[:, 2]
+    df["WS_VI_final"] = data[:, 3]
+    df["WS_TF_final"] = data[:, 4]
 
-    df["WS_NT_avg"] = data[:, 4]
-    df["WS_VI_avg"] = data[:, 5]
-    df["WS_TF_avg"] = data[:, 6]
-    df["WS_NT_avg_std"] = data[:, 7]
-    df["WS_VI_avg_std"] = data[:, 8]
-    df["WS_TF_avg_std"] = data[:, 9]
+    df["WS_NT_avg"] = data[:, 5]
+    df["WS_VI_avg"] = data[:, 6]
+    df["WS_TF_avg"] = data[:, 7]
+    df["WS_NT_avg_std"] = data[:, 8]
+    df["WS_VI_avg_std"] = data[:, 9]
+    df["WS_TF_avg_std"] = data[:, 10]
 
-    df["Mispricing"] = data[:, 10]
-    df["Volatility"] = data[:, 11]
+    df["Mispricing"] = data[:, 11]
+    df["Volatility"] = data[:, 12]
 
-    df["NT_returns_final"] = data[:, 12]
-    df["VI_returns_final"] = data[:, 13]
-    df["TF_returns_final"] = data[:, 14]
-    df["NT_returns_final_std"] = data[:, 15]
-    df["VI_returns_final_std"] = data[:, 16]
-    df["TF_returns_final_std"] = data[:, 17]
+    df["NT_returns_final"] = data[:, 13]
+    df["VI_returns_final"] = data[:, 14]
+    df["TF_returns_final"] = data[:, 15]
+    df["NT_returns_final_std"] = data[:, 16]
+    df["VI_returns_final_std"] = data[:, 17]
+    df["TF_returns_final_std"] = data[:, 18]
 
-    df["NT_returns_avg"] = data[:, 18]
-    df["VI_returns_avg"] = data[:, 19]
-    df["TF_returns_avg"] = data[:, 20]
-    df["NT_returns_avg_std"] = data[:, 21]
-    df["VI_returns_avg_std"] = data[:, 22]
-    df["TF_returns_avg_std"] = data[:, 23]
+    df["NT_returns_avg"] = data[:, 19]
+    df["VI_returns_avg"] = data[:, 20]
+    df["TF_returns_avg"] = data[:, 21]
+    df["NT_returns_avg_std"] = data[:, 22]
+    df["VI_returns_avg_std"] = data[:, 23]
+    df["TF_returns_avg_std"] = data[:, 24]
 
-    df["DiffReturns"] = data[:, 24]
-    df["Gen"] = data[:, 25]
+    df["DiffReturns"] = data[:, 25]
+    df["Gen"] = data[:, 26]
 
-    df["Mean_NT_final"] = data[:, 26]
-    df["Mean_VI_final"] = data[:, 27]
-    df["Mean_TF_final"] = data[:, 28]
-    df["Mean_NT_avg"] = data[:, 29]
-    df["Mean_VI_avg"] = data[:, 30]
-    df["Mean_TF_avg"] = data[:, 31]
-    df["Mean_NT_avg_std"] = data[:, 32]
-    df["Mean_VI_avg_std"] = data[:, 33]
-    df["Mean_TF_avg_std"] = data[:, 34]
+    df["Mean_NT_final"] = data[:, 27]
+    df["Mean_VI_final"] = data[:, 28]
+    df["Mean_TF_final"] = data[:, 29]
+    df["Mean_NT_avg"] = data[:, 30]
+    df["Mean_VI_avg"] = data[:, 31]
+    df["Mean_TF_avg"] = data[:, 32]
+    df["Mean_NT_avg_std"] = data[:, 33]
+    df["Mean_VI_avg_std"] = data[:, 34]
+    df["Mean_TF_avg_std"] = data[:, 35]
 
     print(df)
 

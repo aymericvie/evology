@@ -2,7 +2,7 @@
 cimport cythonized
 import cythonized
 from libc.math cimport log2, tanh, isnan, fabs, fmin, fmax
-from parameters import G, GAMMA_NT, RHO_NT, MU_NT, LeverageNT, LeverageVI, LeverageTF, max_strat_lag
+from parameters import G, GAMMA_NT, RHO_NT, MU_NT, LeverageNT, LeverageVI, LeverageTF
 from parameters import G_day, SCALE_NT, SCALE_TF, SCALE_VI, liquidation_perc
 from parameters import tf_daily_ma_horizons, ema_factors
 import warnings
