@@ -194,5 +194,5 @@ if __name__ == "__main__":
 
     print(df)
 
-    df.to_csv("data/ir001_noinv.csv")
+    df.to_csv("data/ir_noinv.csv")
     print("Completion time: " + str(time.time() - startTime))
