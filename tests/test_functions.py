@@ -155,9 +155,9 @@ def det_pop_nolearning(repetitions, time, agents):
         print(wealth_coordinates)
         
         np.random.seed(seed)
-        df,pop = main(None, 'extended', wealth_coordinates, agents, time, None, 0.01, seed, tqdm_display=True, reset_wealth = False)
+        df,pop = main(None, 'extended', wealth_coordinates, agents, time, 0.01, None, seed, tqdm_display=True, reset_wealth = False)
         np.random.seed(seed)
-        df2,pop2 = main(None, 'extended', wealth_coordinates, agents, time, None, 0.01, seed, tqdm_display=True, reset_wealth = False)
+        df2,pop2 = main(None, 'extended', wealth_coordinates, agents, time, 0.01, None, seed, tqdm_display=True, reset_wealth = False)
 
         if df['Price'].iloc[-1] != df2['Price'].iloc[-1]:
             if isnan(df['Price'].iloc[-1]) == False:
