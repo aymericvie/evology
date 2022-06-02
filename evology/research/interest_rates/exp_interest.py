@@ -26,7 +26,7 @@ startTime = time.time()
 TimeHorizon = 100_000 
 PopulationSize = 1000
 obs = 10000
-reps = 4
+reps = 100
 coords = [0.1, 0.8, 0.1]
 
 
