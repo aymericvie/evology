@@ -17,7 +17,7 @@ fontsize = 18
 data = pd.read_csv(
     "/Users/aymericvie/Documents/GitHub/evology/evology/research/icml/data/stop_time.csv"
 )
-del data['PopSize']
+del data["PopSize"]
 
 # %%
 data.hist("StopTime")
@@ -42,20 +42,21 @@ def gen_data(scale):
         l += 1
     return gens
 
+
 # %%
 gens = gen_data(scale)
 figure, tax = ternary.figure(scale=scale)
 figure.set_size_inches(10, 8)
-tax.heatmap(gens, style='triangular')
+tax.heatmap(gens, style="triangular")
 tax.boundary()
 tax.clear_matplotlib_ticks()
 ticks = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
-tax.ticks(ticks = ticks, axis='blr', linewidth=1, multiple=10)
-tax.bottom_axis_label("VI Initial Wealth Share (%)", fontsize = fontsize) 
-tax.left_axis_label("NT Initial Wealth Share (%)", fontsize = fontsize) 
-tax.right_axis_label("TF Initial Wealth Share (%)", fontsize = fontsize)
-tax.get_axes().axis('off')
-tax.set_title('Max generations', fontsize = fontsize)
+tax.ticks(ticks=ticks, axis="blr", linewidth=1, multiple=10)
+tax.bottom_axis_label("VI Initial Wealth Share (%)", fontsize=fontsize)
+tax.left_axis_label("NT Initial Wealth Share (%)", fontsize=fontsize)
+tax.right_axis_label("TF Initial Wealth Share (%)", fontsize=fontsize)
+tax.get_axes().axis("off")
+tax.set_title("Max generations", fontsize=fontsize)
 tax._redraw_labels()
 plt.tight_layout()
 # plt.savefig('figures/generations_ext.png',dpi=300)
@@ -70,19 +71,20 @@ def gen_data(scale):
         l += 1
     return gens
 
+
 gens = gen_data(scale)
 figure, tax = ternary.figure(scale=scale)
 figure.set_size_inches(10, 8)
-tax.heatmap(gens, style='triangular')
+tax.heatmap(gens, style="triangular")
 tax.boundary()
 tax.clear_matplotlib_ticks()
 ticks = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
-tax.ticks(ticks = ticks, axis='blr', linewidth=1, multiple=10)
-tax.bottom_axis_label("VI Initial Wealth Share (%)", fontsize = fontsize) 
-tax.left_axis_label("NT Initial Wealth Share (%)", fontsize = fontsize) 
-tax.right_axis_label("TF Initial Wealth Share (%)", fontsize = fontsize)
-tax.get_axes().axis('off')
-tax.set_title('Stop time', fontsize = fontsize)
+tax.ticks(ticks=ticks, axis="blr", linewidth=1, multiple=10)
+tax.bottom_axis_label("VI Initial Wealth Share (%)", fontsize=fontsize)
+tax.left_axis_label("NT Initial Wealth Share (%)", fontsize=fontsize)
+tax.right_axis_label("TF Initial Wealth Share (%)", fontsize=fontsize)
+tax.get_axes().axis("off")
+tax.set_title("Stop time", fontsize=fontsize)
 tax._redraw_labels()
 plt.tight_layout()
 
@@ -98,19 +100,20 @@ def gen_data(scale):
         l += 1
     return gens
 
+
 gens = gen_data(scale)
 figure, tax = ternary.figure(scale=scale)
 figure.set_size_inches(10, 8)
-tax.heatmap(gens, style='triangular')
+tax.heatmap(gens, style="triangular")
 tax.boundary()
 tax.clear_matplotlib_ticks()
 ticks = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
-tax.ticks(ticks = ticks, axis='blr', linewidth=1, multiple=10)
-tax.bottom_axis_label("VI Initial Wealth Share (%)", fontsize = fontsize) 
-tax.left_axis_label("NT Initial Wealth Share (%)", fontsize = fontsize) 
-tax.right_axis_label("TF Initial Wealth Share (%)", fontsize = fontsize)
-tax.get_axes().axis('off')
-tax.set_title('Min(Gen, Stop time)', fontsize = fontsize)
+tax.ticks(ticks=ticks, axis="blr", linewidth=1, multiple=10)
+tax.bottom_axis_label("VI Initial Wealth Share (%)", fontsize=fontsize)
+tax.left_axis_label("NT Initial Wealth Share (%)", fontsize=fontsize)
+tax.right_axis_label("TF Initial Wealth Share (%)", fontsize=fontsize)
+tax.get_axes().axis("off")
+tax.set_title("Min(Gen, Stop time)", fontsize=fontsize)
 tax._redraw_labels()
 plt.tight_layout()
 
@@ -123,6 +126,7 @@ from sklearn import preprocessing
 from sklearn.model_selection import KFold
 from sklearn.linear_model import LinearRegression
 import matplotlib.pyplot as plt
+
 data["Time"] = 0
 
 for i in range(len(data)):
@@ -135,20 +139,21 @@ model = LinearRegression()
 scores = []
 kfold = KFold(n_splits=3, shuffle=True, random_state=42)
 for i, (train, test) in enumerate(kfold.split(X, y)):
- model.fit(X.iloc[train,:], y.iloc[train,:])
- score = model.score(X.iloc[test,:], y.iloc[test,:])
- scores.append(score)
+    model.fit(X.iloc[train, :], y.iloc[train, :])
+    score = model.score(X.iloc[test, :], y.iloc[test, :])
+    scores.append(score)
 print(scores)
 
 # %%
 del data["Unnamed: 0"]
 fig_1 = plt.figure(figsize=(12, 10))
 new_correlations = data.corr()
-sns.heatmap(new_correlations, annot=True, cmap='Greens', annot_kws={'size': 8})
-plt.title('Pearson Correlation Matrix')
+sns.heatmap(new_correlations, annot=True, cmap="Greens", annot_kws={"size": 8})
+plt.title("Pearson Correlation Matrix")
 plt.show()
 
 # %%
+
 
 def generate_random_heatmap_data(scale):
     tf_ws = dict()
@@ -169,89 +174,90 @@ def generate_random_heatmap_data(scale):
         l += 1
     return nt_ws, vi_ws, tf_ws, attractor
 
+
 nt_r, vi_r, tf_r, attractor = generate_random_heatmap_data(scale)
 
 figure, tax = ternary.figure(scale=scale)
 figure.set_size_inches(10, 8)
-tax.heatmap(nt_r, style='triangular')
+tax.heatmap(nt_r, style="triangular")
 tax.boundary()
 tax.clear_matplotlib_ticks()
 ticks = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
-tax.ticks(ticks = ticks, axis='blr', linewidth=1, multiple=10)
-tax.bottom_axis_label("VI Initial Wealth Share (%)", fontsize = fontsize) 
-tax.left_axis_label("NT Initial Wealth Share (%)", fontsize = fontsize) 
-tax.right_axis_label("TF Initial Wealth Share (%)", fontsize = fontsize)
-tax.get_axes().axis('off')
-tax.set_title('NT final wealth share', fontsize = fontsize)
+tax.ticks(ticks=ticks, axis="blr", linewidth=1, multiple=10)
+tax.bottom_axis_label("VI Initial Wealth Share (%)", fontsize=fontsize)
+tax.left_axis_label("NT Initial Wealth Share (%)", fontsize=fontsize)
+tax.right_axis_label("TF Initial Wealth Share (%)", fontsize=fontsize)
+tax.get_axes().axis("off")
+tax.set_title("NT final wealth share", fontsize=fontsize)
 tax._redraw_labels()
 plt.tight_layout()
-plt.savefig('figures/WS_NT_ext.png',dpi=300)
-#plt.show()
+plt.savefig("figures/WS_NT_ext.png", dpi=300)
+# plt.show()
 
 figure, tax = ternary.figure(scale=scale)
 figure.set_size_inches(10, 8)
-tax.heatmap(vi_r, style='triangular')
+tax.heatmap(vi_r, style="triangular")
 tax.boundary()
 tax.clear_matplotlib_ticks()
 ticks = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
-tax.ticks(ticks = ticks, axis='blr', linewidth=1, multiple=10)
-tax.bottom_axis_label("VI Initial Wealth Share (%)", fontsize = fontsize) 
-tax.left_axis_label("NT Initial Wealth Share (%)", fontsize = fontsize) 
-tax.right_axis_label("TF Initial Wealth Share (%)", fontsize = fontsize)
-tax.get_axes().axis('off')
-tax.set_title('VI final wealth share', fontsize = fontsize)
+tax.ticks(ticks=ticks, axis="blr", linewidth=1, multiple=10)
+tax.bottom_axis_label("VI Initial Wealth Share (%)", fontsize=fontsize)
+tax.left_axis_label("NT Initial Wealth Share (%)", fontsize=fontsize)
+tax.right_axis_label("TF Initial Wealth Share (%)", fontsize=fontsize)
+tax.get_axes().axis("off")
+tax.set_title("VI final wealth share", fontsize=fontsize)
 tax._redraw_labels()
 plt.tight_layout()
-plt.savefig('figures/WS_VI_ext.png',dpi=300)
+plt.savefig("figures/WS_VI_ext.png", dpi=300)
 
 figure, tax = ternary.figure(scale=scale)
 figure.set_size_inches(10, 8)
-tax.heatmap(tf_r, style='triangular')
+tax.heatmap(tf_r, style="triangular")
 tax.boundary()
 tax.clear_matplotlib_ticks()
 ticks = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
-tax.ticks(ticks = ticks, axis='blr', linewidth=1, multiple=10)
-tax.bottom_axis_label("VI Initial Wealth Share (%)", fontsize = fontsize) 
-tax.left_axis_label("NT Initial Wealth Share (%)", fontsize = fontsize) 
-tax.right_axis_label("TF Initial Wealth Share (%)", fontsize = fontsize)
-tax.get_axes().axis('off')
-tax.set_title('TF final wealth share', fontsize = fontsize)
+tax.ticks(ticks=ticks, axis="blr", linewidth=1, multiple=10)
+tax.bottom_axis_label("VI Initial Wealth Share (%)", fontsize=fontsize)
+tax.left_axis_label("NT Initial Wealth Share (%)", fontsize=fontsize)
+tax.right_axis_label("TF Initial Wealth Share (%)", fontsize=fontsize)
+tax.get_axes().axis("off")
+tax.set_title("TF final wealth share", fontsize=fontsize)
 tax._redraw_labels()
 plt.tight_layout()
-plt.savefig('figures/WS_TF_ext.png',dpi=300)
-#plt.show()
+plt.savefig("figures/WS_TF_ext.png", dpi=300)
+# plt.show()
 
 # %%
 def PathPoints(data):
     points = []
     for i in range(len(data["WS_NT_final"])):
-        x = ((data.loc[i, "WS_VI_final"] / 100) * scale)
-        y = ((data.loc[i, "WS_TF_final"] / 100) * scale)
-        z = ((data.loc[i, "WS_NT_final"] / 100) * scale)
+        x = (data.loc[i, "WS_VI_final"] / 100) * scale
+        y = (data.loc[i, "WS_TF_final"] / 100) * scale
+        z = (data.loc[i, "WS_NT_final"] / 100) * scale
         points.append((x, y, z))
     return points
 
 
 points = PathPoints(data)
 
-origin = [((100/3, 100/3, 100/3))]
+origin = [((100 / 3, 100 / 3, 100 / 3))]
 figure, tax = ternary.figure(scale=scale)
 figure.set_size_inches(10, 8)
 tax.gridlines(color="gray", multiple=10)
 tax.boundary()
 tax.clear_matplotlib_ticks()
 ticks = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
-tax.bottom_axis_label("VI Initial Wealth Share (%)", fontsize = fontsize) 
-tax.left_axis_label("NT Initial Wealth Share (%)", fontsize = fontsize) 
-tax.right_axis_label("TF Initial Wealth Share (%)", fontsize = fontsize)
-tax.scatter(points, marker='D', color='red', label="Simulations")
-tax.ticks(ticks = ticks, axis='blr', linewidth=1, multiple=10)
-tax.get_axes().axis('off')
-tax.set_title('title', fontsize=fontsize)
-plt.legend(loc='upper right', fontsize=fontsize)
+tax.bottom_axis_label("VI Initial Wealth Share (%)", fontsize=fontsize)
+tax.left_axis_label("NT Initial Wealth Share (%)", fontsize=fontsize)
+tax.right_axis_label("TF Initial Wealth Share (%)", fontsize=fontsize)
+tax.scatter(points, marker="D", color="red", label="Simulations")
+tax.ticks(ticks=ticks, axis="blr", linewidth=1, multiple=10)
+tax.get_axes().axis("off")
+tax.set_title("title", fontsize=fontsize)
+plt.legend(loc="upper right", fontsize=fontsize)
 plt.tight_layout()
 tax._redraw_labels()
-plt.savefig('figures/scatterplot_ext.png',dpi=300)
+plt.savefig("figures/scatterplot_ext.png", dpi=300)
 # plt.show()
 
 # %%

@@ -3,11 +3,13 @@ import numpy as np
 import pandas as pd
 import sys
 import tqdm
+
 # import warnings
 import time
 import ternary
 from ternary.helpers import simplex_iterator
 import multiprocessing as mp
+
 # warnings.simplefilter("ignore")
 if sys.platform == "darwin":
     sys.path.append("/Users/aymericvie/Documents/GitHub/evology/evology/code")
@@ -20,18 +22,20 @@ startTime = time.time()
 TimeHorizon = 252 * 30
 PopulationSize = 100
 reps = 10
-scale = 25 #30 # increment = 1/scale
+scale = 25  # 30 # increment = 1/scale
+
 
 def job(coords):
     outcome = coords[0]
-    return [coords[0], coords[1], coords[2], outcome ]
-    #except Exception as e:
+    return [coords[0], coords[1], coords[2], outcome]
+    # except Exception as e:
     #    print(e)
     #    print("Failed run" + str(coords) + str(e))
     #    result = [coords[0], coords[1], coords[2]]
     #    for _ in range(7):
     #        result.append(np.nan)
     #    return result
+
 
 # Define the domains
 def GenerateCoords(reps, scale):
@@ -40,6 +44,7 @@ def GenerateCoords(reps, scale):
         for _ in range(reps):
             param.append([i / scale, j / scale, k / scale])
     return param
+
 
 param = GenerateCoords(reps, scale)
 print(len(param))
@@ -62,7 +67,6 @@ if __name__ == "__main__":
     df["WS_TF"] = data[:, 2]
     # Outputs
     df["Test"] = data[:, 3]
-
 
     # Print and save the dataframes
     print(df)

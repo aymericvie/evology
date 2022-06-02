@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import sys
 import tqdm
+
 # import warnings
 import time
 import ternary
@@ -24,22 +25,23 @@ startTime = time.time()
 TimeHorizon = 50_000
 obs = 10000
 reps = 10
-scale = 15 #increment = 1/scale
+scale = 15  # increment = 1/scale
+
 
 def job(coords):
     np.random.seed()
     try:
         df, pop = evology(
-            strategy = None,
-            space = "extended",
-            wealth_coordinates = [coords[0], coords[1], coords[2]],
-            POPULATION_SIZE = coords[3],
-            MAX_GENERATIONS = TimeHorizon,
-            tqdm_display = True,
-            reset_wealth = False,
+            strategy=None,
+            space="extended",
+            wealth_coordinates=[coords[0], coords[1], coords[2]],
+            POPULATION_SIZE=coords[3],
+            MAX_GENERATIONS=TimeHorizon,
+            tqdm_display=True,
+            reset_wealth=False,
         )
         df_tail = df.tail(obs)
-        
+
         stopping_time = TimeHorizon
         df["Rolling_DR"] = df["DiffReturns"].rolling(252).mean()
         for i in range(len(df["Gen"])):
@@ -52,11 +54,9 @@ def job(coords):
             coords[1],
             coords[2],
             coords[3],
-
             df_tail["WShare_NT"].mean(),
             df_tail["WShare_VI"].mean(),
             df_tail["WShare_TF"].mean(),
-
             stopping_time,
             df["Gen"].iloc[-1],
         ]
@@ -75,11 +75,13 @@ def job(coords):
 def GenerateCoords(reps, scale):
     param = []
     popsize = 100
-    #for popsize in [100, 250, 500]:
+    # for popsize in [100, 250, 500]:
     for (i, j, k) in simplex_iterator(scale):
         for _ in range(reps):
             param.append([i / scale, j / scale, k / scale, popsize])
     return param
+
+
 param = GenerateCoords(reps, scale)
 print(len(param))
 
@@ -115,4 +117,3 @@ if __name__ == "__main__":
     print("Completion time: " + str(time.time() - startTime))
 
     print(df["StopTime"].unique())
-

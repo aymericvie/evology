@@ -3,11 +3,13 @@ import numpy as np
 import pandas as pd
 import sys
 import tqdm
+
 # import warnings
 import time
 import ternary
 from ternary.helpers import simplex_iterator
 import multiprocessing as mp
+
 # warnings.simplefilter("ignore")
 if sys.platform == "darwin":
     sys.path.append("/Users/aymericvie/Documents/GitHub/evology/evology/code")
@@ -19,8 +21,9 @@ from main import main as evology
 startTime = time.time()
 TimeHorizon = 252 * 10
 PopulationSize = 100
-reps = 10  
-scale = 25 # increment = 1/scale
+reps = 10
+scale = 25  # increment = 1/scale
+
 
 def job(coords):
     np.random.seed()
@@ -37,16 +40,16 @@ def job(coords):
             reset_wealth=True,
         )
         result = [
-            coords[0], #Initial NT WS
-            coords[1], # Initial VI WS
-            coords[2], # Initial TF WS
+            coords[0],  # Initial NT WS
+            coords[1],  # Initial VI WS
+            coords[2],  # Initial TF WS
             df["NT_returns"].mean(),
             df["VI_returns"].mean(),
             df["TF_returns"].mean(),
             df["NT_returns"].std(),
             df["VI_returns"].std(),
             df["TF_returns"].std(),
-            df["Gen"].iloc[-1]
+            df["Gen"].iloc[-1],
         ]
         return result
     except Exception as e:
@@ -57,6 +60,7 @@ def job(coords):
             result.append(np.nan)
         return result
 
+
 # Define the domains
 def GenerateCoords(reps, scale):
     param = []
@@ -64,6 +68,7 @@ def GenerateCoords(reps, scale):
         for _ in range(reps):
             param.append([i / scale, j / scale, k / scale])
     return param
+
 
 param = GenerateCoords(reps, scale)
 print(len(param))

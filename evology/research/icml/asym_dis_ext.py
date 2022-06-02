@@ -4,6 +4,7 @@ import pandas as pd
 from math import isnan
 import sys
 import tqdm
+
 # import warnings
 import time
 import ternary
@@ -22,31 +23,32 @@ from main import main as evology
 
 
 startTime = time.time()
-TimeHorizon = 40_000 #252 * 400 #TBD
-PopulationSize = 100# 1000 #TBD
+TimeHorizon = 40_000  # 252 * 400 #TBD
+PopulationSize = 100  # 1000 #TBD
 obs = 10000
-reps = 10 #10  #TBD
-scale = 30 #30
+reps = 10  # 10  #TBD
+scale = 30  # 30
+
 
 def job(coords):
-    
+
     try:
         df, pop = evology(
-            strategy = None,
+            strategy=None,
             space="extended",
-            wealth_coordinates = coords,
-            POPULATION_SIZE = PopulationSize,
-            MAX_GENERATIONS = TimeHorizon,
-            seed = np.random.seed(),
+            wealth_coordinates=coords,
+            POPULATION_SIZE=PopulationSize,
+            MAX_GENERATIONS=TimeHorizon,
+            seed=np.random.seed(),
             tqdm_display=True,
             reset_wealth=False,
         )
 
-        
-
         if df["Gen"].iloc[-1] >= 252:
-            df["LogPriceReturns"] = np.log(df["Price"]/df["Price"].shift(1))
-            df["Volatility"] = df["LogPriceReturns"].rolling(window=252).std()*np.sqrt(252)
+            df["LogPriceReturns"] = np.log(df["Price"] / df["Price"].shift(1))
+            df["Volatility"] = df["LogPriceReturns"].rolling(
+                window=252
+            ).std() * np.sqrt(252)
             volatility = df["Volatility"].mean()
 
             df["Mispricing"] = (df["Mean_VI"] / df["Price"]) - 1
@@ -54,7 +56,6 @@ def job(coords):
         else:
             volatility = np.nan
             mispricing = np.nan
-
 
         if df["NT_nav"].iloc[0] != 0 and isnan(df["NT_nav"].iloc[0]) == False:
             multi_NT = df["NT_nav"].iloc[-1] / df["NT_nav"].iloc[0]
@@ -72,48 +73,37 @@ def job(coords):
             multi_TF = 0.0
 
         multi_BH = df["BH_wealth"].iloc[-1] / df["BH_wealth"].iloc[0]
-        multi_IR = df["IR_wealth"].iloc[-1] / df["IR_wealth"].iloc[0] 
+        multi_IR = df["IR_wealth"].iloc[-1] / df["IR_wealth"].iloc[0]
 
         df_tail = df.tail(obs)
         result = [
             coords[0],
             coords[1],
             coords[2],
-
             df_tail["WShare_NT"].mean(),
             df_tail["WShare_VI"].mean(),
             df_tail["WShare_TF"].mean(),
-
             mispricing,
             volatility,
-
             df_tail["NT_returns"].mean(),
             df_tail["VI_returns"].mean(),
             df_tail["TF_returns"].mean(),
             df_tail["NT_returns"].std(),
             df_tail["VI_returns"].std(),
             df_tail["TF_returns"].std(),
-
             df_tail["DiffReturns"].mean(),
-
             df["Gen"].iloc[-1],
-
             df_tail["Mean_NT"].mean(),
             df_tail["Mean_VI"].mean(),
             df_tail["Mean_TF"].mean(),
-
             df_tail["NT_Sub_Var"].mean(),
             df_tail["VI_Sub_Var"].mean(),
             df_tail["TF_Sub_Var"].mean(),
-
             multi_NT,
             multi_VI,
             multi_TF,
             multi_BH,
-            multi_IR
-
-
-            
+            multi_IR,
         ]
         return result
     except Exception as e:
@@ -133,6 +123,8 @@ def GenerateCoords(reps, scale):
         for _ in range(reps):
             param.append([i / scale, j / scale, k / scale])
     return param
+
+
 param = GenerateCoords(reps, scale)
 print(len(param))
 
@@ -188,4 +180,3 @@ if __name__ == "__main__":
 
     df.to_csv("data/asym_dis_ext.csv")
     print("Completion time: " + str(time.time() - startTime))
-

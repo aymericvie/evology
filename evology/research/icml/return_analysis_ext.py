@@ -7,97 +7,101 @@ import numpy as np
 import pandas as pd
 from math import isnan
 from ternary.helpers import simplex_iterator
-data = pd.read_csv("/Users/aymericvie/Documents/GitHub/evology/evology/research/icml/data/data_return_landscape_ext.csv")
+
+data = pd.read_csv(
+    "/Users/aymericvie/Documents/GitHub/evology/evology/research/icml/data/data_return_landscape_ext.csv"
+)
 
 # data = data[data["Gen"] > 7000]
 
 sns.set(font_scale=1)
 fontsize = 18
-scale = 30 #from the experiment.py
+scale = 30  # from the experiment.py
 
-''' Another ternary bug is that, when the scale for
+""" Another ternary bug is that, when the scale for
 the plots (as here) is not equal to the scale for the experiment,
 e.g. lower, strange geometric trails appear in the plot;
-the program does not show any error, but the results are broken.'''
+the program does not show any error, but the results are broken."""
 
 # %%
-# We want a simplex plot of strategy returns. 
+# We want a simplex plot of strategy returns.
 threshold = 1
-data_group = data.groupby(['WS_VI', 'WS_TF', 'WS_NT'], as_index=False).mean()
+data_group = data.groupby(["WS_VI", "WS_TF", "WS_NT"], as_index=False).mean()
+
 
 def generate_random_heatmap_data(scale):
     tf_ws = dict()
     vi_ws = dict()
     nt_ws = dict()
     l = 0
-    for (i,j,k) in simplex_iterator(scale):
-        nt_ws[(i,j)] = data_group.loc[l,"NT_returns_mean"] 
-        vi_ws[(i,j)] = data_group.loc[l,"VI_returns_mean"] 
-        tf_ws[(i,j)] = data_group.loc[l,"TF_returns_mean"] 
+    for (i, j, k) in simplex_iterator(scale):
+        nt_ws[(i, j)] = data_group.loc[l, "NT_returns_mean"]
+        vi_ws[(i, j)] = data_group.loc[l, "VI_returns_mean"]
+        tf_ws[(i, j)] = data_group.loc[l, "TF_returns_mean"]
 
         if data_group.loc[l, "Gen"] < 7000:
-            nt_ws[(i,j)], vi_ws[(i,j)], tf_ws[(i,j)] = 0,0,0
-        
-        l += 1 
+            nt_ws[(i, j)], vi_ws[(i, j)], tf_ws[(i, j)] = 0, 0, 0
+
+        l += 1
     return nt_ws, vi_ws, tf_ws
+
 
 nt_r, vi_r, tf_r = generate_random_heatmap_data(scale)
 
 figure, tax = ternary.figure(scale=scale)
 figure.set_size_inches(10, 8)
-tax.heatmap(nt_r, style='triangular')
+tax.heatmap(nt_r, style="triangular")
 tax.boundary()
 tax.clear_matplotlib_ticks()
 ticks = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
-tax.ticks(ticks = ticks, axis='blr', linewidth=1, multiple=10)
-tax.bottom_axis_label("VI Initial Wealth Share (%)", fontsize = fontsize) 
-tax.left_axis_label("NT Initial Wealth Share (%)", fontsize = fontsize) 
-tax.right_axis_label("TF Initial Wealth Share (%)", fontsize = fontsize)
-tax.get_axes().axis('off')
-tax.set_title('NT returns', fontsize = fontsize)
+tax.ticks(ticks=ticks, axis="blr", linewidth=1, multiple=10)
+tax.bottom_axis_label("VI Initial Wealth Share (%)", fontsize=fontsize)
+tax.left_axis_label("NT Initial Wealth Share (%)", fontsize=fontsize)
+tax.right_axis_label("TF Initial Wealth Share (%)", fontsize=fontsize)
+tax.get_axes().axis("off")
+tax.set_title("NT returns", fontsize=fontsize)
 tax._redraw_labels()
 plt.tight_layout()
-plt.savefig('figures/NT_returns_ext.png',dpi=300)
-#plt.show()
+plt.savefig("figures/NT_returns_ext.png", dpi=300)
+# plt.show()
 
 figure, tax = ternary.figure(scale=scale)
 figure.set_size_inches(10, 8)
-tax.heatmap(vi_r, style='triangular')
+tax.heatmap(vi_r, style="triangular")
 tax.boundary()
 tax.clear_matplotlib_ticks()
 ticks = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
-tax.ticks(ticks = ticks, axis='blr', linewidth=1, multiple=10)
-tax.bottom_axis_label("VI Initial Wealth Share (%)", fontsize = fontsize) 
-tax.left_axis_label("NT Initial Wealth Share (%)", fontsize = fontsize) 
-tax.right_axis_label("TF Initial Wealth Share (%)", fontsize = fontsize)
-tax.get_axes().axis('off')
-tax.set_title('VI returns', fontsize = fontsize)
+tax.ticks(ticks=ticks, axis="blr", linewidth=1, multiple=10)
+tax.bottom_axis_label("VI Initial Wealth Share (%)", fontsize=fontsize)
+tax.left_axis_label("NT Initial Wealth Share (%)", fontsize=fontsize)
+tax.right_axis_label("TF Initial Wealth Share (%)", fontsize=fontsize)
+tax.get_axes().axis("off")
+tax.set_title("VI returns", fontsize=fontsize)
 tax._redraw_labels()
 plt.tight_layout()
-plt.savefig('figures/VI_returns_ext.png',dpi=300)
-#plt.show()
+plt.savefig("figures/VI_returns_ext.png", dpi=300)
+# plt.show()
 
 figure, tax = ternary.figure(scale=scale)
 figure.set_size_inches(10, 8)
-tax.heatmap(tf_r, style='triangular')
+tax.heatmap(tf_r, style="triangular")
 tax.boundary()
 tax.clear_matplotlib_ticks()
 ticks = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
-tax.ticks(ticks = ticks, axis='blr', linewidth=1, multiple=10)
-tax.bottom_axis_label("VI Initial Wealth Share (%)", fontsize = fontsize) 
-tax.left_axis_label("NT Initial Wealth Share (%)", fontsize = fontsize) 
-tax.right_axis_label("TF Initial Wealth Share (%)", fontsize = fontsize)
-tax.get_axes().axis('off')
-tax.set_title('TF returns', fontsize = fontsize)
+tax.ticks(ticks=ticks, axis="blr", linewidth=1, multiple=10)
+tax.bottom_axis_label("VI Initial Wealth Share (%)", fontsize=fontsize)
+tax.left_axis_label("NT Initial Wealth Share (%)", fontsize=fontsize)
+tax.right_axis_label("TF Initial Wealth Share (%)", fontsize=fontsize)
+tax.get_axes().axis("off")
+tax.set_title("TF returns", fontsize=fontsize)
 tax._redraw_labels()
 plt.tight_layout()
-plt.savefig('figures/TF_returns_ext.png',dpi=300)
-#plt.show()
+plt.savefig("figures/TF_returns_ext.png", dpi=300)
+# plt.show()
 
 
 # %%
 """ return to size ratios """
-
 
 
 data_group["NT_weighted_returns"] = data_group["NT_returns_mean"] / np.sqrt(
@@ -112,9 +116,6 @@ data_group["TF_weighted_returns"] = data_group["TF_returns_mean"] / np.sqrt(
 # data_group['NT_weighted_returns'] = data_group['NT_returns_mean'] / data_group['WS_NT']
 # data_group['VI_weighted_returns'] = data_group['VI_returns_mean'] / data_group['WS_VI']
 # data_group['TF_weighted_returns'] = data_group['TF_returns_mean'] / data_group['WS_TF']
-
-
-
 
 
 def generate_random_heatmap_data2(scale):
@@ -140,6 +141,7 @@ def generate_random_heatmap_data2(scale):
         l += 1
     return nt_ws, vi_ws, tf_ws
 
+
 nt_r2, vi_r2, tf_r2 = generate_random_heatmap_data2(scale)
 
 figure, tax = ternary.figure(scale=scale)
@@ -157,7 +159,7 @@ tax.set_title("NT weighted returns", fontsize=fontsize)
 tax._redraw_labels()
 plt.tight_layout()
 plt.savefig("figures/NT_weighted_returns_ext.png", dpi=300)
-#plt.show()
+# plt.show()
 
 figure, tax = ternary.figure(scale=scale)
 figure.set_size_inches(10, 8)
@@ -174,7 +176,7 @@ tax.set_title("VI weighted returns", fontsize=fontsize)
 tax._redraw_labels()
 plt.tight_layout()
 plt.savefig("figures/VI_weighted_returns_ext.png", dpi=300)
-#plt.show()
+# plt.show()
 
 figure, tax = ternary.figure(scale=scale)
 figure.set_size_inches(10, 8)
@@ -191,4 +193,4 @@ tax.set_title("TF weighted returns", fontsize=fontsize)
 tax._redraw_labels()
 plt.tight_layout()
 plt.savefig("figures/TF_weighted_returns_ext.png", dpi=300)
-#plt.show()
+# plt.show()
