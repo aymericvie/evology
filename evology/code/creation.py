@@ -6,7 +6,8 @@ from deap import gp
 import numpy as np
 
 toolbox = base.Toolbox()
-from parameters import *
+from parameters import min_nt_strat, max_nt_strat, min_vi_strat, max_vi_strat, tf_daily_ma_horizon_index, tf_daily_ma_horizons_probas
+from parameters import tf_daily_ma_horizons, RefAssets, RefCash, G, scholl_tf_strat
 import cythonized
 
 
@@ -68,7 +69,7 @@ def IndCreation(strat):
     return ind
 
 
-def CreatePop(n, space, WealthCoords, CurrentPrice, strategy, rng):
+def CreatePop(n, space, WealthCoords, CurrentPrice, strategy, rng, interest_year):
 
     if n < 3:
         raise ValueError("Cannot create diverse population with less than 3 agents. ")
@@ -189,18 +190,18 @@ def WealthReset(
     popsize,
     space,
     WealthCoords,
-    generation,
     ResetWealth,
     CurrentPrice,
     strategy,
     rng,
+    interest_year
 ):
     # current_size = len(pop)
     # types = [ind.type for ind in pop]
     if ResetWealth == True:
         del pop
         pop, asset_supply = CreatePop(
-            popsize, space, WealthCoords, CurrentPrice, strategy, rng
+            popsize, space, WealthCoords, CurrentPrice, strategy, rng, interest_year
         )
 
     # if len(pop) != current_size:

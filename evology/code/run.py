@@ -19,8 +19,9 @@ df, pop = main(
     wealth_coordinates=wealth_coordinates,
     POPULATION_SIZE=300,
     MAX_GENERATIONS=30000,  # 50 * 252, #20000, #1000 * 252,
-    seed=seed,
+    interest_year=0.01,
     investment=None,
+    seed=seed,
     tqdm_display=False,
     reset_wealth=False,
 )

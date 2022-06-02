@@ -7,6 +7,7 @@ def main(
     wealth_coordinates,
     POPULATION_SIZE,
     MAX_GENERATIONS,
+    interest_year,
     investment,
     seed,
     tqdm_display,
@@ -23,7 +24,7 @@ def main(
 
     # Population creation
     pop, asset_supply = cr.CreatePop(
-        POPULATION_SIZE, space, wealth_coordinates, CurrentPrice, strategy, rng
+        POPULATION_SIZE, space, wealth_coordinates, CurrentPrice, strategy, rng, interest_year
     )
 
     # Dividend and NT process generation
@@ -36,6 +37,8 @@ def main(
     process_series = prc.ExogeneousProcess(MAX_GENERATIONS, rng)
     rng = np.random.default_rng(seed=seed)
 
+    interest_day = interest_year / 252.0
+
     for generation in tqdm(
         range(MAX_GENERATIONS), disable=tqdm_display, miniters=100, mininterval=0.5
     ):
@@ -46,11 +49,11 @@ def main(
             POPULATION_SIZE,
             space,
             wealth_coordinates,
-            generation,
             reset_wealth,
             CurrentPrice,
             strategy,
             rng,
+            interest_year
         )
 
         # Hypermutation
@@ -84,7 +87,7 @@ def main(
             rng,
             price_emas,
         )
-        pop = bsc.CalculateTSV_avf(pop, generation, strategy, price_history, dividend)
+        pop = bsc.CalculateTSV_avf(pop, generation, strategy, price_history, dividend, interest_day)
         ToLiquidate = bsc.DetermineLiquidation(spoils, volume)
 
         # ''' for VI on contemporaneous price '''
@@ -113,7 +116,7 @@ def main(
             break
         price_history = bsc.UpdatePriceHistory(price_history, CurrentPrice)
 
-        pop = mk.earnings(pop, dividend)
+        pop = mk.earnings(pop, dividend, interest_day)
         pop = mk.update_margin(pop, CurrentPrice)
         pop = mk.clear_debt(pop, CurrentPrice)
 

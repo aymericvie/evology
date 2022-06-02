@@ -144,7 +144,7 @@ cpdef CalculateTSV_staticf(list pop, list price_history, double CurrentPrice, do
             # BH stay at 1, IR stay at 0, AV is not computed here, VI cannot compute before price is known
     return pop
 
-cpdef CalculateTSV_avf(list pop, double generation, object strategy, list price_history, double dividend):
+cpdef CalculateTSV_avf(list pop, double generation, object strategy, list price_history, double dividend, double interest_day):
     cdef cythonized.Individual ind
     cdef int i 
     cdef int t

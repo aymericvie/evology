@@ -2,7 +2,7 @@
 
 from balance_sheet_cython import count_long_assets, count_short_assets, update_margin, clear_debt
 import numpy as np
-from parameters import div_atc, G, div_vol, interest_day, G_day, Short_Size_Percent
+from parameters import div_atc, G, div_vol, G_day, Short_Size_Percent
 cimport cythonized
 from libc.math cimport isnan
 
@@ -29,7 +29,7 @@ cpdef draw_dividend(double dividend, list random_dividend_history):
     return dividend, random_dividend
 '''
 
-cpdef earnings(list pop, double dividend):
+cpdef earnings(list pop, double dividend, double interest_day):
     cdef cythonized.Individual ind
     cdef double div_asset
     cdef double interest_cash
