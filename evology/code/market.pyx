@@ -31,12 +31,12 @@ cpdef draw_dividend(double dividend, list random_dividend_history):
 
 cpdef earnings(list pop, double dividend, double interest_day):
     cdef cythonized.Individual ind
-    cdef double div_asset
+    cdef double div_asset 
     cdef double interest_cash
 
     for ind in pop:
         div_asset = ind.asset * dividend  # Determine gain from dividends
-        interest_cash = ind.cash * interest_day  # Determine gain from interest
+        nterest_cash = ind.cash * interest_day  # Determine gain from interest
         ind.cash += div_asset + interest_cash
         
     return pop
