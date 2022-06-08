@@ -23,13 +23,6 @@ def sigmoid(x):
 
 # %%
 
-df.plot(
-    x="Gen",
-    y=["total_cash", "Money_Supply"],
-    kind="line",
-    figsize=(15, 6),
-)
-plt.show()
 
 df["Dividends (x1,000)"] = 10000 * df["Dividends"]
 df["Process (x100)"] = 100 * df["NT_process"].add(1)
@@ -44,11 +37,21 @@ df.plot(
 )
 plt.show()
 
-df.plot(x="Gen", y=["Volume"], kind="line", figsize=(15, 6))
+df["NT_returns_ma"] = df["NT_returns"].rolling(252 * 10).mean()
+df["VI_returns_ma"] = df["VI_returns"].rolling(252 * 10).mean()
+df["TF_returns_ma"] = df["TF_returns"].rolling(252 * 10).mean()
+
+print([df["NT_returns"].mean(), df["VI_returns"].mean(), df["TF_returns"].mean()])
+
+df.plot(
+    x="Gen",
+    y=["NT_returns_ma", "VI_returns_ma", "TF_returns_ma"],
+    kind="line",
+    figsize=(15, 6),
+)
+plt.hlines(y=0, xmin=0, xmax=max(df["Gen"]), colors="gray", linestyles="dashed")
 plt.show()
 
-df.plot(x="Gen", y=["Pos-"], kind="line", figsize=(15, 6))
-plt.show()
 
 df.plot(
     x="Gen",
@@ -57,6 +60,13 @@ df.plot(
     figsize=(15, 6),
     ylim=(0, 100),
 )
+plt.show()
+
+
+df.plot(x="Gen", y=["Volume"], kind="line", figsize=(15, 6))
+plt.show()
+
+df.plot(x="Gen", y=["Pos-"], kind="line", figsize=(15, 6))
 plt.show()
 
 df.plot(
@@ -177,20 +187,7 @@ df.plot(
 plt.hlines(y=0, xmin=0, xmax=max(df["Gen"]), color="black")
 plt.show()
 # %%
-df["NT_returns_ma"] = df["NT_returns"].rolling(252 * 5).mean()
-df["VI_returns_ma"] = df["VI_returns"].rolling(252 * 5).mean()
-df["TF_returns_ma"] = df["TF_returns"].rolling(252 * 5).mean()
 
-print([df["NT_returns"].mean(), df["VI_returns"].mean(), df["TF_returns"].mean()])
-
-df.plot(
-    x="Gen",
-    y=["NT_returns_ma", "VI_returns_ma", "TF_returns_ma"],
-    kind="line",
-    figsize=(15, 6),
-)
-plt.hlines(y=0, xmin=0, xmax=max(df["Gen"]), colors="gray", linestyles="dashed")
-plt.show()
 
 
 df.plot(x="Gen", y=["Pos-"], kind="line", figsize=(15, 6))
