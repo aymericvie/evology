@@ -121,7 +121,9 @@ columns = [
     # Info on holdings
     "NT_asset",
     "VI_asset",
-    "TF_asset"
+    "TF_asset",
+    "total_cash",
+    "Money_Supply"
 ]
 variables = len(columns) 
 
@@ -539,6 +541,8 @@ def record_results(
     double Liquidations,
     double asset_supply,
     double process,
+    double total_cash,
+    double MoneySupply
 ):
 
     cdef int current = generation - Barr
@@ -603,6 +607,9 @@ def record_results(
 
         ''' strat positions '''
         arr += [ListOutput[59], ListOutput[60], ListOutput[61]]
+
+        ''' total cash '''
+        arr += [total_cash, MoneySupply]
 
         if len(arr) != len(results[current,:]):
             print(len(arr))

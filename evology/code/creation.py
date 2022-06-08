@@ -223,11 +223,3 @@ def WealthReset(
     #     raise ValueError('Wealth reset generated a population size mismatch.')
     return pop
 
-def Wealth_Normalisation(pop):
-    " This function normalizes wealth to keep money supply "
-    " at constant levels "
-    # We need money supply (from pop creation)
-    # We need current money in circulation
-    # We normalise at the fund level, and keep the wealth share constant
-    # We'll need an error check for equality of WS before/after normalisation
-    pass

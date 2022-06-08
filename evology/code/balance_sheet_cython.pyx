@@ -403,7 +403,122 @@ cpdef clear_debt(list pop, double price):
                 ind.cash = 100.0 * price
     return pop
 
+cpdef Wealth_Shares(list pop, double price):
+
+    cdef cythonized.Individual ind
+    cdef int t
+    cdef double wealth_nt = 0.0
+    cdef double wealth_vi = 0.0
+    cdef double wealth_tf = 0.0
+    cdef double wealth_av = 0.0
+    cdef double wshare_nt
+    cdef double wshare_vi
+    cdef double wshare_tf
+    cdef double wshare_av = 0.0
+    cdef double total_wealth = 0.0
+    cdef double total_cash = 0.0
+    cdef double new_cash = 0.0
+
+    # Calculate current wealth, wealth shares and current money supply
+    for ind in pop:
+        ind.wealth = ind.cash + ind.asset * price - ind.loan
+        t = ind.type_as_int
+        if t == 0: # NT
+            wealth_nt += ind.wealth
+            total_cash += ind.cash
+        if t == 1: # VI
+            wealth_vi += ind.wealth
+            total_cash += ind.cash
+        if t == 2: # TF
+            wealth_tf += ind.wealth
+            total_cash += ind.cash
+        if t == 3: # AV
+            wealth_av += ind.wealth
+            total_cash += ind.cash
+
+        if ind.loan != 0:
+            raise RuntimeError('Agent had a loan during wealth normalisation.')
+        if ind.margin != 0:
+            raise RuntimeError('Agent had a margin during wealth normalisation.')
+
+    total_wealth = wealth_nt + wealth_vi + wealth_tf + wealth_av
+    wshare_nt = 100. * wealth_nt / total_wealth
+    wshare_vi = 100. * wealth_vi / total_wealth
+    wshare_tf = 100. * wealth_tf / total_wealth
+    wshare_av = 100. * wealth_av / total_wealth
+
+    if isnan(wshare_nt)== True:
+        raise RuntimeError('NAN WShare NT')
+
+    if isnan(wshare_vi)== True:
+        raise RuntimeError('NAN WShare VI')
+
+    if isnan(wshare_tf)== True:
+        raise RuntimeError('NAN WShare TF')
+
+    if isnan(wshare_av)== True:
+        raise RuntimeError('NAN WShare AV')
+
+    return wshare_nt, wshare_vi, wshare_tf, wshare_av, total_cash
 
 
+cpdef Wealth_Normalisation(list pop, double MoneySupply, double price):
 
+    " This function normalizes wealth to keep money supply "
+    " at constant levels "
+    # We need money supply (from pop creation)
+    # We need current money in circulation
+    # We normalise at the fund level, and keep the wealth share constant
+    # We'll need an error check for equality of WS before/after normalisation
 
+    cdef double norm_factor
+    cdef cythonized.Individual ind
+    cdef double wshare_nt
+    cdef double wshare_vi
+    cdef double wshare_tf
+    cdef double wshare_av = 0.0
+    cdef double wshare_nt2
+    cdef double wshare_vi2
+    cdef double wshare_tf2
+    cdef double wshare_av2 = 0.0
+    cdef double total_cash
+    cdef double total_cash2
+
+    wshare_nt, wshare_vi, wshare_tf, wshare_av, total_cash = Wealth_Shares(pop, price)
+
+    if total_cash > MoneySupply:
+        # We need to normalise funds' cash as current amount exceeds supply
+        norm_factor = MoneySupply / total_cash
+        for ind in pop:
+            if ind.type_as_int != 'bh' or ind.type_as_int != 'ir':
+                ind.cash = ind.cash * norm_factor
+
+        # Double check our normalisation
+        wshare_nt2, wshare_vi2, wshare_tf2, wshare_av2, total_cash2 = Wealth_Shares(pop, price)
+
+        if total_cash2 - MoneySupply > 0.01:
+            print(total_cash2, MoneySupply)
+            raise RuntimeError('New cash exceeds money supply')
+
+        if wshare_nt - wshare_nt2 > 0.01:
+            print(norm_factor)
+            print([wshare_nt, wshare_nt2])
+            raise RuntimeError('WShares NT have changed after normalisation')
+
+        if wshare_vi - wshare_vi2 > 0.01:
+            print([wshare_vi, wshare_vi2])
+            raise RuntimeError('WShares VI have changed after normalisation')
+
+        if wshare_tf - wshare_tf2 > 0.01:
+            print([wshare_tf, wshare_tf2])
+            raise RuntimeError('WShares TF have changed after normalisation')
+
+        if wshare_av - wshare_av2 > 0.01:
+            print([wshare_av, wshare_av2])
+            raise RuntimeError('WShares AV have changed after normalisation')
+
+    if total_cash - MoneySupply < -0.01:
+        print([total_cash, MoneySupply])
+        raise RuntimeError('Total cash <= Money supply during wealth normalisation.')
+
+    return pop, total_cash

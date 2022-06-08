@@ -22,6 +22,15 @@ def sigmoid(x):
 
 
 # %%
+
+df.plot(
+    x="Gen",
+    y=["total_cash", "Money_Supply"],
+    kind="line",
+    figsize=(15, 6),
+)
+plt.show()
+
 df["Dividends (x1,000)"] = 10000 * df["Dividends"]
 df["Process (x100)"] = 100 * df["NT_process"].add(1)
 df["VI_val_1000"] = df["VI_val"]
@@ -401,3 +410,12 @@ df.plot(
     figsize=(15, 6),
 )
 plt.show()
+
+df.plot(
+    x="Gen",
+    y=["NT_nav", "VI_nav", "TF_nav"],
+    kind="line",
+    figsize=(15, 6),
+)
+plt.show()
+# %%

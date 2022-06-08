@@ -26,6 +26,7 @@ def main(
     pop, asset_supply, MoneySupply = cr.CreatePop(
         POPULATION_SIZE, space, wealth_coordinates, CurrentPrice, strategy, rng, interest_year
     )
+    # print(MoneySupply)
 
     # Dividend and NT process generation
     # price_history = prc.FictiousPriceSeries(rng)
@@ -56,12 +57,7 @@ def main(
             interest_year
         )
 
-        '''
-        # Wealth normalisation
-        pop = cr.Wealth_Normalisation(
-            pop
-        )
-        '''
+
 
         # Hypermutation
         pop, replacements, spoils = ga.hypermutate(pop, spoils, replace)
@@ -134,6 +130,15 @@ def main(
         
         if generation >= ShieldInvestment and investment != None:
             pop = iv.Emp_Investment(pop, rng)
+
+        
+        # Wealth normalisation
+        pop, total_cash = bsc.Wealth_Normalisation(
+            pop,
+            MoneySupply,
+            CurrentPrice
+        )
+        
         
 
         # Record results
@@ -151,6 +156,8 @@ def main(
             Liquidations,
             asset_supply,
             process_series[generation],
+            total_cash,
+            MoneySupply,
         )
 
         if sim_break == 1 and reset_wealth != True:
