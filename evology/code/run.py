@@ -1,8 +1,8 @@
 from main import *
 from parameters import *
 
-wealth_coordinates = [1 / 3, 1 / 3, 1 / 3]
-# wealth_coordinates = [0.2, 0.6, 0.2]
+# wealth_coordinates = [1 / 3, 1 / 3, 1 / 3]
+wealth_coordinates = [0.2, 0.6, 0.2]
 # wealth_coordinates = np.random.dirichlet(np.ones(3), size=1)[0].tolist()
 seed = 1
 np.random.seed(seed)
