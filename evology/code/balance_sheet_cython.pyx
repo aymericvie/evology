@@ -376,6 +376,7 @@ cpdef count_short_assets(list pop, double spoils):
         count += abs(spoils)
     return count
 
+'''
 cpdef update_margin(list pop, double current_price):
     cdef cythonized.Individual ind
     for ind in pop:
@@ -388,19 +389,25 @@ cpdef update_margin(list pop, double current_price):
             ind.loan += abs(ind.cash)
             ind.cash = 0.0
     return pop
+'''
 
 cpdef clear_debt(list pop, double price):
     cdef cythonized.Individual ind
     for ind in pop:
+        if isnan(ind.cash) == True:
+            raise RuntimeError('NAN cash 1')
+        if ind.loan < 0:
+            ind.cash += abs(ind.loan)
+            ind.loan = 0.0
         if ind.loan > 0:  # If the agent has outstanding debt:
-            if ind.cash >= ind.loan + 100.0 * price:  # If the agent has enough cash:
+            if ind.cash >= ind.loan:  # If the agent has enough cash:
                 ind.loan = 0.0
                 ind.cash -= ind.loan
-            if (
-                ind.cash < ind.loan + 100.0 * price
-            ):  # If the agent does not have enough cash:
-                ind.loan -= ind.cash - 100.0 * price
-                ind.cash = 100.0 * price
+            else: # If the agent does not have enough cash:
+                ind.loan -= ind.cash 
+                ind.cash = 0.0
+        if isnan(ind.cash) == True:
+            raise RuntimeError('NAN cash')
     return pop
 
 cpdef Wealth_Shares(list pop, double price):
@@ -437,6 +444,7 @@ cpdef Wealth_Shares(list pop, double price):
             total_cash += ind.cash
 
         if ind.loan != 0:
+            print([ind.type, ind.cash, ind.loan, ind.asset, ind.wealth])
             raise RuntimeError('Agent had a loan during wealth normalisation.')
         if ind.margin != 0:
             raise RuntimeError('Agent had a margin during wealth normalisation.')
@@ -521,4 +529,4 @@ cpdef Wealth_Normalisation(list pop, double MoneySupply, double price):
         print([total_cash, MoneySupply])
         raise RuntimeError('Total cash <= Money supply during wealth normalisation.')
 
-    return pop, total_cash
+    return pop, total_cash2

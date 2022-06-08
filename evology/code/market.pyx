@@ -1,6 +1,6 @@
 #cython: boundscheck=False, wraparound=False, initializedcheck=False, cdivision=True
 
-from balance_sheet_cython import count_long_assets, count_short_assets, update_margin, clear_debt
+from balance_sheet_cython import count_long_assets, count_short_assets, clear_debt
 import numpy as np
 from parameters import div_atc, G, div_vol, G_day, Short_Size_Percent
 cimport cythonized
@@ -31,12 +31,12 @@ cpdef draw_dividend(double dividend, list random_dividend_history):
 
 cpdef earnings(list pop, double dividend, double interest_day):
     cdef cythonized.Individual ind
-    cdef double div_asset 
-    cdef double interest_cash
+    cdef double div_asset = 0.
+    cdef double interest_cash = 0.
 
     for ind in pop:
         div_asset = ind.asset * dividend  # Determine gain from dividends
-        nterest_cash = ind.cash * interest_day  # Determine gain from interest
+        interest_cash = ind.cash * interest_day  # Determine gain from interest
         ind.cash += div_asset + interest_cash
         
     return pop
