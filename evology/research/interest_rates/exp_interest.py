@@ -21,11 +21,11 @@ from main import main as evology
 
 
 startTime = time.time()
-TimeHorizon = 100_000 
-PopulationSize = 500
+TimeHorizon = 200_000 
+PopulationSize = 300
 obs = 10000
-reps = 200
-coords = [0.1, 0.8, 0.1]
+reps = 100
+coords = [0.2, 0.6, 0.2]
 
 
 def job(param):
