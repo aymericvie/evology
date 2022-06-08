@@ -157,11 +157,11 @@ def job(param):
 randoms = np.random.randint(0, 100000, reps)
 param = []
 for seed in randoms:
-    param.append([0.00, int(seed)])
-    param.append([0.005, int(seed)])
     param.append([0.01, int(seed)])
     param.append([0.015, int(seed)])
     param.append([0.02, int(seed)])
+    param.append([0.025, int(seed)])
+    param.append([0.03, int(seed)])
 print(len(param)) 
 
 def main():
