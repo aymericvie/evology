@@ -23,7 +23,7 @@ def main(
     np.random.seed(seed)
 
     # Population creation
-    pop, asset_supply = cr.CreatePop(
+    pop, asset_supply, MoneySupply = cr.CreatePop(
         POPULATION_SIZE, space, wealth_coordinates, CurrentPrice, strategy, rng, interest_year
     )
 

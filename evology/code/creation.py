@@ -182,6 +182,8 @@ def CreatePop(n, space, WealthCoords, CurrentPrice, strategy, rng, interest_year
             ind.cash = PcTFCash
             ind.asset = PcTFAsset
 
+    MoneySupply = 0.0
+
     for ind in pop:
         ind.wealth = ind.cash + ind.asset * CurrentPrice - ind.loan
         ind.prev_wealth = ind.wealth
@@ -190,8 +192,10 @@ def CreatePop(n, space, WealthCoords, CurrentPrice, strategy, rng, interest_year
         if ind.type == "nt":
             if ind.asset != PcNTAsset:
                 raise RuntimeError("NT asset position mismatch.")
+        if ind.type != 'bh' or ind.type != 'ir':
+            MoneySupply += ind.cash
 
-    return pop, TotalAsset #Money supply
+    return pop, TotalAsset, MoneySupply
 
 
 def WealthReset(
@@ -209,7 +213,7 @@ def WealthReset(
     # types = [ind.type for ind in pop]
     if ResetWealth == True:
         del pop
-        pop, asset_supply = CreatePop(
+        pop, asset_supply, MoneySupply = CreatePop(
             popsize, space, WealthCoords, CurrentPrice, strategy, rng, interest_year
         )
 

@@ -4,8 +4,6 @@ import pandas as pd
 from math import isnan
 import sys
 import tqdm
-
-# import warnings
 import time
 import ternary
 import traceback
