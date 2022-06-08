@@ -3,8 +3,9 @@ from parameters import *
 
 # wealth_coordinates = [1 / 3, 1 / 3, 1 / 3]
 wealth_coordinates = [0.2, 0.6, 0.2]
+wealth_coordinates = [0.1101684950278992, 0.08731303098202803, 0.8025184739900729]
 # wealth_coordinates = np.random.dirichlet(np.ones(3), size=1)[0].tolist()
-seed = 1
+seed = 49
 np.random.seed(seed)
 print(wealth_coordinates)
 
@@ -17,7 +18,7 @@ df, pop = main(
     strategy=None,  # func, #None, #func,
     space="extended",  # 'extended',
     wealth_coordinates=wealth_coordinates,
-    POPULATION_SIZE=100,
+    POPULATION_SIZE=10,
     MAX_GENERATIONS=100000,  # 50 * 252, #20000, #1000 * 252,
     interest_year=0.01,
     investment=None,

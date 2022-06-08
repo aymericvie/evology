@@ -391,11 +391,12 @@ cpdef update_margin(list pop, double current_price):
     return pop
 '''
 
-cpdef clear_debt(list pop, double price):
+cpdef clear_debt(list pop, double price, double interest_day):
     cdef cythonized.Individual ind
     for ind in pop:
         if isnan(ind.cash) == True:
             raise RuntimeError('NAN cash 1')
+        ind.loan = ind.loan * (1 + interest_day)
         if ind.loan < 0:
             ind.cash += abs(ind.loan)
             ind.loan = 0.0
@@ -432,20 +433,20 @@ cpdef Wealth_Shares(list pop, double price):
         t = ind.type_as_int
         if t == 0: # NT
             wealth_nt += ind.wealth
-            total_cash += ind.cash
+            total_cash += ind.cash - ind.loan
         if t == 1: # VI
             wealth_vi += ind.wealth
-            total_cash += ind.cash
+            total_cash += ind.cash - ind.loan
         if t == 2: # TF
             wealth_tf += ind.wealth
-            total_cash += ind.cash
+            total_cash += ind.cash - ind.loan
         if t == 3: # AV
             wealth_av += ind.wealth
-            total_cash += ind.cash
+            total_cash += ind.cash - ind.loan
 
-        if ind.loan != 0:
-            print([ind.type, ind.cash, ind.loan, ind.asset, ind.wealth])
-            raise RuntimeError('Agent had a loan during wealth normalisation.')
+        ##if ind.loan != 0:
+        #    print([ind.type, ind.cash, ind.loan, ind.asset, ind.wealth])
+        #    raise RuntimeError('Agent had a loan during wealth normalisation.')
         if ind.margin != 0:
             raise RuntimeError('Agent had a margin during wealth normalisation.')
 
@@ -500,11 +501,47 @@ cpdef Wealth_Normalisation(list pop, double MoneySupply, double price):
         for ind in pop:
             if ind.type_as_int != 'bh' or ind.type_as_int != 'ir':
                 ind.cash = ind.cash * norm_factor
+                ind.loan = ind.loan * norm_factor
 
         # Double check our normalisation
         wshare_nt2, wshare_vi2, wshare_tf2, wshare_av2, total_cash2 = Wealth_Shares(pop, price)
 
-        if total_cash2 - MoneySupply > 0.01:
+        if abs(total_cash2 - MoneySupply) > 0.01:
+            print(total_cash2, MoneySupply)
+            raise RuntimeError('New cash exceeds money supply')
+
+        if wshare_nt - wshare_nt2 > 0.01:
+            print(norm_factor)
+            print([wshare_nt, wshare_nt2])
+            raise RuntimeError('WShares NT have changed after normalisation')
+
+        if wshare_vi - wshare_vi2 > 0.01:
+            print([wshare_vi, wshare_vi2])
+            raise RuntimeError('WShares VI have changed after normalisation')
+
+        if wshare_tf - wshare_tf2 > 0.01:
+            print([wshare_tf, wshare_tf2])
+            raise RuntimeError('WShares TF have changed after normalisation')
+
+        if wshare_av - wshare_av2 > 0.01:
+            print([wshare_av, wshare_av2])
+            raise RuntimeError('WShares AV have changed after normalisation')   
+    
+    
+    if total_cash < MoneySupply:
+        raise RuntimeError('total cash < money supply')
+    
+    '''
+        # We need to normalise funds' cash as current amount is below supply
+        norm_factor = MoneySupply / total_cash
+        for ind in pop:
+            if ind.type_as_int != 'bh' or ind.type_as_int != 'ir':
+                ind.cash = ind.cash * norm_factor
+
+        # Double check our normalisation
+        wshare_nt2, wshare_vi2, wshare_tf2, wshare_av2, total_cash2 = Wealth_Shares(pop, price)
+
+        if abs(total_cash2 - MoneySupply) > 0.01:
             print(total_cash2, MoneySupply)
             raise RuntimeError('New cash exceeds money supply')
 
@@ -524,9 +561,5 @@ cpdef Wealth_Normalisation(list pop, double MoneySupply, double price):
         if wshare_av - wshare_av2 > 0.01:
             print([wshare_av, wshare_av2])
             raise RuntimeError('WShares AV have changed after normalisation')
-
-    if total_cash - MoneySupply < -0.01:
-        print([total_cash, MoneySupply])
-        raise RuntimeError('Total cash <= Money supply during wealth normalisation.')
-
+    '''
     return pop, total_cash2

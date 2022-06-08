@@ -121,7 +121,7 @@ def main(
 
         pop = mk.earnings(pop, dividend, interest_day)
         # pop = mk.update_margin(pop, CurrentPrice)
-        pop = mk.clear_debt(pop, CurrentPrice)
+        pop = bsc.clear_debt(pop, CurrentPrice, interest_day)
 
         pop, replace = bsc.UpdateWealthProfitAge(pop, CurrentPrice)
         pop = bsc.UpdateQuarterlyWealth(pop, generation)

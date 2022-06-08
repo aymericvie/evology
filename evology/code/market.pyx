@@ -4,8 +4,12 @@ from balance_sheet_cython import count_long_assets, count_short_assets, clear_de
 import numpy as np
 from parameters import div_atc, G, div_vol, G_day, Short_Size_Percent
 cimport cythonized
-from libc.math cimport isnan
+from libc.math cimport isnan, log2, exp
 
+cpdef sigmoid(double x):
+    cdef double result 
+    result = 1. / (1. + exp(-x))
+    return result
 
 '''
 cpdef draw_dividend(double dividend, list random_dividend_history):
@@ -195,17 +199,32 @@ cpdef execute_ed(list pop, double current_price, double asset_supply, double spo
                 print([ind.edv, multiplier_buy])
                 raise ValueError('nan amount (sell)')
 
+        '''
+        if ind.cash - amount * current_price < 0:
+            print('Measuring info before negative cash')
+            print([ind.type, ind.cash, ind.loan, ind.asset, amount, ind.wealth])
+            print(current_price)
+        '''
+
         ind.asset += amount
         ind.cash -= amount * current_price
         volume += abs(amount)
 
         # Apply some some readjustment to avoid negative cash
         if ind.cash < 0:
+            '''
+            print([ind.type, ind.cash, ind.loan, ind.asset, amount, ind.wealth])
+            print([multiplier_buy, multiplier_sell])
+            print([sigmoid(log2(ind.val / current_price))])
+            print(ind.edv)
+            print([ind.cash + ind.asset * current_price - ind.loan])
+            raise RuntimeError('Negative cash after transaction.')
+            '''
             ind.loan += abs(ind.cash)
             ind.cash = 0
 
         if isnan(ind.cash) == True or isnan(ind.asset) == True:
-            print([ind.type, amount, ind.cash, ind.asset, ind.wealth, ind.edv, ind.tsv])
+            print([ind.type, amount, ind.cash, ind.asset, ind.loan, ind.wealth, ind.edv, ind.tsv])
             raise ValueError('Nan cash and asset at market')
 
     # Record that we liquidated some spoils
