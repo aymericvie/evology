@@ -7,6 +7,8 @@ import numpy as np
 
 from deap import creator
 import parameters
+import balance_sheet_cython as bsc
+from parameters import Short_Size_Percent
 
 cdef double LeverageTF = parameters.LeverageTF
 cdef double LeverageVI = parameters.LeverageVI
@@ -24,6 +26,9 @@ cpdef sigmoid(double x):
     # result = tanh(x)
     return result
 
+cpdef signal(double x):
+    return (x-1.) ** 3.
+
 cdef double edf(Individual ind, double price):
     cdef int t = ind.type_as_int
     cdef double corr = - 0.5
@@ -34,6 +39,10 @@ cdef double edf(Individual ind, double price):
 
     elif t == 1: # VI
         
+        ''' order-based with cubic (less reactive than log) '''
+        #return (LeverageVI * ind.wealth / price) * (tanh(SCALE_VI * signal(ind.val / price)))
+       
+
         ''' order-based with p(t) recursion '''
         return (LeverageVI * ind.wealth / price) * (tanh(SCALE_VI * (log2(ind.val / price))))
        
@@ -70,22 +79,43 @@ cpdef big_edf(
     Individual[:] pop,
     double price,
     double ToLiquidate,
+    double asset_supply,
+    double spoils,
+    double current_shorts,
 ):
-    cdef double result = ToLiquidate
+    cdef double result = ToLiquidate 
     cdef Individual ind
     cdef long t
     cdef double ind_result
-    #cdef double zero
+    cdef int limit = 0
+
+    # Determine if we are at the limit of the short position sizes
+    if current_shorts == asset_supply * Short_Size_Percent / 100.:
+        # We have reached the limit of shorts
+        # ED values below 0 for funds with short sizes must count as 0
+        limit = 1
+        print('Limit is attained during clearing')
+
     for ind in pop:
         ind_result = edf(ind, price)
         if isnan(ind_result) == False:
-            result += ind_result
+            result += ind_result 
+            '''
+            if limit == 0:
+                result += ind_result
+            elif limit == 1:
+                if ind.asset + ind_result < 0.:
+                    result += - np.inf
+                else:
+                    result += ind_result
+            '''
+            
     return result
 
-def agg_ed_esl(pop, ToLiquidate):
+def agg_ed_esl(pop, ToLiquidate, asset_supply, spoils, current_short):
     # array_pop = convert_to_array(pop)
     def aggregate_ed(asset_key, price):
-        return big_edf(pop, price, ToLiquidate)
+        return big_edf(pop, price, ToLiquidate, asset_supply, spoils, current_short)
     return aggregate_ed
 
 cdef convert_to_array(pop):
@@ -94,10 +124,10 @@ cdef convert_to_array(pop):
         array_pop[idx] = ind
     return array_pop
 
-def agg_ed(pop, ToLiquidate):
+def agg_ed(pop, ToLiquidate, asset_supply, spoils, current_short):
     array_pop = convert_to_array(pop)
     def aggregate_ed(price):
-        return big_edf(array_pop, price, ToLiquidate)
+        return big_edf(array_pop, price, ToLiquidate, asset_supply, spoils, current_short)
     return aggregate_ed
 
 cpdef calculate_edv(

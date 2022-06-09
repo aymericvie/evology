@@ -43,6 +43,7 @@ def main(
     for generation in tqdm(
         range(MAX_GENERATIONS), disable=tqdm_display, miniters=100, mininterval=0.5
     ):
+    #for generation in range(MAX_GENERATIONS):
         # print(CurrentPrice)
         # Population reset
         pop = cr.WealthReset(
@@ -96,7 +97,7 @@ def main(
         # ''' for VI on contemporaneous price '''
         # ed_functions = bsc.agg_ed_esl(pop, ToLiquidate)
         # CurrentPrice = mc.esl_solver(ed_functions, CurrentPrice)
-        ed_functions = cz.agg_ed(pop, ToLiquidate)
+        ed_functions = cz.agg_ed(pop, ToLiquidate, asset_supply, spoils, bsc.count_short_assets(pop, spoils))
         NewPrice = mc.scipy_solver(ed_functions, CurrentPrice)
         pop, mismatch = cz.calculate_edv(pop, NewPrice)
         # print(NewPrice)

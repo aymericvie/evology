@@ -24,7 +24,7 @@ SCALE_NT, SCALE_VI, SCALE_TF = (
     1.0 * ScaleCorr * ATC_TF,
 )
 
-GAMMA_NT = 0.2 * np.sqrt(1 / 252)
+GAMMA_NT = 0.2 * np.sqrt(1 / 252) #0.2
 MU_NT = 0. #1.0  # 1.
 RHO_NT = 0.00045832561
 
@@ -82,6 +82,7 @@ max_vi_strat = 15  # 15
 # A max horizon of 50 (extended) seems necessary to avoid price explosions too early.
 # max_tf_strat = 52  # 252 #252
 scholl_tf_strat = 250
+scholl_tf_index = 5
 
 tf_daily_ma_horizons = [
     5,

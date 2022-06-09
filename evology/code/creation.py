@@ -9,6 +9,7 @@ from math import isnan
 toolbox = base.Toolbox()
 from parameters import min_nt_strat, max_nt_strat, min_vi_strat, max_vi_strat, tf_daily_ma_horizon_index, tf_daily_ma_horizons_probas
 from parameters import tf_daily_ma_horizons, RefAssets, RefCash, G, scholl_tf_strat
+from parameters import scholl_tf_index
 import cythonized
 
 
@@ -142,7 +143,7 @@ def CreatePop(n, space, WealthCoords, CurrentPrice, strategy, rng, interest_year
                 ind.strategy = 0.01
             if ind.type == "tf":
                 ind.strategy = scholl_tf_strat
-                ind.strategy_index = 5
+                ind.strategy_index = scholl_tf_index
 
     if space == "extended":
         for ind in pop:

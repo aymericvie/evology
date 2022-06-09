@@ -154,7 +154,7 @@ cpdef CalculateTSV_staticf(list pop, list price_history, double CurrentPrice, do
                 #ind.tsv = price_emas[int(ind.strategy_index)]
 
             else:
-                ind.tsv = 0.5 #0.0
+                ind.tsv = 0.0 #0.0
         else:
             pass
             # BH stay at 1, IR stay at 0, AV is not computed here, VI cannot compute before price is known
@@ -376,11 +376,8 @@ cpdef count_long_assets(list pop, double spoils):
     return count
 
 cpdef UpdatePriceHistory(list price_history, double current_price):
-    
     price_history.append(current_price)
     return price_history
-
-
 
 cpdef count_short_assets(list pop, double spoils):
     cdef cythonized.Individual ind
