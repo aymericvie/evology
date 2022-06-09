@@ -120,7 +120,7 @@ cpdef CalculateTSV_staticf(list pop, list price_history, double CurrentPrice, do
     for i, ind in enumerate(pop):
         t = ind.type_as_int
         if t == 0: # NT
-            ind.tsv = process - MU_NT / 2. #+ ind.strategy #* randoms[i]
+            ind.tsv = process  #+ ind.strategy #* randoms[i]
         elif t == 1: # VI
             ''' for previous-price VI '''
             ind.tsv = log2(ind.val / CurrentPrice) 
@@ -135,11 +135,14 @@ cpdef CalculateTSV_staticf(list pop, list price_history, double CurrentPrice, do
                 ''' Moving average TF (compares p(t-1) to moving average at time horizon'''
                 #ind.tsv = log2((CurrentPrice / price_means[int(ind.strategy_index)]) + 0.5)
                 ind.tsv = log2((CurrentPrice / price_emas[int(ind.strategy_index)]))
+                # ind.tsv = tanh((CurrentPrice / price_emas[int(ind.strategy_index)]) - 1.)
+
+                
                 #print('TF with strat ' + str(ind.strategy) + '// Current Price ' + str(CurrentPrice) + ' vs MA ' + str(price_means[int(ind.strategy_index)]) + ' gives tsv ' + str(tanh(ind.tsv))) 
                 #ind.tsv = log2(price_means[0] / price_means[int(ind.strategy_index)]) 
                 ''' this setting has big impact on price jumps and ecology dynamics '''
             else:
-                ind.tsv = 0.5 #0.0
+                ind.tsv = 0.0 #0.0
         else:
             pass
             # BH stay at 1, IR stay at 0, AV is not computed here, VI cannot compute before price is known

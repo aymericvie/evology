@@ -109,14 +109,29 @@ def main(
             pop, NewPrice, asset_supply, spoils, ToLiquidate
         )
 
+
+        '''
+        if mismatch > 1000:
+            print('Type, W, EDV, TSV, S')
+            print([generation, mismatch])
+            print(asset_supply, asset_supply * Short_Size_Percent / 100)
+            for ind in pop:
+
+                print([ind.type, ind.wealth, ind.edv, ind.tsv, ind.asset])
+
+            raise RuntimeError('Mismatch today.')
+        '''
+
         # if volume != 0:
         #     CurrentPrice = NewPrice
         CurrentPrice = NewPrice
 
-        if CurrentPrice >= 1_000_000:
-            warnings.warn("Simulation break: price above 1M.")
-            # raise RuntimeError('Price above 1M')
-            break
+        
+        # print('---- GENERATION ' + str(generation) + ' ----')
+        # print('Price: ' + str(CurrentPrice))
+        # for ind in pop:
+        #     print([ind.type, ind.edv, ind.asset, ind.wealth])
+
         price_history = bsc.UpdatePriceHistory(price_history, CurrentPrice)
 
         pop = mk.earnings(pop, dividend, interest_day)
@@ -162,13 +177,29 @@ def main(
             total_cash,
             MoneySupply,
         )
+        if volume == 0:
+            print('Type, W, EDV, TSV, S')
+            print(asset_supply, asset_supply * Short_Size_Percent / 100)
+            for ind in pop:
+
+                print([ind.type, ind.wealth, ind.edv, ind.tsv, ind.asset])
+            print(('Null volume today.'))
+            break
+            # raise RuntimeError('Null volume today.')
 
         if sim_break == 1 and reset_wealth != True:
+            print(generation)
             warnings.warn("Only one base strategy left.")
             break
 
+        if CurrentPrice >= 10_000_000:
+            warnings.warn("Simulation break: price above 10M.")
+            # raise RuntimeError('Price above 1M')
+            break
+
     if generation < MAX_GENERATIONS - data.Barr:
-        results = results[0:generation]
+        results = results[0:generation+1]
+        print([generation, len(results)])
 
     df = pd.DataFrame(results, columns=data.columns)
 

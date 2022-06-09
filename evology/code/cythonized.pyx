@@ -17,17 +17,21 @@ cdef double SCALE_NT = parameters.SCALE_NT
 
 cpdef sigmoid(double x):
     cdef double result 
-    result = 1. / (1. + exp(-x))
+    #result = 1. / (1. + exp(-x))
+    result = 2. / (1. + exp(-x))
+    # result = tanh(x)
     return result
 
 cdef double edf(Individual ind, double price):
     cdef int t = ind.type_as_int
-    cdef double corr = 0.0
+    cdef double corr = - 0.5
     #cdef double VI_price = price_means[1]
     if t == 0:
         #return (LeverageNT * ind.wealth / price) * tanh(SCALE_NT * ind.tsv + corr) - ind.asset 
         """ Sigmoid on """
-        return (LeverageNT * ind.wealth / price) * (sigmoid(SCALE_NT * ind.tsv) + corr) - ind.asset 
+        #return (LeverageNT * ind.wealth / price) * (sigmoid(SCALE_NT * ind.tsv) + corr) - ind.asset 
+        return (LeverageNT * ind.wealth / price) * (tanh(SCALE_NT * ind.tsv))
+
     elif t == 1:
         ''' for previous-price VI '''
         #return (LeverageVI * ind.wealth / price) * tanh(SCALE_VI * ind.tsv + corr) - ind.asset
@@ -35,13 +39,18 @@ cdef double edf(Individual ind, double price):
         #return (LeverageVI * ind.wealth / price) * tanh(SCALE_VI * (log2(ind.val / price)) + corr) - ind.asset
 
         ''' sigmoid on '''
-        return (LeverageVI * ind.wealth / price) * (sigmoid(SCALE_VI * (log2(ind.val / price))) + corr) - ind.asset
-        #return (LeverageVI * ind.wealth / price) * sigmoid(SCALE_VI * ((ind.val / price) - 1) + corr) - ind.asset
+        # return (LeverageVI * ind.wealth / price) * (sigmoid(SCALE_VI * (log2(ind.val / price))) + corr) - ind.asset
 
+        #return (LeverageVI * ind.wealth / price) * (sigmoid(SCALE_VI * (log2(ind.val / price))) + corr) 
+        #return (LeverageVI * ind.wealth / price) * (tanh(SCALE_VI * (log2(ind.val / price))) + corr) 
+        return (LeverageVI * ind.wealth / price) * (tanh(SCALE_VI * (log2(ind.val / price)))) 
+   
     elif t == 2: # TF
         #return (LeverageTF * ind.wealth / price) * tanh(SCALE_TF * ind.tsv + corr) - ind.asset 
         """ sigmoid """
-        return (LeverageTF * ind.wealth / price) * (sigmoid(SCALE_TF * ind.tsv) + corr) - ind.asset 
+        #return (LeverageTF * ind.wealth / price) * (sigmoid(SCALE_TF * ind.tsv) + corr) - ind.asset 
+        return (LeverageTF * ind.wealth / price) * (tanh(SCALE_TF * ind.tsv))
+
     elif t == 3: # AV
         #return (ind.wealth / price) * tanh(ind.tsv) - ind.asset 
 

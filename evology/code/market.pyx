@@ -178,6 +178,9 @@ cpdef execute_ed(list pop, double current_price, double asset_supply, double spo
         if ind.edv > 0:
             if multiplier_buy != 0.0:
                 amount = ind.edv * multiplier_buy
+                ind.asset += amount 
+                ind.cash -= amount * current_price
+                volume += amount
             if isnan(amount) == True:
                 print([ind.edv, multiplier_buy])
                 raise ValueError('nan amount (buy)')
@@ -186,15 +189,31 @@ cpdef execute_ed(list pop, double current_price, double asset_supply, double spo
             if abs(ind.edv) * multiplier_sell <= ind.asset:
             # If we have enough to simple sell as much as we want to
                 amount = ind.edv * multiplier_sell
+                ind.asset -= abs(amount) 
+                ind.cash += abs(amount) * current_price
+                volume += abs(amount)
             elif abs(ind.edv) * multiplier_sell > ind.asset:
             # If instead we want to sell more than our inventory:
-                temp = abs(ind.edv) * multiplier_sell
+                amount = abs(ind.edv) * multiplier_sell
+                # temp
+                temp = 0 # measures things sold from stock
                 if ind.asset > 0:
                 # If we have assets to sell, we sell those according to mulitplier_sell
                     amount -= ind.asset
-                    temp -= ind.asset
+
+                    ind.cash += ind.asset * current_price
+                    volume += ind.asset
+                    temp += ind.asset
+                    ind.asset = 0.0
+                    
+                    #temp -= ind.asset
                 # The reminder is a short sell. Hence, both multiplier_sell AND short_ratio apply.
-                amount -= temp * short_ratio
+                if ind.asset <= 0:
+                    amount = (abs(ind.edv) * short_ratio * multiplier_sell) - temp
+                    ind.cash += amount * current_price
+                    volume += amount
+                    ind.asset -= amount
+                # temp
             if isnan(amount) == True:
                 print([ind.edv, multiplier_buy])
                 raise ValueError('nan amount (sell)')
@@ -206,9 +225,9 @@ cpdef execute_ed(list pop, double current_price, double asset_supply, double spo
             print(current_price)
         '''
 
-        ind.asset += amount
-        ind.cash -= amount * current_price
-        volume += abs(amount)
+        #ind.asset += amount
+        #ind.cash -= amount * current_price
+        #volume += abs(amount)
 
         # Apply some some readjustment to avoid negative cash
         if ind.cash < 0:

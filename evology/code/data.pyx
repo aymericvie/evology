@@ -123,7 +123,10 @@ columns = [
     "VI_asset",
     "TF_asset",
     "total_cash",
-    "Money_Supply"
+    "Money_Supply",
+    'NT_edv',
+    'VI_edv',
+    'TF_edv'
 ]
 variables = len(columns) 
 
@@ -255,6 +258,10 @@ def ResultsProcess(list pop, double spoils, double price, double generation, dou
     cdef double NT_asset = 0.0
     cdef double VI_asset = 0.0
     cdef double TF_asset = 0.0
+    cdef double NT_edv  = 0.0
+    cdef double VI_edv  = 0.0
+    cdef double TF_edv  = 0.0
+
 
 
     for ind in pop:
@@ -317,6 +324,7 @@ def ResultsProcess(list pop, double spoils, double price, double generation, dou
             #NT_process += ind.process
             NT_substrategies.append(ind.strategy)
             NT_asset += ind.asset
+            NT_edv += ind.edv
 
         elif ind.type == "vi":
             VIcount += 1
@@ -336,6 +344,7 @@ def ResultsProcess(list pop, double spoils, double price, double generation, dou
             VI_val += ind.val * ind.wealth
             VI_substrategies.append(ind.strategy)
             VI_asset += ind.asset
+            VI_edv += ind.edv
 
         elif ind.type == "tf":
             TFcount += 1
@@ -354,6 +363,7 @@ def ResultsProcess(list pop, double spoils, double price, double generation, dou
             TFflows += 0 #ind.investor_flow
             TF_substrategies.append(ind.strategy)
             TF_asset += ind.asset
+            TF_edv += ind.edv
 
     if NTcount != 0:
         NTcash = NTcash / NTcount
@@ -520,6 +530,9 @@ def ResultsProcess(list pop, double spoils, double price, double generation, dou
         NT_asset,
         VI_asset,
         TF_asset,
+        NT_edv,
+        VI_edv,
+        TF_edv
     ]
 
     return ListOutput, sim_break
@@ -610,6 +623,9 @@ def record_results(
 
         ''' total cash '''
         arr += [total_cash, MoneySupply]
+
+        ''' EDV '''
+        arr += [ListOutput[62], ListOutput[63], ListOutput[64]]
 
         if len(arr) != len(results[current,:]):
             print(len(arr))

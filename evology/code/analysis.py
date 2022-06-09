@@ -20,7 +20,6 @@ def sigmoid(x):
     return 1. / (1. + np.exp(-x))
 
 
-
 # %%
 
 
@@ -31,7 +30,23 @@ df["PriceEma"] = pd.Series.ewm(df["Price"], span=21).mean()
 
 df.plot(
     x="Gen",
-    y=["Price", "Dividends (x1,000)", "VI_val_1000"],
+    y=["Price", "VI_val_1000"],
+    kind="line",
+    figsize=(15, 6),
+)
+plt.show()
+
+df.plot(
+    x="Gen",
+    y=["Dividends"],
+    kind="line",
+    figsize=(15, 6),
+)
+plt.show()
+
+df.plot(
+    x="Gen",
+    y=["NT_process"],
     kind="line",
     figsize=(15, 6),
 )
@@ -63,6 +78,8 @@ df.plot(
 plt.show()
 
 
+
+
 df.plot(x="Gen", y=["Volume"], kind="line", figsize=(15, 6))
 plt.show()
 
@@ -77,36 +94,42 @@ df.plot(
 )
 plt.show()
 
+# %%
+
+df["Mispricing"] = np.log2(df["VI_val"] / df["Price"])
+mispricing = df["Mispricing"].mean()
+df.plot(x="Gen", y=["Mispricing"], kind="line", figsize=(15, 6))
+plt.show()
+
 df.plot(
     x="Gen",
-    y=["Price"],
+    y=["NT_edv", "VI_edv", "TF_edv"],
     kind="line",
     figsize=(15, 6),
 )
 plt.show()
 
 
-# %%
 
-print(df["VI_signal"])
+# %%
 
 df.plot(
     x="Gen", y=["NT_signal", "VI_signal", "TF_signal"], kind="line", figsize=(15, 6)
 )
 
 
-df["NT_signal2"] = sigmoid(df["NT_signal"])
-df["VI_signal2"] = sigmoid(df["VI_signal"])
-df["TF_signal2"] = sigmoid(df["TF_signal"])
+df["NT_signal2"] = sigmoid(df["NT_signal"]) - 0.5
+df["VI_signal2"] = sigmoid(df["VI_signal"]) - 0.5
+df["TF_signal2"] = sigmoid(df["TF_signal"]) - 0.5
 
 
 df.plot(
     x="Gen", y=["NT_signal2", "VI_signal2", "TF_signal2"], kind="line", figsize=(15, 6)
 )
 
-df["NT_signalW"] = sigmoid(df["NT_signal"]) * df["WShare_NT"]
-df["VI_signalW"] = sigmoid(df["VI_signal"]) * df["WShare_VI"]
-df["TF_signalW"] = sigmoid(df["TF_signal"]) * df["WShare_TF"]
+df["NT_signalW"] = (sigmoid(df["NT_signal"]) - 0.5) * df["WShare_NT"]
+df["VI_signalW"] = (sigmoid(df["VI_signal"]) - 0.5) * df["WShare_VI"]
+df["TF_signalW"] = (sigmoid(df["TF_signal"]) - 0.5) * df["WShare_TF"]
 
 df.plot(
     x="Gen", y=["NT_signalW", "VI_signalW", "TF_signalW"], kind="line", figsize=(15, 6)
@@ -114,9 +137,9 @@ df.plot(
 plt.hlines(y=0, xmin=0, xmax=max(df["Gen"]), colors="gray", linestyles="dashed")
 plt.show()
 
-df["NT_signalW"] = sigmoid(df["NT_signal"]) * df["NT_nav"]
-df["VI_signalW"] = sigmoid(df["VI_signal"]) * df["VI_nav"]
-df["TF_signalW"] = sigmoid(df["TF_signal"]) * df["TF_nav"]
+df["NT_signalW"] = (sigmoid(df["NT_signal"])- 0.5) * df["NT_nav"]
+df["VI_signalW"] = (sigmoid(df["VI_signal"])- 0.5) * df["VI_nav"]
+df["TF_signalW"] = (sigmoid(df["TF_signal"])- 0.5) * df["TF_nav"]
 
 df.plot(
     x="Gen", y=["NT_signalW", "VI_signalW", "TF_signalW"], kind="line", figsize=(15, 6)
@@ -141,6 +164,14 @@ plt.show()
 
 
 # %%
+
+df.plot(
+    x="Gen",
+    y=["NT_cash", "VI_cash", "TF_cash"],
+    kind="line",
+    figsize=(15, 6),
+)
+plt.show()
 
 df.plot(
     x="Gen",
@@ -176,9 +207,14 @@ if df["Gen"].iloc[-1] >= 252:
     df.plot(x="Gen", y=["Volatility"], kind="line", figsize=(15, 6))
     plt.show()
 
-else:
-    volatility = np.nan
-    # mispricing = np.nan
+df["Mispricing"] = np.tanh(df["VI_val"] / df["Price"] - 1)
+mispricing = df["Mispricing"].mean()
+
+
+df.plot(x="Gen", y=["Mispricing"], kind="line", figsize=(15, 6))
+plt.show()
+
+
 
 
 # %%
@@ -426,3 +462,187 @@ df.plot(
 )
 plt.show()
 # %%
+
+# %%
+df.tail(100).plot(
+    x="Gen",
+    y=["Price"],
+    kind="line",
+    figsize=(15, 6),
+)
+plt.show()
+
+df.tail(100).plot(
+    x="Gen",
+    y=["Mismatch"],
+    kind="line",
+    figsize=(15, 6),
+)
+plt.show()
+
+df.tail(100).plot(
+    x="Gen",
+    y=["NT_cash"],
+    kind="line",
+    figsize=(15, 6),
+)
+plt.show()
+
+df.tail(100).plot(
+    x="Gen",
+    y=["VI_cash"],
+    kind="line",
+    figsize=(15, 6),
+)
+plt.show()
+
+df.tail(100).plot(
+    x="Gen",
+    y=["TF_cash"],
+    kind="line",
+    figsize=(15, 6),
+)
+plt.show()
+
+df.tail(100).plot(
+    x="Gen",
+    y=["NT_asset"],
+    kind="line",
+    figsize=(15, 6),
+)
+plt.show()
+df.tail(100).plot(
+    x="Gen",
+    y=["NT_signal", "VI_signal", "TF_signal"],
+    kind="line",
+    figsize=(15, 6),
+)
+plt.show()
+
+# Why positive mismatch on the last 15-20 days before the spike?
+# 
+
+df.tail(100).plot(
+    x="Gen",
+    y=["Pos-"],
+    kind="line",
+    figsize=(15, 6),
+)
+plt.show()
+
+df.tail(100).plot(
+    x="Gen",
+    y=["Price", "VI_val"],
+    kind="line",
+    figsize=(15, 6),
+)
+plt.show()
+# %%
+df.tail(100).plot(
+    x="Gen",
+    y=["Dividends"],
+    kind="line",
+    figsize=(15, 6),
+)
+plt.show()
+
+df.tail(100).plot(
+    x="Gen",
+    y=["VI_val"],
+    kind="line",
+    figsize=(15, 6),
+)
+plt.show()
+
+df.tail(100).plot(
+    x="Gen",
+    y=["VI_signal"],
+    kind="line",
+    figsize=(15, 6),
+)
+plt.show()
+
+df.tail(100).plot(
+    x="Gen",
+    y=["NT_asset", "VI_asset", "TF_asset"],
+    kind="line",
+    figsize=(15, 6),
+)
+plt.show()
+
+# %%
+df.tail(100).plot(
+    x="Gen",
+    y=["NT_process"],
+    kind="line",
+    figsize=(15, 6),
+)
+plt.show()
+
+df.tail(100).plot(
+    x="Gen",
+    y=["NT_signal"],
+    kind="line",
+    figsize=(15, 6),
+)
+plt.show()
+
+#%%
+df['Mispricing'] = np.log2(df['VI_val'] / df['Price'])
+
+df.tail(100).plot(
+    x="Gen",
+    y=["Mispricing"],
+    kind="line",
+    figsize=(15, 6),
+)
+plt.show()
+
+df.tail(100).plot(
+    x="Gen",
+    y=["VI_signal"],
+    kind="line",
+    figsize=(15, 6),
+)
+plt.show()
+
+df["VI_signal2"] = sigmoid(df["VI_signal"]) - 0.5
+
+df.tail(100).plot(
+    x="Gen",
+    y=["VI_signal2"],
+    kind="line",
+    figsize=(15, 6),
+)
+plt.show()
+# %%
+df.tail(100).plot(
+    x="Gen",
+    y=["WShare_TF", "WShare_VI", "WShare_NT", "AV_WShare"],
+    kind="line",
+    figsize=(15, 6),
+    ylim=(0, 100),
+)
+plt.show()
+
+df.tail(100).plot(
+    x="Gen",
+    y=["NT_cash"],
+    kind="line",
+    figsize=(15, 6),
+)
+plt.show()
+df.tail(100).plot(
+    x="Gen",
+    y=["VI_cash"],
+    kind="line",
+    figsize=(15, 6),
+)
+plt.show()
+df.tail(100).plot(
+    x="Gen",
+    y=["TF_cash"],
+    kind="line",
+    figsize=(15, 6),
+)
+plt.show()
