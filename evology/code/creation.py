@@ -16,7 +16,7 @@ def DrawStrategy(strat, rng):
     index = 0
     if strat == "nt":
         # strategy = np.random.uniform(min_nt_strat, max_nt_strat) / 10
-        strategy = (rng.uniform(min_nt_strat, max_nt_strat) - 10) / 1000
+        strategy = rng.uniform(min_nt_strat, max_nt_strat) / 1000
     elif strat == "vi":
         strategy = rng.uniform(min_vi_strat, max_vi_strat) / 1000
     elif strat == "tf":
@@ -137,11 +137,12 @@ def CreatePop(n, space, WealthCoords, CurrentPrice, strategy, rng, interest_year
     if space == "scholl":
         for ind in pop:
             if ind.type == "nt":
-                ind.strategy = 0  # no bias in 3-strat space
+                ind.strategy = 0.01 
             if ind.type == "vi":
                 ind.strategy = 0.01
             if ind.type == "tf":
                 ind.strategy = scholl_tf_strat
+                ind.strategy_index = 5
 
     if space == "extended":
         for ind in pop:
@@ -168,6 +169,13 @@ def CreatePop(n, space, WealthCoords, CurrentPrice, strategy, rng, interest_year
         if ind.type == "nt":
             ind.cash = PcNTCash
             ind.asset = PcNTAsset
+            ind.val_net = (1.0 + (interest_year + ind.strategy) - G) ** (
+                1.0 / 252.0
+            ) - 1.0
+            if isnan(ind.val_net) == True or ind.val_net <= 0:
+                print(ind.val_net)
+                print(ind.strategy)
+                raise RuntimeError('Negative or NaN ind.val_net (denominator) for NT') 
         if ind.type == "vi":
             ind.cash = PcVICash
             ind.asset = PcVIAsset
@@ -177,7 +185,7 @@ def CreatePop(n, space, WealthCoords, CurrentPrice, strategy, rng, interest_year
             if isnan(ind.val_net) == True or ind.val_net <= 0:
                 print(ind.val_net)
                 print(ind.strategy)
-                raise RuntimeError('Negative or NaN ind.val_net (denominator)') 
+                raise RuntimeError('Negative or NaN ind.val_net (denominator) for VI') 
         if ind.type == "tf":
             ind.cash = PcTFCash
             ind.asset = PcTFAsset

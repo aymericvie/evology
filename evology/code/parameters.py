@@ -84,6 +84,7 @@ max_vi_strat = 15  # 15
 scholl_tf_strat = 250
 
 tf_daily_ma_horizons = [
+    5,
     50,
     100,
     150,

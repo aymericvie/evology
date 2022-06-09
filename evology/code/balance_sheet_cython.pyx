@@ -134,8 +134,11 @@ cpdef CalculateTSV_staticf(list pop, list price_history, double CurrentPrice, do
                 #ind.tsv =  log2(CurrentPrice / ind.last_price)
                 ''' Moving average TF (compares p(t-1) to moving average at time horizon'''
                 #ind.tsv = log2((CurrentPrice / price_means[int(ind.strategy_index)]) + 0.5)
-                ind.tsv = log2((CurrentPrice / price_emas[int(ind.strategy_index)]))
-                # ind.tsv = tanh((CurrentPrice / price_emas[int(ind.strategy_index)]) - 1.)
+                
+                
+                #ind.tsv = log2((CurrentPrice / price_emas[int(ind.strategy_index)]))
+
+                ind.tsv = log2((price_emas[0] / price_emas[int(ind.strategy_index)]))
 
                 
                 #print('TF with strat ' + str(ind.strategy) + '// Current Price ' + str(CurrentPrice) + ' vs MA ' + str(price_means[int(ind.strategy_index)]) + ' gives tsv ' + str(tanh(ind.tsv))) 
@@ -199,10 +202,11 @@ cpdef UpdateFval(list pop, double dividend, double interest_year):
     numerator = (1 + G_day) * dividend
     for ind in pop:
         t = ind.type_as_int
-        if t==1:
+        if t==1 or t==0:
             if ind.val_net == 0.0 or ind.val_net < 0:
                 print(ind.strategy)
                 print(ind.val_net)
+                print(ind.type)
                 raise ValueError('ind.val_net <= 0')
             fval = numerator / ind.val_net # TODO: Val_net only changes when val changes
             #if fval != np.inf:
@@ -220,6 +224,7 @@ cpdef UpdateFval(list pop, double dividend, double interest_year):
                 print(numerator/ ((1.0 + (interest_year + ind.strategy) - G) ** (
                     1.0 / 252.0
                 ) - 1.0))
+                print(ind.type)
                 raise RuntimeError('Nan or 0 ind.val')
     return pop
 
