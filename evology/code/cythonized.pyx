@@ -14,6 +14,8 @@ cdef double LeverageNT = parameters.LeverageNT
 cdef double SCALE_TF = parameters.SCALE_TF
 cdef double SCALE_VI = parameters.SCALE_VI
 cdef double SCALE_NT = parameters.SCALE_NT
+cdef double T_th = parameters.T_threshold
+cdef double tau = parameters.tau_threshold
 
 cpdef sigmoid(double x):
     cdef double result 
@@ -25,42 +27,34 @@ cpdef sigmoid(double x):
 cdef double edf(Individual ind, double price):
     cdef int t = ind.type_as_int
     cdef double corr = - 0.5
+    cdef double m = 0.0
     #cdef double VI_price = price_means[1]
-    if t == 0:
-        #return (LeverageNT * ind.wealth / price) * tanh(SCALE_NT * ind.tsv + corr) - ind.asset 
-        """ Sigmoid on """
-        #return (LeverageNT * ind.wealth / price) * (sigmoid(SCALE_NT * ind.tsv) + corr) - ind.asset 
-        
-        
-        return (LeverageNT * ind.wealth / price) * (tanh(SCALE_NT * ind.tsv)) - ind.asset
-        #return (LeverageNT * ind.wealth / price) * (tanh(SCALE_NT * (log2((ind.tsv * ind.val) / price))))
+    if t == 0: # NT 
+        return (LeverageNT * ind.wealth / price) * (sigmoid(SCALE_NT * ind.tsv)) - ind.asset
 
-    elif t == 1:
-        ''' for previous-price VI '''
-        #return (LeverageVI * ind.wealth / price) * tanh(SCALE_VI * ind.tsv + corr) - ind.asset
-        ''' for contemporaneous-price VI '''
-        #return (LeverageVI * ind.wealth / price) * tanh(SCALE_VI * (log2(ind.val / price)) + corr) - ind.asset
-
-        ''' sigmoid on '''
-        # return (LeverageVI * ind.wealth / price) * (sigmoid(SCALE_VI * (log2(ind.val / price))) + corr) - ind.asset
-
-        #return (LeverageVI * ind.wealth / price) * (sigmoid(SCALE_VI * (log2(ind.val / price))) + corr) 
-        #return (LeverageVI * ind.wealth / price) * (tanh(SCALE_VI * (log2(ind.val / price))) + corr) 
+    elif t == 1: # VI
         
-        return (LeverageVI * ind.wealth / price) * (tanh(SCALE_VI * (log2(ind.val / price)))) 
-        # return (LeverageVI * ind.wealth / price) * (tanh(SCALE_VI * (log2(ind.tsv)))) 
+        ''' order-based with p(t) recursion '''
+        return (LeverageVI * ind.wealth / price) * (tanh(SCALE_VI * (log2(ind.val / price))))
+       
+        ''' order-based with scalar P(t-1), no recursion'''
+        # return (LeverageVI * ind.wealth / price) * (tanh(SCALE_VI * (ind.tsv))) 
 
-    elif t == 2: # TF
-        #return (LeverageTF * ind.wealth / price) * tanh(SCALE_TF * ind.tsv + corr) - ind.asset 
-        """ sigmoid """
-        #return (LeverageTF * ind.wealth / price) * (sigmoid(SCALE_TF * ind.tsv) + corr) - ind.asset 
-        
+        ''' State-dependent threshold value investor
+        m = log2(ind.val / price)
+        if m > T_th:
+            m = T_th
+        if m < - T_th:
+            m = - T_th
+        else:
+            m = 0
+        return (LeverageVI * ind.wealth / price) * (tanh(SCALE_VI * m)) 
+        '''
+
+    elif t == 2: # TF 
         return (LeverageTF * ind.wealth / price) * (tanh(SCALE_TF * ind.tsv)) - ind.asset 
 
-        # return (LeverageTF * ind.wealth / price) * (tanh(SCALE_TF * ind.tsv))
-
     elif t == 3: # AV
-        #return (ind.wealth / price) * tanh(ind.tsv) - ind.asset 
         raise RuntimeError('Old ED for AV')
         ''' Sigmoid on '''
         return (ind.wealth / price) * sigmoid(ind.tsv) - ind.asset

@@ -87,7 +87,7 @@ cpdef determine_multiplier(list pop, double spoils, double ToLiquidate, double a
     # Now we have total buy and total sell. Decide how much we include total_short.
     # In this determination, short positions already in spoils and population have the priority.
     CountShort = count_short_assets(pop, spoils)
-    if CountShort >= asset_supply + 1:
+    if CountShort >= (asset_supply * Short_Size_Percent / 100.) + 1.:
         print(CountShort)
         print(asset_supply)
         raise ValueError('Limit on short position size was violated before computing order ratio. ')
@@ -152,6 +152,17 @@ cpdef determine_multiplier(list pop, double spoils, double ToLiquidate, double a
     if short_ratio > 1:
         print(short_ratio)
         raise ValueError('Short ratio above 1')
+
+    '''
+    if multiplier_buy == 0 or multiplier_sell == 0:
+        print([multiplier_buy, multiplier_sell])
+        print([total_buy, total_sell])
+        print(asset_supply, asset_supply * Short_Size_Percent / 100)
+        for ind in pop:
+            print([ind.type, ind.wealth, ind.edv, ind.tsv, ind.asset])
+        raise RuntimeError('Imbalanced market demand.')
+    '''
+
 
     return multiplier_buy, multiplier_sell, short_ratio
 

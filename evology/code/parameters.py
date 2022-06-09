@@ -32,7 +32,7 @@ RHO_NT = 0.00045832561
 """ MARKET PARAMETERS """
 TRADING_DAYS = 252
 InitialPrice = 100
-Short_Size_Percent = 100  # 1.17
+Short_Size_Percent = 100 #100  # 1.17
 
 RefLoan = 0
 RefCash = 50_000_000
@@ -111,3 +111,7 @@ tf_daily_ma_horizons_probas = [1 / len(tf_daily_ma_horizons)] * len(
     tf_daily_ma_horizons
 )
 ema_factors = [(2 / (n + 1)) for n in tf_daily_ma_horizons]
+
+
+T_threshold = 0.1 # T
+tau_threshold = -0.5 # Tau

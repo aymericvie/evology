@@ -43,7 +43,7 @@ def main(
     for generation in tqdm(
         range(MAX_GENERATIONS), disable=tqdm_display, miniters=100, mininterval=0.5
     ):
-
+        # print(CurrentPrice)
         # Population reset
         pop = cr.WealthReset(
             pop,
@@ -99,6 +99,7 @@ def main(
         ed_functions = cz.agg_ed(pop, ToLiquidate)
         NewPrice = mc.scipy_solver(ed_functions, CurrentPrice)
         pop, mismatch = cz.calculate_edv(pop, NewPrice)
+        # print(NewPrice)
 
         # Market activity
         dividend, random_dividend = (
@@ -199,7 +200,6 @@ def main(
 
     if generation < MAX_GENERATIONS - data.Barr:
         results = results[0:generation+1]
-        print([generation, len(results)])
 
     df = pd.DataFrame(results, columns=data.columns)
 

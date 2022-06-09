@@ -36,6 +36,14 @@ df.plot(
 )
 plt.show()
 
+df.plot(x="Gen", y=["NT_asset", "VI_asset", "TF_asset"], kind="line", figsize=(15, 6))
+plt.hlines(y=0, xmin=0, xmax=max(df["Gen"]), colors="gray", linestyles="dashed")
+plt.show()
+
+df.plot(
+    x="Gen", y=["NT_signal", "VI_signal", "TF_signal"], kind="line", figsize=(15, 6)
+)
+
 df.plot(
     x="Gen",
     y=["Dividends"],
@@ -113,9 +121,7 @@ plt.show()
 
 # %%
 
-df.plot(
-    x="Gen", y=["NT_signal", "VI_signal", "TF_signal"], kind="line", figsize=(15, 6)
-)
+
 
 
 df["NT_signal2"] = sigmoid(df["NT_signal"]) - 0.5
@@ -187,9 +193,7 @@ df.plot(
 plt.hlines(y=0, xmin=0, xmax=max(df["Gen"]), colors="gray", linestyles="dashed")
 plt.show()
 
-df.plot(x="Gen", y=["NT_asset", "VI_asset", "TF_asset"], kind="line", figsize=(15, 6))
-plt.hlines(y=0, xmin=0, xmax=max(df["Gen"]), colors="gray", linestyles="dashed")
-plt.show()
+
 
 
 # %%

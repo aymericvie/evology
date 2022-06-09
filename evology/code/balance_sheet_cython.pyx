@@ -121,12 +121,18 @@ cpdef CalculateTSV_staticf(list pop, list price_history, double CurrentPrice, do
         t = ind.type_as_int
         if t == 0: # NT
             ind.tsv = process  #+ ind.strategy #* randoms[i]
+            #ind.tsv = log2((process * ind.val) / price_emas[0]) 
         elif t == 1: # VI
             ''' for previous-price VI '''
-            ind.tsv = log2(ind.val / CurrentPrice) 
-            #ind.tsv = log2(ind.val / price_means[0])
-            ''' for contemporaneous VI '''
-            pass    
+            #ind.tsv = log2(ind.val / price_emas[0]) 
+            #ind.tsv = log2(ind.val / CurrentPrice)
+            #if isnan(ind.tsv) == True:
+            #    print(ind.val)
+            #    print(price_emas[0])
+            #    raise RuntimeError('NaN VI tsv')
+            #''' for contemporaneous VI '''
+            #ind.tsv = process
+            pass
         elif t == 2: # TF
             if len(price_history) >= ind.strategy:
                 ''' Rate of change TF (compare price values)'''
@@ -138,14 +144,17 @@ cpdef CalculateTSV_staticf(list pop, list price_history, double CurrentPrice, do
                 
                 #ind.tsv = log2((CurrentPrice / price_emas[int(ind.strategy_index)]))
 
-                ind.tsv = log2((price_emas[0] / price_emas[int(ind.strategy_index)]))
+                # ind.tsv = log2((price_emas[0] / price_emas[int(ind.strategy_index)]))
+                ind.tsv = log2((CurrentPrice / price_emas[int(ind.strategy_index)]))
 
-                
                 #print('TF with strat ' + str(ind.strategy) + '// Current Price ' + str(CurrentPrice) + ' vs MA ' + str(price_means[int(ind.strategy_index)]) + ' gives tsv ' + str(tanh(ind.tsv))) 
                 #ind.tsv = log2(price_means[0] / price_means[int(ind.strategy_index)]) 
-                ''' this setting has big impact on price jumps and ecology dynamics '''
+
+                ''' TSV for TSF using contemporaneous price '''
+                #ind.tsv = price_emas[int(ind.strategy_index)]
+
             else:
-                ind.tsv = 0.0 #0.0
+                ind.tsv = 0.5 #0.0
         else:
             pass
             # BH stay at 1, IR stay at 0, AV is not computed here, VI cannot compute before price is known
