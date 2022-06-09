@@ -35,7 +35,8 @@ cdef double edf(Individual ind, double price):
     cdef double m = 0.0
     #cdef double VI_price = price_means[1]
     if t == 0: # NT 
-        return (LeverageNT * ind.wealth / price) * (sigmoid(SCALE_NT * ind.tsv)) - ind.asset
+        # return (LeverageNT * ind.wealth / price) * (sigmoid(SCALE_NT * ind.tsv)) - ind.asset
+        return (LeverageNT * ind.wealth / price) * (tanh(SCALE_NT * ind.tsv)) - ind.asset
 
     elif t == 1: # VI
         
