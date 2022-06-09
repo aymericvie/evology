@@ -187,8 +187,8 @@ def main(
 
                 print([ind.type, ind.wealth, ind.edv, ind.tsv, ind.asset])
             print(('Null volume today.'))
-            break
-            # raise RuntimeError('Null volume today.')
+            # break
+            raise RuntimeError('Null volume today.')
 
         if sim_break == 1 and reset_wealth != True:
             print(generation)

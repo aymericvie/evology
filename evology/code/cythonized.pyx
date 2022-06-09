@@ -94,7 +94,7 @@ cpdef big_edf(
         # We have reached the limit of shorts
         # ED values below 0 for funds with short sizes must count as 0
         limit = 1
-        print('Limit is attained during clearing')
+        #print('Limit is attained during clearing')
 
     for ind in pop:
         ind_result = edf(ind, price)
