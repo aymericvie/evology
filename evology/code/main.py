@@ -38,7 +38,8 @@ def main(
     process_series = prc.ExogeneousProcess(MAX_GENERATIONS, rng)
     rng = np.random.default_rng(seed=seed)
 
-    interest_day = interest_year / 252.0
+    #interest_day = interest_year / 252.0
+    interest_day = ((1.0 + interest_year) ** (1.0 / 252.0)) - 1.0
 
     for generation in tqdm(
         range(MAX_GENERATIONS), disable=tqdm_display, miniters=100, mininterval=0.5

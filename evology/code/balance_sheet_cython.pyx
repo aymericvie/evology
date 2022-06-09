@@ -154,7 +154,7 @@ cpdef CalculateTSV_staticf(list pop, list price_history, double CurrentPrice, do
                 #ind.tsv = price_emas[int(ind.strategy_index)]
 
             else:
-                ind.tsv = 0.0 #0.0
+                ind.tsv = NAN #0.0
         else:
             pass
             # BH stay at 1, IR stay at 0, AV is not computed here, VI cannot compute before price is known

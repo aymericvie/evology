@@ -62,21 +62,22 @@ cpdef determine_multiplier(list pop, double spoils, double ToLiquidate, double a
     cdef double CountShort
 
     for ind in pop:
-        if ind.edv > 0:
-            total_buy += ind.edv
-        elif ind.edv < 0:
-            # If we sell, but have assets in stocks, this is a simple sell.
-            if ind.asset >= abs(ind.edv):
-                total_sell += abs(ind.edv)
-            # If we sell more than we own:
-            elif ind.asset < abs(ind.edv):
-                temp_sell = abs(ind.edv)
-                if ind.asset > 0:
-                    # Register as simple sell what we can sell up to our current stocks 
-                    total_sell += ind.asset
-                    temp_sell -= ind.asset 
-                # Register the reminder as short selling
-                total_short += temp_sell
+        if isnan(ind.edv) == False:
+            if ind.edv > 0:
+                total_buy += ind.edv
+            elif ind.edv < 0:
+                # If we sell, but have assets in stocks, this is a simple sell.
+                if ind.asset >= abs(ind.edv):
+                    total_sell += abs(ind.edv)
+                # If we sell more than we own:
+                elif ind.asset < abs(ind.edv):
+                    temp_sell = abs(ind.edv)
+                    if ind.asset > 0:
+                        # Register as simple sell what we can sell up to our current stocks 
+                        total_sell += ind.asset
+                        temp_sell -= ind.asset 
+                    # Register the reminder as short selling
+                    total_short += temp_sell
 
     if spoils > 0:
         total_sell += abs(ToLiquidate)
@@ -185,49 +186,50 @@ cpdef execute_ed(list pop, double current_price, double asset_supply, double spo
 
     for ind in pop:
         amount = 0.0
+        if isnan(ind.edv) == False:
 
-        if ind.edv > 0:
-            if multiplier_buy != 0.0:
-                amount = ind.edv * multiplier_buy
-                ind.asset += amount 
-                ind.cash -= amount * current_price
-                volume += amount
-            if isnan(amount) == True:
-                print([ind.edv, multiplier_buy])
-                raise ValueError('nan amount (buy)')
-
-        if ind.edv < 0:
-            if abs(ind.edv) * multiplier_sell <= ind.asset:
-            # If we have enough to simple sell as much as we want to
-                amount = ind.edv * multiplier_sell
-                ind.asset -= abs(amount) 
-                ind.cash += abs(amount) * current_price
-                volume += abs(amount)
-            elif abs(ind.edv) * multiplier_sell > ind.asset:
-            # If instead we want to sell more than our inventory:
-                amount = abs(ind.edv) * multiplier_sell
-                # temp
-                temp = 0 # measures things sold from stock
-                if ind.asset > 0:
-                # If we have assets to sell, we sell those according to mulitplier_sell
-                    amount -= ind.asset
-
-                    ind.cash += ind.asset * current_price
-                    volume += ind.asset
-                    temp += ind.asset
-                    ind.asset = 0.0
-                    
-                    #temp -= ind.asset
-                # The reminder is a short sell. Hence, both multiplier_sell AND short_ratio apply.
-                if ind.asset <= 0:
-                    amount = (abs(ind.edv) * short_ratio * multiplier_sell) - temp
-                    ind.cash += amount * current_price
+            if ind.edv > 0:
+                if multiplier_buy != 0.0:
+                    amount = ind.edv * multiplier_buy
+                    ind.asset += amount 
+                    ind.cash -= amount * current_price
                     volume += amount
-                    ind.asset -= amount
-                # temp
-            if isnan(amount) == True:
-                print([ind.edv, multiplier_buy])
-                raise ValueError('nan amount (sell)')
+                if isnan(amount) == True:
+                    print([ind.edv, multiplier_buy])
+                    raise ValueError('nan amount (buy)')
+
+            if ind.edv < 0:
+                if abs(ind.edv) * multiplier_sell <= ind.asset:
+                # If we have enough to simple sell as much as we want to
+                    amount = ind.edv * multiplier_sell
+                    ind.asset -= abs(amount) 
+                    ind.cash += abs(amount) * current_price
+                    volume += abs(amount)
+                elif abs(ind.edv) * multiplier_sell > ind.asset:
+                # If instead we want to sell more than our inventory:
+                    amount = abs(ind.edv) * multiplier_sell
+                    # temp
+                    temp = 0 # measures things sold from stock
+                    if ind.asset > 0:
+                    # If we have assets to sell, we sell those according to mulitplier_sell
+                        amount -= ind.asset
+
+                        ind.cash += ind.asset * current_price
+                        volume += ind.asset
+                        temp += ind.asset
+                        ind.asset = 0.0
+                        
+                        #temp -= ind.asset
+                    # The reminder is a short sell. Hence, both multiplier_sell AND short_ratio apply.
+                    if ind.asset <= 0:
+                        amount = (abs(ind.edv) * short_ratio * multiplier_sell) - temp
+                        ind.cash += amount * current_price
+                        volume += amount
+                        ind.asset -= amount
+                    # temp
+                if isnan(amount) == True:
+                    print([ind.edv, multiplier_buy])
+                    raise ValueError('nan amount (sell)')
 
         '''
         if ind.cash - amount * current_price < 0:
