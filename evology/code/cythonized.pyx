@@ -45,10 +45,10 @@ cdef double edf(Individual ind, double price):
        
 
         ''' order-based with p(t) recursion '''
-        return (LeverageVI * ind.wealth / price) * (tanh(SCALE_VI * (log2(ind.val / price))))
+        # return (LeverageVI * ind.wealth / price) * (tanh(SCALE_VI * (log2(ind.val / price))))
        
         ''' order-based with scalar P(t-1), no recursion'''
-        # return (LeverageVI * ind.wealth / price) * (tanh(SCALE_VI * (ind.tsv))) 
+        return (LeverageVI * ind.wealth / price) * (tanh(SCALE_VI * (ind.tsv))) 
 
         ''' State-dependent threshold value investor
         m = log2(ind.val / price)
@@ -139,7 +139,8 @@ cpdef calculate_edv(
     cdef Individual ind
     for ind in pop:
         ind.edv = edf(ind, price)
-        total_edv += ind.edv
+        if isnan(ind.edv) == False:
+            total_edv += ind.edv
     return pop, total_edv
 
 

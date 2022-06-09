@@ -47,120 +47,130 @@ def main(
     #for generation in range(MAX_GENERATIONS):
         # print(CurrentPrice)
         # Population reset
-        pop = cr.WealthReset(
-            pop,
-            POPULATION_SIZE,
-            space,
-            wealth_coordinates,
-            reset_wealth,
-            CurrentPrice,
-            strategy,
-            rng,
-            interest_year
-        )
+
+        if generation == 0:
+            mismatch = 0
+            random_dividend = 0
+            replacements = 0
+            Liquidations = 0
+            total_cash = 0
+
+        if generation >= 1:
+
+            pop = cr.WealthReset(
+                pop,
+                POPULATION_SIZE,
+                space,
+                wealth_coordinates,
+                reset_wealth,
+                CurrentPrice,
+                strategy,
+                rng,
+                interest_year
+            )
 
 
 
-        # Hypermutation
-        pop, replacements, spoils = ga.hypermutate(pop, spoils, replace)
-        if replacements < 0:
-            break
+            # Hypermutation
+            pop, replacements, spoils = ga.hypermutate(pop, spoils, replace)
+            if replacements < 0:
+                break
 
-        # Strategy evolution
-        # pop = fit.ComputeFitness(pop, 252)
+            # Strategy evolution
+            # pop = fit.ComputeFitness(pop, 252)
 
-        # pop, CountSelected, CountMutated, CountCrossed, StratFlow = ga_evolution(
-        #    pop,
-        #    space,
-        #    generation,
-        #    wealth_coordinates,
-        #    PROBA_SELECTION,
-        #    MUTATION_RATE,
-        #    252,
-        # )
+            # pop, CountSelected, CountMutated, CountCrossed, StratFlow = ga_evolution(
+            #    pop,
+            #    space,
+            #    generation,
+            #    wealth_coordinates,
+            #    PROBA_SELECTION,
+            #    MUTATION_RATE,
+            #    252,
+            # )
 
-        # Market decisions
+            # Market decisions
 
-        pop, replace = bsc.UpdateFullWealth(pop, CurrentPrice)
-        pop = bsc.UpdateFval(pop, dividend, interest_year)
-        price_emas = bsc.price_emas(CurrentPrice, price_emas)
-        pop = bsc.CalculateTSV_staticf(
-            pop,
-            price_history,
-            CurrentPrice,
-            process_series[generation],
-            rng,
-            price_emas,
-        )
-        pop = bsc.CalculateTSV_avf(pop, generation, strategy, price_history, dividend, interest_day)
-        ToLiquidate = bsc.DetermineLiquidation(spoils, volume)
+            pop, replace = bsc.UpdateFullWealth(pop, CurrentPrice)
+            pop = bsc.UpdateFval(pop, dividend, interest_year)
+            price_emas = bsc.price_emas(CurrentPrice, price_emas)
+            pop = bsc.CalculateTSV_staticf(
+                pop,
+                price_history,
+                CurrentPrice,
+                process_series[generation],
+                rng,
+                price_emas,
+            )
+            pop = bsc.CalculateTSV_avf(pop, generation, strategy, price_history, dividend, interest_day)
+            ToLiquidate = bsc.DetermineLiquidation(spoils, volume)
 
-        # ''' for VI on contemporaneous price '''
-        # ed_functions = bsc.agg_ed_esl(pop, ToLiquidate)
-        # CurrentPrice = mc.esl_solver(ed_functions, CurrentPrice)
-        ed_functions = cz.agg_ed(pop, ToLiquidate, asset_supply, spoils, bsc.count_short_assets(pop, spoils))
-        NewPrice = mc.scipy_solver(ed_functions, CurrentPrice)
-        pop, mismatch = cz.calculate_edv(pop, NewPrice)
-        # print(NewPrice)
+            # ''' for VI on contemporaneous price '''
+            # ed_functions = bsc.agg_ed_esl(pop, ToLiquidate)
+            # CurrentPrice = mc.esl_solver(ed_functions, CurrentPrice)
+            ed_functions = cz.agg_ed(pop, ToLiquidate, asset_supply, spoils, bsc.count_short_assets(pop, spoils))
+            NewPrice = mc.scipy_solver(ed_functions, CurrentPrice)
+            pop, mismatch = cz.calculate_edv(pop, NewPrice)
+            # print(NewPrice)
 
-        # Market activity
-        dividend, random_dividend = (
-            dividend_series[0, generation],
-            rd_dividend_series[0, generation],
-        )
-        pop, volume, spoils, Liquidations = mk.execute_ed(
-            pop, NewPrice, asset_supply, spoils, ToLiquidate
-        )
+            # Market activity
+            dividend, random_dividend = (
+                dividend_series[0, generation],
+                rd_dividend_series[0, generation],
+            )
+            pop, volume, spoils, Liquidations = mk.execute_ed(
+                pop, NewPrice, asset_supply, spoils, ToLiquidate
+            )
 
 
-        '''
-        if mismatch > 1000:
-            print('Type, W, EDV, TSV, S')
-            print([generation, mismatch])
-            print(asset_supply, asset_supply * Short_Size_Percent / 100)
-            for ind in pop:
+            '''
+            if mismatch > 1000:
+                print('Type, W, EDV, TSV, S')
+                print([generation, mismatch])
+                print(asset_supply, asset_supply * Short_Size_Percent / 100)
+                for ind in pop:
 
-                print([ind.type, ind.wealth, ind.edv, ind.tsv, ind.asset])
+                    print([ind.type, ind.wealth, ind.edv, ind.tsv, ind.asset])
 
-            raise RuntimeError('Mismatch today.')
-        '''
+                raise RuntimeError('Mismatch today.')
+            '''
 
-        # if volume != 0:
-        #     CurrentPrice = NewPrice
-        CurrentPrice = NewPrice
+            # if volume != 0:
+            #     CurrentPrice = NewPrice
+            CurrentPrice = NewPrice
 
-        
-        # print('---- GENERATION ' + str(generation) + ' ----')
-        # print('Price: ' + str(CurrentPrice))
-        # for ind in pop:
-        #     print([ind.type, ind.edv, ind.asset, ind.wealth])
+            
+            # print('---- GENERATION ' + str(generation) + ' ----')
+            # print('Price: ' + str(CurrentPrice))
+            # for ind in pop:
+            #     print([ind.type, ind.edv, ind.asset, ind.wealth])
 
-        price_history = bsc.UpdatePriceHistory(price_history, CurrentPrice)
+            price_history = bsc.UpdatePriceHistory(price_history, CurrentPrice)
 
-        pop = mk.earnings(pop, dividend, interest_day)
-        # pop = mk.update_margin(pop, CurrentPrice)
-        pop = bsc.clear_debt(pop, CurrentPrice, interest_day)
+            pop = mk.earnings(pop, dividend, interest_day)
+            # pop = mk.update_margin(pop, CurrentPrice)
+            pop = bsc.clear_debt(pop, CurrentPrice, interest_day)
 
-        pop, replace = bsc.UpdateWealthProfitAge(pop, CurrentPrice)
-        pop = bsc.UpdateQuarterlyWealth(pop, generation)
-        pop = bsc.UpdateWealthSeries(pop)
+            pop, replace = bsc.UpdateWealthProfitAge(pop, CurrentPrice)
+            pop = bsc.UpdateQuarterlyWealth(pop, generation)
+            pop = bsc.UpdateWealthSeries(pop)
 
-        
-        if generation >= ShieldInvestment and investment != None:
-            pop = iv.Emp_Investment(pop, rng)
+            
+            if generation >= ShieldInvestment and investment != None:
+                pop = iv.Emp_Investment(pop, rng)
 
-        
-        '''
-        # Wealth normalisation
-        pop, total_cash = bsc.Wealth_Normalisation(
-            pop,
-            MoneySupply,
-            CurrentPrice
-        )
-        '''
-        total_cash = 0
-        
-        
+            
+            '''
+            # Wealth normalisation
+            pop, total_cash = bsc.Wealth_Normalisation(
+                pop,
+                MoneySupply,
+                CurrentPrice
+            )
+            '''
+            total_cash = 0
+            
+            
 
         # Record results
         results, sim_break = data.record_results(
@@ -180,15 +190,15 @@ def main(
             total_cash,
             MoneySupply,
         )
-        if volume == 0:
+        if volume == 0 and generation >= 1:
             print('Type, W, EDV, TSV, S')
-            print(asset_supply, asset_supply * Short_Size_Percent / 100)
+            print(asset_supply, asset_supply * Short_Size_Percent / 100, bsc.count_short_assets(pop, spoils))
             for ind in pop:
 
                 print([ind.type, ind.wealth, ind.edv, ind.tsv, ind.asset])
             print(('Null volume today.'))
-            # break
-            raise RuntimeError('Null volume today.')
+            break
+            # raise RuntimeError('Null volume today.')
 
         if sim_break == 1 and reset_wealth != True:
             print(generation)

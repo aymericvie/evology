@@ -71,7 +71,7 @@ def esl_solver(ed_functions, current_price):
 
 
 def scipy_solver(ed_functions, current_price):
-    tolerance = 1. #0.1
+    tolerance = 20 #0.2 #0.1
     new_price = scipy.optimize.root(ed_functions, current_price, method="hybr").x
     if (
         new_price > (1.0 + tolerance) * current_price

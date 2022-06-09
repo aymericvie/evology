@@ -125,14 +125,14 @@ cpdef CalculateTSV_staticf(list pop, list price_history, double CurrentPrice, do
         elif t == 1: # VI
             ''' for previous-price VI '''
             #ind.tsv = log2(ind.val / price_emas[0]) 
-            #ind.tsv = log2(ind.val / CurrentPrice)
+            ind.tsv = log2(ind.val / CurrentPrice)
             #if isnan(ind.tsv) == True:
             #    print(ind.val)
             #    print(price_emas[0])
             #    raise RuntimeError('NaN VI tsv')
             #''' for contemporaneous VI '''
             #ind.tsv = process
-            pass
+            pass 
         elif t == 2: # TF
             if len(price_history) >= ind.strategy:
                 ''' Rate of change TF (compare price values)'''
