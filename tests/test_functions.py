@@ -70,7 +70,7 @@ def nolearning_runs(repetitions, time, agents):
             np.random.seed(seed)
             wealth_coordinates = np.random.dirichlet(np.ones(3),size=1)[0].tolist()
             print(wealth_coordinates)
-            df,pop = main(None, 'extended', wealth_coordinates, agents, time, 0.01, None, seed, tqdm_display=True, reset_wealth = False)
+            df,pop = main(None, 'scholl', wealth_coordinates, agents, time, 0.01, None, seed, tqdm_display=True, reset_wealth = False)
 
         except Exception as e: 
             went_smoothly = False
