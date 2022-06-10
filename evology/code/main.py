@@ -152,9 +152,9 @@ def main(
             price_history = bsc.UpdatePriceHistory(price_history, CurrentPrice)
 
 
-            #if generation == 1:
-            #    print('Warning: earnings are turned off.')
-            pop = mk.earnings(pop, dividend, interest_day)
+            if generation == 1:
+                print('Warning: earnings are turned off.')
+            # pop = mk.earnings(pop, dividend, interest_day)
             # pop = mk.update_margin(pop, CurrentPrice)
             pop = bsc.clear_debt(pop, CurrentPrice, interest_day)
 
