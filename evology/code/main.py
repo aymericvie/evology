@@ -41,12 +41,16 @@ def main(
     #interest_day = interest_year / 252.0
     interest_day = ((1.0 + interest_year) ** (1.0 / 252.0)) - 1.0
 
+
+
     for generation in tqdm(
         range(MAX_GENERATIONS), disable=tqdm_display, miniters=100, mininterval=0.5
     ):
     #for generation in range(MAX_GENERATIONS):
         # print(CurrentPrice)
         # Population reset
+
+        
 
         if generation == 0:
             mismatch = 0
@@ -147,7 +151,10 @@ def main(
 
             price_history = bsc.UpdatePriceHistory(price_history, CurrentPrice)
 
-            # pop = mk.earnings(pop, dividend, interest_day)
+
+            #if generation == 1:
+            #    print('Warning: earnings are turned off.')
+            pop = mk.earnings(pop, dividend, interest_day)
             # pop = mk.update_margin(pop, CurrentPrice)
             pop = bsc.clear_debt(pop, CurrentPrice, interest_day)
 
@@ -197,8 +204,8 @@ def main(
 
                 print([ind.type, ind.wealth, ind.edv, ind.tsv, ind.asset])
             print(('Null volume today.'))
-            break
-            # raise RuntimeError('Null volume today.')
+            # break
+            raise RuntimeError('Null volume today.')
 
         if sim_break == 1 and reset_wealth != True:
             print(generation)

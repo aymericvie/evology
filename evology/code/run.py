@@ -7,7 +7,7 @@ wealth_coordinates = [1 / 3, 1 / 3, 1 / 3]
 # wealth_coordinates = [0.05, 0.9, 0.05]
 # wealth_coordinates = [0.1101684950278992, 0.08731303098202803, 0.8025184739900729]
 # wealth_coordinates = np.random.dirichlet(np.ones(3), size=1)[0].tolist()
-seed = 2
+seed = 3
 np.random.seed(seed)
 print(wealth_coordinates)
 
