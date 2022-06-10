@@ -5,6 +5,7 @@
 *.html
 *.py.lprof
 *.o
+*.csv.gz
 *.png
 *.npy
 .ipynb_checkpoints
