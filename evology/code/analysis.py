@@ -22,7 +22,16 @@ def sigmoid(x):
 df["Dividends (x1,000)"] = 10000 * df["Dividends"]
 df["Process (x100)"] = 100 * df["NT_process"].add(1)
 df["VI_val_1000"] = df["VI_val"]
+df["NT_val"] = df["VI_val"] * df["NT_process"]
 df["PriceEma"] = pd.Series.ewm(df["Price"], span=21).mean()
+
+# df.plot(
+#     x="Gen",
+#     y=["Price", "VI_val_1000", "NT_val"],
+#     kind="line",
+#     figsize=(15, 6),
+# )
+# plt.show()
 
 df.plot(
     x="Gen",
@@ -31,6 +40,8 @@ df.plot(
     figsize=(15, 6),
 )
 plt.show()
+
+
 
 df.plot(x="Gen", y=["NT_asset", "VI_asset", "TF_asset"], kind="line", figsize=(15, 6))
 plt.hlines(y=0, xmin=0, xmax=max(df["Gen"]), colors="gray", linestyles="dashed")

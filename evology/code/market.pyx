@@ -114,22 +114,22 @@ cpdef determine_multiplier(list pop, double spoils, double ToLiquidate, double a
         )
 
     # Default values
-    multiplier_buy = 0
-    multiplier_sell = 0
-    if order_ratio == 0:  # either noone buys, or no one sells
+    multiplier_buy = 0.
+    multiplier_sell = 0.
+    if order_ratio == 0.:  # either noone buys, or no one sells
         pass
         # No orders will be executed (no supply or no demand)
-    elif order_ratio < 1:
-        multiplier_buy = 1
+    elif order_ratio < 1.:
+        multiplier_buy = 1.
         multiplier_sell = order_ratio
         # Selling will be restricted according to demand
     elif order_ratio == 1:
-        multiplier_buy = 1
-        multiplier_sell = 1
+        multiplier_buy = 1.
+        multiplier_sell = 1.
         # All orders will be executed (supply =  demand)
     elif order_ratio > 1:
-        multiplier_buy = 1 / order_ratio
-        multiplier_sell = 1
+        multiplier_buy = 1. / order_ratio
+        multiplier_sell = 1.
         # Buying will be restricted according to supply
     else:
         raise ValueError("order_ratio has a strange value: " + str(order_ratio))
@@ -154,15 +154,15 @@ cpdef determine_multiplier(list pop, double spoils, double ToLiquidate, double a
         print(short_ratio)
         raise ValueError('Short ratio above 1')
 
-    '''
+    
     if multiplier_buy == 0 or multiplier_sell == 0:
-        print([multiplier_buy, multiplier_sell])
-        print([total_buy, total_sell])
+        print([multiplier_buy, multiplier_sell, short_ratio])
+        print([total_buy, total_sell, total_short])
         print(asset_supply, asset_supply * Short_Size_Percent / 100)
         for ind in pop:
             print([ind.type, ind.wealth, ind.edv, ind.tsv, ind.asset])
-        raise RuntimeError('Imbalanced market demand.')
-    '''
+        print('Imbalanced market demand.')
+    
 
 
     return multiplier_buy, multiplier_sell, short_ratio

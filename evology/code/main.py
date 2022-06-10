@@ -147,7 +147,7 @@ def main(
 
             price_history = bsc.UpdatePriceHistory(price_history, CurrentPrice)
 
-            pop = mk.earnings(pop, dividend, interest_day)
+            # pop = mk.earnings(pop, dividend, interest_day)
             # pop = mk.update_margin(pop, CurrentPrice)
             pop = bsc.clear_debt(pop, CurrentPrice, interest_day)
 

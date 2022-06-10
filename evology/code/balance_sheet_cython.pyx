@@ -220,6 +220,7 @@ cpdef UpdateFval(list pop, double dividend, double interest_year):
             fval = numerator / ind.val_net # TODO: Val_net only changes when val changes
             #if fval != np.inf:
             ind.val = fval
+            #print(fval)
 
             if ind.val == 0.0 or isnan(ind.val) == True or ind.val < 0:
                 print('ind.val, numerator, ind.val_net, ind.strategy, actual formula for ind.val_net in creation')

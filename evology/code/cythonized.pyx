@@ -8,7 +8,7 @@ import numpy as np
 from deap import creator
 import parameters
 import balance_sheet_cython as bsc
-from parameters import Short_Size_Percent
+from parameters import Short_Size_Percent, InitialPrice
 
 cdef double LeverageTF = parameters.LeverageTF
 cdef double LeverageVI = parameters.LeverageVI
@@ -31,12 +31,13 @@ cpdef signal(double x):
 
 cdef double edf(Individual ind, double price):
     cdef int t = ind.type_as_int
-    cdef double corr = - 0.5
-    cdef double m = 0.0
+    #cdef double corr = - 0.5
+    #cdef double m = 0.0
     #cdef double VI_price = price_means[1]
     if t == 0: # NT 
         # return (LeverageNT * ind.wealth / price) * (sigmoid(SCALE_NT * ind.tsv)) - ind.asset
         return (LeverageNT * ind.wealth / price) * (tanh(SCALE_NT * ind.tsv)) - ind.asset
+        #return (LeverageNT * ind.wealth / price) * (tanh(SCALE_NT * (log2((ind.tsv * ind.val) / price)))) #- ind.asset
 
     elif t == 1: # VI
         
@@ -45,10 +46,14 @@ cdef double edf(Individual ind, double price):
        
 
         ''' order-based with p(t) recursion '''
-        # return (LeverageVI * ind.wealth / price) * (tanh(SCALE_VI * (log2(ind.val / price))))
+        # return (LeverageVI * ind.wealth / price) * (tanh(SCALE_VI * (log2(ind.val / price)))) - ind.asset
+       
+        return (LeverageVI * ind.wealth / price) * (tanh(SCALE_VI * (log2(ind.val / price)))) #- ind.asset
        
         ''' order-based with scalar P(t-1), no recursion'''
-        return (LeverageVI * ind.wealth / price) * (tanh(SCALE_VI * (ind.tsv))) 
+        #return (LeverageVI * ind.wealth / price) * (tanh(SCALE_VI * (ind.tsv))) 
+
+        # return (LeverageVI * ind.wealth / price) * (tanh(SCALE_VI * (ind.tsv))) - ind.asset
 
         ''' State-dependent threshold value investor
         m = log2(ind.val / price)
@@ -198,6 +203,7 @@ cdef class Individual(object):
         self.last_price = 100.0
         self.adaptive_strategy = None
         self.strategy_index = 0
+        self.val = InitialPrice
         #self.investment_series = []
 
     def compute_wealth(self, double price):
