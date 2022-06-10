@@ -48,7 +48,9 @@ cdef double edf(Individual ind, double price):
         ''' order-based with p(t) recursion '''
         # return (LeverageVI * ind.wealth / price) * (tanh(SCALE_VI * (log2(ind.val / price)))) - ind.asset
        
-        return (LeverageVI * ind.wealth / price) * (tanh(SCALE_VI * (log2(ind.val / price)))) #- ind.asset
+        #return (LeverageVI * ind.wealth / price) * (tanh(SCALE_VI * (log2(ind.val / price)))) #- ind.asset
+        return (LeverageVI * ind.wealth / price) * (tanh(SCALE_VI * (log2(ind.val / price)))) - ind.asset
+
        
         ''' order-based with scalar P(t-1), no recursion'''
         #return (LeverageVI * ind.wealth / price) * (tanh(SCALE_VI * (ind.tsv))) 
