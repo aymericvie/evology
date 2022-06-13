@@ -15,3 +15,7 @@ class Population:
             self.agents.append(TrendFollower(10, 10, 10, 10, 1))
         else:
             raise RuntimeError('Population size is not 3.')
+
+    def count_wealth(self, price):
+        for ind in self.agents:
+            ind.wealth = ind.count_wealth(price) 
