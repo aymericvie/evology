@@ -32,9 +32,19 @@ class NoiseTrader(Fund):
         self.trading_signal = self.noise_process
 
     def get_excess_demand_function(self):
+        # Process only 
         def func(price):
             return (self.wealth * self.leverage / price) * tanh(self.signal_scale * self.trading_signal) - self.asset
         self.excess_demand = func
+
+        # TODO NT position becomes unbounded and insolvent.
+        # Go back to the Noisy VI setup to avoid that?
+        '''
+        # Noisy VI
+        def func(price):
+            return (self.wealth * self.leverage / price) * tanh(self.signal_scale * self.trading_signal) - self.asset
+        self.excess_demand = func
+        '''
 
 
 
