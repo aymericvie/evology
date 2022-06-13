@@ -154,7 +154,7 @@ def main(
 
             if generation == 1:
                 print('Warning: earnings are turned off.')
-            # pop = mk.earnings(pop, dividend, interest_day)
+            pop = mk.earnings(pop, dividend, interest_day)
             # pop = mk.update_margin(pop, CurrentPrice)
             pop = bsc.clear_debt(pop, CurrentPrice, interest_day)
 

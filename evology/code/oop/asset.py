@@ -20,10 +20,10 @@ class Asset:
         self.seed = seed
         self.dividend_series = self.compute_dividend_series(self.time_horizon, self.seed)
         self.price_emas = [self.price] # For a single time horizon
+        self.volume = 0.0
 
     def get_dividend(self, generation):
         self.dividend = self.dividend_series[0, generation]
-        return self.dividend
 
     def compute_dividend_series(self, time_horizon, seed):
         dividend_series = np.zeros((1, time_horizon))

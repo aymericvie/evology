@@ -16,3 +16,6 @@ class ValueInvestor(Fund):
         def func(price):
             return (self.wealth * self.leverage / price) * tanh(self.signal_scale * log2(self.valuation / price)) - self.asset
         self.excess_demand = func
+
+    def compute_trading_signal(self, price):
+        self.trading_signal = log2(self.valuation / price)

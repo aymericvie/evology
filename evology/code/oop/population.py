@@ -44,3 +44,28 @@ class Population:
             for ind in self.agents:
                 result += ind.excess_demand(price)
         return func
+
+    def compute_demand_values(self, price):
+        mismatch = 0.0
+        for ind in self.agents:
+            if isinstance(ind, ValueInvestor):
+                ind.compute_trading_signal(price)
+            ind.compute_demand(price)
+            mismatch += ind.demand
+        return mismatch
+
+    def execute_demand(self, price):
+        volume = 0.0
+        for ind in self.agents:
+            ind.execute_demand(price)
+            volume += ind.demand
+        print(volume)
+        return volume
+
+    def clear_debt(self):
+        for ind in self.agents:
+            ind.clear_debt()
+
+    def earnings(self, dividend, interest_rate_daily):
+        for ind in self.agents:
+            ind.earnings(dividend, interest_rate_daily)
