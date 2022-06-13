@@ -34,9 +34,9 @@ class Simulation:
             pop.update_trading_signal(asset.dividend, self.interest_rate_daily, generation, asset.price, asset.price_emas)
             """ TODO TSV computation for the AV agent """
             pop.get_excess_demand_functions()
-            aggregate_demand = pop.get_aggregate_demand()
+            pop.get_aggregate_demand()
             """ TODO add liquidation system and spoils to market clearing """
-            asset.market_clearing(aggregate_demand)
+            asset.market_clearing(pop.aggregate_demand)
             asset.mismatch = pop.compute_demand_values(asset.price)
             asset.volume = pop.execute_demand(asset.price)
             pop.earnings(asset.dividend, self.interest_rate_daily)

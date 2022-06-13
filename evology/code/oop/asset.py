@@ -56,4 +56,5 @@ class Asset:
     def market_clearing(self, aggregate_demand):
         self.price = root(aggregate_demand, self.price, method="hybr").x
         # TODO: install circuit breaker
+        print([aggregate_demand(100), aggregate_demand(80)])
         print(self.price)
