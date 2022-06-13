@@ -40,6 +40,7 @@ class Simulation:
             """ TODO add liquidation system and spoils to market clearing """
             asset.market_clearing(pop.aggregate_demand)
             asset.mismatch = pop.compute_demand_values(asset.price)
+            """ TODO add check to not overtake asset supply and short pos size """
             asset.volume = pop.execute_demand(asset.price)
             pop.earnings(asset.dividend, self.interest_rate_daily)
             pop.clear_debt()
