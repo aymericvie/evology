@@ -20,11 +20,13 @@ class Simulation:
         """ TODO Improve pop creation with coords """
         pop.create_pop() 
         pop.count_wealth(asset.price)
+        print([[ind.type, ind.wealth] for ind in pop.agents])
 
-        # for generation in tqdm(range(self.max_generations)):
-        for generation in range(self.max_generations):
 
-            print("Generation", generation)
+        for generation in tqdm(range(self.max_generations)):
+        # for generation in range(self.max_generations):
+
+            # print("Generation", generation)
             """ TODO wealth reset mode """
             """ TODO Hypermutate """
             asset.get_dividend(generation)
@@ -42,10 +44,11 @@ class Simulation:
             pop.earnings(asset.dividend, self.interest_rate_daily)
             pop.clear_debt()
             pop.count_wealth(asset.price)
+            print([asset.price, asset.volume])
             """ TODO compute profits """
             """ TODO investment """
             """ TODO save results """
-        print([[ind.type, ind.wealth] for ind in pop.agents])
+        print([[ind.type, ind.wealth, ind.asset] for ind in pop.agents])
 
 
 

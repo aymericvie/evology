@@ -16,9 +16,9 @@ class Population:
 
     def create_pop(self):
         if self.size == 3:
-            self.agents.append(NoiseTrader(10000, 10))
-            self.agents.append(ValueInvestor(10000, 10, 0.01, self.interest_rate, self.dividend_growth_rate))
-            self.agents.append(TrendFollower(10000, 10, 1))
+            self.agents.append(NoiseTrader(10000, 20))
+            self.agents.append(ValueInvestor(10000, 20, 0.01, self.interest_rate, self.dividend_growth_rate))
+            self.agents.append(TrendFollower(10000, 20, 1))
         else:
             raise RuntimeError('Population size is not 3.')
 
@@ -61,8 +61,7 @@ class Population:
         volume = 0.0
         for ind in self.agents:
             ind.execute_demand(price)
-            volume += ind.demand
-        print(volume)
+            volume += abs(ind.demand) # abs: buy & sell don't cancel out
         return volume
 
     def clear_debt(self):
@@ -72,3 +71,10 @@ class Population:
     def earnings(self, dividend, interest_rate_daily):
         for ind in self.agents:
             ind.earnings(dividend, interest_rate_daily)
+
+    def count_assets(self):
+        total = 0.0
+        for ind in self.agents:
+            total += ind.get_assets()
+        return total
+        # TODO add an error if we violate the asset supply cst

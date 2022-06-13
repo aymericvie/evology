@@ -23,7 +23,7 @@ class Fund:
     
     def compute_demand(self, price):
         self.demand = self.excess_demand(price)
-        print([self.type, self.trading_signal, self.demand])
+        # print([self.type, self.trading_signal, self.demand])
 
     def execute_demand(self, price):
         # TODO: possible issue if we have some mismatch?
@@ -36,5 +36,8 @@ class Fund:
             self.loan = 0
 
     def earnings(self, dividend, interest_rate_daily):
-        self.cash += (1. + interest_rate_daily) * self.cash 
+        self.cash += interest_rate_daily * self.cash 
         self.cash += dividend * self.asset
+
+    def get_assets(self):
+        return self.asset

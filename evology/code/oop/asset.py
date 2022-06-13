@@ -21,6 +21,7 @@ class Asset:
         self.dividend_series = self.compute_dividend_series(self.time_horizon, self.seed)
         self.price_emas = [self.price] # For a single time horizon
         self.volume = 0.0
+        self.mismatch = 0.0
 
     def get_dividend(self, generation):
         self.dividend = self.dividend_series[0, generation]
@@ -56,5 +57,3 @@ class Asset:
     def market_clearing(self, aggregate_demand):
         self.price = root(aggregate_demand, self.price, method="hybr").x
         # TODO: install circuit breaker
-        print([aggregate_demand(100), aggregate_demand(80)])
-        print(self.price)
