@@ -33,3 +33,14 @@ class Population:
                 ind.get_noise_process(generation)
             elif isinstance(ind, TrendFollower):
                 ind.get_price_ema(price, price_ema[0])
+    
+    def get_excess_demand_functions(self):
+        for ind in self.agents:
+            ind.excess_demand_function = ind.get_excess_demand_function()
+
+    def get_aggregate_demand(self):
+        def func(price):
+            result = 0.0
+            for ind in self.agents:
+                result += ind.excess_demand(price)
+        return func

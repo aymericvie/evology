@@ -1,5 +1,6 @@
 from fund import Fund
 import numpy as np
+from math import tanh
 
 class NoiseTrader(Fund):
 
@@ -29,6 +30,11 @@ class NoiseTrader(Fund):
     def get_noise_process(self, generation):
         self.noise_process = NoiseTrader.process_series[generation]
         self.trading_signal = self.noise_process
+
+    def get_excess_demand_function(self):
+        def func(price):
+            return (self.wealth * self.leverage / price) * tanh(self.signal_scale * self.trading_signal) - self.asset
+        self.excess_demand = func
 
 
 

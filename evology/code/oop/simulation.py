@@ -32,6 +32,10 @@ class Simulation:
             """ TODO asset: must create price ema """
             asset.compute_price_emas()
             pop.update_trading_signal(dividend, self.interest_rate_daily, generation, asset.price, asset.price_emas)
+            """ TODO TSV computation for the AV agent """
+            pop.get_excess_demand_functions()
+            aggregate_demand = pop.get_aggregate_demand()
+            asset.market_clearing(aggregate_demand)
         print([[ind.type, ind.wealth] for ind in pop.agents])
 
 

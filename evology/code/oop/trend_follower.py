@@ -1,6 +1,4 @@
-from math import log2
-
-
+from math import log2, tanh
 from fund import Fund
 
 class TrendFollower(Fund):
@@ -11,3 +9,8 @@ class TrendFollower(Fund):
         
     def get_price_ema(self, price, price_ema):
         self.trading_signal = log2(price / price_ema)
+
+    def get_excess_demand_function(self):
+        def func(price):
+            return (self.wealth * self.leverage / price) * tanh(self.signal_scale * self.trading_signal) - self.asset
+        self.excess_demand = func

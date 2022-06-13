@@ -1,5 +1,6 @@
 from math import sqrt
 import numpy as np
+from scipy.optimize import root
 
 class Asset:
 
@@ -52,3 +53,7 @@ class Asset:
         #self.price_emas = [(self.price * Asset.ema_smoothing_factors[i] + self.price_emas[i] * (1. - Asset.ema_horizons[i])) for i in range(Asset.ema_horizons)]
         self.price_emas = [(self.price * Asset.ema_smoothing_factors + self.price_emas[0] * (1. - Asset.ema_smoothing_factors))]
 
+    def market_clearing(self, aggregate_demand):
+        self.price = root(aggregate_demand, self.price, method="hybr").x
+        # TODO: install circuit breaker
+        print(self.price)
