@@ -14,9 +14,9 @@ class Population:
 
     def create_pop(self):
         if self.size == 3:
-            self.agents.append(NoiseTrader(10, 10, 10, 10))
-            self.agents.append(ValueInvestor(10, 10, 10, 10, 0.01, self.interest_rate, self.dividend_growth_rate))
-            self.agents.append(TrendFollower(10, 10, 10, 10, 1))
+            self.agents.append(NoiseTrader(100, 10))
+            self.agents.append(ValueInvestor(100, 10, 0.01, self.interest_rate, self.dividend_growth_rate))
+            self.agents.append(TrendFollower(100, 10, 1))
         else:
             raise RuntimeError('Population size is not 3.')
 

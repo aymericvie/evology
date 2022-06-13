@@ -2,8 +2,8 @@ from fund import Fund
 from math import tanh, log2
 
 class ValueInvestor(Fund):
-    def __init__(self, cash, asset, loan, margin, req_rate_return, interest_rate, dividend_growth_rate):
-        super().__init__(cash, asset, loan, margin)
+    def __init__(self, cash, asset, req_rate_return, interest_rate, dividend_growth_rate):
+        super().__init__(cash, asset)
         self.req_rate_return = req_rate_return
         self.type = "VI"
         self.valuation = None

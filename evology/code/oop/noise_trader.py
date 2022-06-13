@@ -9,8 +9,8 @@ class NoiseTrader(Fund):
     OU_gamma = 0.2 * np.sqrt(1. / 252.)
     process_series = []
 
-    def __init__(self, cash, asset, loan, margin):
-        super().__init__(cash, asset, loan, margin)
+    def __init__(self, cash, asset):
+        super().__init__(cash, asset)
         self.type = "NT"
         self.noise_process = None
 

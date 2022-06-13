@@ -21,7 +21,9 @@ class Simulation:
         pop.create_pop() 
         pop.count_wealth(asset.price)
 
-        for generation in tqdm(range(self.max_generations)):
+        # for generation in tqdm(range(self.max_generations)):
+        for generation in range(self.max_generations):
+
             print("Generation", generation)
             """ TODO wealth reset mode """
             """ TODO Hypermutate """

@@ -2,11 +2,11 @@ from types import FunctionType
 
 
 class Fund:
-    def __init__(self, cash, asset, loan, margin):
+    def __init__(self, cash, asset):
         self.cash = cash
         self.asset = asset
-        self.loan = loan
-        self.margin = margin
+        self.loan = 0.
+        self.margin = 0.
         self.wealth = 0
         self.trading_signal = 0.
         self.type = str
@@ -17,6 +17,8 @@ class Fund:
 
     def count_wealth(self, price):
         self.wealth = self.cash + self.asset * price - self.loan
+        if self.wealth < 0:
+            raise RuntimeError('Insolvent agent', self.type, self.wealth, self.asset)
         return self.wealth
     
     def compute_demand(self, price):
