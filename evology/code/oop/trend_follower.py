@@ -1,4 +1,4 @@
-from ast import FunctionDef
+from math import log2
 
 
 from fund import Fund
@@ -8,3 +8,6 @@ class TrendFollower(Fund):
         super().__init__(cash, asset, loan, margin)
         self.time_horizon = time_horizon
         self.type = "TF"
+        
+    def get_price_ema(self, price, price_ema):
+        self.trading_signal = log2(price / price_ema)

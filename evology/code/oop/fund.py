@@ -5,6 +5,8 @@ class Fund:
         self.loan = loan
         self.margin = margin
         self.wealth = 0
+        self.trading_signal = None
+        self.type = None
 
     def count_wealth(self, price):
         self.wealth = self.cash + self.asset * price - self.loan
