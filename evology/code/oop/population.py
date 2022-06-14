@@ -23,6 +23,7 @@ class Population:
         self.wshareNT = 0.
         self.wshareVI = 0.
         self.wshareTF = 0.
+        self.VI_val = 0.
 
         # TODO self.assetNT and things like that at the level of the population?
 
@@ -142,3 +143,11 @@ class Population:
         self.wshareNT = wealthNT / total_wealth
         self.wshareVI = wealthVI / total_wealth
         self.wshareTF = wealthTF / total_wealth
+
+    def get_activity_statistics(self):
+        VI_val, VI_count = 0, 0
+        for ind in self.agents:
+            if isinstance(ind, ValueInvestor):
+                VI_val += ind.valuation * ind.wealth
+                VI_count += ind.wealth
+        self.VI_val = VI_val / VI_count

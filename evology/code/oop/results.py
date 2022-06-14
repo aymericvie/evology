@@ -9,6 +9,7 @@ class Result:
         "Dividend",
         "Volume",
         "NT_process",
+        "VI_val",
         "WShare_NT",
         "WShare_VI",
         "WShare_TF"
@@ -25,6 +26,7 @@ class Result:
         dividend, 
         volume, 
         NT_process,
+        VI_val,
         wshareNT,
         wshareVI,
         wshareTF
@@ -35,6 +37,7 @@ class Result:
             dividend,
             volume,
             NT_process,
+            VI_val,
             wshareNT,
             wshareVI,
             wshareTF

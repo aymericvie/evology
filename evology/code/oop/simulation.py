@@ -47,6 +47,7 @@ class Simulation:
             asset.mismatch = pop.compute_demand_values(asset.price)
             """ TODO add check to not overtake short pos size """
             """ TODO what to do with very small deviations from asset supply (0.01)?"""
+            """ TODO system to prevent short pos size excess and maybe cancel some buy orders """
             asset.volume = pop.execute_demand(asset.price)
             pop.earnings(asset.dividend, self.interest_rate_daily)
             pop.update_margin(asset.price)
@@ -57,12 +58,14 @@ class Simulation:
             """ TODO investment """
             # pop.count_wealth(asset.price) # after investment
             pop.get_wealth_statistics()
+            pop.get_activity_statistics()
             result.update_results(
                 self.generation, 
                 asset.price, 
                 asset.dividend, 
                 asset.volume,
                 NoiseTrader.noise_process,
+                pop.VI_val,
                 pop.wshareNT,
                 pop.wshareVI,
                 pop.wshareTF
