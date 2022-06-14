@@ -24,4 +24,8 @@ def test_runs(repetitions, time, agents):
     went_smoothly = runs(repetitions, time, agents)
     assert went_smoothly == True
 
-test_runs(10, 100_000, 3)
+print('Testing many short runs')
+test_runs(30, 1000, 3)
+
+print('Testing less long runs')
+test_runs(10, 100000, 3)
