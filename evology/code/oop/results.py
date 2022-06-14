@@ -43,5 +43,4 @@ class Result:
 
     def convert_df(self):
         df = pd.DataFrame(self.data, columns=Result.variables)
-        print(df)
         return df

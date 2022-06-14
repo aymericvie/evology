@@ -26,10 +26,9 @@ class Simulation:
         """ TODO Improve pop creation with coords """
         pop.create_pop() 
         pop.count_wealth(asset.price)
-        print([[ind.type, ind.wealth] for ind in pop.agents])
 
 
-        for self.generation in tqdm(range(self.max_generations)):
+        for self.generation in tqdm(range(self.max_generations), leave=False):
         # for generation in range(self.max_generations):
 
             # print("Generation", generation)
@@ -70,7 +69,7 @@ class Simulation:
             )
         
         self.data = result.convert_df()
-        print([[ind.type, ind.wealth, ind.asset] for ind in pop.agents])
+        # print([[ind.type, ind.wealth, ind.asset] for ind in pop.agents])
 
 
 

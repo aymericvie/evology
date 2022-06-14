@@ -23,4 +23,5 @@ if __name__ == "__main__":
         seed = 0
     )  
     df.to_csv("rundata/run_data.csv")  
+    print(df)
     
