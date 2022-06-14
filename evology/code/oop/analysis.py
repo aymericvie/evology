@@ -15,62 +15,13 @@ if sys.platform == "win32":
     pass
     
 # %%
-df.plot(
-    x="Generation",
-    y=["Price"],
-    kind="line",
-    figsize=(15, 6),
-)
-plt.show()
 
-df.plot(
-    x="Generation",
-    y=["Dividend"],
-    kind="line",
-    figsize=(15, 6),
-)
-plt.show()
-
-df.plot(
-    x="Generation",
-    y=["Volume"],
-    kind="line",
-    figsize=(15, 6),
-)
-plt.show()
-# %%
-df.plot(
-    x="Generation",
-    y=["NT_process"],
-    kind="line",
-    figsize=(15, 6),
-)
-plt.show()
-
-# %%
-df.plot(
-    x="Generation",
-    y=["WShare_NT", "WShare_VI", "WShare_TF"],
-    kind="line",
-    figsize=(15, 6),
-)
-plt.show()
-
-df.head(20000).plot(
-    x="Generation",
-    y=["WShare_NT", "WShare_VI", "WShare_TF"],
-    kind="line",
-    figsize=(15, 6),
-)
-plt.show()
-
-# %%
 
 title_fontsize = 20
 label_size = 15
 
 fig, ax = plt.subplots(nrows=3, ncols=1, sharex=True, figsize=(10, 8))
-ax[0].set_title('Stock Price', fontsize=title_fontsize, color='white')
+ax[0].set_title('Stock Price & Fund. Value', fontsize=title_fontsize, color='white')
 ax[1].set_title('Volume', fontsize=title_fontsize, color = 'white')
 ax[2].set_title('Wealth Shares', fontsize=title_fontsize, color = 'white')
 
@@ -103,4 +54,26 @@ ax[2].tick_params(axis='y', colors='white')
 plt.tight_layout()
 plt.savefig('/Users/aymericvie/Documents/GitHub/evology/evology/code/oop/rundata/overview.png', dpi=300)
 plt.show()
+
+# %%
+df.plot(
+    x="Generation",
+    y=["NT_process"],
+    kind="line",
+    figsize=(15, 6),
+)
+plt.show()
+
+df.plot(
+    x="Generation",
+    y=["Dividend"],
+    kind="line",
+    figsize=(15, 6),
+)
+plt.show()
+
+
+
+# %%
+
 # %%

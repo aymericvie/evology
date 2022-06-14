@@ -47,7 +47,7 @@ class NoiseTrader(Fund):
 
         ##
         def func(price):
-            return (self.wealth * self.leverage / price) * tanh(self.signal_scale * (log2((self.valuation) / max(price,0.0001)))) - self.asset
+            # return (self.wealth * self.leverage / price) * tanh(self.signal_scale * (log2((self.valuation) / max(price,0.0001)))) - self.asset
 
             return (self.wealth * self.leverage / price) * tanh(self.signal_scale * (log2((self.valuation) / max(price,0.0001))) + 0.5) - self.asset
         self.excess_demand = func
