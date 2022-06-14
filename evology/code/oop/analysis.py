@@ -63,4 +63,19 @@ df.head(20000).plot(
     figsize=(15, 6),
 )
 plt.show()
+
+# %%
+from noise_trader import NoiseTrader
+import numpy as np
+import matplotlib.pyplot as plt
+
+process = NoiseTrader.compute_noise_process(10000, 1)
+plt.plot(process)
+plt.show()
+# %%
+
+
+process = NoiseTrader.compute_noise_process(10000, np.random.randint(0, 1000))
+plt.plot(process)
+plt.show()
 # %%

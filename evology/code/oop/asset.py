@@ -61,4 +61,4 @@ class Asset:
         if self.price < 0:
             self.price = 0.01
             warnings.warn('Negative price converted to 0.01')
-            raise ValueError('Negative price with mismatch and problems.')
+            # raise ValueError('Negative price with mismatch and problems.')

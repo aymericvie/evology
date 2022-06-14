@@ -26,9 +26,9 @@ class NoiseTrader(Fund):
         randoms = rng.standard_normal(max_generations)
         process_series = []
         value = NoiseTrader.OU_mean
-
+        
         for i in range(max_generations):
-            value = abs(value + NoiseTrader.OU_rho * (NoiseTrader.OU_mean - value) + NoiseTrader.OU_gamma * randoms[i])
+            value = abs(value + NoiseTrader.OU_rho * (log2(NoiseTrader.OU_mean) - log2(value)) + NoiseTrader.OU_gamma * randoms[i])
             process_series.append(value)
         return process_series
 
@@ -38,16 +38,16 @@ class NoiseTrader(Fund):
 
     def get_excess_demand_function(self):
         # Process only 
-        def func(price):
-            return (self.wealth * self.leverage / price) * tanh(self.signal_scale * self.trading_signal) - self.asset
-        self.excess_demand = func
+        #def func(price):
+        #    return (self.wealth * self.leverage / price) * tanh(self.signal_scale * self.trading_signal) - self.asset
+        #self.excess_demand = func
 
         # TODO NT position becomes unbounded and insolvent.
         # Go back to the Noisy VI setup to avoid that?
 
         ##
         def func(price):
-            return (self.wealth * self.leverage / price) * tanh(self.signal_scale * (log2((self.valuation) / max(price,0.001))) ) - self.asset # + 0.5) - self.asset
+            return (self.wealth * self.leverage / price) * tanh(self.signal_scale * (log2((self.valuation) / max(price,0.0001))) + 0.5) - self.asset
         self.excess_demand = func
         
 
