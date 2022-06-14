@@ -91,7 +91,7 @@ class Population:
         for ind in self.agents:
             total_assets += ind.asset 
         
-        if abs(total_assets - Population.asset_supply) >= 0.001:
+        if abs(total_assets - Population.asset_supply) >= 1:
             print(total_assets)
             print(Population.asset_supply)
             raise ValueError('Asset supply violated', total_assets, Population.asset_supply)
