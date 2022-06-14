@@ -1,5 +1,6 @@
 from fund import Fund
-from math import tanh, log2
+from math import tanh
+from numpy import log2
 
 class ValueInvestor(Fund):
     def __init__(self, cash, asset, req_rate_return, interest_rate, dividend_growth_rate):

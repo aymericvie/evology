@@ -8,11 +8,11 @@ class NoiseTrader(Fund):
     OU_rho = 0.00045832561
     OU_gamma = 0.2 * np.sqrt(1. / 252.)
     process_series = []
+    noise_process = 0.
 
     def __init__(self, cash, asset):
         super().__init__(cash, asset)
         self.type = "NT"
-        self.noise_process = None
 
     @classmethod
     def compute_noise_process(cls, max_generations, seed):
@@ -28,8 +28,8 @@ class NoiseTrader(Fund):
         return process_series
 
     def get_noise_process(self, generation):
-        self.noise_process = NoiseTrader.process_series[generation]
-        self.trading_signal = self.noise_process
+        NoiseTrader.noise_process = NoiseTrader.process_series[generation]
+        self.trading_signal = NoiseTrader.noise_process
 
     def get_excess_demand_function(self):
         # Process only 
