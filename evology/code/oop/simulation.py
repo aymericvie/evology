@@ -45,13 +45,11 @@ class Simulation:
             """ TODO add check to not overtake asset supply and short pos size """
             asset.volume = pop.execute_demand(asset.price)
             pop.earnings(asset.dividend, self.interest_rate_daily)
-            """ TODO include margin """
+            pop.update_margin(asset.price)
             pop.clear_debt()
             pop.count_wealth(asset.price)
-            print([asset.price, asset.volume])
             """ TODO compute profits """
             """ TODO investment """
-            """ TODO save results """
             result.update_results(self.generation, asset.price, asset.volume)
         
         df = result.convert_df()

@@ -80,3 +80,7 @@ class Population:
             total += ind.get_assets()
         return total
         # TODO add an error if we violate the asset supply cst
+
+    def update_margin(self, price):
+        for ind in self.agents:
+            ind.update_margin(price)

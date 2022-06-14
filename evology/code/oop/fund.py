@@ -39,5 +39,14 @@ class Fund:
         self.cash += interest_rate_daily * self.cash 
         self.cash += dividend * self.asset
 
+    def update_margin(self, price):
+        self.cash += self.margin 
+        self.margin = 0.
+        if self.asset < 0:
+            self.margin = abs(self.asset) * price
+            self.cash -= abs(self.asset) * price
+        if self.margin < 0:
+            raise RuntimeError('Negative margin', self.type, self.margin)
+
     def get_assets(self):
         return self.asset
