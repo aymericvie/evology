@@ -16,9 +16,9 @@ class Fund:
         self.demand = 0.
 
     def count_wealth(self, price):
-        self.wealth = self.cash + self.asset * price - self.loan
+        self.wealth = self.cash + self.asset * price - self.loan + self.margin
         if self.wealth < 0:
-            raise RuntimeError('Insolvent agent', self.type, self.wealth, self.cash, self.asset, self.loan)
+            raise RuntimeError('Insolvent agent', self.type, self.wealth, self.cash, self.asset, self.loan, self.margin, self.wealth + self.margin)
         return self.wealth
     
     def compute_demand(self, price):
@@ -33,6 +33,9 @@ class Fund:
     def clear_debt(self):
         if self.loan > 0 and self.cash > 0:
             self.cash -= self.loan 
+            self.loan = 0
+        if self.loan < 0:
+            self.cash += self.loan
             self.loan = 0
 
     def earnings(self, dividend, interest_rate_daily):

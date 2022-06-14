@@ -18,7 +18,7 @@ class Population:
 
     def create_pop(self):
         if self.size == 3:
-            self.agents.append(NoiseTrader(100_000_000, 500_000))
+            self.agents.append(NoiseTrader(100_000_000, 500_000, 0.01, self.interest_rate, self.dividend_growth_rate))
             self.agents.append(ValueInvestor(100_000_000, 500_000, 0.01, self.interest_rate, self.dividend_growth_rate))
             self.agents.append(TrendFollower(100_000_000, 500_000, 1))
         else:
@@ -35,6 +35,8 @@ class Population:
                 ind.update_valuation(dividend, interest_rate_daily)
             elif isinstance(ind, NoiseTrader):
                 ind.get_noise_process(generation)
+                ##
+                ind.update_valuation(dividend, interest_rate_daily)
             elif isinstance(ind, TrendFollower):
                 ind.get_price_ema(price, price_ema[0])
     
@@ -46,7 +48,11 @@ class Population:
         def func(price):
             result = 0.0
             for ind in self.agents:
-                result += ind.excess_demand(price)
+                try:
+                    result += ind.excess_demand(price)
+                except Exception as e:
+                    print(e)
+                    raise RuntimeError('Failed to get ED(price) from agent.', ind.type, price)
             return result 
         self.aggregate_demand = func
 

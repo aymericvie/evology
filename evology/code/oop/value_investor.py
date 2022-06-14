@@ -1,6 +1,6 @@
 from fund import Fund
-from math import tanh
-from numpy import log2
+from math import tanh, log2
+# from numpy import log2
 
 class ValueInvestor(Fund):
     def __init__(self, cash, asset, req_rate_return, interest_rate, dividend_growth_rate):
@@ -14,10 +14,11 @@ class ValueInvestor(Fund):
         self.valuation = dividend * (1. + interest_rate_daily) / self.discount_rate
         if self.valuation < 0:
             raise RuntimeError('Negative VI valuation', self.valuation)
+        #print("VI", self.valuation)
 
     def get_excess_demand_function(self):
         def func(price):
-            return (self.wealth * self.leverage / price) * tanh(self.signal_scale * log2(self.valuation / price)) - self.asset
+            return (self.wealth * self.leverage / price) * tanh(self.signal_scale * log2(self.valuation / max(price,0.001)) + 0.5) - self.asset
         self.excess_demand = func
 
     def compute_trading_signal(self, price):
