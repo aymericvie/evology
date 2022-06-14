@@ -12,6 +12,7 @@ def main(
         interest_rate=interest_rate,
         seed = seed)
     s.simulate()
+    df = s.return_data()
     return df
 
 if __name__ == "__main__":

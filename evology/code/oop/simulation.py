@@ -12,6 +12,10 @@ class Simulation:
         self.interest_rate_daily = ((1.0 + self.interest_rate) ** (1.0 / 252.0)) - 1.0
         self.seed = seed
         self.generation = 0
+        self.data = None
+
+    def return_data(self):
+        return self.data
 
     def simulate(self):
         result = Result(self.max_generations)
@@ -65,7 +69,7 @@ class Simulation:
                 pop.wshareTF
             )
         
-        df = result.convert_df()
+        self.data = result.convert_df()
         print([[ind.type, ind.wealth, ind.asset] for ind in pop.agents])
 
 
