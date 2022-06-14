@@ -44,5 +44,4 @@ class Result:
     def convert_df(self):
         df = pd.DataFrame(self.data, columns=Result.variables)
         print(df)
-        df.to_csv("rundata/run_data.csv")
         return df

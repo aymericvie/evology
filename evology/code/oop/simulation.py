@@ -42,7 +42,8 @@ class Simulation:
             """ TODO add liquidation system and spoils to market clearing """
             asset.market_clearing(pop.aggregate_demand)
             asset.mismatch = pop.compute_demand_values(asset.price)
-            """ TODO add check to not overtake asset supply and short pos size """
+            """ TODO add check to not overtake short pos size """
+            """ TODO what to do with very small deviations from asset supply (0.01)?"""
             asset.volume = pop.execute_demand(asset.price)
             pop.earnings(asset.dividend, self.interest_rate_daily)
             pop.update_margin(asset.price)
@@ -65,7 +66,6 @@ class Simulation:
             )
         
         df = result.convert_df()
-
         print([[ind.type, ind.wealth, ind.asset] for ind in pop.agents])
 
 

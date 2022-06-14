@@ -29,3 +29,5 @@ test_runs(30, 1000, 3)
 
 print('Testing less long runs')
 test_runs(10, 100000, 3)
+
+# TODO: add a determinism test as well?
