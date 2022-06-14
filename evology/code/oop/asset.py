@@ -57,3 +57,5 @@ class Asset:
     def market_clearing(self, aggregate_demand):
         self.price = root(aggregate_demand, self.price, method="hybr").x
         # TODO: install circuit breaker
+        if self.price < 0:
+            raise RuntimeError('Negative price', self.price)

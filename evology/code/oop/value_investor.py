@@ -11,6 +11,8 @@ class ValueInvestor(Fund):
 
     def update_valuation(self, dividend, interest_rate_daily):
         self.valuation = dividend * (1. + interest_rate_daily) / self.discount_rate
+        if self.valuation < 0:
+            raise RuntimeError('Negative VI valuation', self.valuation)
 
     def get_excess_demand_function(self):
         def func(price):
@@ -19,3 +21,4 @@ class ValueInvestor(Fund):
 
     def compute_trading_signal(self, price):
         self.trading_signal = log2(self.valuation / price)
+

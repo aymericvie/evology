@@ -50,7 +50,7 @@ class Simulation:
             pop.count_wealth(asset.price)
             """ TODO compute profits """
             """ TODO investment """
-            result.update_results(self.generation, asset.price, asset.volume)
+            result.update_results(self.generation, asset.price, asset.dividend, asset.volume)
         
         df = result.convert_df()
 

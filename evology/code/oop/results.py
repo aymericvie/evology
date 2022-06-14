@@ -6,6 +6,7 @@ class Result:
     variables = [
         "Generation",
         "Price",
+        "Dividend",
         "Volume"
     ]
 
@@ -13,10 +14,11 @@ class Result:
         self.max_generations = max_generations
         self.data = np.zeros((max_generations, len(Result.variables)))
 
-    def update_results(self, generation, price, volume):
+    def update_results(self, generation, price, dividend, volume):
         arr = [
             generation,
             price,
+            dividend,
             volume
         ]
         self.data[generation, :] = arr 

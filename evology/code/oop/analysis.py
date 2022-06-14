@@ -25,6 +25,14 @@ plt.show()
 
 df.plot(
     x="Generation",
+    y=["Dividend"],
+    kind="line",
+    figsize=(15, 6),
+)
+plt.show()
+
+df.plot(
+    x="Generation",
     y=["Volume"],
     kind="line",
     figsize=(15, 6),
