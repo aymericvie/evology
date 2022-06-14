@@ -2,6 +2,7 @@ from tqdm import tqdm
 from noise_trader import NoiseTrader
 from population import Population
 from asset import Asset
+from results import Result
 
 class Simulation:
     def __init__(self, max_generations, population_size, interest_rate, seed):
@@ -10,11 +11,12 @@ class Simulation:
         self.interest_rate = interest_rate
         self.interest_rate_daily = ((1.0 + self.interest_rate) ** (1.0 / 252.0)) - 1.0
         self.seed = seed
+        self.generation = 0
 
     def simulate(self):
+        result = Result(self.max_generations)
         asset = Asset(self.max_generations, self.seed)
         pop = Population(self.population_size, self.max_generations, self.interest_rate, Asset.dividend_growth_rate_yearly, self.seed)
-        
         NoiseTrader.process_series = NoiseTrader.compute_noise_process(self.max_generations, self.seed)
 
         """ TODO Improve pop creation with coords """
@@ -23,17 +25,17 @@ class Simulation:
         print([[ind.type, ind.wealth] for ind in pop.agents])
 
 
-        for generation in tqdm(range(self.max_generations)):
+        for self.generation in tqdm(range(self.max_generations)):
         # for generation in range(self.max_generations):
 
             # print("Generation", generation)
             """ TODO wealth reset mode """
             """ TODO Hypermutate """
-            asset.get_dividend(generation)
+            asset.get_dividend(self.generation)
             """ TODO extend EMA to many lags """
             """ TODO asset: must create price ema """
             asset.compute_price_emas()
-            pop.update_trading_signal(asset.dividend, self.interest_rate_daily, generation, asset.price, asset.price_emas)
+            pop.update_trading_signal(asset.dividend, self.interest_rate_daily, self.generation, asset.price, asset.price_emas)
             """ TODO TSV computation for the AV agent """
             pop.get_excess_demand_functions()
             pop.get_aggregate_demand()
@@ -43,12 +45,17 @@ class Simulation:
             """ TODO add check to not overtake asset supply and short pos size """
             asset.volume = pop.execute_demand(asset.price)
             pop.earnings(asset.dividend, self.interest_rate_daily)
+            """ TODO include margin """
             pop.clear_debt()
             pop.count_wealth(asset.price)
             print([asset.price, asset.volume])
             """ TODO compute profits """
             """ TODO investment """
             """ TODO save results """
+            result.update_results(self.generation, asset.price, asset.volume)
+        
+        df = result.convert_df()
+
         print([[ind.type, ind.wealth, ind.asset] for ind in pop.agents])
 
 

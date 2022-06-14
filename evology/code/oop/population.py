@@ -14,11 +14,13 @@ class Population:
         self.seed = seed
         self.aggregate_demand = FunctionType
 
+        # TODO self.assetNT and things like that at the level of the population?
+
     def create_pop(self):
         if self.size == 3:
-            self.agents.append(NoiseTrader(10000, 20))
-            self.agents.append(ValueInvestor(10000, 20, 0.01, self.interest_rate, self.dividend_growth_rate))
-            self.agents.append(TrendFollower(10000, 20, 1))
+            self.agents.append(NoiseTrader(100_000_000, 500_000))
+            self.agents.append(ValueInvestor(100_000_000, 500_000, 0.01, self.interest_rate, self.dividend_growth_rate))
+            self.agents.append(TrendFollower(100_000_000, 500_000, 1))
         else:
             raise RuntimeError('Population size is not 3.')
 
