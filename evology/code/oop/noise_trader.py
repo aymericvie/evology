@@ -28,7 +28,7 @@ class NoiseTrader(Fund):
         value = NoiseTrader.OU_mean
 
         for i in range(max_generations):
-            value = value + NoiseTrader.OU_rho * (NoiseTrader.OU_mean - value) + NoiseTrader.OU_gamma * randoms[i]
+            value = abs(value + NoiseTrader.OU_rho * (NoiseTrader.OU_mean - value) + NoiseTrader.OU_gamma * randoms[i])
             process_series.append(value)
         return process_series
 
@@ -47,7 +47,7 @@ class NoiseTrader(Fund):
 
         ##
         def func(price):
-            return (self.wealth * self.leverage / price) * tanh(self.signal_scale * (log2((self.valuation) / max(price,0.001))) + 0.5) - self.asset
+            return (self.wealth * self.leverage / price) * tanh(self.signal_scale * (log2((self.valuation) / max(price,0.001))) ) - self.asset # + 0.5) - self.asset
         self.excess_demand = func
         
 
@@ -56,7 +56,7 @@ class NoiseTrader(Fund):
         self.valuation = (dividend * (1. + interest_rate_daily) / self.discount_rate) * self.trading_signal
         #print('NT', self.valuation, self.trading_signal)
         if self.valuation < 0:
-            raise RuntimeError('Negative VI valuation', self.valuation)
+            raise RuntimeError('Negative NT valuation', self.valuation)
 
 
 

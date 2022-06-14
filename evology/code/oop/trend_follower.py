@@ -12,5 +12,5 @@ class TrendFollower(Fund):
 
     def get_excess_demand_function(self):
         def func(price):
-            return (self.wealth * self.leverage / price) * tanh(self.signal_scale * self.trading_signal + 0.5) - self.asset
+            return (self.wealth * self.leverage / price) * tanh(self.signal_scale * self.trading_signal ) - self.asset #+ 0.5) - self.asset
         self.excess_demand = func
