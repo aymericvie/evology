@@ -1,6 +1,7 @@
 from math import sqrt
 import numpy as np
 from scipy.optimize import root
+import warnings
 
 class Asset:
 
@@ -58,4 +59,6 @@ class Asset:
         self.price = root(aggregate_demand, self.price, method="hybr").x
         # TODO: install circuit breaker
         if self.price < 0:
-            raise RuntimeError('Negative price', self.price)
+            self.price = 0.01
+            warnings.warn('Negative price converted to 0.01')
+            raise ValueError('Negative price with mismatch and problems.')

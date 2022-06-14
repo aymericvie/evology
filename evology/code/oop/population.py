@@ -1,9 +1,12 @@
+from multiprocessing.sharedctypes import Value
 from types import FunctionType
 from trend_follower import TrendFollower
 from value_investor import ValueInvestor
 from noise_trader import NoiseTrader
 
 class Population:
+
+    asset_supply = 0
 
     def __init__(self, population_size, max_generations, interest_rate, dividend_growth_rate, seed):
         self.size = population_size
@@ -30,6 +33,11 @@ class Population:
             self.agents.append(TrendFollower(100_000_000, 500_000, 1))
         else:
             raise RuntimeError('Population size is not 3.')
+
+        total_asset = 0
+        for ind in self.agents:
+            total_asset += ind.asset
+        Population.asset_supply = total_asset
 
     def count_wealth(self, price):
         for ind in self.agents:
@@ -77,6 +85,16 @@ class Population:
         for ind in self.agents:
             ind.execute_demand(price)
             volume += abs(ind.demand) # abs: buy & sell don't cancel out
+
+        total_assets = 0.
+        for ind in self.agents:
+            total_assets += ind.asset 
+        
+        if abs(total_assets - Population.asset_supply) >= 0.001:
+            print(total_assets)
+            print(Population.asset_supply)
+            raise ValueError('Asset supply violated', total_assets, Population.asset_supply)
+
         return volume
 
     def clear_debt(self):

@@ -50,8 +50,17 @@ plt.show()
 # %%
 df.plot(
     x="Generation",
-    y=["WShare_NT, WShare_VI, WShare_TF"],
+    y=["WShare_NT", "WShare_VI", "WShare_TF"],
     kind="line",
     figsize=(15, 6),
 )
 plt.show()
+
+df.head(20000).plot(
+    x="Generation",
+    y=["WShare_NT", "WShare_VI", "WShare_TF"],
+    kind="line",
+    figsize=(15, 6),
+)
+plt.show()
+# %%
