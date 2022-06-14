@@ -3,6 +3,7 @@ from noise_trader import NoiseTrader
 from population import Population
 from asset import Asset
 from results import Result
+import sys
 
 class Simulation:
     def __init__(self, max_generations, population_size, interest_rate, seed):
@@ -13,6 +14,14 @@ class Simulation:
         self.seed = seed
         self.generation = 0
         self.data = None
+        self.disable = Simulation.set_display(self)
+
+    
+    def set_display(self):
+        if sys.platform == "darwin":
+            return False
+        elif sys.platform == 'linux': 
+            return True
 
     def return_data(self):
         return self.data
@@ -28,7 +37,7 @@ class Simulation:
         pop.count_wealth(asset.price)
 
 
-        for self.generation in tqdm(range(self.max_generations), leave=False):
+        for self.generation in tqdm(range(self.max_generations), disable = self.disable):
         # for generation in range(self.max_generations):
 
             # print("Generation", generation)
