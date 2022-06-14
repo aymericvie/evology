@@ -69,13 +69,13 @@ plt.show()
 title_fontsize = 20
 label_size = 15
 
-
 fig, ax = plt.subplots(nrows=3, ncols=1, sharex=True, figsize=(10, 8))
 ax[0].set_title('Stock Price', fontsize=title_fontsize, color='white')
 ax[1].set_title('Volume', fontsize=title_fontsize, color = 'white')
 ax[2].set_title('Wealth Shares', fontsize=title_fontsize, color = 'white')
 
 ax[0].plot(df.index, df['Price'], color='black', linewidth=1)
+ax[0].plot(df.index, df['VI_val'], color='red', linewidth=0.5)
 ax[2].plot(df.index, df['WShare_NT'], color='green', label='Noise traders', linewidth=1)
 ax[2].plot(df.index, df['WShare_VI'], color='red', label='Value investors', linewidth=1)
 ax[2].plot(df.index, df['WShare_TF'], color='blue', label='Trend followers', linewidth=1)
