@@ -30,10 +30,10 @@ class Simulation:
 
             # print("Generation", generation)
             """ TODO wealth reset mode """
-            """ TODO Hypermutate """
+            """ TODO Hypermutate with liquidate, remove, split system"""
+            pop.liquidate_insolvent()
             asset.get_dividend(self.generation)
             """ TODO extend EMA to many lags """
-            """ TODO asset: must create price ema """
             asset.compute_price_emas()
             pop.update_trading_signal(asset.dividend, self.interest_rate_daily, self.generation, asset.price, asset.price_emas)
             """ TODO TSV computation for the AV agent """

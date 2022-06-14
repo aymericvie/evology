@@ -84,3 +84,7 @@ class Population:
     def update_margin(self, price):
         for ind in self.agents:
             ind.update_margin(price)
+
+    def liquidate_insolvent(self):
+        for ind in self.agents:
+            ind.liquidate_insolvent()

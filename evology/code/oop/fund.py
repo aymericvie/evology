@@ -48,5 +48,9 @@ class Fund:
         if self.margin < 0:
             raise RuntimeError('Negative margin', self.type, self.margin)
 
+
+    def liquidate_insolvent(self):
+        if self.wealth < 0:
+            raise RuntimeError('Insolvent agent', self.wealth, self.type, self.asset, self.cash, self.margin)
     def get_assets(self):
         return self.asset
