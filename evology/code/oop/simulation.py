@@ -47,15 +47,21 @@ class Simulation:
             pop.earnings(asset.dividend, self.interest_rate_daily)
             pop.update_margin(asset.price)
             pop.clear_debt()
+
             pop.count_wealth(asset.price)
             """ TODO compute profits """
             """ TODO investment """
+            # pop.count_wealth(asset.price) # after investment
+            pop.get_wealth_statistics()
             result.update_results(
                 self.generation, 
                 asset.price, 
                 asset.dividend, 
                 asset.volume,
-                NoiseTrader.noise_process
+                NoiseTrader.noise_process,
+                pop.wshareNT,
+                pop.wshareVI,
+                pop.wshareTF
             )
         
         df = result.convert_df()

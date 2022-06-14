@@ -14,6 +14,13 @@ class Population:
         self.seed = seed
         self.aggregate_demand = FunctionType
 
+        self.wealthNT = 0.
+        self.wealthVI = 0.
+        self.wealthTF = 0.
+        self.wshareNT = 0.
+        self.wshareVI = 0.
+        self.wshareTF = 0.
+
         # TODO self.assetNT and things like that at the level of the population?
 
     def create_pop(self):
@@ -94,3 +101,26 @@ class Population:
     def liquidate_insolvent(self):
         for ind in self.agents:
             ind.liquidate_insolvent()
+
+    def get_wealth_statistics(self):
+
+        wealthNT = 0.
+        wealthVI = 0.
+        wealthTF = 0.
+
+        for ind in self.agents:
+            if isinstance(ind, NoiseTrader):
+                wealthNT += ind.wealth 
+            elif isinstance(ind, ValueInvestor):
+                wealthVI += ind.wealth
+            elif isinstance(ind, TrendFollower):
+                wealthTF += ind.wealth
+        
+        total_wealth = wealthNT + wealthVI + wealthTF
+
+        self.wealthNT = wealthNT
+        self.wealthVI = wealthVI 
+        self.wealthTF = wealthTF
+        self.wshareNT = wealthNT / total_wealth
+        self.wshareVI = wealthVI / total_wealth
+        self.wshareTF = wealthTF / total_wealth

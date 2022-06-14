@@ -48,3 +48,10 @@ df.plot(
 plt.show()
 
 # %%
+df.plot(
+    x="Generation",
+    y=["WShare_NT, WShare_VI, WShare_TF"],
+    kind="line",
+    figsize=(15, 6),
+)
+plt.show()

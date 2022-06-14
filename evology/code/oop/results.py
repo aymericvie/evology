@@ -8,7 +8,10 @@ class Result:
         "Price",
         "Dividend",
         "Volume",
-        "NT_process"
+        "NT_process",
+        "WShare_NT",
+        "WShare_VI",
+        "WShare_TF"
     ]
 
     def __init__(self, max_generations):
@@ -21,7 +24,10 @@ class Result:
         price, 
         dividend, 
         volume, 
-        NT_process
+        NT_process,
+        wshareNT,
+        wshareVI,
+        wshareTF
     ):
         arr = [
             generation,
@@ -29,6 +35,9 @@ class Result:
             dividend,
             volume,
             NT_process,
+            wshareNT,
+            wshareVI,
+            wshareTF
         ]
         self.data[generation, :] = arr 
 
