@@ -65,6 +65,7 @@ class Simulation:
             pop.count_wealth(asset.price)
             """ TODO compute profits """
             """ TODO investment """
+            """ with an investor class so we potentially have heterogeneity """
             # pop.count_wealth(asset.price) # after investment
             pop.get_wealth_statistics()
             pop.get_activity_statistics()
