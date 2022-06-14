@@ -39,3 +39,12 @@ df.plot(
 )
 plt.show()
 # %%
+df.plot(
+    x="Generation",
+    y=["NT_process"],
+    kind="line",
+    figsize=(15, 6),
+)
+plt.show()
+
+# %%
