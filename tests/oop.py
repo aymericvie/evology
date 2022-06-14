@@ -10,7 +10,7 @@ def runs(repetitions, time, agents):
         try: 
             seed = np.random.randint(0,100)
             np.random.seed(seed)
-            df,pop = model(time, agents, 0.01, seed)
+            df = model(time, agents, 0.01, seed)
         except Exception as e: 
             went_smoothly = False
             print('Seed ' + str(seed))
