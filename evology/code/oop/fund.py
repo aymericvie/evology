@@ -1,6 +1,10 @@
 from types import FunctionType
 import numpy as np
+from math import isnan
 
+
+# import warnings
+# warnings.filterwarnings("error")
 
 class Fund:
     def __init__(self, cash, asset):
@@ -67,9 +71,14 @@ class Fund:
 
         # Compute annual return
         if len(self.wealth_history_year) == 252: 
+            #print(self.wealth_history_year)
             # self.annual_return = ((self.wealth) / self.wealth_history_year[0]) - 1.
-            self.annual_return = (1. + ((np.nanprod(self.wealth_history_year)) ** (1./252.) - 1.)) ** 252. - 1.
-            
+            #try:
+            self.annual_return = (1. + ((np.product(self.wealth_history_year)) ** (1./252.) - 1.)) ** 252. - 1.
+            # except RuntimeWarning as e:
+
+            #     print(self.wealth_history_year)
+            #     print(e)
             #print(self.annual_return)
 
         else:
@@ -80,7 +89,9 @@ class Fund:
 
     def update_wealth_history(self):
         #self.wealth_history_year.append(self.wealth)
-        self.wealth_history_year.append(self.daily_return + 1.)
+        if isnan(self.daily_return) == False:
+            entry = float(self.daily_return) + 1.
+            self.wealth_history_year.append(entry)
 
         if len(self.wealth_history_year) > 252:
             del self.wealth_history_year[0]
