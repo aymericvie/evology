@@ -64,8 +64,12 @@ class Simulation:
             pop.clear_debt()
 
             pop.count_wealth(asset.price)
-            """ TODO compute profits """
-            """ TODO investment """
+            pop.update_wealth_history()
+            pop.compute_average_return()
+            pop.compute_excess_profit()
+            pop.compute_profit()
+            # """ TODO investment """
+            investor.investment_flows(pop)
             """ with an investor class so we potentially have heterogeneity """
             # pop.count_wealth(asset.price) # after investment
             pop.get_wealth_statistics()

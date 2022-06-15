@@ -3,6 +3,8 @@ from types import FunctionType
 from trend_follower import TrendFollower
 from value_investor import ValueInvestor
 from noise_trader import NoiseTrader
+from math import isnan
+import numpy as np
 
 class Population:
 
@@ -24,6 +26,7 @@ class Population:
         self.wshareVI = 0.
         self.wshareTF = 0.
         self.VI_val = 0.
+        self.average_annual_return = 0.
 
         # TODO self.assetNT and things like that at the level of the population?
 
@@ -120,6 +123,32 @@ class Population:
     def liquidate_insolvent(self):
         for ind in self.agents:
             ind.liquidate_insolvent()
+
+    def compute_profit(self):
+        for ind in self.agents:
+            ind.compute_profit()
+
+    def update_wealth_history(self):
+        for ind in self.agents:
+            ind.update_wealth_history()
+
+    def compute_average_return(self):
+        total_profit, count_funds = 0.,0
+        for ind in self.agents:
+            if isnan(ind.get_annual_return()) == False:
+                total_profit += ind.get_annual_return()
+                count_funds += 1
+        if count_funds != 0:
+            self.average_annual_return = total_profit / count_funds
+        else:
+            self.average_annual_return = np.nan
+        if self.average_annual_return > 10:
+            print(self.average_annual_return)
+            raise ValueError('self average annual return > 10')
+
+    def compute_excess_profit(self):
+        for ind in self.agents:
+            ind.excess_annual_return = ind.annual_return - self.average_annual_return    
 
     def get_wealth_statistics(self):
 
