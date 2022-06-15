@@ -73,3 +73,11 @@ print_model = model.summary()
 print(print_model)
 
 # %%
+
+'''
+Constant is -0.0012
+Return coeff is 0.1089
+All signficantm p=0.00.
+
+
+'''
