@@ -2,10 +2,6 @@ from types import FunctionType
 import numpy as np
 from math import isnan
 
-
-# import warnings
-# warnings.filterwarnings("error")
-
 class Fund:
     def __init__(self, cash, asset):
         self.cash = cash
@@ -34,7 +30,6 @@ class Fund:
     
     def compute_demand(self, price):
         self.demand = self.excess_demand(price)
-        # print([self.type, self.trading_signal, self.demand])
 
     def execute_demand(self, price):
         # TODO: possible issue if we have some mismatch?
@@ -71,29 +66,25 @@ class Fund:
 
         # Compute annual return
         if len(self.wealth_history_year) == 252: 
-            #print(self.wealth_history_year)
-            # self.annual_return = ((self.wealth) / self.wealth_history_year[0]) - 1.
-            #try:
-            self.annual_return = (1. + ((np.product(self.wealth_history_year)) ** (1./252.) - 1.)) ** 252. - 1.
-            # except RuntimeWarning as e:
 
-            #     print(self.wealth_history_year)
-            #     print(e)
-            #print(self.annual_return)
+            # Compute annualised geometric mean of daily returns
+            self.annual_return = (1. + ((np.product(self.wealth_history_year)) ** (1./252.) - 1.)) ** 252. - 1.
 
         else:
             self.annual_return = np.nan
         
         # Update previous wealth to current wealth
-        self.previous_wealth = self.wealth #- self.net_flow
+        self.previous_wealth = self.wealth 
 
     def update_wealth_history(self):
-        #self.wealth_history_year.append(self.wealth)
+        # Make a history of daily returns 
+
         if isnan(self.daily_return) == False:
             entry = float(self.daily_return) + 1.
             self.wealth_history_year.append(entry)
 
         if len(self.wealth_history_year) > 252:
+            # Erase observations older than a year 
             del self.wealth_history_year[0]
 
 

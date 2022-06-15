@@ -13,5 +13,3 @@ class Investor:
                     invested_amount = ((-0.0012 + 0.1089 * fund.excess_annual_return) / 21.) * fund.wealth
                     fund.net_flow = invested_amount
                     fund.cash += fund.net_flow
-                    #print(fund.type, fund.wealth, fund.net_flow, fund.cash)
-                    #print("Invested" + str(invested_amount) + " " + str(invested_amount / fund.wealth) + " in " + str(fund.type) + " " + str(fund.annual_return) + str(fund.excess_annual_return))

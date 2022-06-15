@@ -12,7 +12,6 @@ class Asset:
     dividend_autocorrelation_lag = 1
     ema_horizons = 2 # TODO convert to list
     ema_smoothing_factors = 2 / 3
-    # ema_smoothing_factors = [2. / (ema_horizons[i] + 1.) for i in len(ema_horizons)]
 
     def __init__(self, time_horizon, seed):
         self.time_horizon = time_horizon
@@ -61,4 +60,3 @@ class Asset:
         if self.price < 0:
             self.price = 0.01
             warnings.warn('Negative price converted to 0.01')
-            # raise ValueError('Negative price with mismatch and problems.')

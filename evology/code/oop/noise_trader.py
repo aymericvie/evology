@@ -4,7 +4,6 @@ from math import tanh, log2
 
 class NoiseTrader(Fund):
 
-    ##
     OU_mean = 1.0
     OU_rho = 0.00045832561
     OU_gamma = 0.2 * np.sqrt(1. / 252.)
@@ -37,18 +36,8 @@ class NoiseTrader(Fund):
         self.trading_signal = NoiseTrader.noise_process
 
     def get_excess_demand_function(self):
-        # Process only 
-        #def func(price):
-        #    return (self.wealth * self.leverage / price) * tanh(self.signal_scale * self.trading_signal) - self.asset
-        #self.excess_demand = func
-
-        # TODO NT position becomes unbounded and insolvent.
-        # Go back to the Noisy VI setup to avoid that?
-
-        ##
+        # Noisy VI setup for NT to avoid unbounded orders
         def func(price):
-            # return (self.wealth * self.leverage / price) * tanh(self.signal_scale * (log2((self.valuation) / max(price,0.0001)))) - self.asset
-
             return (self.wealth * self.leverage / price) * tanh(self.signal_scale * (log2((self.valuation) / max(price,0.0001))) + 0.5) - self.asset
         self.excess_demand = func
         
@@ -56,7 +45,6 @@ class NoiseTrader(Fund):
     ##
     def update_valuation(self, dividend, interest_rate_daily):
         self.valuation = (dividend * (1. + interest_rate_daily) / self.discount_rate) * self.trading_signal
-        #print('NT', self.valuation, self.trading_signal)
         if self.valuation < 0:
             raise RuntimeError('Negative NT valuation', self.valuation)
 

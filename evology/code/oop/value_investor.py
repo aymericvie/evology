@@ -1,6 +1,5 @@
 from fund import Fund
 from math import tanh, log2
-# from numpy import log2
 
 class ValueInvestor(Fund):
     def __init__(self, cash, asset, req_rate_return, interest_rate, dividend_growth_rate):
@@ -14,7 +13,6 @@ class ValueInvestor(Fund):
         self.valuation = dividend * (1. + interest_rate_daily) / self.discount_rate
         if self.valuation < 0:
             raise RuntimeError('Negative VI valuation', self.valuation)
-        #print("VI", self.valuation)
 
     def get_excess_demand_function(self):
         def func(price):
