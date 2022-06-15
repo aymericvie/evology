@@ -15,7 +15,6 @@ class Simulation:
         self.generation = 0
         self.data = None
         self.disable = Simulation.set_display(self)
-
     
     def set_display(self):
         if sys.platform == "darwin":
@@ -36,11 +35,10 @@ class Simulation:
         pop.create_pop() 
         pop.count_wealth(asset.price)
 
-
         for self.generation in tqdm(range(self.max_generations), disable = self.disable):
-        # for generation in range(self.max_generations):
 
             # print("Generation", generation)
+            """TODO cythonize """
             """ TODO wealth reset mode """
             """ TODO Hypermutate with liquidate, remove, split system"""
             pop.liquidate_insolvent()
@@ -82,7 +80,6 @@ class Simulation:
             )
         
         self.data = result.convert_df()
-        # print([[ind.type, ind.wealth, ind.asset] for ind in pop.agents])
 
 
 
