@@ -19,7 +19,7 @@ def main(
 
 if __name__ == "__main__":
     df = main(
-        max_generations = 10000, 
+        max_generations = 20000, 
         population_size = 3,
         interest_rate = 0.01,
         investment_bool = True,

@@ -15,8 +15,6 @@ if sys.platform == "win32":
     pass
     
 # %%
-
-
 title_fontsize = 20
 label_size = 15
 
@@ -31,9 +29,7 @@ ax[2].plot(df.index, df['WShare_NT'], color='green', label='Noise traders', line
 ax[2].plot(df.index, df['WShare_VI'], color='red', label='Value investors', linewidth=1)
 ax[2].plot(df.index, df['WShare_TF'], color='blue', label='Trend followers', linewidth=1)
 ax[1].plot(df.index, df['Volume'], color = 'black', linewidth = 1)
-# ax[1].bar(df.index, df['B'], color='g', label='MACD')
 
-# ax[1].set_xticklabels(df.index, rotation=90)
 ax[2].set_xlabel('Time (days)', fontsize = label_size)
 ax[2].set_ylabel('Share (%)', fontsize = label_size)
 ax[0].set_ylabel('Price', fontsize = label_size)

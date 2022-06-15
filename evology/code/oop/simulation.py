@@ -62,18 +62,17 @@ class Simulation:
             pop.earnings(asset.dividend, self.interest_rate_daily)
             pop.update_margin(asset.price)
             pop.clear_debt()
-
             pop.count_wealth(asset.price)
             pop.update_wealth_history()
             pop.compute_average_return()
             pop.compute_excess_profit()
             pop.compute_profit()
-            # """ TODO investment """
             investor.investment_flows(pop)
-            """ with an investor class so we potentially have heterogeneity """
-            # pop.count_wealth(asset.price) # after investment
+            pop.count_wealth(asset.price) 
             pop.get_wealth_statistics()
             pop.get_activity_statistics()
+            """ TODO collect investment flow data"""
+            """ TODO collect strategy return data"""
             result.update_results(
                 self.generation, 
                 asset.price, 

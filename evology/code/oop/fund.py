@@ -67,10 +67,11 @@ class Fund:
 
         # Compute annual return
         if len(self.wealth_history_year) == 252: 
-            #self.annual_return = ((self.wealth - self.net_flow) / self.wealth_history_year[0]) - 1.
-            self.annual_return = ((self.wealth) / self.wealth_history_year[0]) - 1.
+            # self.annual_return = ((self.wealth) / self.wealth_history_year[0]) - 1.
+            self.annual_return = (1. + ((np.nanprod(self.wealth_history_year)) ** (1./252.) - 1.)) ** 252. - 1.
+            
+            #print(self.annual_return)
 
-            #print(self.wealth-self.net_flow, self.wealth_history_year[0], self.annual_return)
         else:
             self.annual_return = np.nan
         
@@ -78,8 +79,8 @@ class Fund:
         self.previous_wealth = self.wealth #- self.net_flow
 
     def update_wealth_history(self):
-        #self.wealth_history_year.append(self.wealth - self.net_flow)
-        self.wealth_history_year.append(self.wealth)
+        #self.wealth_history_year.append(self.wealth)
+        self.wealth_history_year.append(self.daily_return + 1.)
 
         if len(self.wealth_history_year) > 252:
             del self.wealth_history_year[0]
