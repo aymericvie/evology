@@ -3,10 +3,11 @@ from noise_trader import NoiseTrader
 from population import Population
 from asset import Asset
 from results import Result
+from investor import Investor
 import sys
 
 class Simulation:
-    def __init__(self, max_generations, population_size, interest_rate, seed):
+    def __init__(self, max_generations, population_size, interest_rate, investment_bool, seed):
         self.max_generations = max_generations
         self.population_size = population_size
         self.interest_rate = interest_rate
@@ -15,6 +16,7 @@ class Simulation:
         self.generation = 0
         self.data = None
         self.disable = Simulation.set_display(self)
+        self.investment_bool = investment_bool
     
     def set_display(self):
         if sys.platform == "darwin":
@@ -30,6 +32,7 @@ class Simulation:
         asset = Asset(self.max_generations, self.seed)
         pop = Population(self.population_size, self.max_generations, self.interest_rate, Asset.dividend_growth_rate_yearly, self.seed)
         NoiseTrader.process_series = NoiseTrader.compute_noise_process(self.max_generations, self.seed)
+        investor = Investor(self.investment_bool)
 
         """ TODO Improve pop creation with coords """
         pop.create_pop() 
