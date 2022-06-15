@@ -25,7 +25,7 @@ def test_runs(repetitions, time, agents, inv_bool):
     assert went_smoothly == True
 
 def random_bool():
-    n = np.random()
+    n = np.random.random()
     if n <= 0.5:
         return True
     else:
