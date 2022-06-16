@@ -31,11 +31,13 @@ def random_bool():
     else:
         return False 
 
-print('Testing many short runs')
+print('Testing many short runs...')
 test_runs(30, 1000, 3, random_bool())
+print('Succesful!')
 
-print('Testing less long runs')
-test_runs(5, 100000, 3, random_bool())
+print('Testing less long runs...')
+test_runs(10, 100000, 3, random_bool())
+print('Succesful!')
 
 # TODO: add a determinism test as well?
 # TODO: multiprocessing?
