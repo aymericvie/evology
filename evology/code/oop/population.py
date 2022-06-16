@@ -112,6 +112,9 @@ class Population:
             print(price)
             for ind in self.agents:
                 print(ind.type, ind.demand, ind.asset, ind.wealth)
+                print(ind.excess_demand(price), ind.demand)
+                print(ind.max_short_size)
+                print(- ind.leverage * ind.max_short_size - ind.asset)
             raise ValueError('Sum demand not equal to 0.')
         
         total_assets = 0.

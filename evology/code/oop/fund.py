@@ -30,6 +30,7 @@ class Fund:
     def count_wealth(self, price):
         self.wealth = self.cash + self.asset * price - self.loan + self.margin
         if self.wealth < 0:
+            print('price', price)
             raise RuntimeError('Insolvent agent', self.type, self.wealth, self.cash, self.asset, self.loan, self.margin, self.wealth + self.margin, self.net_flow)
         return self.wealth
     
