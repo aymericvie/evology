@@ -27,6 +27,9 @@ class Population:
         self.wshareTF = 0.
         self.VI_val = 0.
         self.average_annual_return = 0.
+        self.NT_flows = 0.
+        self.VI_flows = 0.
+        self.TF_flows = 0.
 
         # TODO self.assetNT and things like that at the level of the population?
 
@@ -184,3 +187,22 @@ class Population:
                 VI_val += ind.valuation * ind.wealth
                 VI_count += ind.wealth
         self.VI_val = VI_val / VI_count
+
+    def get_investment_flows(self):
+        NTflows, VIflows, TFflows = 0., 0., 0.
+        for ind in self.agents:
+            if isinstance(ind, NoiseTrader):
+                NTflows += ind.net_flow
+            elif isinstance(ind, ValueInvestor):
+                VIflows += ind.net_flow
+            elif isinstance(ind, TrendFollower):
+                TFflows += ind.net_flow
+        
+        total_flows = abs(NTflows) + abs(VIflows) + abs(TFflows)
+        if total_flows != 0:
+            self.NT_flows = NTflows / total_flows
+            self.VI_flows = VIflows / total_flows
+            self.TF_flows = TFflows / total_flows
+        else:
+            self.NT_flows, self.VI_flows, self.TF_flows = 0.,0.,0.
+

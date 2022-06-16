@@ -12,7 +12,10 @@ class Result:
         "VI_val",
         "WShare_NT",
         "WShare_VI",
-        "WShare_TF"
+        "WShare_TF",
+        "NT_flows",
+        "VI_flows",
+        "TF_flows",
     ]
 
     def __init__(self, max_generations):
@@ -29,7 +32,10 @@ class Result:
         VI_val,
         wshareNT,
         wshareVI,
-        wshareTF
+        wshareTF,
+        NTflows,
+        VIflows,
+        TFflows,
     ):
         arr = [
             generation,
@@ -40,7 +46,10 @@ class Result:
             VI_val,
             wshareNT,
             wshareVI,
-            wshareTF
+            wshareTF,
+            NTflows,
+            VIflows,
+            TFflows,
         ]
         self.data[generation, :] = arr 
 

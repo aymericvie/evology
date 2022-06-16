@@ -71,5 +71,11 @@ plt.show()
 
 
 # %%
-
+df.plot(
+    x="Generation",
+    y=["NT_flows", "VI_flows", "TF_flows"],
+    kind="line",
+    figsize=(15, 6),
+)
+plt.show()
 # %%

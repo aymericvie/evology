@@ -71,7 +71,7 @@ class Simulation:
             pop.count_wealth(asset.price) 
             pop.get_wealth_statistics()
             pop.get_activity_statistics()
-            """ TODO collect investment flow data"""
+            pop.get_investment_flows()
             """ TODO collect strategy return data"""
             result.update_results(
                 self.generation, 
@@ -82,7 +82,10 @@ class Simulation:
                 pop.VI_val,
                 pop.wshareNT,
                 pop.wshareVI,
-                pop.wshareTF
+                pop.wshareTF,
+                pop.NT_flows,
+                pop.VI_flows,
+                pop.TF_flows
             )
         
         self.data = result.convert_df()
