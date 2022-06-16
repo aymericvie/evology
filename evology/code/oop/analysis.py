@@ -51,6 +51,40 @@ plt.tight_layout()
 plt.savefig('/Users/aymericvie/Documents/GitHub/evology/evology/code/oop/rundata/overview.png', dpi=300)
 plt.show()
 
+
+
+
+# %%
+# df.plot(
+#     x="Generation",
+#     y=["NT_flows", "VI_flows", "TF_flows"],
+#     kind="line",
+#     figsize=(15, 6),
+# )
+# plt.show()
+
+span = 252 * 10
+df['EMA_NT_flows'] = df['NT_flows'].ewm(span=span).mean()
+df['EMA_VI_flows'] = df['VI_flows'].ewm(span=span).mean()
+df['EMA_TF_flows'] = df['TF_flows'].ewm(span=span).mean()
+
+df.plot(
+    x="Generation",
+    y=["EMA_NT_flows", "EMA_VI_flows", "EMA_TF_flows"],
+    kind="line",
+    figsize=(15, 6),
+)
+plt.show()
+
+df.plot(
+    x="Generation",
+    y=["WShare_NT", "WShare_VI", "WShare_TF"],
+    kind="line",
+    figsize=(15, 6),
+)
+plt.show()
+
+# %%
 # %%
 df.plot(
     x="Generation",
@@ -67,15 +101,3 @@ df.plot(
     figsize=(15, 6),
 )
 plt.show()
-
-
-
-# %%
-df.plot(
-    x="Generation",
-    y=["NT_flows", "VI_flows", "TF_flows"],
-    kind="line",
-    figsize=(15, 6),
-)
-plt.show()
-# %%
