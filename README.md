@@ -4,6 +4,7 @@
 
 ![Runs](https://github.com/aymericvie/evology/actions/workflows/runs.yml/badge.svg?branch=master)
 ![Deterministic](https://github.com/aymericvie/evology/actions/workflows/deterministic.yml/badge.svg?branch=master)
+![OOP](https://github.com/aymericvie/evology/actions/workflows/oop.yml/badge.svg?branch=master)
 
 ## Description
 
