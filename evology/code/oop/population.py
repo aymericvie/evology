@@ -89,10 +89,27 @@ class Population:
 
     def execute_demand(self, price):
         volume = 0.0
+        sum_demand = 0.0
         for ind in self.agents:
             ind.execute_demand(price)
+            sum_demand += ind.demand
             volume += abs(ind.demand) # abs: buy & sell don't cancel out
 
+        total_short = self.get_short_positions()
+
+        if total_short >= Population.asset_supply + 1.:
+            print(total_short, Population.asset_supply)
+            for ind in self.agents:
+                print(ind.type, ind.asset, ind.wealth, ind.demand)
+            raise RuntimeError('Short size position exceeded.') 
+
+        if abs(sum_demand) >= 1:
+            print(sum_demand)
+            print(price)
+            for ind in self.agents:
+                print(ind.type, ind.demand, ind.asset, ind.wealth)
+            raise ValueError('Sum demand not equal to 0.')
+        
         total_assets = 0.
         for ind in self.agents:
             total_assets += ind.asset 
@@ -100,6 +117,8 @@ class Population:
         if abs(total_assets - Population.asset_supply) >= 1:
             print(total_assets)
             print(Population.asset_supply)
+            for ind in self.agents:
+                print(ind.type, ind.asset, ind.demand, ind.wealth)
             raise ValueError('Asset supply violated', total_assets, Population.asset_supply)
 
         return volume
@@ -153,6 +172,17 @@ class Population:
             print(self.average_annual_return)
             raise ValueError('self average annual return > 10')
 
+        # Compute average monthly return
+        total_profit, count_funds = 0.,0
+        for ind in self.agents:
+            if isnan(ind.get_monthly_return()) == False:
+                total_profit += ind.get_monthly_return()
+                count_funds += 1
+        if count_funds != 0:
+            self.average_monthly_return = total_profit / count_funds
+        else:
+            self.average_monthly_return = np.nan
+            
     def compute_excess_profit(self):
         for ind in self.agents:
             ind.excess_annual_return = ind.annual_return - self.average_annual_return    
@@ -179,6 +209,14 @@ class Population:
         self.wshareNT = wealthNT / total_wealth
         self.wshareVI = wealthVI / total_wealth
         self.wshareTF = wealthTF / total_wealth
+
+    def get_short_positions(self):
+        total_short = 0
+        for ind in self.agents:
+            if ind.asset < 0:
+                total_short += abs(ind.asset)
+        return total_short
+
 
     def get_activity_statistics(self):
         VI_val, VI_count = 0, 0

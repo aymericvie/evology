@@ -101,3 +101,5 @@ df.plot(
     figsize=(15, 6),
 )
 plt.show()
+
+# %%

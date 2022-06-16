@@ -18,8 +18,11 @@ class Fund:
         self.previous_wealth = 0.
         self.annual_return = 0.
         self.daily_return = 0.
+        self.monthly_return = 0.
         self.excess_annual_return = 0.
+        self.excess_monthly_return = 0.
         self.wealth_history_year = []
+        self.wealth_history_month = []
         self.net_flow = 0.
 
     def count_wealth(self, price):
@@ -70,6 +73,9 @@ class Fund:
             # Compute annualised geometric mean of daily returns
             self.annual_return = (1. + ((np.product(self.wealth_history_year)) ** (1./252.) - 1.)) ** 252. - 1.
 
+            self.monthly_return = (1. + ((np.product(self.wealth_history_month)) ** (1./21.) - 1.)) ** 21. - 1.
+
+
         else:
             self.annual_return = np.nan
         
@@ -82,10 +88,15 @@ class Fund:
         if isnan(self.daily_return) == False:
             entry = float(self.daily_return) + 1.
             self.wealth_history_year.append(entry)
+            self.wealth_history_month.append(entry)
 
         if len(self.wealth_history_year) > 252:
             # Erase observations older than a year 
             del self.wealth_history_year[0]
+
+        if len(self.wealth_history_month) > 21:
+            # Erase observations older than a month 
+            del self.wealth_history_month[0]
 
 
     def liquidate_insolvent(self):
@@ -96,5 +107,8 @@ class Fund:
 
     def get_annual_return(self):
         return self.annual_return
+
+    def get_monthly_return(self):
+        return self.monthly_return
 
 
