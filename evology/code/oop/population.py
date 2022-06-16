@@ -1,8 +1,8 @@
-from multiprocessing.sharedctypes import Value
 from types import FunctionType
 from trend_follower import TrendFollower
 from value_investor import ValueInvestor
 from noise_trader import NoiseTrader
+from fund import Fund
 from math import isnan
 import numpy as np
 
@@ -45,6 +45,10 @@ class Population:
         for ind in self.agents:
             total_asset += ind.asset
         Population.asset_supply = total_asset
+    
+    def set_max_short_size(self):
+        for fund in self.agents:
+            fund.max_short_size = 500_000
 
     def count_wealth(self, price):
         for ind in self.agents:
@@ -182,7 +186,7 @@ class Population:
             self.average_monthly_return = total_profit / count_funds
         else:
             self.average_monthly_return = np.nan
-            
+
     def compute_excess_profit(self):
         for ind in self.agents:
             ind.excess_annual_return = ind.annual_return - self.average_annual_return    

@@ -31,6 +31,7 @@ class Simulation:
         result = Result(self.max_generations)
         asset = Asset(self.max_generations, self.seed)
         pop = Population(self.population_size, self.max_generations, self.interest_rate, Asset.dividend_growth_rate_yearly, self.seed)
+        pop.set_max_short_size()
         NoiseTrader.process_series = NoiseTrader.compute_noise_process(self.max_generations, self.seed)
         investor = Investor(self.investment_bool)
 
