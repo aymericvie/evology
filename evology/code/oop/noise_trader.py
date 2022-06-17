@@ -6,7 +6,7 @@ class NoiseTrader(Fund):
 
     OU_mean = 1.0
     OU_rho = 0.00045832561
-    OU_rho = 0.001
+    OU_rho = 0.01
     OU_gamma = 0.2 * np.sqrt(1. / 252.)
     #OU_gamma = 0.035
     process_series = []

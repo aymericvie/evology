@@ -118,3 +118,13 @@ df.plot(
     figsize=(15, 6),
 )
 plt.show()
+
+# %%
+df.tail(1000).plot(
+    x="Generation",
+    y=["NT_process"],
+    kind="line",
+    figsize=(15, 6),
+)
+plt.show()
+# %%
