@@ -176,42 +176,16 @@ class Population:
             ind.execute_pop_demand(price)
             sum_demand += ind.demand
 
-        total_short = self.get_short_positions()
-
-        '''
-        if total_short >= Population.asset_supply + 1.:
-            print(total_short, Population.asset_supply)
-            for ind in self.agents:
-                print(ind.type, ind.asset, ind.wealth, ind.demand)
-            raise RuntimeError('Short size position exceeded.') 
-
-        if abs(sum_demand) >= 1:
-            # revert changes 
-            for ind in self.agents:
-                ind.asset -= ind.demand
-                ind.cash += ind.demand * price 
-            print(sum_demand)
-            print(price)
-            for ind in self.agents:
-                print(ind.type, ind.demand, ind.asset, ind.wealth)
-                print(ind.excess_demand(price), ind.demand)
-                print(- ind.leverage * ind.max_short_size - ind.asset)
-            raise ValueError('Sum demand not equal to 0.')
-        
         total_assets = 0.
         for ind in self.agents:
             total_assets += ind.asset 
         
         if abs(total_assets - Population.asset_supply) >= 1:
-            print(total_assets)
-            print(Population.asset_supply)
-            for ind in self.agents:
-                print(ind.type, ind.asset, ind.demand, ind.wealth)
             raise ValueError('Asset supply violated', total_assets, Population.asset_supply)
 
         if volume == 0:
             raise RuntimeError('Volume is 0.')
-        '''
+        
         return volume
 
 
