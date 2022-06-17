@@ -84,7 +84,7 @@ df.plot(
 )
 plt.show()
 
-# %%
+#
 # %%
 df.plot(
     x="Generation",
@@ -103,3 +103,18 @@ df.plot(
 plt.show()
 
 # %%
+df.plot(
+    x="Generation",
+    y=["NT_asset", "VI_asset", "TF_asset"],
+    kind="line",
+    figsize=(15, 6),
+)
+plt.show()
+
+df.plot(
+    x="Generation",
+    y=["NT_cash", "VI_cash", "TF_cash"],
+    kind="line",
+    figsize=(15, 6),
+)
+plt.show()

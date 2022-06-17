@@ -30,6 +30,12 @@ class Population:
         self.NT_flows = 0.
         self.VI_flows = 0.
         self.TF_flows = 0.
+        self.NT_asset = 0.
+        self.VI_asset = 0.
+        self.TF_asset = 0.
+        self.NT_cash = 0.
+        self.VI_cash = 0.
+        self.TF_cash = 0.
 
         # TODO self.assetNT and things like that at the level of the population?
 
@@ -256,3 +262,23 @@ class Population:
         else:
             self.NT_flows, self.VI_flows, self.TF_flows = 0.,0.,0.
 
+    def get_positions(self):
+        NT_asset, VI_asset, TF_asset = 0.,0.,0.
+        NT_cash, VI_cash, TF_cash = 0.,0.,0.
+        for ind in self.agents:
+            if isinstance(ind, NoiseTrader):
+                NT_asset += ind.asset
+                NT_cash += ind.cash
+            elif isinstance(ind, ValueInvestor):
+                VI_asset += ind.asset
+                VI_cash += ind.cash
+            elif isinstance(ind, TrendFollower):
+                TF_asset += ind.asset
+                TF_cash += ind.cash
+
+        self.NT_asset = NT_asset
+        self.VI_asset = VI_asset
+        self.TF_asset = TF_asset
+        self.NT_cash = NT_cash
+        self.VI_cash = VI_cash
+        self.TF_cash = TF_cash

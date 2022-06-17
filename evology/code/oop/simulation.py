@@ -85,7 +85,13 @@ class Simulation:
                 pop.wshareTF,
                 pop.NT_flows,
                 pop.VI_flows,
-                pop.TF_flows
+                pop.TF_flows,
+                pop.NT_asset,
+                pop.VI_asset,
+                pop.TF_asset,
+                pop.NT_cash,
+                pop.VI_cash,
+                pop.TF_cash,
             )
         
         self.data = result.convert_df()
