@@ -46,9 +46,11 @@ class Population:
             total_asset += ind.asset
         Population.asset_supply = total_asset
     
+    '''
     def set_max_short_size(self):
         for fund in self.agents:
             fund.max_short_size = 500_000
+    '''
 
     def count_wealth(self, price):
         for ind in self.agents:
@@ -108,12 +110,15 @@ class Population:
             raise RuntimeError('Short size position exceeded.') 
 
         if abs(sum_demand) >= 1:
+            # revert changes 
+            for ind in self.agents:
+                ind.asset -= self.demand
+                ind.cash += self.demand * price 
             print(sum_demand)
             print(price)
             for ind in self.agents:
                 print(ind.type, ind.demand, ind.asset, ind.wealth)
                 print(ind.excess_demand(price), ind.demand)
-                print(ind.max_short_size)
                 print(- ind.leverage * ind.max_short_size - ind.asset)
             raise ValueError('Sum demand not equal to 0.')
         

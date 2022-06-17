@@ -25,7 +25,7 @@ class Fund:
         self.wealth_history_year = []
         self.wealth_history_month = []
         self.net_flow = 0.
-        self.max_short_size = 0.
+        self.max_short_size = 500000
 
     def count_wealth(self, price):
         self.wealth = self.cash + self.asset * price - self.loan + self.margin
