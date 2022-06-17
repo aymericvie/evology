@@ -71,6 +71,7 @@ class Simulation:
             pop.count_wealth(asset.price) 
             pop.get_wealth_statistics()
             pop.get_activity_statistics()
+            pop.get_positions()
             pop.get_investment_flows()
             """ TODO collect strategy return data"""
             result.update_results(
