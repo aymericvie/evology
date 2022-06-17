@@ -1,6 +1,7 @@
 from types import FunctionType
 import numpy as np
 from math import isnan
+import warnings
 
 class Fund:
 
@@ -40,7 +41,7 @@ class Fund:
         self.wealth = self.cash + self.asset * price - self.loan + self.margin
         if self.wealth < 0:
             print('price', price)
-            raise RuntimeError('Insolvent agent', self.type, self.wealth, self.cash, self.asset, self.loan, self.margin, self.wealth + self.margin, self.net_flow)
+            warnings.warn('Insolvent agent', self.type, self.wealth, self.cash, self.asset, self.loan, self.margin, self.wealth + self.margin, self.net_flow)
         return self.wealth
     
     def compute_demand(self, price):
