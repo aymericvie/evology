@@ -50,13 +50,13 @@ class Simulation:
             asset.compute_price_emas()
             pop.update_trading_signal(asset.dividend, self.interest_rate_daily, self.generation, asset.price, asset.price_emas)
             """ TODO TSV computation for the AV agent """
-            pop.get_excess_demand_functions()
+            #pop.get_excess_demand_functions()
             pop.get_pod_demand_functions() #
-            pop.get_aggregate_demand()
+            #pop.get_aggregate_demand()
             pop.get_pod_aggregate_demand() #
             """ TODO add liquidation system and spoils to market clearing """
             asset.market_clearing(pop.aggregate_demand)
-            asset.mismatch = pop.compute_demand_values(asset.price)
+            # asset.mismatch = pop.compute_demand_values(asset.price)
             asset.mismatch = pop.compute_pod_demand_values(asset.price) #
             """ TODO add check to not overtake short pos size """
             """ TODO what to do with very small deviations from asset supply (0.01)?"""
