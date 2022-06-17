@@ -23,3 +23,15 @@ class ValueInvestor(Fund):
     def compute_trading_signal(self, price):
         self.trading_signal = log2(self.valuation / price)
 
+
+    def pod_demand(self):
+        def func(price):
+            mt = tanh(log2(self.valuation / max(price, 0.0001)))
+            if mt <= Fund.mt_short:
+                return (1 - self.leverage) * self.wealth / price
+            elif mt > Fund.mt_long:
+                return self.leverage * self.wealth / price
+            else:
+                return self.signal_scale * mt * self.wealth / price
+        self.pod_demand = func
+

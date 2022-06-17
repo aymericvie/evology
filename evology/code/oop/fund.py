@@ -4,6 +4,10 @@ from math import isnan
 
 class Fund:
 
+    # pod 
+    mt_short = -1
+    mt_long = 1
+
     def __init__(self, cash, asset):
         self.cash = cash
         self.asset = asset
@@ -26,6 +30,9 @@ class Fund:
         self.wealth_history_month = []
         self.net_flow = 0.
         self.max_short_size = 500000
+
+        ##
+        self.pod_demand = FunctionType
 
     def count_wealth(self, price):
         self.wealth = self.cash + self.asset * price - self.loan + self.margin
