@@ -41,6 +41,7 @@ class Fund:
         self.wealth = self.cash + self.asset * price - self.loan + self.margin
         if self.wealth < 0:
             print('price', price)
+            print('TODO: handle insolvency')
             warnings.warn('Insolvent agent', self.type, self.wealth, self.cash, self.asset, self.loan, self.margin, self.wealth + self.margin, self.net_flow)
         return self.wealth
     
