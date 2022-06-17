@@ -2,6 +2,7 @@ from math import sqrt
 import numpy as np
 from scipy.optimize import root
 import warnings
+from population import Population
 
 class Asset:
 
@@ -56,6 +57,17 @@ class Asset:
 
     def market_clearing(self, aggregate_demand):
         self.price = root(aggregate_demand, self.price, method="hybr").x
+        # TODO: install circuit breaker
+        if self.price < 0:
+            self.price = 0.01
+            warnings.warn('Negative price converted to 0.01')
+
+    def market_clearing(self, aggregate_demand):
+
+        def pod_aggregate_demand(price):
+            return aggregate_demand(price) - Population.asset_supply
+
+        self.price = root(pod_aggregate_demand, self.price, method="hybr").x
         # TODO: install circuit breaker
         if self.price < 0:
             self.price = 0.01

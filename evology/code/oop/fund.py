@@ -7,6 +7,8 @@ class Fund:
     # pod 
     mt_short = -1
     mt_long = 1
+    momentum_short = -1
+    momentum_long = 1
 
     def __init__(self, cash, asset):
         self.cash = cash
@@ -17,7 +19,7 @@ class Fund:
         self.trading_signal = 0.
         self.type = str
         self.excess_demand = FunctionType
-        self.leverage = 1.
+        self.leverage = 2.
         self.signal_scale = 1.
         self.demand = 0.
         self.previous_wealth = 0.
@@ -44,10 +46,21 @@ class Fund:
     def compute_demand(self, price):
         self.demand = self.excess_demand(price)
 
+    def compute_pod_demand(self, price):
+        self.demand = self.pod_demand(price)
+
     def execute_demand(self, price):
         # TODO: possible issue if we have some mismatch?
         self.asset += self.demand
         self.cash -= self.demand * price 
+
+    def execute_pop_demand(self, price):
+        #print(self.type, self.asset, self.demand, self.cash, self.demand - self.asset)
+        previous_asset = self.asset 
+        asset_change = self.demand - previous_asset
+        self.asset += asset_change 
+        self.cash -= asset_change * price
+        #print(self.asset, self.cash, self.demand * price)
 
     def clear_debt(self):
         if self.loan > 0 and self.cash > 0:

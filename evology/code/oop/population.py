@@ -78,6 +78,10 @@ class Population:
         for ind in self.agents:
             ind.excess_demand_function = ind.get_excess_demand_function()
 
+    def get_pod_demand_functions(self):
+        for ind in self.agents:
+            ind.get_pod_demand()
+
     def get_aggregate_demand(self):
         def func(price):
             result = 0.0
@@ -90,12 +94,33 @@ class Population:
             return result 
         self.aggregate_demand = func
 
+    def get_pod_aggregate_demand(self):
+        def func(price):
+            result = 0.0
+            for ind in self.agents:
+                try:
+                    result += ind.pod_demand(price)
+                except Exception as e:
+                    print(e)
+                    raise RuntimeError('Failed to get pod_D(price) from agent.', ind.type, price)
+            return result 
+        self.aggregate_demand = func
+
     def compute_demand_values(self, price):
         mismatch = 0.0
         for ind in self.agents:
             if isinstance(ind, ValueInvestor):
                 ind.compute_trading_signal(price)
             ind.compute_demand(price)
+            mismatch += ind.demand
+        return mismatch
+
+    def compute_pod_demand_values(self, price):
+        mismatch = 0.0
+        for ind in self.agents:
+            if isinstance(ind, ValueInvestor):
+                ind.compute_trading_signal(price)
+            ind.compute_pod_demand(price)
             mismatch += ind.demand
         return mismatch
 
@@ -142,6 +167,53 @@ class Population:
         if volume == 0:
             raise RuntimeError('Volume is 0.')
         return volume
+
+    def execute_pod_demand(self, price):
+        volume = 0.0
+        sum_demand = 0.0
+        for ind in self.agents:
+            volume += abs(ind.demand - ind.asset) # abs: buy & sell don't cancel out
+            ind.execute_pop_demand(price)
+            sum_demand += ind.demand
+
+        total_short = self.get_short_positions()
+
+        '''
+        if total_short >= Population.asset_supply + 1.:
+            print(total_short, Population.asset_supply)
+            for ind in self.agents:
+                print(ind.type, ind.asset, ind.wealth, ind.demand)
+            raise RuntimeError('Short size position exceeded.') 
+
+        if abs(sum_demand) >= 1:
+            # revert changes 
+            for ind in self.agents:
+                ind.asset -= ind.demand
+                ind.cash += ind.demand * price 
+            print(sum_demand)
+            print(price)
+            for ind in self.agents:
+                print(ind.type, ind.demand, ind.asset, ind.wealth)
+                print(ind.excess_demand(price), ind.demand)
+                print(- ind.leverage * ind.max_short_size - ind.asset)
+            raise ValueError('Sum demand not equal to 0.')
+        
+        total_assets = 0.
+        for ind in self.agents:
+            total_assets += ind.asset 
+        
+        if abs(total_assets - Population.asset_supply) >= 1:
+            print(total_assets)
+            print(Population.asset_supply)
+            for ind in self.agents:
+                print(ind.type, ind.asset, ind.demand, ind.wealth)
+            raise ValueError('Asset supply violated', total_assets, Population.asset_supply)
+
+        if volume == 0:
+            raise RuntimeError('Volume is 0.')
+        '''
+        return volume
+
 
     def clear_debt(self):
         for ind in self.agents:

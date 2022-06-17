@@ -24,7 +24,7 @@ class ValueInvestor(Fund):
         self.trading_signal = log2(self.valuation / price)
 
 
-    def pod_demand(self):
+    def get_pod_demand(self):
         def func(price):
             mt = tanh(log2(self.valuation / max(price, 0.0001)))
             if mt <= Fund.mt_short:
