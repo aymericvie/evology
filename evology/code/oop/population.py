@@ -139,6 +139,8 @@ class Population:
                 print(ind.type, ind.asset, ind.demand, ind.wealth)
             raise ValueError('Asset supply violated', total_assets, Population.asset_supply)
 
+        if volume == 0:
+            raise RuntimeError('Volume is 0.')
         return volume
 
     def clear_debt(self):

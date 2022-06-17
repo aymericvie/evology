@@ -118,3 +118,36 @@ df.plot(
     figsize=(15, 6),
 )
 plt.show()
+# %%
+df.tail(500).plot(
+    x="Generation",
+    y=["NT_asset", "VI_asset", "TF_asset"],
+    kind="line",
+    figsize=(15, 6),
+)
+plt.show()
+
+df.tail(500).plot(
+    x="Generation",
+    y=["NT_process"],
+    kind="line",
+    figsize=(15, 6),
+)
+plt.show()
+
+df.tail(500).plot(
+    x="Generation",
+    y=["NT_cash"],
+    kind="line",
+    figsize=(15, 6),
+)
+plt.show()
+
+df.tail(500).plot(
+    x="Generation",
+    y=["Price"],
+    kind="line",
+    figsize=(15, 6),
+)
+plt.show()
+# %%

@@ -16,7 +16,7 @@ class ValueInvestor(Fund):
 
     def get_excess_demand_function(self):
         def func(price):
-            value = (self.wealth * self.leverage / price) * tanh(self.signal_scale * log2(self.valuation / max(price,0.0001)) ) - self.asset# + 0.5) #- self.asset
+            value = (self.wealth * self.leverage / price) * tanh((self.signal_scale * log2(self.valuation / max(price,0.0001))) + 0.0 ) - self.asset
             return max(value, - self.leverage * self.max_short_size - self.asset)
         self.excess_demand = func
 
