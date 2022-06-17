@@ -22,8 +22,8 @@ if __name__ == "__main__":
         max_generations = 5000, #88128, 
         population_size = 3,
         interest_rate = 0.01,
-        investment_bool = True,
-        seed = 42
+        investment_bool = False,
+        seed = 4242
     )  
     df.to_csv("rundata/run_data.csv")  
     print(df)
