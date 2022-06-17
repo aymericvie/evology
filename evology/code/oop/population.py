@@ -181,6 +181,9 @@ class Population:
             total_assets += ind.asset 
         
         if abs(total_assets - Population.asset_supply) >= 1:
+            print('agent type, demand')
+            for ind in self.agents:
+                print(ind.type, ind.demand)
             raise ValueError('Asset supply violated', total_assets, Population.asset_supply)
 
         if volume == 0:

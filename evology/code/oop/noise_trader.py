@@ -6,7 +6,9 @@ class NoiseTrader(Fund):
 
     OU_mean = 1.0
     OU_rho = 0.00045832561
+    OU_rho = 0.001
     OU_gamma = 0.2 * np.sqrt(1. / 252.)
+    #OU_gamma = 0.035
     process_series = []
     noise_process = 0.
 
@@ -26,9 +28,16 @@ class NoiseTrader(Fund):
         process_series = []
         value = NoiseTrader.OU_mean
         
+        '''
         for i in range(max_generations):
             value = abs(value + NoiseTrader.OU_rho * (log2(NoiseTrader.OU_mean) - log2(value)) + NoiseTrader.OU_gamma * randoms[i])
             process_series.append(value)
+        '''
+
+        for i in range(max_generations):
+            value = abs(value + NoiseTrader.OU_rho * (log2(NoiseTrader.OU_mean) - log2(value)) + NoiseTrader.OU_gamma * randoms[i])
+            process_series.append(value)
+
         return process_series
 
     def get_noise_process(self, generation):
@@ -54,7 +63,14 @@ class NoiseTrader(Fund):
         def func(price):
             #print(self.leverage)
             mt = tanh(log2((self.valuation * self.trading_signal) / max(price, 0.0001)))
+            
             if mt <= Fund.mt_short:
+                # print(mt)
+                # print('NT')
+                # print('current position')
+                # print(self.asset)
+                # print('demand result')
+                # print((1 - self.leverage) * self.wealth / price)
                 return (1 - self.leverage) * self.wealth / price
             elif mt > Fund.mt_long:
                 return self.leverage * self.wealth / price
