@@ -112,8 +112,8 @@ class Population:
         if abs(sum_demand) >= 1:
             # revert changes 
             for ind in self.agents:
-                ind.asset -= self.demand
-                ind.cash += self.demand * price 
+                ind.asset -= ind.demand
+                ind.cash += ind.demand * price 
             print(sum_demand)
             print(price)
             for ind in self.agents:

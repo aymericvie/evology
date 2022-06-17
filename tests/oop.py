@@ -3,12 +3,14 @@ sys.path.append('./evology/code/oop')
 import numpy as np
 from main import main as model
 
+np.random.seed()
+
 def runs(repetitions, time, agents, inv_bool):
     went_smoothly = True
     i = 0
     while i < repetitions:
         try: 
-            seed = np.random.randint(0,100)
+            seed = np.random.randint(0,100000)
             np.random.seed(seed)
             df = model(time, agents, 0.01, inv_bool, seed)
         except Exception as e: 
