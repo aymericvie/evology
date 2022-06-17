@@ -19,10 +19,10 @@ def main(
 
 if __name__ == "__main__":
     df = main(
-        max_generations = 100000, #88128, 
+        max_generations = 5000, #88128, 
         population_size = 3,
         interest_rate = 0.01,
-        investment_bool = False,
+        investment_bool = True,
         seed = 42
     )  
     df.to_csv("rundata/run_data.csv")  
