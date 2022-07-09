@@ -25,8 +25,8 @@ def runs(repetitions, time, agents):
         i += 1
     return went_smoothly
 
-def test_runs(repetitions, time, agents, inv_bool):
-    went_smoothly = runs(repetitions, time, agents, inv_bool)
+def test_runs(repetitions, time, agents,):
+    went_smoothly = runs(repetitions, time, agents)
     assert went_smoothly == True
 
 def random_bool():
