@@ -9,7 +9,7 @@ import sys
 
 class Simulation:
     def __init__(
-        self, max_generations, population_size, interest_rate, investment_bool, seed
+        self, max_generations, population_size, wealth_coords, interest_rate, investment_bool, seed
     ):
         self.max_generations = max_generations
         self.population_size = population_size
@@ -20,6 +20,7 @@ class Simulation:
         self.data = None
         self.disable = Simulation.set_display(self)
         self.investment_bool = investment_bool
+        self.wealth_coords = wealth_coords
 
     def set_display(self):
         if sys.platform == "darwin":
@@ -36,6 +37,7 @@ class Simulation:
         pop = Population(
             self.population_size,
             self.max_generations,
+            self.wealth_coords,
             self.interest_rate,
             Asset.dividend_growth_rate_yearly,
             self.seed,
@@ -44,8 +46,6 @@ class Simulation:
             self.max_generations, self.seed
         )
         investor = Investor(self.investment_bool)
-
-        """ TODO Improve pop creation with coords """
         pop.create_pop()
         pop.count_wealth(asset.price)
 

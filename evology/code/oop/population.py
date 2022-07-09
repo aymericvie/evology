@@ -1,4 +1,6 @@
 from types import FunctionType
+
+from matplotlib.pyplot import isinteractive
 from trend_follower import TrendFollower
 from value_investor import ValueInvestor
 from noise_trader import NoiseTrader
@@ -15,12 +17,14 @@ class Population:
         self,
         population_size,
         max_generations,
+        wealth_coords,
         interest_rate,
         dividend_growth_rate,
         seed,
     ):
         self.size = population_size
         self.max_generations = max_generations
+        self.wealth_coords = wealth_coords
         self.agents = []
         self.interest_rate = interest_rate
         self.dividend_growth_rate = dividend_growth_rate
@@ -50,40 +54,80 @@ class Population:
 
         # TODO self.assetNT and things like that at the level of the population?
 
-    def create_pop(self):
-        if self.size == 3:
-            self.agents.append(
-                NoiseTrader(
-                    100_000_000,
-                    500_000,
-                    0.01,
-                    self.interest_rate,
-                    self.dividend_growth_rate,
-                )
+    def create_fund(self, type):
+        if type == "NT":
+            fund = NoiseTrader(
+                0,
+                0,
+                0.01,
+                self.interest_rate,
+                self.dividend_growth_rate,
             )
-            self.agents.append(
-                ValueInvestor(
-                    100_000_000,
-                    500_000,
-                    0.01,
-                    self.interest_rate,
-                    self.dividend_growth_rate,
-                )
+        elif type == "VI":
+            fund = ValueInvestor(
+                0,
+                0,
+                0.01,
+                self.interest_rate,
+                self.dividend_growth_rate,
             )
-            self.agents.append(TrendFollower(100_000_000, 500_000, 1))
+        elif type == "TF":
+            fund = TrendFollower(
+                0, 
+                0, 
+                1)
         else:
-            raise RuntimeError("Population size is not 3.")
+            raise TypeError("Unrecognised requested type for create_fund.")
+        return fund
 
-        total_asset = 0
-        for ind in self.agents:
-            total_asset += ind.asset
+    def create_pop(self):
+
+        # Check we can create a diverse population
+        if self.size < 3:
+            raise RuntimeError('Population size cannot be inferior to 3.')
+        [shareNT, shareVI, shareTF] = self.wealth_coords
+        if shareNT + shareVI + shareTF > 1:
+            raise RuntimeError("Wealth coordinates sum is higher than 1.")
+
+        # Start the population with three agents of each type.
+        self.agents.append(self.create_fund("NT"))
+        self.agents.append(self.create_fund("VI"))
+        self.agents.append(self.create_fund("TF"))
+
+        # Fill the rest of the population
+        NumNT, NumVI, NumTF = 1, 1, 1
+        rng = np.random.default_rng(seed=self.seed + 2)
+        for _ in range(self.size - 3):
+            rd = rng.random()
+            if rd <= shareNT:
+                self.agents.append(self.create_fund("NT"))
+                NumNT += 1
+            elif rd > shareNT and rd <= shareNT + shareVI:
+                self.agents.append(self.create_fund("VI"))
+                NumVI += 1
+            elif rd > shareNT + shareVI:
+                self.agents.append(self.create_fund("TF"))
+                NumTF += 1
+
+        # Amount of cash/asset to split within each subpopulation
+        total_cash = Fund.cash_nominal * self.size
+        total_asset = Fund.asset_nominal * self.size
+        # Initialise cash and assets wrt shares and numbers
+        NT_cash, NT_asset = total_cash * shareNT / NumNT, total_asset * shareNT / NumNT
+        VI_cash, VI_asset = total_cash * shareVI / NumVI, total_asset * shareVI / NumVI
+        TF_cash, TF_asset = total_cash * shareTF / NumTF, total_asset * shareTF / NumTF
+
+        for fund in self.agents:
+            if isinstance(fund, NoiseTrader):
+                fund.cash, fund.asset = NT_cash, NT_asset
+            if isinstance(fund, ValueInvestor):
+                fund.cash, fund.asset = VI_cash, VI_asset
+            if isinstance(fund, TrendFollower):
+                fund.cash, fund.asset = TF_cash, TF_asset
+
         Population.asset_supply = total_asset
 
-    """
-    def set_max_short_size(self):
-        for fund in self.agents:
-            fund.max_short_size = 500_000
-    """
+
 
     def count_wealth(self, price):
         for ind in self.agents:

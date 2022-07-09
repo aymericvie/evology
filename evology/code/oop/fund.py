@@ -6,11 +6,8 @@ import warnings
 
 class Fund:
 
-    # pod
-    mt_short = -1
-    mt_long = 1
-    momentum_short = -1
-    momentum_long = 1
+    cash_nominal = 50_000_000
+    asset_nominal = 500_000
 
     def __init__(self, cash, asset):
         self.cash = cash
