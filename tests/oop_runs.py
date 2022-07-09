@@ -36,9 +36,9 @@ def random_bool():
     else:
         return False 
 
-print('For multiprocessing')
-import multiprocessing as mp
-print(mp.cpu_count())
+# print('For multiprocessing')
+# import multiprocessing as mp
+# print(mp.cpu_count())
 
 print('Testing many short runs...')
 test_runs(30, 1000, 3)

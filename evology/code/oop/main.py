@@ -17,7 +17,7 @@ def main(max_generations, population_size, wealth_coords, interest_rate, investm
 
 if __name__ == "__main__":
     df = main(
-        max_generations=3,
+        max_generations=100,
         population_size=3,
         wealth_coords=[0.06501857857486315, 0.026734889756173778, 0.9082465316689631],
         interest_rate=0.01,

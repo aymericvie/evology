@@ -38,7 +38,7 @@ class Fund:
     def count_wealth(self, price):
         self.wealth = self.cash + self.asset * price - self.loan + self.margin
         if self.wealth < 0:
-            print("price", price)
+            print("price (count wealth)", price)
             print("TODO: handle insolvency")
             print(                self.type,
                 self.wealth,
