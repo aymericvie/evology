@@ -68,12 +68,12 @@ class Asset:
             )
         ]
 
-    def market_clearing(self, aggregate_demand):
-        self.price = root(aggregate_demand, self.price, method="hybr").x
-        # TODO: install circuit breaker
-        if self.price < 0:
-            self.price = 0.01
-            warnings.warn("Negative price converted to 0.01")
+    # def market_clearing(self, aggregate_demand):
+    #     self.price = root(aggregate_demand, self.price, method="hybr").x
+    #     # TODO: install circuit breaker
+    #     if self.price < 0:
+    #         self.price = 0.01
+    #         warnings.warn("Negative price converted to 0.01")
 
     def market_clearing(self, aggregate_demand):
         def pod_aggregate_demand(price):

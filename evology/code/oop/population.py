@@ -1,13 +1,11 @@
 from types import FunctionType
-
-from matplotlib.pyplot import isinteractive
 from trend_follower import TrendFollower
 from value_investor import ValueInvestor
 from noise_trader import NoiseTrader
 from fund import Fund
 from math import isnan
 import numpy as np
-
+import warnings
 
 class Population:
 
@@ -204,75 +202,121 @@ class Population:
                 ind.compute_trading_signal(price)
             ind.compute_pod_demand(price)
             mismatch += ind.demand
+        if mismatch > 1:
+            warnings.warn('Mismatch superior to 1 ' + str(mismatch))
         return mismatch
 
-    def execute_demand(self, price):
-        volume = 0.0
-        sum_demand = 0.0
-        for ind in self.agents:
-            ind.execute_demand(price)
-            sum_demand += ind.demand
-            volume += abs(ind.demand)  # abs: buy & sell don't cancel out
+    # def execute_demand(self, price):
+    #     volume = 0.0
+    #     sum_demand = 0.0
+    #     for ind in self.agents:
+    #         ind.execute_demand(price)
+    #         sum_demand += ind.demand
+    #         volume += abs(ind.demand)  # abs: buy & sell don't cancel out
 
-        total_short = self.get_short_positions()
+    #     total_short = self.get_short_positions()
 
-        if total_short >= Population.asset_supply + 1.0:
-            print(total_short, Population.asset_supply)
-            for ind in self.agents:
-                print(ind.type, ind.asset, ind.wealth, ind.demand)
-            raise RuntimeError("Short size position exceeded.")
+    #     if total_short >= Population.asset_supply + 1.0:
+    #         print(total_short, Population.asset_supply)
+    #         for ind in self.agents:
+    #             print(ind.type, ind.asset, ind.wealth, ind.demand)
+    #         raise RuntimeError("Short size position exceeded.")
 
-        if abs(sum_demand) >= 1:
-            # revert changes
-            for ind in self.agents:
-                ind.asset -= ind.demand
-                ind.cash += ind.demand * price
-            print(sum_demand)
-            print(price)
-            for ind in self.agents:
-                print(ind.type, ind.demand, ind.asset, ind.wealth)
-                print(ind.excess_demand(price), ind.demand)
-                print(-ind.leverage * ind.max_short_size - ind.asset)
-            raise ValueError("Sum demand not equal to 0.")
+    #     if abs(sum_demand) >= 1:
+    #         # revert changes
+    #         for ind in self.agents:
+    #             ind.asset -= ind.demand
+    #             ind.cash += ind.demand * price
+    #         print(sum_demand)
+    #         print(price)
+    #         for ind in self.agents:
+    #             print(ind.type, ind.demand, ind.asset, ind.wealth)
+    #             print(ind.excess_demand(price), ind.demand)
+    #             print(-ind.leverage * ind.max_short_size - ind.asset)
+    #         raise ValueError("Sum demand not equal to 0.")
 
-        total_assets = 0.0
-        for ind in self.agents:
-            total_assets += ind.asset
+    #     total_assets = 0.0
+    #     for ind in self.agents:
+    #         total_assets += ind.asset
 
-        if abs(total_assets - Population.asset_supply) >= 1:
-            print(total_assets)
-            print(Population.asset_supply)
-            for ind in self.agents:
-                print(ind.type, ind.asset, ind.demand, ind.wealth)
-            raise ValueError(
-                "Asset supply violated", total_assets, Population.asset_supply
-            )
+    #     if abs(total_assets - Population.asset_supply) >= 1:
+    #         print(total_assets)
+    #         print(Population.asset_supply)
+    #         for ind in self.agents:
+    #             print(ind.type, ind.asset, ind.demand, ind.wealth)
+    #         raise ValueError(
+    #             "Asset supply violated", total_assets, Population.asset_supply
+    #         )
 
-        if volume == 0:
-            raise RuntimeError("Volume is 0.")
-        return volume
+    #     if volume == 0:
+    #         raise RuntimeError("Volume is 0.")
+    #     return volume
 
     def execute_pod_demand(self, price):
 
-        print("----")
+        print("Price", price)
+
+        print("- Pop info and sum assets---")
         sum_asset = 0
         for ind in self.agents:
             print(ind.type, ind.wealth, ind.asset, ind.demand)
             sum_asset += ind.asset
         print(sum_asset)
 
-        volume = 0.0
+        
+        # Verify that excess demand orders balance out
         sum_demand = 0.0
+        for ind in self.agents:
+            sum_demand += ind.demand
+        if abs(sum_demand) > 1:
+            # We have an imbalance to solve.
+            buy_orders = 0.
+            sell_orders = 0.
+            for ind in self.agents:
+                if ind.demand > 0:
+                    buy_orders += ind.demand
+                elif ind.demand < 0:
+                    sell_orders += abs(ind.demand)
+            if sell_orders != 0:
+                order_ratio = buy_orders / sell_orders
+            else:
+                order_ratio = 0
+
+            multiplier_buy = 0.
+            multiplier_sell = 0.
+            if order_ratio == 0.:  # either noone buys, or no one sells
+                warnings.warn("No orders will be executed (no supply or no demand)")
+            elif order_ratio < 1.:
+                multiplier_buy = 1.
+                multiplier_sell = order_ratio
+                # Selling will be restricted according to demand
+            elif order_ratio == 1:
+                multiplier_buy = 1.
+                multiplier_sell = 1.
+                # All orders will be executed (supply =  demand)
+            elif order_ratio > 1:
+                multiplier_buy = 1. / order_ratio
+                multiplier_sell = 1.
+                # Buying will be restricted according to supply
+            else:
+                raise ValueError("order_ratio has a strange value: " + str(order_ratio))
+                            
+            warnings.warn('Agents demands adjusted to counter imbalance. ' + str(price) + str(order_ratio))
+
+            for ind in self.agents:
+                if ind.demand > 0:
+                    ind.demand = ind.demand * multiplier_buy
+                elif ind.demand < 0:
+                    ind.demand = ind.demand * multiplier_sell
+
+        volume = 0.0
         for ind in self.agents:
             volume += abs(ind.demand - ind.asset)  # abs: buy & sell don't cancel out
             ind.execute_pop_demand(price)
-            sum_demand += ind.demand
 
         total_assets = 0.0
         for ind in self.agents:
             total_assets += ind.asset
-
-
 
         if abs(total_assets - Population.asset_supply) >= 1:
             print("agent type, demand")

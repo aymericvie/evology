@@ -1,6 +1,7 @@
 from math import log2, tanh
 from fund import Fund
 from math import isnan
+import numpy as np
 
 
 class TrendFollower(Fund):
@@ -13,7 +14,8 @@ class TrendFollower(Fund):
         if isnan(price_ema) == False:
             self.trading_signal = log2(price / price_ema)
         else:
-            self.trading_signal = 0.5
+            self.trading_signal = np.nan
+        print("Price EMA, self trading signal of TF")
         print(price_ema, self.trading_signal)
         # print("-----")
         # print(price, price_ema)
@@ -41,7 +43,10 @@ class TrendFollower(Fund):
         # self.pod_demand = func
 
         def func(price):
-            signal = self.signal_scale * self.trading_signal #+ 0.5
-            return self.leverage * signal * self.wealth / price - self.asset
+            if isnan(self.trading_signal) == False:
+                signal = self.signal_scale * self.trading_signal #+ 0.5
+                return self.leverage * signal * self.wealth / price - self.asset
+            else:
+                return 0
 
         self.pod_demand = func
