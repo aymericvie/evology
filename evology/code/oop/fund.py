@@ -140,14 +140,15 @@ class Fund:
 
     def liquidate_insolvent(self):
         if self.wealth < 0:
-            raise RuntimeError(
-                "Insolvent agent",
-                self.wealth,
-                self.type,
-                self.asset,
-                self.cash,
-                self.margin,
-            )
+            # raise RuntimeError(
+            #     "Insolvent agent",
+            #     self.wealth,
+            #     self.type,
+            #     self.asset,
+            #     self.cash,
+            #     self.margin,
+            # )
+            pass
 
     def get_assets(self):
         return self.asset
