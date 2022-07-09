@@ -36,6 +36,10 @@ def random_bool():
     else:
         return False 
 
+print('For multiprocessing')
+import multiprocessing as mp
+print(mp.cpu_count())
+
 print('Testing many short runs...')
 test_runs(30, 1000, 3)
 print('Succesful!')
@@ -44,9 +48,7 @@ print('Testing long runs with higher populations ...')
 test_runs(10, 100000, 10)
 print('Succesful!')
 
-print('For multiprocessing')
-import multiprocessing as mp
-print(mp.cpu_count())
+
 
 # TODO: add a determinism test as well?
 # TODO: multiprocessing?
