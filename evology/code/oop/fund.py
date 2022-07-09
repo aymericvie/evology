@@ -66,10 +66,12 @@ class Fund:
 
     def execute_pop_demand(self, price):
         # print(self.type, self.asset, self.demand, self.cash, self.demand - self.asset)
-        previous_asset = self.asset
-        asset_change = self.demand - previous_asset
-        self.asset += asset_change
-        self.cash -= asset_change * price
+        # previous_asset = self.asset
+        # asset_change = self.demand - previous_asset
+        # self.asset += asset_change
+        self.asset += self.demand
+        # self.cash -= asset_change * price
+        self.cash -= self.demand * price
         # print(self.asset, self.cash, self.demand * price)
 
     def clear_debt(self):

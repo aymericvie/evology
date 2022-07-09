@@ -1,5 +1,6 @@
 from math import log2, tanh
 from fund import Fund
+from math import isnan
 
 
 class TrendFollower(Fund):
@@ -9,7 +10,11 @@ class TrendFollower(Fund):
         self.type = "TF"
 
     def get_price_ema(self, price, price_ema):
-        self.trading_signal = log2(price / price_ema)
+        if isnan(price_ema) == False:
+            self.trading_signal = log2(price / price_ema)
+        else:
+            self.trading_signal = 0.5
+        print(price_ema, self.trading_signal)
         # print("-----")
         # print(price, price_ema)
         # print('TF trading signal ', self.trading_signal)
@@ -24,19 +29,19 @@ class TrendFollower(Fund):
         self.excess_demand = func
 
     def get_pod_demand(self):
-        def func(price):
-            mt = self.trading_signal + 0.5
-            if mt <= Fund.momentum_short:
-                return (1 - self.leverage) * self.wealth / price
-            elif mt > Fund.momentum_long:
-                return self.leverage * self.wealth / price
-            else:
-                return self.signal_scale * mt * self.wealth / price
+        # def func(price):
+        #     mt = self.trading_signal + 0.5
+        #     if mt <= Fund.momentum_short:
+        #         return (1 - self.leverage) * self.wealth / price - self.assets
+        #     elif mt > Fund.momentum_long:
+        #         return self.leverage * self.wealth / price - self.assets
+        #     else:
+        #         return self.signal_scale * mt * self.wealth / price - self.assets
 
-        self.pod_demand = func
+        # self.pod_demand = func
 
         def func(price):
             signal = self.signal_scale * self.trading_signal #+ 0.5
-            return self.leverage * signal * self.wealth / price
+            return self.leverage * signal * self.wealth / price - self.asset
 
         self.pod_demand = func

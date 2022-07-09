@@ -71,20 +71,20 @@ class NoiseTrader(Fund):
             raise RuntimeError("Negative NT valuation", self.valuation)
 
     def get_pod_demand(self):
-        def func(price):
-            mt = tanh(log2((self.valuation * self.trading_signal) / max(price, 0.0001)))
+        # def func(price):
+        #     mt = tanh(log2((self.valuation * self.trading_signal) / max(price, 0.0001)))
 
-            if mt <= Fund.mt_short:
-                return (1 - self.leverage) * self.wealth / price
-            elif mt > Fund.mt_long:
-                return self.leverage * self.wealth / price
-            else:
-                return self.signal_scale * mt * self.wealth / price
+        #     if mt <= Fund.mt_short:
+        #         return (1 - self.leverage) * self.wealth / price
+        #     elif mt > Fund.mt_long:
+        #         return self.leverage * self.wealth / price
+        #     else:
+        #         return self.signal_scale * mt * self.wealth / price
 
-        self.pod_demand = func
+        # self.pod_demand = func
 
         def func(price):
             signal = tanh(self.signal_scale * log2((self.valuation * self.trading_signal) / max(price, 0.0001)))
-            return self.leverage * signal * self.wealth / price
+            return self.leverage * signal * self.wealth / price - self.asset
 
         self.pod_demand = func

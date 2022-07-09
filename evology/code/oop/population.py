@@ -145,7 +145,10 @@ class Population:
                 ##
                 ind.update_valuation(dividend, interest_rate_daily)
             elif isinstance(ind, TrendFollower):
-                ind.get_price_ema(price, price_ema[0])
+                if generation >= ind.time_horizon:
+                    ind.get_price_ema(price, price_ema[0])
+                else:
+                    ind.get_price_ema(price, np.nan)
 
     def get_excess_demand_functions(self):
         for ind in self.agents:
@@ -250,6 +253,14 @@ class Population:
         return volume
 
     def execute_pod_demand(self, price):
+
+        print("----")
+        sum_asset = 0
+        for ind in self.agents:
+            print(ind.type, ind.wealth, ind.asset, ind.demand)
+            sum_asset += ind.asset
+        print(sum_asset)
+
         volume = 0.0
         sum_demand = 0.0
         for ind in self.agents:
@@ -261,10 +272,12 @@ class Population:
         for ind in self.agents:
             total_assets += ind.asset
 
+
+
         if abs(total_assets - Population.asset_supply) >= 1:
             print("agent type, demand")
             for ind in self.agents:
-                print(ind.type, ind.demand)
+                print(ind.type, ind.wealth, ind.asset, ind.demand)
             raise ValueError(
                 "Asset supply violated", total_assets, Population.asset_supply
             )
