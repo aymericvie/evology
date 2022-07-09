@@ -34,11 +34,11 @@ jobs:
         run: python setup.py
       #- name: test cython version
       #  run: cython -V
-      - name: change permission
-        run: chmod +x tests/test_deterministic.py
+      # - name: change permission
+      #   run: chmod +x tests/test_deterministic.py
       #- name: compile cythonized files
       #  run: (cd evology/code && ./cythonize.sh)
-      - name: run test oop
-        run: python3 tests/oop.py
+      - name: run test oop runs
+        run: python3 tests/oop_runs.py
 
 
