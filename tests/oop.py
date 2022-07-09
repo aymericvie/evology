@@ -5,18 +5,21 @@ from main import main as model
 
 np.random.seed()
 
-def runs(repetitions, time, agents, inv_bool):
+def runs(repetitions, time, agents):
     went_smoothly = True
     i = 0
     while i < repetitions:
         try: 
             seed = np.random.randint(0,100000)
+            wealth_coords = np.random.dirichlet(np.ones(3), size=1)[0].tolist()
             np.random.seed(seed)
-            df = model(time, agents, 0.01, inv_bool, seed)
+            inv_bool = random_bool()
+            df = model(time, agents, wealth_coords, 0.01, inv_bool, seed)
         except Exception as e: 
             went_smoothly = False
             print('Investment Bool ' + str(inv_bool))
             print('Seed ' + str(seed))
+            print('Coords ' + str(wealth_coords))
             print(str(e))
             break
         i += 1
@@ -34,11 +37,11 @@ def random_bool():
         return False 
 
 print('Testing many short runs...')
-test_runs(30, 1000, 3, random_bool())
+test_runs(30, 1000, 3)
 print('Succesful!')
 
-print('Testing less long runs...')
-test_runs(10, 100000, 3, random_bool())
+print('Testing long runs with higher populations ...')
+test_runs(10, 100000, 10)
 print('Succesful!')
 
 # TODO: add a determinism test as well?
