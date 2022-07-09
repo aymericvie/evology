@@ -202,8 +202,8 @@ class Population:
                 ind.compute_trading_signal(price)
             ind.compute_pod_demand(price)
             mismatch += ind.demand
-        if mismatch > 1:
-            warnings.warn('Mismatch superior to 1 ' + str(mismatch))
+        # if mismatch > 1:
+        #     warnings.warn('Mismatch superior to 1 ' + str(mismatch))
         return mismatch
 
     # def execute_demand(self, price):
@@ -301,7 +301,7 @@ class Population:
             else:
                 raise ValueError("order_ratio has a strange value: " + str(order_ratio))
                             
-            warnings.warn('Agents demands adjusted to counter imbalance. ' + str(price) + str(order_ratio))
+            # warnings.warn('Agents demands adjusted to counter imbalance. ' + str(price) + str(order_ratio))
 
             for ind in self.agents:
                 if ind.demand > 0:
