@@ -15,8 +15,8 @@ class TrendFollower(Fund):
             self.trading_signal = log2(price / price_ema)
         else:
             self.trading_signal = np.nan
-        print("Price EMA, self trading signal of TF")
-        print(price_ema, self.trading_signal)
+        # print("Price EMA, self trading signal of TF")
+        # print(price_ema, self.trading_signal)
         # print("-----")
         # print(price, price_ema)
         # print('TF trading signal ', self.trading_signal)

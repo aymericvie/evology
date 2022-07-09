@@ -254,14 +254,14 @@ class Population:
 
     def execute_pod_demand(self, price):
 
-        print("Price", price)
+        # print("Price", price)
 
-        print("- Pop info and sum assets---")
-        sum_asset = 0
-        for ind in self.agents:
-            print(ind.type, ind.wealth, ind.asset, ind.demand)
-            sum_asset += ind.asset
-        print(sum_asset)
+        # print("- Pop info and sum assets---")
+        # sum_asset = 0
+        # for ind in self.agents:
+        #     print(ind.type, ind.wealth, ind.asset, ind.demand)
+        #     sum_asset += ind.asset
+        # print(sum_asset)
 
         
         # Verify that excess demand orders balance out
