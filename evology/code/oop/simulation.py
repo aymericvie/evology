@@ -54,9 +54,9 @@ class Simulation:
             # print("Generation", generation)
             """TODO cythonize"""
             """ TODO wealth reset mode """
-            """ TODO Hypermutate with liquidate, remove, split system"""
-            """ TODO leverage and hypermutation? how do we deal with loans from borrowing cash to buy assets? should not change anything right? yes but double check"""
-            pop.liquidate_insolvent()
+            pop.replace_insolvent()
+            # """ TODO leverage and hypermutation? how do we deal with loans from borrowing cash to buy assets? should not change anything right? yes but double check"""
+            # pop.liquidate_insolvent()
             asset.get_dividend(self.generation)
             """ TODO extend EMA to many lags """
             asset.compute_price_emas()
@@ -76,7 +76,8 @@ class Simulation:
             # pop.get_aggregate_demand()
             pop.get_pod_aggregate_demand()  #
             """ TODO add liquidation system and spoils to market clearing """
-            asset.market_clearing(pop.aggregate_demand)
+            pop.compute_liquidation(asset.volume)
+            asset.market_clearing(pop)
             # asset.mismatch = pop.compute_demand_values(asset.price)
             asset.mismatch = pop.compute_pod_demand_values(asset.price)  #
             # asset.volume = pop.execute_demand(asset.price)
@@ -100,6 +101,7 @@ class Simulation:
             pop.get_investment_flows()
             """ TODO collect traing signal / tsv / excess demand data"""
             """ TODO collect strategy return data"""
+            """ TODO: measure age?"""
             result.update_results(
                 self.generation,
                 asset.price,
@@ -121,7 +123,8 @@ class Simulation:
                 pop.TF_cash,
                 pop.NT_returns,
                 pop.VI_returns,
-                pop.TF_returns
+                pop.TF_returns,
+                pop.replacements
             )
 
         self.data = result.convert_df()

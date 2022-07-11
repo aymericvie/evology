@@ -28,6 +28,7 @@ class Population:
         self.dividend_growth_rate = dividend_growth_rate
         self.seed = seed
         self.aggregate_demand = FunctionType
+        self.spoils = 0
 
         self.wealthNT = 0.0
         self.wealthVI = 0.0
@@ -350,9 +351,9 @@ class Population:
         for ind in self.agents:
             ind.update_margin(price)
 
-    def liquidate_insolvent(self):
-        for ind in self.agents:
-            ind.liquidate_insolvent()
+    # def liquidate_insolvent(self):
+    #     for ind in self.agents:
+    #         ind.liquidate_insolvent()
 
     def compute_profit(self):
         for ind in self.agents:
@@ -502,3 +503,70 @@ class Population:
         self.NT_cash = NT_cash
         self.VI_cash = VI_cash
         self.TF_cash = TF_cash
+
+
+    def create_fractional_fund(self, index, divisions):
+        if isinstance(self.agents[index], NoiseTrader):
+            new_half = self.create_fund(self, "NT")
+        elif isinstance(self.agents[index], ValueInvestor):
+            new_half = self.create_fund(self, "VI")
+        elif isinstance(self.agents[index], TrendFollower):
+            new_half = self.create_fund(self, "TF")
+        else:
+            raise TypeError('Unrecognised agent type for create_fractional_fund')
+
+        new_half.cash = self.agents[index].cash / divisions
+        new_half.asset = self.agents[index].asset / divisions
+        new_half.loan = self.agents[index].loan / divisions
+        new_half.margin = self.agents[index].margin / divisions
+        new_half.wealth = self.agents[index].wealth / divisions
+
+        return new_half
+
+
+    def replace_insolvent(self):
+
+        index_to_replace = []
+        wealth_list = []
+        spoils = 0
+        replacements = 0
+
+        for i, fund in enumerate(self.agents):
+            wealth_list.append(fund.wealth)
+            if fund.wealth < 0:
+                index_to_replace.append(i)
+
+        MaxFund = wealth_list.index(max(wealth_list))
+        if len(index_to_replace) == len(self.agents):
+            raise RuntimeError("Evology wiped out during insolvency resolution.")
+
+        MaxFund = wealth_list.index(max(wealth_list))
+        NumberReplace = len(index_to_replace)
+
+        if NumberReplace != 0:
+            for index in index_to_replace:
+                new_half_fund = self.create_fractional_fund(MaxFund, NumberReplace + 1)
+                spoils += pop[index].asset
+                del self.agents[index]
+                self.agents.append(new_half_fund)
+                # round_replacements += 1
+            # FInally, add the last subdivision in place of the maximum fund.
+            new_half_fund = self.create_fractional_fund(MaxFund, NumberReplace + 1)
+            del self.agents[index]
+            self.agents.append(new_half_fund)
+
+            for ind in self.agents:
+                if ind.wealth < 0:
+                    raise ValueError("Insolvent funds after hypermutation.")
+
+        self.replacements = replacements
+        self.spoils += spoils
+        return self.spoils, replacements
+
+    def compute_liquidation(self, volume):
+        if self.spoils > 0:
+            self.liquidation = - min(self.spoils, min(0.1 * volume, 10000))
+        elif self.spoils == 0:
+            self.liquidation = 0
+        elif self.spoils < 0:
+            self.liquidation = min(abs(self.poils), min(0.1 * volume, 10000))
