@@ -379,9 +379,8 @@ class Population:
             self.average_annual_return = np.nan
 
         # Check that average return is not aberrant
-        if self.average_annual_return > 10:
-            print(self.average_annual_return)
-            raise ValueError("self average annual return > 10")
+        if self.average_annual_return > 100:
+            warnings.warn("self average annual return > 100:" + str(self.average_annual_return))
 
         # Compute average monthly return
         total_profit, count_funds = 0.0, 0
