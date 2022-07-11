@@ -567,6 +567,6 @@ class Population:
         if self.spoils > 0:
             self.liquidation = - min(self.spoils, min(0.1 * volume, 10000))
         elif self.spoils == 0:
-            self.liquidation = 0
+            self.liquidation = 0.
         elif self.spoils < 0:
-            self.liquidation = min(abs(self.poils), min(0.1 * volume, 10000))
+            self.liquidation = min(abs(self.spoils), min(0.1 * volume, 10000))
