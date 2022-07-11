@@ -548,16 +548,16 @@ class Population:
             for index in index_to_replace:
                 # new_half_fund = self.create_fractional_fund(MaxFund, NumberReplace + 1)
                 spoils += self.agents[index].asset
-                self.agents[index] = None
+                self.agents[index] = new_half_fund
                 
-            for fund in self.agents:
-                if fund == None:
-                    fund = new_half_fund
+            # for fund in self.agents:
+            #     if fund == None:
+            #         fund = new_half_fund
                 # del self.agents[index]
                 # self.agents.append(new_half_fund)
                 replacements += 1
             # FInally, add the last subdivision in place of the maximum fund.
-            new_half_fund = self.create_fractional_fund(MaxFund, NumberReplace + 1)
+            # new_half_fund = self.create_fractional_fund(MaxFund, NumberReplace + 1)
             self.agents[MaxFund] = new_half_fund
             # del self.agents[MaxFund]
             # self.agents.append(new_half_fund)
