@@ -103,7 +103,7 @@ def job2(param):
 
 # Run experiment
 def main():
-    repetitions1, repetitions2 = 30, 10
+    repetitions1, repetitions2 = 30, 5
     p = mp.Pool()
     p.map(job1, list(range(repetitions1)))
     p.map(job2, list(range(repetitions2)))
