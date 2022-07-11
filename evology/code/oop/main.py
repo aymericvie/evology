@@ -20,7 +20,7 @@ if __name__ == "__main__":
     df = main(
         max_generations=100,
         population_size=3,
-        wealth_coords=[0.17959498380668204, 0.25098747242829794, 0.5694175437650202],
+        wealth_coords=[1/3, 1/3, 1/3],
         interest_rate=0.01,
         investment_bool=False,
         seed=56615,
