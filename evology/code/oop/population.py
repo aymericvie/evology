@@ -133,7 +133,7 @@ class Population:
 
     def count_wealth(self, price):
         for ind in self.agents:
-            ind.wealth = ind.count_wealth(price)
+            ind.count_wealth(price)
 
     def update_trading_signal(
         self, dividend, interest_rate_daily, generation, price, price_ema
@@ -334,7 +334,8 @@ class Population:
             )
 
         if volume == 0:
-            raise RuntimeError("Volume is 0.")
+            warnings.warn('Volume is 0. Shuting down...')
+            self.shutdown = True
 
         return volume
 
@@ -455,6 +456,16 @@ class Population:
         self.wshareVI = wealthVI / total_wealth
         self.wshareTF = wealthTF / total_wealth
 
+        if self.wshareNT < 0.001 and  self.wshareVI < 0.001:
+            warnings.warn('NT and VI are extinct. Shuting down...')
+            self.shutdown = True
+        if self.wshareNT < 0.001 and  self.wshareTF < 0.001:
+            warnings.warn('NT and TF are extinct. Shuting down...')
+            self.shutdown = True
+        if self.wshareVI < 0.001 and  self.wshareTF < 0.001:
+            warnings.warn('TF and VI are extinct. Shuting down...')
+            self.shutdown = True
+
     def get_short_positions(self):
         total_short = 0
         for ind in self.agents:
@@ -563,6 +574,7 @@ class Population:
                 for index in index_to_replace:
                     # new_half_fund = self.create_fractional_fund(MaxFund, NumberReplace + 1)
                     spoils += self.agents[index].asset
+                    # warnings.warn("Replacement: ", self.agents[index].type, )
                     self.agents[index] = new_half_fund
                     
                 # for fund in self.agents:

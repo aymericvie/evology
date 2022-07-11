@@ -37,7 +37,16 @@ class Fund:
 
     def count_wealth(self, price):
         self.wealth = self.cash + self.asset * price - self.loan + self.margin
-        return self.wealth
+        if isnan(self.wealth) == True:
+            print(self.type)
+            print(self.wealth)
+            print(self.cash) 
+            print(self.asset)
+            print(price)
+            print(self.loan) 
+            print(self.margin)
+            raise ValueError('NAN wealth.')
+  
 
     def compute_demand(self, price):
         self.demand = self.excess_demand(price)
