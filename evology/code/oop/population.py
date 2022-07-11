@@ -85,7 +85,7 @@ class Population:
         if self.size < 3:
             raise RuntimeError('Population size cannot be inferior to 3.')
         [shareNT, shareVI, shareTF] = self.wealth_coords
-        if shareNT + shareVI + shareTF > 1:
+        if shareNT + shareVI + shareTF > 1.00001:
             raise RuntimeError("Wealth coordinates sum is higher than 1.")
 
         # Start the population with three agents of each type.
