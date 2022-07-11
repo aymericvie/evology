@@ -315,7 +315,9 @@ class Population:
 
         volume = 0.0
         for ind in self.agents:
-            volume += abs(ind.demand - ind.asset)  # abs: buy & sell don't cancel out
+            # volume += abs(ind.demand - ind.asset)  # abs: buy & sell don't cancel out
+            
+            volume += abs(ind.demand)  # abs: buy & sell don't cancel out
             ind.execute_pop_demand(price)
 
         total_assets = 0.0

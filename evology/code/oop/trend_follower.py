@@ -43,8 +43,10 @@ class TrendFollower(Fund):
         # self.pod_demand = func
 
         def func(price):
+            # print(self.trading_signal)
+            # print(self.leverage * self.signal_scale * self.trading_signal * self.wealth / price - self.asset)
             if isnan(self.trading_signal) == False:
-                signal = self.signal_scale * self.trading_signal #+ 0.5
+                signal = self.signal_scale * (self.trading_signal + 0.5)
                 return self.leverage * signal * self.wealth / price - self.asset
             else:
                 return 0

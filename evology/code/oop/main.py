@@ -22,7 +22,7 @@ if __name__ == "__main__":
         population_size=3,
         wealth_coords=[1/4, 1/4, 1/2],
         interest_rate=0.01,
-        investment_bool=True,
+        investment_bool=False,
         seed=56615,
     )
     df.to_csv("rundata/run_data.csv")
