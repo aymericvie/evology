@@ -37,20 +37,6 @@ class Fund:
 
     def count_wealth(self, price):
         self.wealth = self.cash + self.asset * price - self.loan + self.margin
-        if self.wealth < 0:
-            print("price (count wealth)", price)
-            print("TODO: handle insolvency")
-            print(                self.type,
-                self.wealth,
-                self.cash,
-                self.asset,
-                self.loan,
-                self.margin,
-                self.wealth + self.margin,
-                self.net_flow)
-            warnings.warn(
-                "Insolvent agent")
-
         return self.wealth
 
     def compute_demand(self, price):
