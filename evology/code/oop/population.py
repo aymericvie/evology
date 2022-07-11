@@ -29,6 +29,7 @@ class Population:
         self.seed = seed
         self.aggregate_demand = FunctionType
         self.spoils = 0
+        self.shutdown = False
 
         self.wealthNT = 0.0
         self.wealthVI = 0.0
@@ -319,10 +320,11 @@ class Population:
         for ind in self.agents:
             total_assets += ind.asset
 
-        if abs(total_assets - Population.asset_supply) >= 1:
+        if abs(total_assets - Population.asset_supply + self.spoils) >= 1:
             print("agent type, demand")
             for ind in self.agents:
                 print(ind.type, ind.wealth, ind.asset, ind.demand)
+            print('spoils', self.spoils)
             raise ValueError(
                 "Asset supply violated", total_assets, Population.asset_supply
             )
@@ -463,7 +465,10 @@ class Population:
             if isinstance(ind, ValueInvestor):
                 VI_val += ind.valuation * ind.wealth
                 VI_count += ind.wealth
-        self.VI_val = VI_val / VI_count
+        if VI_count != 0:
+            self.VI_val = VI_val / VI_count
+        else:
+            self.VI_val = np.nan
 
     def get_investment_flows(self):
         NTflows, VIflows, TFflows = 0.0, 0.0, 0.0
@@ -538,36 +543,44 @@ class Population:
 
         MaxFund = wealth_list.index(max(wealth_list))
         if len(index_to_replace) == len(self.agents):
-            raise RuntimeError("Evology wiped out during insolvency resolution.")
-
-        MaxFund = wealth_list.index(max(wealth_list))
-        NumberReplace = len(index_to_replace)
-
-        if NumberReplace != 0:
-            new_half_fund = self.create_fractional_fund(MaxFund, NumberReplace + 1)
-            for index in index_to_replace:
-                # new_half_fund = self.create_fractional_fund(MaxFund, NumberReplace + 1)
-                spoils += self.agents[index].asset
-                self.agents[index] = new_half_fund
-                
-            # for fund in self.agents:
-            #     if fund == None:
-            #         fund = new_half_fund
-                # del self.agents[index]
-                # self.agents.append(new_half_fund)
-                replacements += 1
-            # FInally, add the last subdivision in place of the maximum fund.
-            # new_half_fund = self.create_fractional_fund(MaxFund, NumberReplace + 1)
-            self.agents[MaxFund] = new_half_fund
-            # del self.agents[MaxFund]
-            # self.agents.append(new_half_fund)
-
             for ind in self.agents:
-                if ind.wealth < 0:
-                    raise ValueError("Insolvent funds after hypermutation.")
+                print(ind.type, ind.wealth, ind.asset)
+            print(self.spoils)
+            self.agents = []
+            self.shutdown = True
+            self.replacements = len(self.agents)
+            warnings.warn("Evology wiped out during insolvency resolution.")
 
-        self.replacements = replacements
-        self.spoils += spoils
+        else:
+            MaxFund = wealth_list.index(max(wealth_list))
+            NumberReplace = len(index_to_replace)
+
+            if NumberReplace != 0:
+                new_half_fund = self.create_fractional_fund(MaxFund, NumberReplace + 1)
+                for index in index_to_replace:
+                    # new_half_fund = self.create_fractional_fund(MaxFund, NumberReplace + 1)
+                    spoils += self.agents[index].asset
+                    self.agents[index] = new_half_fund
+                    
+                # for fund in self.agents:
+                #     if fund == None:
+                #         fund = new_half_fund
+                    # del self.agents[index]
+                    # self.agents.append(new_half_fund)
+                    replacements += 1
+                # FInally, add the last subdivision in place of the maximum fund.
+                # new_half_fund = self.create_fractional_fund(MaxFund, NumberReplace + 1)
+                self.agents[MaxFund] = new_half_fund
+                # del self.agents[MaxFund]
+                # self.agents.append(new_half_fund)
+                warnings.warn('Replacement done.')
+
+                for ind in self.agents:
+                    if ind.wealth < 0:
+                        raise ValueError("Insolvent funds after hypermutation.")
+
+            self.replacements = replacements
+            self.spoils += spoils
         return self.spoils, replacements
 
     def compute_liquidation(self, volume):

@@ -55,6 +55,9 @@ class Simulation:
             """TODO cythonize"""
             """ TODO wealth reset mode """
             pop.replace_insolvent()
+            if pop.shutdown == True:
+                result.data = result.data[0 : self.generation]
+                break
             # """ TODO leverage and hypermutation? how do we deal with loans from borrowing cash to buy assets? should not change anything right? yes but double check"""
             # pop.liquidate_insolvent()
             asset.get_dividend(self.generation)
@@ -126,5 +129,6 @@ class Simulation:
                 pop.TF_returns,
                 pop.replacements
             )
+
 
         self.data = result.convert_df()
