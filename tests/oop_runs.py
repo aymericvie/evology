@@ -63,7 +63,7 @@ def random_bool():
     else:
         return False 
 
-def job1():
+def job1(param):
     went_smoothly = True
     time, agents = 1000, 3
     try: 
@@ -81,7 +81,7 @@ def job1():
         went_smoothly = False
     assert went_smoothly == True
         
-def job2():
+def job2(param):
     went_smoothly = True
     time, agents = 100000, 10
     try: 
@@ -105,8 +105,8 @@ def job2():
 def main():
     repetitions1, repetitions2 = 30, 10
     p = mp.Pool()
-    p.map(job1, range(repetitions1))
-    p.map(job2, range(repetitions2))
+    p.map(job1, list(range(repetitions1)))
+    p.map(job2, list(range(repetitions2)))
     p.close()
 
 
