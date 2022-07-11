@@ -507,11 +507,11 @@ class Population:
 
     def create_fractional_fund(self, index, divisions):
         if isinstance(self.agents[index], NoiseTrader):
-            new_half = self.create_fund(self, "NT")
+            new_half = self.create_fund("NT")
         elif isinstance(self.agents[index], ValueInvestor):
-            new_half = self.create_fund(self, "VI")
+            new_half = self.create_fund("VI")
         elif isinstance(self.agents[index], TrendFollower):
-            new_half = self.create_fund(self, "TF")
+            new_half = self.create_fund("TF")
         else:
             raise TypeError('Unrecognised agent type for create_fractional_fund')
 
@@ -546,10 +546,10 @@ class Population:
         if NumberReplace != 0:
             for index in index_to_replace:
                 new_half_fund = self.create_fractional_fund(MaxFund, NumberReplace + 1)
-                spoils += pop[index].asset
+                spoils += self.agents[index].asset
                 del self.agents[index]
                 self.agents.append(new_half_fund)
-                # round_replacements += 1
+                replacements += 1
             # FInally, add the last subdivision in place of the maximum fund.
             new_half_fund = self.create_fractional_fund(MaxFund, NumberReplace + 1)
             del self.agents[index]
